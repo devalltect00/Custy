@@ -1,0 +1,93 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=41", "setuptools_scm[toml]>=6.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "custy"
+description = "Commit and Tag Automation Script/Tool."
+authors = [
+{ name = "Devalltect" , email = "rizkyslenovo29@gmail.com" },
+{ name = "Rizky Fernandes" , email = "rizkyslenovo29@gmail.com" },
+]
+license = { text = "MIT" }
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "termcolor",
+    "colorama",
+    "jinja2",
+    ]
+dynamic = ["version"]
+# With this the version will be auto-generated from git tags using setuptools_scm
+# When run
+# pip install
+# or
+# python -m build
+# it will extract the version from Git tag and use it automatically.
+#
+# To use the auto version inside code:
+# ```python
+# from importlib.metadata import version
+# __version__ = version("currency-conversion-api")
+# ✅ This will always return the version from Git tag if setuptools_scm is used properly.
+
+[project.optional-dependencies]
+dev = [
+    "ruff",
+    "commitizen",
+]
+
+[tool.mycz]
+show_types = true
+template_path = "tools/templates/changelog.j2"
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["app"]
+
+
+# -----------------------------
+# 🧼 Ruff (Linter & Formatter)
+# -----------------------------
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+# extend-select = ["I", "F", "E", "W"]    # import sort, pyflakes, etc.
+select = ["ALL"]                # Enable all rule categories
+ignore = [
+  # Docstring rules
+  "D100",    # Missing docstring in module
+  "D103",    # Missing docstring in function
+  "D104",    # Missing docstring in package (__init__.py)
+  "D101",    # Missing docstring in class
+  "D102",    # Missing docstring in method
+  "D105",    # Missing docstring in magic method
+  "D106",    # Missing docstring in nested class
+  "D107",    # Missing docstring in __init__
+  "D212",  # Conflicts with D213 — ignore both to avoid layout noise
+  "D213",  # Conflicts with D212 — ignore both to avoid layout noise
+
+  # Type annotation noise
+  "ANN101",  # Missing type annotation for self
+  "ANN102",  # Missing type annotation for cls
+  "ANN201",  # Missing return type annotation
+
+  # Other common noise
+  "E501",    # Line too long
+  "INP001",  # Implicit namespace package
+  "T201",    # print() found
+  "TRY003"   # Too broad except block
+]
+# Example: Ignore specific docstring rule
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "double"           # Optional: make all strings use double quotes
+docstring-code-format = true    # Format code blocks inside docstrings

@@ -1,0 +1,111 @@
+# ===========================
+# 🐍 Python
+# ===========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+
+# Vierual environments
+.env
+.env.*
+.venv/
+venv/
+env/
+
+
+# PyInstaller
+*.manifest
+*.spec
+
+# ===========================
+# 📦 Python package/tools
+# ===========================
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+MANIFEST
+
+# ===========================
+# 🔧 IDEs & Editors
+# ===========================
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# ===========================
+# ⚙️ Type checkers, test, cache, coverage
+# ===========================
+# Mypy & type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+# Test & coverage
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+coverage.xml
+*.cover
+htmlcov/
+
+# ===========================
+# 📓 Jupyter
+# ===========================
+# Jupyter
+.ipynb_checkpoints/
+
+# ===========================
+# 💾 Database / State / Logs
+# ===========================
+# SQLite DB
+*.sqlite3
+# Log and socket files
+*.log
+*.pid
+*.sock
+
+# ===========================
+# 🖥️ OS-specific
+# ===========================
+.DS_Store
+Thumbs.db
+
+# ===========================
+# 🐳 Docker
+# ===========================
+# Docker
+docker-compose.override.yml
+
+# ===========================
+# ⚙️ Config & Instances
+# ===========================
+instance/
+config/settings_local.py
+
+# ===========================
+# Node / Frontend / React
+# ===========================
+node_modules/
+.cache/
+dist/
+build/
+.npm/
+.pnp.*
+*.tsbuildinfo
+
+# Lof files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Lock files (keep only 1 if using yarn or npm
+package-lock.json
+yarn.lock
+
+# Personal files
+TODO.md

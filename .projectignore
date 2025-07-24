@@ -1,0 +1,8 @@
+# .projectignore
+
+# A custom configuration to ignore files and project
+
+# specifically used in tools/print_project_structure.py
+
+TODO.md
+tools/git-commit/backups/

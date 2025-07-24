@@ -1,0 +1,30 @@
+# CHANGELOG
+
+{% for release in tree %}
+## {{ release.version }} ({{ release.date }})
+
+{% set label_map = {
+    "feat": "✨ Features",
+    "fix": "🐛 Bug Fixes",
+    "docs": "📝 Documentation",
+    "style": "🎨 Style",
+    "refactor": "🧠 Refactoring",
+    "test": "🧪 Tests",
+    "chore": "🔧 Chores"
+} %}
+
+{% for type, commits in release.changes.items() %}
+{% set label = label_map.get(type.lower(), type | capitalize) %}
+
+### {{ label }}
+
+{% for commit in commits %}
+- **{{ commit.scope if commit.scope else "general" }}**: {{ commit.subject }}
+
+  {%- if commit.body %}
+  {{ commit.body | indent(2) }}
+  {%- endif %}
+{% endfor %}
+
+{% endfor %}
+{% endfor %}

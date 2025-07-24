@@ -1,0 +1,12 @@
+[tool.commitizen]
+name = "custy"
+version = "1.1.1"
+tag_format = "v$version"
+changelog_file = "CHANGELOG.md"
+changelog_incremental = true
+template = "./.cz_changelog.j2"
+
+[tool.commitizen.bump_message]
+major = "feat: bump: version $current_version → $new_version"
+minor = "feat: bump: version $current_version → $new_version"
+patch = "fix: bump: version $current_version → $new_version"
