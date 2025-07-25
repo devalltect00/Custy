@@ -95,6 +95,19 @@ class GitHelper(DryRunSupport):
             ),
         )
 
+    def stage_files(self, files: list[Path]) -> None:
+        """
+        Stage specific files using `git add <file1> <file2> ...`
+
+        Args:
+            files: list[Path]: List of file paths to stage.
+        """
+        self.runner.run(
+            ["git", "add", *files],
+            check=True,
+            on_error=lambda: self._error_exit(f"Failed to stage files: {', '.join(files)}`"),
+        )
+
     def list_staged_files(self) -> list[str]:
         """
         Returns a list of staged files.

@@ -7,15 +7,8 @@ from pathlib import Path
 
 from termcolor import colored
 
-from .utils import (
-    ChangelogGenerator,
-    CommitizenHelper,
-    CommitizenStrategy,
-    DateStrategy,
-    GitCountStrategy,
-    GitHelper,
-    SemverStrategy,
-)
+from .utils import (ChangelogGenerator, CommitizenHelper, CommitizenStrategy,
+                    DateStrategy, GitCountStrategy, GitHelper, SemverStrategy)
 
 # =======================
 # 🚀 Main Class
@@ -51,6 +44,7 @@ class GitCommitTagger:
 
         self.tag: str = ""
         self.tag_msg: str = ""
+        self.backup_path: Path = None
 
         self.git = GitHelper(dry_run=dry_run)
         self.cz = CommitizenHelper(dry_run=dry_run)
@@ -103,14 +97,16 @@ class GitCommitTagger:
         rendered = self.changelog_generator.generate()
         self.changelog_generator.write_to_files(rendered)
         self.git.commit_and_push_changelog()
-        self._backup_commit_message()
 
         print(f"\n✅ Success: Commit, tag '{self.tag}', bump and pushed.\n")
 
     def _handle_commitizen_only(self):
-        self._ensure_git_repo()
+        self.validate()
+        self.git.check_remote_origin()
         self._resolve_tag()
         self._update_version_file()
+        self._backup_commit_message()
+        self._stage_pre_commit()
         self.cz.commit()
         self.cz.check_commit()
         self._tag()
@@ -125,6 +121,8 @@ class GitCommitTagger:
         )  # Use the format  agreed upon with Commitizen.
         self._update_version_file()
         self.cz.update_cz_toml_version(new_version=self.tag)
+        self._backup_commit_message()
+        self._stage_pre_commit()
         self._commit()
         self._tag()
 
@@ -167,6 +165,23 @@ class GitCommitTagger:
                 sys.exit(1)
             self.version_file.write_text(content)
             print(f"✅ Updated version file: {self.version_file}")
+
+    def _stage_pre_commit(self):
+        """
+        Stage all relevant files before committing.
+        Includes version file, .cz.toml, and optional backup file.
+        """
+
+        files_to_stage = [".cz.toml"]
+        if self.version_file:
+            files_to_stage.append(self.version_file)
+        if self.backup_path:
+            files_to_stage.append(self.backup_path)
+
+        # Optionally deduplicate and remove falsy values
+        files_to_stage = list({f for f in files_to_stage if f})
+
+        self.git.stage_files(files_to_stage)
 
     def _open_editor(self) -> None:
         print(f"📝 Opening {self.message_path} for editing...")
@@ -268,10 +283,10 @@ class GitCommitTagger:
         backup_dir.mkdir(exist_ok=True)
 
         # backup_path = backup_dir / self.message_path.with_name(f"{self.message_path.stem}_{timestamp}.bak.txt")
-        backup_path = backup_dir / f"{self.message_path.stem}_{timestamp}.bak.txt"
+        self.backup_path = backup_dir / f"{self.message_path.stem}_{timestamp}.bak.txt"
 
         try:
-            backup_path.write_text(self.message_path.read_text())
-            print(f"🗂️ commit message backed up to: {backup_path}")
+            self.backup_path.write_text(self.message_path.read_text())
+            print(f"🗂️ commit message backed up to: {self.backup_path}")
         except Exception as e:
             print(f"⚠️ Failed to backup commit message: {e}")
