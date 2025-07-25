@@ -3,6 +3,17 @@
 
 
 
+## v1.1.3 (2025-07-25)
+### 🐛 Bug Fixes
+- **Makefile**: correct commands
+  
+  - Fixed broken or unclear `Makefile` commands
+
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+
 ## v1.1.2 (2025-07-25)
 ### 🔧 Chores
 - **release**: manually fix and update version to v1.1.2
