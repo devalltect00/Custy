@@ -141,5 +141,5 @@ dist/
 .env
 
 # Custom .projectignore
-commit-msg.txt
+templates/commit-msg.txt
 tools/git-commit/backups/

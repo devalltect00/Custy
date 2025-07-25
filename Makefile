@@ -13,6 +13,11 @@
             custy-changelog custy-validate custy-push custy-backup
 
 # -----------------------------
+# 🔧 variables
+# -----------------------------
+COMMIT_MESSAGE_FILE_PATH = templates\commit-msg.txt
+
+# -----------------------------
 # 🚀 Main Applicattion Commands
 # -----------------------------
 
@@ -20,67 +25,67 @@ run-main:
 	python -m app
 
 custy-all-major:
-	python -m app all --bump major ./app/commit-msg.txt
+	python -m app all --bump major $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-minor:
-	python -m app all --bump minor ./app/commit-msg.txt
+	python -m app all --bump minor $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-patch:
-	python -m app all --bump patch ./app/commit-msg.txt
+	python -m app all --bump patch $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-major-alpha:
-	python -m app all --bump major --pre-release alpha ./app/commit-msg.txt
+	python -m app all --bump major --pre-release alpha $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-minor-alpha:
-	python -m app all --bump minor --pre-release alpha ./app/commit-msg.txt
+	python -m app all --bump minor --pre-release alpha $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-patch-alpha:
-	python -m app all --bump patch --pre-release alpha ./app/commit-msg.txt
+	python -m app all --bump patch --pre-release alpha $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-major-beta:
-	python -m app all --bump major --pre-release beta ./app/commit-msg.txt
+	python -m app all --bump major --pre-release beta $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-minor-beta:
-	python -m app all --bump minor --pre-release beta ./app/commit-msg.txt
+	python -m app all --bump minor --pre-release beta $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-patch-beta:
-	python -m app all --bump patch --pre-release beta ./app/commit-msg.txt
+	python -m app all --bump patch --pre-release beta $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-major-rc:
-	python -m app all --bump major --pre-release rc ./app/commit-msg.txt
+	python -m app all --bump major --pre-release rc $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-minor-rc:
-	python -m app all --bump minor --pre-release rc ./app/commit-msg.txt
+	python -m app all --bump minor --pre-release rc $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-patch-rc:
-	python -m app all --bump patch --pre-release rc ./app/commit-msg.txt
+	python -m app all --bump patch --pre-release rc $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-major-dev:
-	python -m app all --bump major --pre-release dev ./app/commit-msg.txt
+	python -m app all --bump major --pre-release dev $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-minor-dev:
-	python -m app all --bump minor --pre-release dev ./app/commit-msg.txt
+	python -m app all --bump minor --pre-release dev $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-patch-dev:
-	python -m app all --bump patch --pre-release dev ./app/commit-msg.txt
+	python -m app all --bump patch --pre-release dev $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-major-next:
-	python -m app all --bump major --pre-release next ./app/commit-msg.txt
+	python -m app all --bump major --pre-release next $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-minor-next:
-	python -m app all --bump minor --pre-release next ./app/commit-msg.txt
+	python -m app all --bump minor --pre-release next $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-patch-next:
-	python -m app all --bump patch --pre-release next ./app/commit-msg.txt
+	python -m app all --bump patch --pre-release next $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-major-preview:
-	python -m app all --bump major --pre-release preview ./app/commit-msg.txt
+	python -m app all --bump major --pre-release preview $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-minor-preview:
-	python -m app all --bump minor --pre-release preview ./app/commit-msg.txt
+	python -m app all --bump minor --pre-release preview $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-all-patch-preview:
-	python -m app all --bump patch --pre-release preview ./app/commit-msg.txt
+	python -m app all --bump patch --pre-release preview $(COMMIT_MESSAGE_FILE_PATH)
 
 custy-changelog:
 	python -m app changelog
