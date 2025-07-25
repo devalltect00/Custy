@@ -30,6 +30,7 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] need to check what type of project before making the versioning. for now just stick with python
 -   [ ] adding tag message to open in files if wanted or just doing automation when release version or something use some template or something.
 -   [ ] for release version combine the all prelease commit message description as template, etc into 1
+-   [ ] from pre-release or dev, etc to release. No need to change the major.minor.patch
 
 ---
 
