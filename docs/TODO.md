@@ -18,12 +18,18 @@ Personal notes, planning, and roadmap for **Custy**
 -   [x] fixing pre-release version format using pep440 for python
 -   [x] Use format [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local] the pep440 for python
 -   [x] support Post-release, development, local identifiers, and epoch segment
+-   [x] support 'release' on commit type
 
 ---
 
 ### 🧩 In Progress
 
--   [ ] support 'release' on commit type
+-   [ ] if the current version is pre-release or post or dev and so on. If we want to increment. let's say from rc, next version is rc, the major, minor, and patch won't change. same as from alpha to beta. but not beta to alpha because beta 1 higher level than alpha
+-   [ ] generate changelog when on release version
+-   [ ] Check if the commit type not feat, fix, perf, docs, refactor don't bump or use tagging. ref: docs\versioning\full_git_strategy_with_pep440.md. just give some warning or prevent them
+-   [ ] need to check what type of project before making the versioning. for now just stick with python
+-   [ ] adding tag message to open in files if wanted or just doing automation when release version or something use some template or something.
+-   [ ] for release version combine the all prelease commit message description as template, etc into 1
 
 ---
 
@@ -35,19 +41,14 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] If there is a abandoned branch or experminet or deprecated branch version and want to go back to `main` branch. I choose to rename branch use format like archive/{feature}-{date} or experiment/{feature}-{date}. If I just don't care about archieving the branch I can use option to reset `dev` back to `main`
 -   [ ] remote on gitlab push `main` and `dev`. but on github just push `main`
 -   [ ] Use .git/config (Local/Repo-specific)
--   [ ] change the pre-release format
--   [ ] need to check what type of project before making the versioning. for now just stick with python
 -   [ ] Fix issue where to put backups, templates folders/directory. also with commit-msg.txt if needed
--   [ ] If the commit type not feat, fix, perf, docs, refactor don't bump or use tagging. ref: docs\versioning\full_git_strategy_with_pep440.md
--   [ ] adding tag message to open in files if wanted or just doing automation when release version or something use some template or something.
--   [ ] generate changelog when on release version
--   [ ] for release version combine the all prelease commit message description, etc into 1
 
 ---
 
 ### 🗑️ Cancelled / Dropped
 
 -   for version use this format major.minor.patch-pre_release.pre_release_number
+-   change the pre-release format
 
 ---
 
