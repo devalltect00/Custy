@@ -8,20 +8,22 @@ Personal notes, planning, and roadmap for **Custy**
 
 ### ✅ Completed
 
--   [v] handle custy Full workflow
--   [v] handle custy "git add ."
--   [v] handle custy generate changelog
--   [v] handle custy as a tool
--   [v] handle custy command and put in makefile
--   [v] Fix issue where added to stage and commit after change version on `.cz.toml` and `app/__version__.py` files
--   [v] Make own feature like/inspired by/like command `cz check`
+-   [x] handle custy Full workflow
+-   [x] handle custy "git add ."
+-   [x] handle custy generate changelog
+-   [x] handle custy as a tool
+-   [x] handle custy command and put in makefile
+-   [x] Fix issue where added to stage and commit after change version on `.cz.toml` and `app/__version__.py` files
+-   [x] Make own feature like/inspired by/like command `cz check`
+-   [x] fixing pre-release version format using pep440 for python
+-   [x] Use format [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local] the pep440 for python
+-   [x] support Post-release, development, local identifiers, and epoch segment
 
 ---
 
 ### 🧩 In Progress
 
--   [ ] fixing pre-release version format using pep440 for python
--   [ ] Use format [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local] the pep440 for python
+-   [ ] support 'release' on commit type
 
 ---
 
@@ -37,27 +39,30 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] need to check what type of project before making the versioning. for now just stick with python
 -   [ ] Fix issue where to put backups, templates folders/directory. also with commit-msg.txt if needed
 -   [ ] If the commit type not feat, fix, perf, docs, refactor don't bump or use tagging. ref: docs\versioning\full_git_strategy_with_pep440.md
+-   [ ] adding tag message to open in files if wanted or just doing automation when release version or something use some template or something.
+-   [ ] generate changelog when on release version
+-   [ ] for release version combine the all prelease commit message description, etc into 1
 
 ---
 
 ### 🗑️ Cancelled / Dropped
 
--   [x] for version use this format major.minor.patch-pre_release.pre_release_number
+-   for version use this format major.minor.patch-pre_release.pre_release_number
 
 ---
 
 ## ⚖️ considerations
 
--   [ ] allow to and stages, commit, and push TODO.md on gitlab but not on github
+-   allow to and stages, commit, and push TODO.md on gitlab but not on github
 
 ---
 
 ## 💡Ideas
 
--   [ ] Automatically set template commit-msg.txt based on stages which one is added and modified.
--   [ ] Automatically create and delete commit-msg.txt when needed if we set argument on CLI or by default like that.
--   [ ] Backup before delete the commit-msg.txt
--   [ ] Backup just 3 maxiumum. 3 lastest/newest backup or we can set on CLI. by default 3
+-   Automatically set template commit-msg.txt based on stages which one is added and modified.
+-   Automatically create and delete commit-msg.txt when needed if we set argument on CLI or by default like that.
+-   Backup before delete the commit-msg.txt
+-   Backup just 3 maxiumum. 3 lastest/newest backup or we can set on CLI. by default 3
 
 ---
 

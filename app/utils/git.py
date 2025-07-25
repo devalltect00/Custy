@@ -139,7 +139,7 @@ class GitHelper(DryRunSupport):
 
         CONVENTIONAL_TYPES = {
             "feat", "fix", "docs", "style", "refactor",
-            "perf", "test", "chore", "ci", "build"
+            "perf", "test", "chore", "ci", "build", "release"
         }
         HEADER_REGEX = re.compile(
             r"(?P<type>\w+)(\((?P<scope>[^\)]+)\))?!?: (?P<summary>.+)$"
