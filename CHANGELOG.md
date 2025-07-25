@@ -4,6 +4,16 @@
 
 
 ## Unreleased (2025-07-25)
+### 📝 Documentation
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### 🔧 Chores
 - **commit_msg**: support 'release' as valid Conventional Commit type
   
@@ -11,9 +21,6 @@
 
 Changelog: handled separately
   
-### 📝 Documentation
-- **changelog**: update changelog
-- **changelog**: update changelog
 ### ✨ Features
 - **versioning**: Improve pre-release and full versioning support with PEP 440
   
@@ -79,6 +86,16 @@ Changelog: handled separately
 
 Changelog: handled separately
   
+
+## 1.3.2 (2025-07-25)
+### 📝 Documentation
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
 
 ## 1.3.1rc2 (2025-07-25)
 ### 🔧 Chores
