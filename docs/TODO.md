@@ -34,6 +34,9 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] change the pre-release format
 -   [ ] need to check what type of project before making the versioning. for now just stick with python
 -   [ ] Make own feature like/inspired by/like command `cz check`
+-   [ ] Fix issue where to put backups, templates folders/directory. also with commit-msg.txt if needed
+-   [ ] Fix issue where added to stage and commit after change version on `.cz.toml` and `app/__version__.py` files
+-   [ ] If the commit type not feat, fix, perf, docs, refactor don't bump or use tagging. ref: docs\versioning\full_git_strategy_with_pep440.md
 
 ---
 

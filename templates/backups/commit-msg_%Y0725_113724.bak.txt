@@ -1,0 +1,5 @@
+fix(Makefile): correct commands
+
+- Fixed broken or unclear `Makefile` commands
+
+Changelog: handled separately
