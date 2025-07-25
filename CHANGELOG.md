@@ -3,6 +3,19 @@
 
 
 
+## Unreleased (2025-07-25)
+### ✨ Features
+- **versioning**: Improve pre-release and full versioning support with PEP 440
+  
+  - Fix pre-release version format to comply with pep440 for python
+- Add support for full format: [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local]
+- Additionally support Post-release, development, local identifiers, and epoch segment
+
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+
 ## v1.2.0 (2025-07-25)
 ### ✨ Features
 - **git_commit_tagger**: replace cz check with custom commit message checker
