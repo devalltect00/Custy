@@ -3,6 +3,16 @@
 
 
 
+## v1.1.4 (2025-07-25)
+### 📝 Documentation
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+
 ## v1.1.3 (2025-07-25)
 ### 🐛 Bug Fixes
 - **Makefile**: correct commands
