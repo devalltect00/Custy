@@ -10,6 +10,7 @@ import sys
 from collections.abc import Callable
 from pathlib import Path
 
+from ..errors.validation_error import ValidationError
 from .dry_run_support import DryRunSupport
 
 # =======================
@@ -42,6 +43,10 @@ class GitHelper(DryRunSupport):
             sys.exit(1)
 
         return handler
+
+    def _error_exit(self, message: str) -> None:
+        print(f"❌ ERROR: {message}")
+        sys.exit(1)
 
     def is_get_repo(self) -> bool:
         """Git rev-parse --is-inside-work-tree"""
@@ -122,6 +127,55 @@ class GitHelper(DryRunSupport):
         if result and result.stdout:
             return result.stdout.strip().splitlines()
         return []
+
+    def check_commit_message_file(self, file_path: Path):
+        """
+        Validates a commit message from a file using Conventional Commit rules.
+        Validates a structured commit message (header + optional body/footer).
+
+        Args:
+            file_path (Path): Path to the commit message file.
+        """
+
+        CONVENTIONAL_TYPES = {
+            "feat", "fix", "docs", "style", "refactor",
+            "perf", "test", "chore", "ci", "build"
+        }
+        HEADER_REGEX = re.compile(
+            r"(?P<type>\w+)(\((?P<scope>[^\)]+)\))?!?: (?P<summary>.+)$"
+        )
+        try:
+            if not file_path.exists() or not file_path.is_file():
+                raise ValidationError(f"❌ Commit message file not found: {file_path}")
+
+            lines = file_path.read_text(encoding="utf-8").strip().splitlines()
+            if not lines:
+                raise ValidationError(f"❌ Commit message is empty.")
+
+            header = lines[0].strip()
+            match = HEADER_REGEX.match(header)
+            if not match:
+                raise ValidationError(f"❌ Invalid format. Expected: type(scope?): description")
+
+            commit_type = match.group("type")
+            if commit_type not in CONVENTIONAL_TYPES:
+                raise ValidationError(f"❌ Invalid type '{commit_type}'. Must be one of: {', '.join(CONVENTIONAL_TYPES)}")
+
+            summary = match.group("summary").strip()
+            if not summary:
+                raise ValidationError(f"❌ Summary is empty.")
+
+            # Optional: check body exists and is not blank if present
+            if len(lines) > 1:
+                body_lines = lines[1:]
+                if all(not line.strip() for line in body_lines):
+                    print("⚠️ Warning: Commit body exists but is empty.")
+                else:
+                    print("✅ Body and/or footer detected.")
+
+            print("✅ Commit message is valid.")
+        except ValidationError as e:
+            self._error_exit(str(e))
 
     def check_remote_origin(self) -> None:
         """
@@ -357,4 +411,5 @@ class GitHelper(DryRunSupport):
                 pre_num = 1
             version += f"-{pre}.{pre_num}"
 
+        return version
         return version

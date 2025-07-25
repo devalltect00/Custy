@@ -116,9 +116,8 @@ class GitCommitTagger:
         self.git.check_remote_origin()
         self._resolve_tag()
         self._open_editor()
-        self.cz.check_commit(
-            path=self.message_path,
-        )  # Use the format  agreed upon with Commitizen.
+        #self.cz.check_commit(path=self.message_path,)  # Use the format  agreed upon with Commitizen.
+        self.git.check_commit_message_file(self.message_path)
         self._update_version_file()
         self.cz.update_cz_toml_version(new_version=self.tag)
         self._backup_commit_message()
