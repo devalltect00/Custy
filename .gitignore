@@ -108,7 +108,7 @@ package-lock.json
 yarn.lock
 
 # Personal files
-TODO.md
+#
 
 # Project specific ignores (python)
 # ===========================
@@ -141,5 +141,5 @@ dist/
 .env
 
 # Custom .projectignore
-TODO.md
+commit-msg.txt
 tools/git-commit/backups/

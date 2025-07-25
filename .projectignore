@@ -4,5 +4,5 @@
 
 # specifically used in tools/print_project_structure.py
 
-TODO.md
+commit-msg.txt
 tools/git-commit/backups/

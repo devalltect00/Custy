@@ -1,3 +1,3 @@
-# tools\git_commit\__init__.py
+# tools\git_commit\init.py
 
-from .__main__ import main
+# from .__main__ import main

@@ -1,10 +1,12 @@
 # Custy
 
-Commit and Tag Automation Script/Tool.
+**Custy** — Automate your Git commits, bumps, tags, and changelogs.
 
 ---
 
 ## 📦 Features
+
+Custy simplifies and automates your Git workflow with feature like:
 
 -   Validate git repository, files, etc
 -   Add stage if needed
@@ -26,9 +28,9 @@ Commit and Tag Automation Script/Tool.
 
 You can see the project structure on [project_structure.md](./docs/project_structure.md)
 
-## 🚀 Usage
+## 🚀 Getting Started
 
-### Run the main app
+### ▶️ Run the main app
 
 ```bash
 make run-main
@@ -36,20 +38,22 @@ make run-main
 
 ## 🧪 Dependencies
 
-Install via:
+### 📌 Install via requirements.txt:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Or via PEP 621
+### 📦 Or install via PEP 621 (`pyproject.toml`):
+
 (setup in pyproject.toml)
 
 ```bash
 pip install .
 ```
 
-or want to install dev dependencies too
+### 🛠️ Or want to install with Development Dependencies too:
+
 Use the --extra flag like this.
 
 ```bash
@@ -60,19 +64,14 @@ This tells pip to install the optional group named `dev` inside `pyproject.toml`
 
 ## 🛠️ Makefile Commands
 
-| Command                                    | Description                                                    |
-| ------------------------------------------ | -------------------------------------------------------------- |
-| make run-main                              | Run the main application                                       |
-| make run-risk-summary                      | Generate and export domain risk summary                        |
-| make visualize-risk                        | Create Static risk chart (PNG) chart using Matplotlib          |
-| make visualize-risk-html                   | Create interactive chart (HTML) using Plotly                   |
-| make format-all                            | Format code using `ruff`                                       |
-| make structure                             | print and validate project structure                           |
-| generate_ignore_files:                     | Generate .gitignore and .dockerignore files                    |
-| custom-commit-and-tag-major                | Commit using external file + bump **major** version, then push |
-| custom-commit-and-tag-minor                | Commit using external file + bump **minor** version, then push |
-| custom-commit-and-tag-patch                | Commit using external file + bump **tag** version, then push   |
-| make custom-commit-and-push-changelog-only | Generate + push changelog only                                 |
+| Command                | Description                                 |
+| ---------------------- | ------------------------------------------- |
+| make run-main          | Run the main application                    |
+| make format-all        | Format code using `ruff`                    |
+| make structure         | print and validate project structure        |
+| generate_ignore_files: | Generate .gitignore and .dockerignore files |
+
+For CLI usage examples and arguments, see [cli_commands_custy.md](./docs/cli_commands_custy.md)
 
 ## 📜 Changelog
 

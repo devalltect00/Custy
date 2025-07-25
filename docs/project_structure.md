@@ -33,7 +33,10 @@
 │           ├── git_count_strategy.py
 │           └── semver_strategy.py
 ├── docs
+│   ├── cli_commands_custy.md
+│   └── project_structure.md
 ├── pyproject.toml
+├── requirements.txt
 ├── templates
 │   ├── .gitignore.template
 │   ├── changelog.j2
