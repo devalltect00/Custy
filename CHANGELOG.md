@@ -3,6 +3,19 @@
 
 
 
+## v1.2.0 (2025-07-25)
+### ✨ Features
+- **git_commit_tagger**: replace cz check with custom commit message checker
+  
+  - Replaces Commitizen's `cz check` with a built-in custom validator
+- Supports multi-line messages with header, body, and footer.
+- Includes structured error handling via custom ValidationError exception.
+
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+
 ## v1.1.5 (2025-07-25)
 ### 🐛 Bug Fixes
 - **git_commit_tagger**: add or change todo
