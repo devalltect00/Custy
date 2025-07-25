@@ -3,6 +3,18 @@
 
 
 
+## v1.1.5 (2025-07-25)
+### 🐛 Bug Fixes
+- **git_commit_tagger**: add or change todo
+  
+  - Fix issue where added to stage and commit after change version on `.cz.toml` and `app/__version__.py` files
+- stage files before commit. stage the  `.cz.toml`, `app/__version__.py`, and backup file creared
+
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+
 ## v1.1.4 (2025-07-25)
 ### 📝 Documentation
 - **TODO.md**: add or change todo
