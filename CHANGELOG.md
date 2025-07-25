@@ -4,6 +4,16 @@
 
 
 ## Unreleased (2025-07-25)
+### 🔧 Chores
+- **commit_msg**: support 'release' as valid Conventional Commit type
+  
+  - Added 'release' to allowed commit types in the validator
+
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### ✨ Features
 - **versioning**: Improve pre-release and full versioning support with PEP 440
   
@@ -13,8 +23,6 @@
 
 Changelog: handled separately
   
-### 📝 Documentation
-- **changelog**: update changelog
 
 ## v1.2.0 (2025-07-25)
 ### ✨ Features
@@ -70,3 +78,15 @@ Changelog: handled separately
 - synced version in `cz.toml`
 
 Changelog: handled separately
+  
+
+## 1.3.1rc2 (2025-07-25)
+### 🔧 Chores
+- **commit_msg**: support 'release' as valid Conventional Commit type
+  
+  - Added 'release' to allowed commit types in the validator
+
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
