@@ -1,0 +1,14 @@
+fix(Makefile): correct commands and update documentation
+
+This commit fixes issues with Makefile command syntax and improves documentation for CLI usage and project structure.
+
+- Fixed broken or unclear `Makefile` commands
+- Updated `README.md` for clarity
+- Added CLI command docs to `docs/cli_commands_custy.md`
+- Modified `docs/project_structure.md`
+- Removed unnecessary `app/__init__.py` to silence warning
+- Updated `.gitignore` to ignore `commit-msg.txt` and allow `TODO.md`
+- Updated `.projectignore` to ignore `commit-msg.txt` and allow `TODO.md`
+- Added more documentation under `docs/versioningd/`
+
+Changelog: handled separately

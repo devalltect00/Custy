@@ -33,6 +33,7 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] Use .git/config (Local/Repo-specific)
 -   [ ] change the pre-release format
 -   [ ] need to check what type of project before making the versioning. for now just stick with python
+-   [ ] Make own feature like/inspired by/like command `cz check`
 
 ---
 
