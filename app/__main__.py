@@ -48,6 +48,10 @@ def build_git_tool(
         strategy=args.strategy if with_tagging else None,
         bump=args.bump if with_tagging else None,
         pre_release=args.pre_release if with_tagging else None,
+        post_release=args.post_release if with_tagging else None,
+        dev_release=args.dev_release if with_tagging else None,
+        local=args.local if with_tagging else None,
+        epoch=args.epoch if with_tagging else None,
         dry_run=args.dry_run,
         version_file=args.version_file if with_version_file else None,
         auto_stage=auto_stage,
@@ -157,6 +161,25 @@ def main() -> None:
             "--pre-release",
             help="Optional Pre-release label (e.g. alpha, beta, rc, dev, next, preview, etc)",
         )
+        p.add_argument(
+            "--post-release",
+            action="store_true",
+            help="Mark this version as post-release",
+        )
+        p.add_argument(
+            "--dev-release",
+            help="Mark this version as development release",
+        )
+        p.add_argument(
+            "--local",
+            help="Local version label (e.g. sha.abc123)",
+        )
+        p.add_argument(
+            "--epoch",
+            type=int,
+            help="Set version epoch (e.g. 1!1.2.3)",
+        )
+
 
     # -----------------------------
     # Subcommand: commit-tag-bump

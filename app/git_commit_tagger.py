@@ -25,7 +25,11 @@ class GitCommitTagger:
         tag_msg: str | None,
         strategy: str | None,
         bump: str | None,
-        pre_release: str | None,
+        pre_release: str | None = None,
+        post_release: bool | None = False,
+        dev_release: bool | None = False,
+        local: str | None = None,
+        epoch: int | None = None,
         dry_run: bool = False,
         version_file: str | None = None,
         auto_stage: bool | None = False,
@@ -37,6 +41,10 @@ class GitCommitTagger:
         self.strategy_input: str | None = strategy
         self.bump_level: str | None = bump
         self.pre_release: str | None = pre_release
+        self.post_release: bool | None = post_release
+        self.dev_release: bool | None = dev_release
+        self.local: str | None = local
+        self.epoch: int | None = epoch
         self.dry_run: bool = dry_run
         self.version_file: str | None = Path(version_file) if version_file else None
         self.auto_stage: bool | None = auto_stage
@@ -134,7 +142,14 @@ class GitCommitTagger:
         if self.tag_input:
             self.tag = self.tag_input
         elif self.strategy_input == "semver" and self.bump_level:
-            self.tag = SemverStrategy(self.bump_level, self.pre_release).get_next_tag()
+            self.tag = SemverStrategy(
+                bump=self.bump_level,
+                pre_release=self.pre_release,
+                post_release=self.post_release,
+                dev_release=self.dev_release,
+                local=self.local,
+                epoch=self.epoch,
+            ).get_next_tag()
         elif self.strategy_input == "commitizen" and self.bump_level == "auto":
             self.tag = CommitizenStrategy(self.pre_release).get_next_tag()
         elif self.strategy_input == "date":

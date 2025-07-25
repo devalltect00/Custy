@@ -14,18 +14,19 @@ Personal notes, planning, and roadmap for **Custy**
 -   [v] handle custy as a tool
 -   [v] handle custy command and put in makefile
 -   [v] Fix issue where added to stage and commit after change version on `.cz.toml` and `app/__version__.py` files
+-   [v] Make own feature like/inspired by/like command `cz check`
 
 ---
 
 ### 🧩 In Progress
 
--   [ ] _(Nothing yet)_
+-   [ ] fixing pre-release version format using pep440 for python
+-   [ ] Use format [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local] the pep440 for python
 
 ---
 
 ### 🧠 Planning
 
--   [ ] for version use this format major.minor.patch-pre_release.pre_release_number
 -   [ ] use 2 git remote, gitlab as `main`, and github as backup
 -   [ ] use 2 branch; `main` and `dev`; `main` is stable one and `dev` is more experimental
 -   [ ] Update the major, minor, and patch on `main` branch. But on `dev` branch `main`, I just update pre_release and pre_release
@@ -34,7 +35,6 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] Use .git/config (Local/Repo-specific)
 -   [ ] change the pre-release format
 -   [ ] need to check what type of project before making the versioning. for now just stick with python
--   [ ] Make own feature like/inspired by/like command `cz check`
 -   [ ] Fix issue where to put backups, templates folders/directory. also with commit-msg.txt if needed
 -   [ ] If the commit type not feat, fix, perf, docs, refactor don't bump or use tagging. ref: docs\versioning\full_git_strategy_with_pep440.md
 
@@ -42,7 +42,7 @@ Personal notes, planning, and roadmap for **Custy**
 
 ### 🗑️ Cancelled / Dropped
 
--   [ ] _(Nothing yet)_
+-   [x] for version use this format major.minor.patch-pre_release.pre_release_number
 
 ---
 

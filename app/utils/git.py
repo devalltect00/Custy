@@ -365,30 +365,52 @@ class GitHelper(DryRunSupport):
             "body": "\n".join(body_lines).strip() if body_lines else None,
         }
 
-    def bump_version(self, current: str, level: str, pre: str | None = None) -> str:
-        """Bump the given semantic version based on the specified level (patch, minor, major).
+    def bump_version(
+            self,
+            current: str,
+            level: str,
+            pre: str | None = None,
+            dev: bool = False,
+            post: bool = False,
+            local: str | None = None,
+            epoch: int | None = None,
+            ) -> str:
+        """
+        Bump the given semantic version based on the specified level (patch, minor, major).
         Bumps a semver string like v1.2.3 to the next version.
         Handles pre-releases like alpha, beta, rc.
+        Bump version using full PEP 440 format:
+        [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local]
         """
+
+        # Match full version wit optional epoch 'v' prefix
         # Remove pre-release suffix if present
-        base_tag = re.match(r"v?(\d+)\.(\d+)\.(\d+)", current)
+        # base_tag = re.match(r"v?(\d+)\.(\d+)\.(\d+)", current)
+        base_tag = re.match(r"(?:(\d+)!)?v?(\d+)\.(\d+)\.(\d+)", current)
         # Matches: v1.2.3, 1.2.3 1.2.3-alpha.1, 1.2.3-beta.9
         # and extract:
         # group (1) = major = 1
         # group (2) = minor = 2
         # group (3) = patch = 3
-        pre_tag = re.search(r"-(\w+)\.(\d+)", current)
+        # pre_tag = re.search(r"-(\w+)\.(\d+)", current)
+        pre_tag = re.search(r"(a|b|rc)(\d+)", current)
         # Matches: -alpha.1, -beta.2, -rc.5
         # and extract:
         # group (1) = label = alpha, beta, or rc
         # group (2) = number = 1, 2, etc
+        post_tag = re.search(r"post(\d+)", current)
+        dev_tag = re.search(r"dev(\d+)", current)
+        local_tag = re.search(r"\+(.*)", current)
 
         if not base_tag:
-            print(f"❌ Invalid tag format: '{current}' (expected) vX.Y.Z")
+            print(f"❌ Invalid tag format: '{current}' (expected) [N!]X.Y.Z or vX.Y.Z")
             sys.exit(1)
 
-        major, minor, patch = map(int, base_tag.groups())
+        epoch_val, major, minor, patch = base_tag.groups()
+        major, minor, patch = map(int, [major, minor, patch])
+        epoch_val = int(epoch_val) if epoch_val else None
 
+        # Apply bump level
         if level == "patch":
             patch += 1
         elif level == "minor":
@@ -402,14 +424,33 @@ class GitHelper(DryRunSupport):
             print("❌ Invalid bump level. Use: Patch, minor, or major.")
             sys.exit(1)
 
-        version = f"v{major}.{minor}.{patch}"
+        version = f"{major}.{minor}.{patch}"
 
+        # Pre-release
         if pre:
-            if pre_tag and pre_tag.group(1) == pre:
+            pre_letter = {"alpha": "a", "beta": "b", "rc": "rc"}.get(pre.lower(), pre.lower())
+            if pre_tag and pre_tag.group(1) == pre_letter:
                 pre_num = int(pre_tag.group(2)) + 1
             else:
                 pre_num = 1
-            version += f"-{pre}.{pre_num}"
+            version += f"{pre_letter}{pre_num}"
 
-        return version
+        # Post-release
+        if post:
+            post_num = int(post_tag.group(1)) + 1 if post_tag else 1
+            version += f".post{post_num}"
+
+        # Development-release
+        if dev:
+            dev_num = int(dev_tag.group(1)) + 1 if dev_tag else 1
+            version += f".dev{dev_num}"
+
+        # Local version metadata
+        if local:
+            version += f"+{local}"
+
+        # Add epoch
+        if epoch and epoch > 0:
+            version = f"{epoch}!{version}"
+
         return version
