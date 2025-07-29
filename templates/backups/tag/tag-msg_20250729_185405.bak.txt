@@ -1,0 +1,9 @@
+🧪 Release Candidate 1.4.0rc2
+
+This release candidate prepares the upcoming **Custy CLI v1.4.0** with several feature enhancements, safeguard, and automation improvements. It consolitaes all changes introduces across earlier pre-release.
+
+### 🔍 Highlights
+
+- Include additional examples of commit message templates.
+
+ℹ️ This is a **release-cancdidate** feature-complete but pending final validation before stable release.

@@ -1,0 +1,7 @@
+chore(release): v1.4.0rc2
+
+Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Improve docs
+
+Tag: v1.4.0rc2
