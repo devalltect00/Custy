@@ -476,7 +476,7 @@ def get_last_tag_before(current_tag: str, all_tags: List[str]) -> str:
     Returns the last final (non-prerelease) tag that comes before the given tag.
     A final tag has no a/b/rc/dev suffix.
     """
-    clean_current = current_tag.lstrip()("v")
+    clean_current = current_tag.lstrip("v")
     for tag in reversed(all_tags):
         if tag == current_tag:
             continue
