@@ -4,6 +4,57 @@
 
 
 ## Unreleased (2025-07-29)
+### 🧠 Refactoring
+- **release**: v1.4.3
+  
+  Final release of Custy v1.4.3
+
+Refactor Code using Ruff
+
+Tag: v1.4.3
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes modified documentation.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes bug fixes.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### 🔧 Chores
 - **release**: v1.4.2
   
@@ -56,46 +107,6 @@ Tag: v1.4.0rc1
 
 Changelog: handled separately
   
-### 📝 Documentation
-- **changelog**: update changelog
-- **release**: v1.4.1
-  
-  Final release of Custy v1.4.1
-
-Includes modified documentation.
-
-Tag: v1.4.1
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **release**: v1.4.1
-  
-  Final release of Custy v1.4.1
-
-Includes bug fixes.
-
-Tag: v1.4.1
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **TODO.md**: add or change todo
-  
-  - add or change todo
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **TODO.md**: add or change todo
-  
-  - add or change todo
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
 ### 🐛 Bug Fixes
 - **release**: v1.4.1
   
@@ -212,6 +223,31 @@ Changelog: handled separately
   - Update version in `app/__version__.py
 - synced version in `cz.toml`
 
+Changelog: handled separately
+  
+
+## 1.4.3 (2025-07-29)
+### 🧠 Refactoring
+- **release**: v1.4.3
+  
+  Final release of Custy v1.4.3
+
+Refactor Code using Ruff
+
+Tag: v1.4.3
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+- **changelog**: update changelog
+### 🔧 Chores
+- **release**: v1.4.2
+  
+  Final release of Custy v1.4.2
+
+Includes modified documentation.
+
+Tag: v1.4.2
 Changelog: handled separately
   
 
