@@ -19,11 +19,6 @@ Personal notes, planning, and roadmap for **Custy**
 -   [x] Use format [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local] the pep440 for python
 -   [x] support Post-release, development, local identifiers, and epoch segment
 -   [x] support 'release' on commit type
-
----
-
-### 🧩 In Progress
-
 -   [x] if the current version is pre-release or post or dev and so on. If we want to increment. let's say from rc, next version is rc, the major, minor, and patch won't change. same as from alpha to beta. but not beta to alpha because beta 1 higher level than alpha. for example from v.1.2.3rc1 to v.1.2.3rc2 instead of v.1.2.3rc1 to v.1.2.4rc2; another example from v.1.2.3b1 to v.1.2.3b2 instead of v.1.2.3b1 to v.1.2.4b2;
 -   [x] generate changelog when on release version. So check if the version is major.minor.patch. So allowed to generate changelog and push the changelog
 -   [x] Check if the commit type not [feat, fix, perf, docs, refactor] don't bump or use tagging. Id use types [feat, fix, perf, docs, refactor] we need to use specific parameter if we want to force bump or tagging; or maybe there are better suggestion.
@@ -46,6 +41,12 @@ Personal notes, planning, and roadmap for **Custy**
 
 ---
 
+### 🧩 In Progress
+
+-   [] _(Nothing yet)_
+
+---
+
 ### 🧠 Planning
 
 -   [ ] use 2 git remote, gitlab as main, and github as backup
@@ -58,7 +59,7 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] Give template commit message git-msg.txt
 -   [ ] on CLI parameters, on --bump, add option `final`. So the bump from v1.4.0rc[n] to -> v1.4.0
 -   [ ] bug fixes or improvements, if switch to release/x/y or rc version tag get all message from dev branch like alpha, beta, rc, dev, etc
--   [ ] Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
+-   [ ] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
 
 ---
 

@@ -20,5 +20,8 @@ No Changes have been made since `v1.4.0rc1`
 - Add more documentation under the `docs/` directory
 - Improve and modifies `Makefile` targets
 - Include additional examples of commit message templates.
+- Resolved issue with `get_last_tag_before()` in `GitHelper`(`app\utils\git.py`).
+- Resolved issue with `_prepare_release_message_from_prereleases()` in `GitCommitTagger`(`app\git_commit_tagger.py`).
+- Resolved issue with `get_commits_between_tags()` in `GitHelper`(`app\utils\git.py`).
 
 ✅ This version is stable and suitable for production use.
