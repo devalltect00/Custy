@@ -4,7 +4,42 @@
 
 
 ## Unreleased (2025-07-29)
+### 🐛 Bug Fixes
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes bug fixes.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **release**: v1.4.0rc5
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `get_commits_between_tags()` in `GitHelper`(`app\utils\git.py`).
+
+Tag: v1.4.0rc5
+  
+- **release**: v1.4.0rc4
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `_prepare_release_message_from_prereleases()` in `GitCommitTagger`(`app\git_commit_tagger.py`).
+
+Tag: v1.4.0rc4
+  
+- **release**: v1.4.0rc3
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `get_last_tag_before()` in `GitHelper`(`app\utils\git.py`).
+
+Tag: v1.4.0rc3
+  
 ### 📝 Documentation
+- **changelog**: update changelog
 - **release**: v1.4.1
   
   Final release of Custy v1.4.1
@@ -74,31 +109,6 @@ Tag: v1.4.0rc1
   - Added 'release' to allowed commit types in the validator
 
 Changelog: handled separately
-  
-### 🐛 Bug Fixes
-- **release**: v1.4.0rc5
-  
-  Release candidate for v1.4.0, consolidating all pre-release changes.
-
-- Resolved issue with `get_commits_between_tags()` in `GitHelper`(`app\utils\git.py`).
-
-Tag: v1.4.0rc5
-  
-- **release**: v1.4.0rc4
-  
-  Release candidate for v1.4.0, consolidating all pre-release changes.
-
-- Resolved issue with `_prepare_release_message_from_prereleases()` in `GitCommitTagger`(`app\git_commit_tagger.py`).
-
-Tag: v1.4.0rc4
-  
-- **release**: v1.4.0rc3
-  
-  Release candidate for v1.4.0, consolidating all pre-release changes.
-
-- Resolved issue with `get_last_tag_before()` in `GitHelper`(`app\utils\git.py`).
-
-Tag: v1.4.0rc3
   
 ### ✨ Features
 - **core**: implement advanced versioning rules and CLI behavior controls
@@ -182,6 +192,40 @@ Changelog: handled separately
   - Update version in `app/__version__.py
 - synced version in `cz.toml`
 
+Changelog: handled separately
+  
+
+## 1.4.1 (2025-07-29)
+### 🐛 Bug Fixes
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes bug fixes.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes bug fixes.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+### 🔧 Chores
+- **release**: v1.4.0
+  
+  Final release of Custy v1.4.0 - prompted from release candidate.
+
+Includes all feature and fixes from alpha and RC pre-releases.
+
+Tag: v1.4.0
 Changelog: handled separately
   
 
