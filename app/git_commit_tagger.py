@@ -460,7 +460,7 @@ class GitCommitTagger:
             for c in commits:
                 sha = c["sha"][:7]
                 author = c["author"]
-                date = datetime.strptime(c["date", "%a %b %d %H:%M:%S %Y %z"])
+                date = datetime.strptime(c["date"], "%a %b %d %H:%M:%S %Y %z")
                 header = c["header"]
                 body = self._clean_commit_body(c["body"])
 

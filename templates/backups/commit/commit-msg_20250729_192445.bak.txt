@@ -1,0 +1,7 @@
+fix(release): v1.4.0rc4
+
+Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `_prepare_release_message_from_prereleases()` in `GitCommitTagger`(`app\git_commit_tagger.py`).
+
+Tag: v1.4.0rc4
