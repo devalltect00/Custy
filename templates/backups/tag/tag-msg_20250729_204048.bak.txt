@@ -1,0 +1,9 @@
+🧪 Alpha Release v1.5.0rc1
+
+This alpha introduces foundational changes and early experiments for the upcoming v1.4.0 release of Custy CLI.
+
+### 🔍 Highlights
+
+- _(Nothing yet)_
+
+ℹ️ This is a **pre-release** and not intended for production use.

@@ -43,7 +43,8 @@ Personal notes, planning, and roadmap for **Custy**
 
 ### 🧩 In Progress
 
--   [] _(Nothing yet)_
+-   [ ] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
+-   [ ] Make sure backup and add all of them to stages before commit and push
 
 ---
 
@@ -58,9 +59,7 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] if when running custy is failed prevent or handle the backup files that just created
 -   [ ] Give template commit message git-msg.txt
 -   [ ] on CLI parameters, on --bump, add option `final`. So the bump from v1.4.0rc[n] to -> v1.4.0
--   [ ] bug fixes or improvements, if switch to release/x/y or rc version tag get all message from dev branch like alpha, beta, rc, dev, etc
--   [ ] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
--   [ ] Make sure backup and add all of them to stages before commit and push
+-   [ ] bug fixes or improvements, if switch to `release/x/y` or `rc` version tag get all message from `dev` branch like `alpha`, `beta`, `rc`, `dev`, etc
 
 ---
 
