@@ -1,8 +1,0 @@
-chore(release): v1.4.2
-
-Final release of Custy v1.4.2
-
-Includes modified documentation.
-
-Tag: v1.4.2
-Changelog: handled separately
