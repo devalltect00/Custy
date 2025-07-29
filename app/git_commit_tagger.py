@@ -322,9 +322,10 @@ class GitCommitTagger:
             else:
                 self.git.auto_stage_all()
 
-            # 🔁 Re-check after auto-staging
-            if not self.git.has_staged_files():
-                self._error_exit("Still no staged changes after `git add .`")
+            if not self.dry_run:
+                # 🔁 Re-check after auto-staging
+                if not self.git.has_staged_files():
+                    self._error_exit("Still no staged changes after `git add .`")
 
             staged_files = self.git.list_staged_files()
             if staged_files:

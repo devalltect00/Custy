@@ -59,30 +59,36 @@ docs(changelog): update changelog
 # ---END---
 ```
 
-# show git log (oneline, graph):
+# show git log (oneline, graph, decorate, all):
 
 ```bash
-git log --oneline --graph
+git log --oneline --graph --decorate --all
 ```
 
 ## output like:
 
 ```bash
--   b9841b2 (HEAD -> main, origin/main) docs(changelog): update changelog
--   7f3cd6a (tag: 1.3.3) docs(TODO.md): add or change todo
--   0e6e378 docs(changelog): update changelog
--   03fcda0 (tag: 1.3.2) docs(TODO.md): add or change todo
--   5a2b9e5 docs(changelog): update changelog
--   0478049 (tag: 1.3.1rc2) chore(commit_msg): support 'release' as valid Conventional Commit type
--   26b3017 docs(changelog): update changelog
--   80e4d6b (tag: 1.3.0rc1) feat(versioning): Improve pre-release and full versioning support with PEP 440
--   23ac55e docs(changelog): update changelog
--   7b27356 (tag: v1.2.0) feat(git_commit_tagger): replace cz check with custom commit message checker
--   fdd7534 docs(changelog): update changelog
--   edd1e79 (tag: v1.1.5) fix(git_commit_tagger): add or change todo
--   dc737c5 docs(changelog): update changelog
--   4af9299 (tag: v1.1.4) docs(TODO.md): add or change todo
--   # c50c313 docs(changelog): update changelog
+* 0e24bf2 (HEAD -> develop, tag: 1.4.0a1, origin/develop) feat(core): implement advanced versioning rules and CLI behavior controls
+* b9841b2 (origin/main, main) docs(changelog): update changelog
+* 7f3cd6a (tag: 1.3.3) docs(TODO.md): add or change todo
+* 0e6e378 docs(changelog): update changelog
+* 03fcda0 (tag: 1.3.2) docs(TODO.md): add or change todo
+* 5a2b9e5 docs(changelog): update changelog
+* 0478049 (tag: 1.3.1rc2) chore(commit_msg): support 'release' as valid Conventional Commit type
+* 26b3017 docs(changelog): update changelog
+* 80e4d6b (tag: 1.3.0rc1) feat(versioning): Improve pre-release and full versioning support with PEP 440
+* 23ac55e docs(changelog): update changelog
+* 7b27356 (tag: v1.2.0) feat(git_commit_tagger): replace cz check with custom commit message checker
+* fdd7534 docs(changelog): update changelog
+* edd1e79 (tag: v1.1.5) fix(git_commit_tagger): add or change todo
+* dc737c5 docs(changelog): update changelog
+* 4af9299 (tag: v1.1.4) docs(TODO.md): add or change todo
+* c50c313 docs(changelog): update changelog
+* de4c3bb (tag: v1.1.3) fix(Makefile): correct commands
+* 2584603 docs(changelog): update changelog
+* f054462 (tag: v1.1.2) chore(release): manually fix and update version to v1.1.2
+* 9ef7b1f (tag: v0.0.1) fix(Makefile): correct commands and update documentation
+* 5741f8f Initial commit
 ```
 
 # show git tag log:

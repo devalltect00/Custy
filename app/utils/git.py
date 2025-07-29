@@ -58,7 +58,12 @@ class GitHelper(DryRunSupport):
                 check=True,
                 encoding="utf-8",
             )
-            return result.stdout
+            if result is not None:
+                return result.stdout
+            else:
+                print(f"⚠️ Dry-run or command skipped: git {' '.join(args)}")
+                # return "" # ✅ fix: always return string, never None
+                return
         except subprocess.CalledProcessError as e:
             print(f"❌ GIt command failed: git {' '.join(args)}")
             print(e.stderr)
@@ -421,7 +426,7 @@ class GitHelper(DryRunSupport):
         Returns a list of all Git tags, sorted by creation date.
         """
         output = self._run_git(["tag", "--sort=creatordate"])
-        return output.strip().splitlines()
+        return output.strip().splitlines() if output else []
 
 def parse_pep440_or_semver(tag: str) -> Tuple:
     """

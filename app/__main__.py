@@ -201,6 +201,7 @@ def main() -> None:
         )
         p.add_argument(
             "--dev-release",
+            action="store_true",
             help="Mark this version as development release",
         )
         p.add_argument(

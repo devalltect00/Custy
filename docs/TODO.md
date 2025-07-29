@@ -56,6 +56,8 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] Use .git/config (Local/Repo-specific)
 -   [ ] if when running custy is failed prevent or handle the backup files that just created
 -   [ ] Give template commit message git-msg.txt
+-   [ ] on CLI parameters, on --bump, add option `final`. So the bump from v1.4.0rc[n] to -> v1.4.0
+-   [ ] bug fixes or improvements, if switch to release/x/y or rc version tag get all message from dev branch like alpha, beta, rc, dev, etc
 
 ---
 
