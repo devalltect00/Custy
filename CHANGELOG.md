@@ -4,6 +4,34 @@
 
 
 ## Unreleased (2025-07-29)
+### 📝 Documentation
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes bug fixes.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### 🔧 Chores
 - **release**: v1.4.0
   
@@ -100,24 +128,6 @@ Changelog: handled separately
 
 Changelog: handled separately
   
-### 📝 Documentation
-- **changelog**: update changelog
-- **TODO.md**: add or change todo
-  
-  - add or change todo
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **TODO.md**: add or change todo
-  
-  - add or change todo
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
 
 ## v1.2.0 (2025-07-25)
 ### ✨ Features
@@ -236,7 +246,81 @@ Includes:
 Tag: v1.4.0rc1
   
 
-## 1.4.0a1 (2025-07-29)
+## 1.4.0 (2025-07-29)
+### 📝 Documentation
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes bug fixes.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+### 🔧 Chores
+- **release**: v1.4.0
+  
+  Final release of Custy v1.4.0 - prompted from release candidate.
+
+Includes all feature and fixes from alpha and RC pre-releases.
+
+Tag: v1.4.0
+Changelog: handled separately
+  
+- **release**: v1.4.0rc2
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Improve docs
+
+Tag: v1.4.0rc2
+  
+- **release**: v1.4.0rc1
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+Includes:
+- Version bump protection within pre-release tier (e.g., rc1 â†’ rc2)
+- Restriction of changelog to final releases only
+- Commit type validation for bump/tag operations
+- Project type detection (PEP 440 or SemVer) for versioning
+- External tag message support (`tag-msg.txt`)
+- Auto-generation of release commit/tag message templates
+- RC â†’ final bump without patch increment
+- `cleanup-backups` CLI command
+- Improved dry-run behavior
+- Expanded documentation and Makefile updates
+- Backup/template folder resolution fixes
+
+Tag: v1.4.0rc1
+  
+### 🐛 Bug Fixes
+- **release**: v1.4.0rc5
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `get_commits_between_tags()` in `GitHelper`(`app\utils\git.py`).
+
+Tag: v1.4.0rc5
+  
+- **release**: v1.4.0rc4
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `_prepare_release_message_from_prereleases()` in `GitCommitTagger`(`app\git_commit_tagger.py`).
+
+Tag: v1.4.0rc4
+  
+- **release**: v1.4.0rc3
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `get_last_tag_before()` in `GitHelper`(`app\utils\git.py`).
+
+Tag: v1.4.0rc3
+  
 ### ✨ Features
 - **core**: implement advanced versioning rules and CLI behavior controls
   
@@ -257,8 +341,6 @@ Tag: v1.4.0rc1
 
 Changelog: handled separately
   
-### 📝 Documentation
-- **changelog**: update changelog
 
 ## 1.3.3 (2025-07-25)
 ### 📝 Documentation
