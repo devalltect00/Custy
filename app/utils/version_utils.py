@@ -26,7 +26,9 @@ def maybe_assert_is_final(version: str, context: str, force: bool = False) -> bo
     Optionally asserts the version is final, unless force is True.
     """
     if force:
-        print(f"⚠️  Skipping final version check for {context} due to --force-changelog flag.")
+        print(
+            f"⚠️  Skipping final version check for {context} due to --force-changelog flag."
+        )
         return True
     return assert_is_final_version(version, context)
 

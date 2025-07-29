@@ -132,7 +132,7 @@ class GitHelper(DryRunSupport):
             print("⚠️ No files provided to stage.")
             return
 
-        existing_files = [f for f in files if isinstance(f, Path) and  f.exists()]
+        existing_files = [f for f in files if isinstance(f, Path) and f.exists()]
         if not existing_files:
             print("⚠️ No exists to stage.")
             return
@@ -142,7 +142,9 @@ class GitHelper(DryRunSupport):
         self.runner.run(
             ["git", "add", *files_str],
             check=True,
-            on_error=lambda: self._error_exit(f"Failed to stage files: {', '.join(files_str)}`"),
+            on_error=lambda: self._error_exit(
+                f"Failed to stage files: {', '.join(files_str)}`"
+            ),
         )
 
     def list_staged_files(self) -> list[str]:
@@ -170,8 +172,17 @@ class GitHelper(DryRunSupport):
         """
 
         CONVENTIONAL_TYPES = {
-            "feat", "fix", "docs", "style", "refactor",
-            "perf", "test", "chore", "ci", "build", "release"
+            "feat",
+            "fix",
+            "docs",
+            "style",
+            "refactor",
+            "perf",
+            "test",
+            "chore",
+            "ci",
+            "build",
+            "release",
         }
         HEADER_REGEX = re.compile(
             r"(?P<type>\w+)(\((?P<scope>[^\)]+)\))?!?: (?P<summary>.+)$"
@@ -187,11 +198,15 @@ class GitHelper(DryRunSupport):
             header = lines[0].strip()
             match = HEADER_REGEX.match(header)
             if not match:
-                raise ValidationError(f"❌ Invalid format. Expected: type(scope?): description")
+                raise ValidationError(
+                    f"❌ Invalid format. Expected: type(scope?): description"
+                )
 
             commit_type = match.group("type")
             if commit_type not in CONVENTIONAL_TYPES:
-                raise ValidationError(f"❌ Invalid type '{commit_type}'. Must be one of: {', '.join(CONVENTIONAL_TYPES)}")
+                raise ValidationError(
+                    f"❌ Invalid type '{commit_type}'. Must be one of: {', '.join(CONVENTIONAL_TYPES)}"
+                )
 
             summary = match.group("summary").strip()
             if not summary:
@@ -350,7 +365,9 @@ class GitHelper(DryRunSupport):
         """
         format_str = "%H%n%s%n%an%n%ad%n%B%n---END---"
         rev_range = f"{from_tag}..{to_tag}" if from_tag else to_tag
-        raw = self._run_git(["log", "--reverse", "--pretty=format:" + format_str, rev_range])
+        raw = self._run_git(
+            ["log", "--reverse", "--pretty=format:" + format_str, rev_range]
+        )
         commits = []
         for chunk in raw.strip().split("---END---"):
             if not chunk.strip():
@@ -359,16 +376,18 @@ class GitHelper(DryRunSupport):
             # sha, header, author, date = lines[0:4]
             lines = chunk.strip().splitlines()
             if len(lines) < 4:
-                continue # or log error and skip
+                continue  # or log error and skip
             sha, header, author, date = lines[0:4]
             body = "\n".join(lines[4:]).strip()
-            commits.append({
-                "sha": sha,
-                "header": header,
-                "author": author,
-                "date": date,
-                "body": body,
-            })
+            commits.append(
+                {
+                    "sha": sha,
+                    "header": header,
+                    "author": author,
+                    "date": date,
+                    "body": body,
+                }
+            )
         return commits
 
     def get_tag_date(self, tag: str) -> str:
@@ -432,6 +451,7 @@ class GitHelper(DryRunSupport):
         output = self._run_git(["tag", "--sort=creatordate"])
         return output.strip().splitlines() if output else []
 
+
 def parse_pep440_or_semver(tag: str) -> Tuple:
     """
     Parse tag into sortable components supporting both SemVer and PEP 440.
@@ -469,11 +489,12 @@ def parse_pep440_or_semver(tag: str) -> Tuple:
         main_version, pre = main_version[:idx], main_version[idx:]
 
     parts = tuple(
-        [epoch] +
-        [int(p) if p.isdigit() else p for p in re.split(r"[^\W]+", main_version) if p] +
-        [pre, post, dev, local]
+        [epoch]
+        + [int(p) if p.isdigit() else p for p in re.split(r"[^\W]+", main_version) if p]
+        + [pre, post, dev, local]
     )
     return parts
+
 
 def get_last_tag_before(current_tag: str, all_tags: List[str]) -> str:
     """
@@ -487,6 +508,7 @@ def get_last_tag_before(current_tag: str, all_tags: List[str]) -> str:
         if not re.search(r"(a|b|rc|dev)\d*", tag) and tag < clean_current:
             return tag
     return ""
+
 
 def get_sorted_tags(tags: List[str]) -> List[str]:
     """

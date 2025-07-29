@@ -28,8 +28,7 @@ import sys
 from pathlib import Path
 
 from .git_commit_tagger import GitCommitTagger
-from .utils import (BackupManager, detect_project_strategy,
-                    maybe_assert_is_final)
+from .utils import BackupManager, detect_project_strategy, maybe_assert_is_final
 
 # =======================
 # 🏗️ Factory method
@@ -60,7 +59,9 @@ def build_git_tool(
         version_file=args.version_file if with_version_file else None,
         auto_stage=auto_stage,
         stage_mode=args.stage_mode if auto_stage else None,
-        force_changelog=args.force_changelog if hasattr(args, "force_changelog") else False,
+        force_changelog=args.force_changelog
+        if hasattr(args, "force_changelog")
+        else False,
     )
 
 
@@ -110,6 +111,7 @@ def handle_backup(args):
 def handle_all(args):
     tool = build_git_tool(args, auto_stage=True)
     tool.execute_all()
+
 
 def handle_cleaned_backups(args):
     manager = BackupManager(keep=args.keep)
@@ -166,9 +168,10 @@ def main() -> None:
             choices=["semver", "pep440", "date", "gitcount", "commitizen"],
             default=detect_project_strategy(),  # <-- auto logic
             help=(
-            "Strategy to generate tag (Auto generate tag using a strategy). ",
-            "Tagging strategy (e.g. pep440, semver, date, gitcount, or commitizen). ",
-            "CLI overrides config or auto-detect."),
+                "Strategy to generate tag (Auto generate tag using a strategy). ",
+                "Tagging strategy (e.g. pep440, semver, date, gitcount, or commitizen). ",
+                "CLI overrides config or auto-detect.",
+            ),
         )
         p.add_argument(
             "--bump",
@@ -223,9 +226,8 @@ def main() -> None:
         p.add_argument(
             "--force-changelog",
             action="store_true",
-            help="Force changelog generation even for pre-release versions."
+            help="Force changelog generation even for pre-release versions.",
         )
-
 
     # -----------------------------
     # Subcommand: commit-tag-bump

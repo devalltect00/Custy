@@ -1,6 +1,6 @@
 # app\utils\backup_manager.py
-"""
-"""
+""" """
+
 from pathlib import Path
 
 
@@ -22,7 +22,7 @@ class BackupManager:
             reverse=True,
         )
 
-        for old_file in backup[self.keep:]:
+        for old_file in backup[self.keep :]:
             try:
                 old_file.unlink()
                 print(f"🗑️ Removed old backup: {old_file}")

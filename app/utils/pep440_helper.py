@@ -1,6 +1,5 @@
 # app\utils\pep440_helper.py
-"""
-"""
+""" """
 
 import re
 import sys
@@ -30,21 +29,25 @@ class PEP440VersionHelper:
 
     def __init__(self, current: str):
         self.original = current
-        self.epoch, self.major, self.minor, self.patch = self._parse_base_version(current)
+        self.epoch, self.major, self.minor, self.patch = self._parse_base_version(
+            current
+        )
         self.current_pre, self.current_pre_num = self._parse_pre(current)
         self.post_tag = self._search_tag("post")
         self.dev_tag = self._search_tag("dev")
         self.local_tag = self._search_tag(r"\+(.*)", group=1)
 
-        self.going_down = False # will be set in determine_dump()
+        self.going_down = False  # will be set in determine_dump()
 
     def _parse_base_version(self, version: str):
         # Remove leading 'v', extract epoch,, major, minor, patch
         match = re.match(r"(?:(\d+)!)?v?(\d+)\.(\d+)\.(\d+)", version)
         if not match:
-            raise ValueError(f"❌ Invalid PEP440 format: '{version}' (expected) [N!]X.Y.Z or vX.Y.Z")
+            raise ValueError(
+                f"❌ Invalid PEP440 format: '{version}' (expected) [N!]X.Y.Z or vX.Y.Z"
+            )
         epoch, major, minor, patch = match.groups()
-        return int(epoch) if epoch else None, int (major), int(minor), int(patch)
+        return int(epoch) if epoch else None, int(major), int(minor), int(patch)
 
     def _parse_pre(self, version: str):
         match = re.search(r"(a|b|rc)(\d+)", version)
@@ -73,15 +76,15 @@ class PEP440VersionHelper:
         # Current is pre-release
         if self.current_pre:
             if short_target == self.current_pre:
-                return False    # same tier → keep version
+                return False  # same tier → keep version
             if self._tier_value(short_target) > self._tier_value(self.current_pre):
-                return False    # upgrade tier → keep version
+                return False  # upgrade tier → keep version
             self.going_down = True
-            return True # downgrade → bump base
+            return True  # downgrade → bump base
 
         # Current is final
         if short_target:
-            return True # final → pre → bump base
+            return True  # final → pre → bump base
 
         # final → final
         return True
@@ -123,7 +126,9 @@ class PEP440VersionHelper:
                 self.minor = 0
                 self.patch = 0
             else:
-                raise ValueError(f"❌ Unknown bump level: {level}. Use: Patch, minor, or major.")
+                raise ValueError(
+                    f"❌ Unknown bump level: {level}. Use: Patch, minor, or major."
+                )
 
         # Compose version
         version = f"{self.major}.{self.minor}.{self.patch}"

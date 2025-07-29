@@ -14,9 +14,11 @@ from .tag_strategy.date_strategy import DateStrategy
 from .tag_strategy.git_count_strategy import GitCountStrategy
 from .tag_strategy.pep404_strategy import PEP404Strategy
 from .tag_strategy.semver_strategy import SemverStrategy
-from .version_utils import (assert_is_final_version,
-                            contains_allowed_commit_type,
-                            maybe_assert_is_final)
+from .version_utils import (
+    assert_is_final_version,
+    contains_allowed_commit_type,
+    maybe_assert_is_final,
+)
 
 __all__ = [
     "BackupManager",

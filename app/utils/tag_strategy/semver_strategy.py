@@ -13,11 +13,11 @@ from ..semver_helper import SemverVersionHelper
 
 class SemverStrategy:
     def __init__(
-            self,
-            bump: str,
-            pre_release: str | None = None,
-            build_meta: str | None = None,
-        ) -> None:
+        self,
+        bump: str,
+        pre_release: str | None = None,
+        build_meta: str | None = None,
+    ) -> None:
         self.bump: str = bump
         self.pre_release: str | None = pre_release
         self.build_meta: str | None = build_meta

@@ -1,6 +1,5 @@
 # app\utils\project_detector.py
-"""
-"""
+""" """
 
 import os
 
@@ -35,7 +34,11 @@ def detect_project_strategy(cli_value: str | None = None) -> str:
                 print(f"⚠️ Failed to parse config '{path}': {e}")
 
     # Step 3: Auto-detect by common project markers
-    if os.path.exists("pyproject.toml") or os.path.exists("setup.py") or os.path.exists("requirements.txt"):
+    if (
+        os.path.exists("pyproject.toml")
+        or os.path.exists("setup.py")
+        or os.path.exists("requirements.txt")
+    ):
         print("🧠 Detected Python project → strategy: pep440")
         return "pep440"
     if os.path.exists("package.json"):

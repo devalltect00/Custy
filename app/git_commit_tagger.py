@@ -9,11 +9,21 @@ from textwrap import dedent
 
 from termcolor import colored
 
-from .utils import (BackupManager, ChangelogGenerator, CommitizenHelper,
-                    CommitizenStrategy, DateStrategy, GitCountStrategy,
-                    GitHelper, PEP404Strategy, SemverStrategy,
-                    contains_allowed_commit_type, get_last_tag_before,
-                    get_sorted_tags, maybe_assert_is_final)
+from .utils import (
+    BackupManager,
+    ChangelogGenerator,
+    CommitizenHelper,
+    CommitizenStrategy,
+    DateStrategy,
+    GitCountStrategy,
+    GitHelper,
+    PEP404Strategy,
+    SemverStrategy,
+    contains_allowed_commit_type,
+    get_last_tag_before,
+    get_sorted_tags,
+    maybe_assert_is_final,
+)
 
 # =======================
 # 🚀 Main Class
@@ -116,7 +126,9 @@ class GitCommitTagger:
         self.push()
 
         # Enforce final version before generating changelog
-        if maybe_assert_is_final(self.tag, context="changelog", force=self.force_changelog):
+        if maybe_assert_is_final(
+            self.tag, context="changelog", force=self.force_changelog
+        ):
             # Generate and push changelog
             rendered = self.changelog_generator.generate()
             self.changelog_generator.write_to_files(rendered)
@@ -142,7 +154,7 @@ class GitCommitTagger:
         self._prepare_and_edit_release_message_if_final()
         # self._open_editor()
         self._check_commit_type_for_tagging()
-        #self.cz.check_commit(path=self.message_path,)  # Use the format  agreed upon with Commitizen.
+        # self.cz.check_commit(path=self.message_path,)  # Use the format  agreed upon with Commitizen.
         self.git.check_commit_message_file(self.message_path)
         self._update_version_file()
         self.cz.update_cz_toml_version(new_version=self.tag)
@@ -206,7 +218,9 @@ class GitCommitTagger:
 
         if not tag_msg_path.exists():
             # Create file with default content
-            default_content = f"Release {self.tag}\n\n# Write additional tag notes below\n"
+            default_content = (
+                f"Release {self.tag}\n\n# Write additional tag notes below\n"
+            )
             tag_msg_path.parent.mkdir(parents=True, exist_ok=True)
             tag_msg_path.write_text(default_content, encoding="utf-8")
             print(f"📝 Created default tag message file: {tag_msg_path}")
@@ -216,9 +230,7 @@ class GitCommitTagger:
         for editor in editors:
             try:
                 self.git.runner.run(
-                    command=editor + [str(tag_msg_path)],
-                    shell=True,
-                    check=True
+                    command=editor + [str(tag_msg_path)], shell=True, check=True
                 )
                 break
             except Exception:
@@ -231,7 +243,9 @@ class GitCommitTagger:
             self._backup_tag_message()
         else:
             self.tag_msg = self.tag
-            print(f"ℹ️ No tag message provided. Using tag name as message: '{self.tag_msg}'")
+            print(
+                f"ℹ️ No tag message provided. Using tag name as message: '{self.tag_msg}'"
+            )
 
     def _update_version_file(self) -> None:
         if not self.version_file:
@@ -293,12 +307,13 @@ class GitCommitTagger:
         commits_msg = self.message_path.read_text(encoding="utf-8")
         if not contains_allowed_commit_type([commits_msg]):
             if not self.force_tag:
-                print("🚫 Skipping tag: no allowed commit types (feat, fix, perf. docs, re)")
+                print(
+                    "🚫 Skipping tag: no allowed commit types (feat, fix, perf. docs, re)"
+                )
                 print("ℹ️ Use --force-tag to override.")
                 self.skip_tag = True
             else:
                 print("⚠️ Warning: forcing tag despite non-semantic commit type.")
-
 
     def validate(self) -> None:
         self._ensure_git_repo()
@@ -357,7 +372,9 @@ class GitCommitTagger:
             self.git.runner.run(
                 command=["git", "tag", "-a", self.tag, "-m", self.tag_msg],
                 check=True,
-                on_error=lambda: self._error_exit(f"Failed to create tag '{self.tag}'."),
+                on_error=lambda: self._error_exit(
+                    f"Failed to create tag '{self.tag}'."
+                ),
             )
         else:
             print("⏭️ Tag step skipped.")
@@ -391,12 +408,16 @@ class GitCommitTagger:
         backup_dir.mkdir(exist_ok=True)
 
         # backup_path = backup_dir / self.message_path.with_name(f"{self.message_path.stem}_{timestamp}.bak.txt")
-        self.backup_commit_message_path = backup_dir / f"{self.message_path.stem}_{timestamp}.bak.txt"
+        self.backup_commit_message_path = (
+            backup_dir / f"{self.message_path.stem}_{timestamp}.bak.txt"
+        )
 
         try:
             self.backup_commit_message_path.write_text(self.message_path.read_text())
             print(f"🗂️ Commit message backed up to: {self.backup_commit_message_path}")
-            self.backup_manager._prune_old_backups(backup_dir=backup_dir, stem=self.message_path.stem)
+            self.backup_manager._prune_old_backups(
+                backup_dir=backup_dir, stem=self.message_path.stem
+            )
         except Exception as e:
             print(f"⚠️ Failed to backup commit message: {e}")
 
@@ -416,24 +437,30 @@ class GitCommitTagger:
             backup_dir = self.message_path.parent / "backups" / "tag"
             backup_dir.mkdir(exist_ok=True)
 
-            self.backup_tag_message_path = backup_dir / f"{tag_msg_path.stem}_{timestamp}.bak.txt"
+            self.backup_tag_message_path = (
+                backup_dir / f"{tag_msg_path.stem}_{timestamp}.bak.txt"
+            )
             content = tag_msg_path.read_text(encoding="utf-8")
             self.backup_tag_message_path.write_text(content, encoding="utf-8")
             print(f"🗂️ Tag message backed up to: {self.backup_tag_message_path}")
-            self.backup_manager._prune_old_backups(backup_dir=backup_dir, stem=tag_msg_path.stem)
+            self.backup_manager._prune_old_backups(
+                backup_dir=backup_dir, stem=tag_msg_path.stem
+            )
         except Exception as e:
             print(f"⚠️ Failed to backup tag commit message: {e}")
 
     def _prepare_release_message_from_prereleases(self, version: str) -> str:
-        """
-        """
+        """ """
         version_prefix = version.removeprefix("v")  # handle both v1.3.4 abd 1.3.4
-        all_tags = self.git.get_all_tags()  # expects list[str], e.g. ['1.3.4a1', '1.3.4b2', '1.3.3', ...]
+        all_tags = (
+            self.git.get_all_tags()
+        )  # expects list[str], e.g. ['1.3.4a1', '1.3.4b2', '1.3.3', ...]
         sorted_tags = get_sorted_tags(all_tags)
 
         # Find matching pre-release tags for this version, e.g., 1.3.4a1, b1, rc1...
         prerelease_tags = [
-            t for t in sorted_tags
+            t
+            for t in sorted_tags
             if t.startswith(version_prefix) and re.search(r"(a|b|rc|dev)\d*", t)
         ]
         prerelease_tags = list(reversed(prerelease_tags))  # Newest tag first
@@ -448,7 +475,7 @@ class GitCommitTagger:
             if i + 1 < len(prerelease_tags):
                 prev_tag = prerelease_tags[i + 1]
             else:
-                prev_tag =get_last_tag_before(tag, sorted_tags)
+                prev_tag = get_last_tag_before(tag, sorted_tags)
 
             commits = self.git.get_commits_between_tags(prev_tag, tag)
 
@@ -485,7 +512,9 @@ class GitCommitTagger:
         Remove 'Changelog: handled separately' from footer/body
         """
         lines = body.strip().splitlines()
-        cleaned = [line for line in lines if "Changelog: handled separately" not in line]
+        cleaned = [
+            line for line in lines if "Changelog: handled separately" not in line
+        ]
         return "\n".join(cleaned).strip()
 
     def _write_template_to_message_file(self, content: str):

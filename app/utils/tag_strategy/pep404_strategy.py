@@ -13,14 +13,14 @@ from ..pep440_helper import PEP440VersionHelper
 
 class PEP404Strategy:
     def __init__(
-            self,
-            bump: str,
-            epoch: int | None,
-            pre_release: str | None = None,
-            post_release: bool | None = None,
-            dev_release: bool | None = None,
-            local: str | None = None,
-        ) -> None:
+        self,
+        bump: str,
+        epoch: int | None,
+        pre_release: str | None = None,
+        post_release: bool | None = None,
+        dev_release: bool | None = None,
+        local: str | None = None,
+    ) -> None:
         self.bump: str = bump
         self.pre_release: str | None = pre_release
         self.post_release: bool | None = post_release

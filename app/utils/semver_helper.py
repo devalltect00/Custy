@@ -37,7 +37,9 @@ class SemverVersionHelper:
         # Remove leading 'v', extract epoch,, major, minor, patch
         match = re.match(r"(\d+)\.(\d+)\.(\d+)", self.original)
         if not match:
-            raise ValueError(f"❌ Invalid SemVer format: '{self.original}' (expected) X.Y.Z or vX.Y.Z")
+            raise ValueError(
+                f"❌ Invalid SemVer format: '{self.original}' (expected) X.Y.Z or vX.Y.Z"
+            )
         return tuple(map(int, match.groups()))
 
     def _parse_pre(self):
@@ -54,11 +56,11 @@ class SemverVersionHelper:
         """
         if self.current_pre:
             if target_pre == self.current_pre:
-                return False    # same tier → keep version
-            return True # Changing pre-release label → bump base
+                return False  # same tier → keep version
+            return True  # Changing pre-release label → bump base
         if target_pre:
-            return True # Final → pre-release
-        return True # Final → Final bump
+            return True  # Final → pre-release
+        return True  # Final → Final bump
 
     def get_bump_version(
         self,
@@ -91,7 +93,9 @@ class SemverVersionHelper:
                 self.minor = 0
                 self.patch = 0
             else:
-                raise ValueError(f"❌ Unknown bump level: {level}. Use: Patch, minor, or major.")
+                raise ValueError(
+                    f"❌ Unknown bump level: {level}. Use: Patch, minor, or major."
+                )
 
         # Compose version
         version = f"{self.major}.{self.minor}.{self.patch}"
