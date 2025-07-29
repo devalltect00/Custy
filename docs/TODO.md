@@ -24,25 +24,38 @@ Personal notes, planning, and roadmap for **Custy**
 
 ### 🧩 In Progress
 
--   [ ] if the current version is pre-release or post or dev and so on. If we want to increment. let's say from rc, next version is rc, the major, minor, and patch won't change. same as from alpha to beta. but not beta to alpha because beta 1 higher level than alpha
--   [ ] generate changelog when on release version
--   [ ] Check if the commit type not feat, fix, perf, docs, refactor don't bump or use tagging. ref: docs\versioning\full_git_strategy_with_pep440.md. just give some warning or prevent them
--   [ ] need to check what type of project before making the versioning. for now just stick with python
--   [ ] adding tag message to open in files if wanted or just doing automation when release version or something use some template or something.
--   [ ] for release version combine the all prelease commit message description as template, etc into 1
--   [ ] from pre-release or dev, etc to release. No need to change the major.minor.patch
+-   [x] if the current version is pre-release or post or dev and so on. If we want to increment. let's say from rc, next version is rc, the major, minor, and patch won't change. same as from alpha to beta. but not beta to alpha because beta 1 higher level than alpha. for example from v.1.2.3rc1 to v.1.2.3rc2 instead of v.1.2.3rc1 to v.1.2.4rc2; another example from v.1.2.3b1 to v.1.2.3b2 instead of v.1.2.3b1 to v.1.2.4b2;
+-   [x] generate changelog when on release version. So check if the version is major.minor.patch. So allowed to generate changelog and push the changelog
+-   [x] Check if the commit type not [feat, fix, perf, docs, refactor] don't bump or use tagging. Id use types [feat, fix, perf, docs, refactor] we need to use specific parameter if we want to force bump or tagging; or maybe there are better suggestion.
+    -   Option 1: keep/still bumping and tagging but give warning;
+    -   Option 2: prevent bumping and tagging;
+    -   Option 3: must use additional specific parameter if want to use bumping or tagging;
+    -   Option 4: must use additional specific CLI parameter if want to use bumping or tagging;
+    -   or other better options
+-   [x] need to check what type of project before making the versioning. We already have versioning custom format configuration for python. at least we have python and javascript whether for electron js, react js, next js, and so on
+-   [x] when tagging. instead of put message on CLI args. it's better to open files as tagging message same like we already have for commit-msg. If we also specify specific parameter that tells use default tagging message. maybe there are a better solutions
+-   [x] for release version, check all pre-lease, develop (and so on that needed) version commit message combine the all the commit body, description (etc that needed) into 1 as template for release version when for example from pre-release to release and put to external txt file (commit-msg.txt)
+-   [x] from pre-release or dev, etc to release. No need to change the major.minor.patch. for example from v.1.2.3rc1 to v.1.2.3 instead of v.1.2.3rc1 to v.1.2.4
+    -   Option 1. level the tag message be like that (no changes)
+    -   Option 2. the tag message based on commit message
+    -   Option 3. manually every time commit the tag
+    -   Option 4. maybe there are some better and best options and solutions
+-   [x] Backup just 10 maxiumum. 10 lastest/newest backup or we can set on CLI. by default 10
+-   [x] Fix issue where to put backups, templates folders/directory. also with commit-msg.txt if needed
+-   [x] handle cleanup backups CLI
 
 ---
 
 ### 🧠 Planning
 
--   [ ] use 2 git remote, gitlab as `main`, and github as backup
+-   [ ] use 2 git remote, gitlab as main, and github as backup
 -   [ ] use 2 branch; `main` and `dev`; `main` is stable one and `dev` is more experimental
 -   [ ] Update the major, minor, and patch on `main` branch. But on `dev` branch `main`, I just update pre_release and pre_release
 -   [ ] If there is a abandoned branch or experminet or deprecated branch version and want to go back to `main` branch. I choose to rename branch use format like archive/{feature}-{date} or experiment/{feature}-{date}. If I just don't care about archieving the branch I can use option to reset `dev` back to `main`
 -   [ ] remote on gitlab push `main` and `dev`. but on github just push `main`
 -   [ ] Use .git/config (Local/Repo-specific)
--   [ ] Fix issue where to put backups, templates folders/directory. also with commit-msg.txt if needed
+-   [ ] if when running custy is failed prevent or handle the backup files that just created
+-   [ ] Give template commit message git-msg.txt
 
 ---
 
@@ -64,7 +77,6 @@ Personal notes, planning, and roadmap for **Custy**
 -   Automatically set template commit-msg.txt based on stages which one is added and modified.
 -   Automatically create and delete commit-msg.txt when needed if we set argument on CLI or by default like that.
 -   Backup before delete the commit-msg.txt
--   Backup just 3 maxiumum. 3 lastest/newest backup or we can set on CLI. by default 3
 
 ---
 

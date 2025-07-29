@@ -142,4 +142,5 @@ dist/
 
 # Custom .projectignore
 templates/commit-msg.txt
+templates/tag-msg.txt
 tools/git-commit/backups/

@@ -1,4 +1,4 @@
-# tools\git_commit\utils\dry_run_support.py
+# app\utils\dry_run_support.py
 
 from .dry_run import Runner
 

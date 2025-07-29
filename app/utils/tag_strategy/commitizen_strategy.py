@@ -1,4 +1,4 @@
-# tools\utils\tag_strategy\commitizen_strategy.py
+# app\utils\tag_strategy\commitizen_strategy.py
 """
 CommitizenStrategy class
 """

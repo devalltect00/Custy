@@ -1,4 +1,4 @@
-# tools\utils\dry_run.py
+# app\utils\dry_run.py
 
 import subprocess
 from collections.abc import Callable

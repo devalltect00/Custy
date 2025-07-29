@@ -1,7 +1,0 @@
-feat(git_commit_tagger): replace cz check with custom commit message checker
-
-- Replaces Commitizen's `cz check` with a built-in custom validator
-- Supports multi-line messages with header, body, and footer.
-- Includes structured error handling via custom ValidationError exception.
-
-Changelog: handled separately

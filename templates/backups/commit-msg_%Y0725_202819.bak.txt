@@ -1,5 +1,0 @@
-chore(commit_msg): support 'release' as valid Conventional Commit type
-
-- Added 'release' to allowed commit types in the validator
-
-Changelog: handled separately

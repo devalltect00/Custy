@@ -1,4 +1,4 @@
-# tools/git-commit/__main__.py
+# app/__main__.py
 
 r"""Commit and Tag Automation Script.
 
@@ -25,9 +25,11 @@ Usage:
 
 import argparse
 import sys
+from pathlib import Path
 
 from .git_commit_tagger import GitCommitTagger
-from .utils import ChangelogGenerator
+from .utils import (BackupManager, detect_project_strategy,
+                    maybe_assert_is_final)
 
 # =======================
 # 🏗️ Factory method
@@ -45,17 +47,20 @@ def build_git_tool(
         message_file=args.message_file,
         tag=args.tag if with_tagging else None,
         tag_msg=args.tag_msg if with_tagging else None,
+        tag_msg_file=args.tag_msg_file if with_tagging else None,
         strategy=args.strategy if with_tagging else None,
         bump=args.bump if with_tagging else None,
         pre_release=args.pre_release if with_tagging else None,
         post_release=args.post_release if with_tagging else None,
         dev_release=args.dev_release if with_tagging else None,
-        local=args.local if with_tagging else None,
+        meta=args.meta if with_tagging else None,
         epoch=args.epoch if with_tagging else None,
+        force_tag=args.force_tag if with_tagging else False,
         dry_run=args.dry_run,
         version_file=args.version_file if with_version_file else None,
         auto_stage=auto_stage,
         stage_mode=args.stage_mode if auto_stage else None,
+        force_changelog=args.force_changelog if hasattr(args, "force_changelog") else False,
     )
 
 
@@ -74,6 +79,13 @@ def handle_push(args):
 
 
 def handle_changelog(args):
+    from .utils import ChangelogGenerator, GitHelper
+
+    latest_tag = GitHelper().get_latest_tag()
+
+    # Enforce final version before generating changelog
+    maybe_assert_is_final(latest_tag, context="changelog", force=args.force_changelog)
+
     # build_git_tool(args, with_tagging=False)
     gen = ChangelogGenerator()
     rendered = gen.generate()
@@ -99,6 +111,19 @@ def handle_all(args):
     tool = build_git_tool(args, auto_stage=True)
     tool.execute_all()
 
+def handle_cleaned_backups(args):
+    manager = BackupManager(keep=args.keep)
+
+    def clean(type_dir: str, stem: str):
+        backup_dir = Path(f"backups/{type_dir}")
+        print(f"🧹 CLeaning {backup_dir} (keeping {args.keep})")
+        manager._prune_old_backups(backup_dir=backup_dir, stem=stem)
+
+    if args.type in ("commit", "all"):
+        clean("commit", "commit-msg")
+    if args.type in ("tag", "all"):
+        clean("tag", "tag-msg")
+
 
 # =======================
 # 🏁 CLI Entry
@@ -120,8 +145,8 @@ def main() -> None:
         p.add_argument(
             "message_file",
             nargs="?",
-            default="./tools/git_commit/commit-msg.txt",
-            help="Path to commit message file (default: ./tools/git_commit/commit-msg.txt) (open in editor before commit)",
+            default="./templates/commit-msg.txt",
+            help="Path to commit message file (default: ./templates/commit-msg.txt) (open in editor before commit)",
         )
         p.add_argument(
             "--version-file",
@@ -138,9 +163,12 @@ def main() -> None:
     def add_tagging_arguments(p):
         p.add_argument(
             "--strategy",
-            choices=["semver", "date", "gitcount", "commitizen"],
-            default="semver",
-            help="Strategy to generate tag (Auto generate tag using a strategy). Tagging strategy (e.g. semver, date, gitcount, or commitizen)",
+            choices=["semver", "pep440", "date", "gitcount", "commitizen"],
+            default=detect_project_strategy(),  # <-- auto logic
+            help=(
+            "Strategy to generate tag (Auto generate tag using a strategy). ",
+            "Tagging strategy (e.g. pep440, semver, date, gitcount, or commitizen). ",
+            "CLI overrides config or auto-detect."),
         )
         p.add_argument(
             "--bump",
@@ -158,6 +186,11 @@ def main() -> None:
             help="Message for the Git tag (default: same as tag name)",
         )
         p.add_argument(
+            "--tag-msg-file",
+            default="./templates/tag-msg.txt",
+            help="Path to file containing tag message (default: ./templates/tag-msg.txt).",
+        )
+        p.add_argument(
             "--pre-release",
             help="Optional Pre-release label (e.g. alpha, beta, rc, dev, next, preview, etc)",
         )
@@ -171,13 +204,25 @@ def main() -> None:
             help="Mark this version as development release",
         )
         p.add_argument(
-            "--local",
-            help="Local version label (e.g. sha.abc123)",
+            "--meta",
+            help="Meta version label (e.g. sha.abc123)",
         )
         p.add_argument(
             "--epoch",
             type=int,
             help="Set version epoch (e.g. 1!1.2.3)",
+        )
+        p.add_argument(
+            "--force-tag",
+            action="store_true",
+            help="Force version bump and tagging even if commit type is not allowed.",
+        )
+
+    def add_force_changelog_argument(p):
+        p.add_argument(
+            "--force-changelog",
+            action="store_true",
+            help="Force changelog generation even for pre-release versions."
         )
 
 
@@ -206,6 +251,7 @@ def main() -> None:
         help="Generate and push changelog",
     )
     add_common_arguments(changelog_parser)
+    add_force_changelog_argument(changelog_parser)
 
     # -----------------------------
     # Subcommand: push
@@ -250,6 +296,24 @@ def main() -> None:
     )
     add_common_arguments(all_parser)
     add_tagging_arguments(all_parser)
+    add_force_changelog_argument(all_parser)
+
+    cleanup_parser = subparser.add_parser(
+        "cleaned-backups",
+        help="Cleaned old backup files for commit/tag messages",
+    )
+    cleanup_parser.add_argument(
+        "--type",
+        choices=["commit", "tag", "all"],
+        default="all",
+        help="Which backup type to clean (default: all)",
+    )
+    cleanup_parser.add_argument(
+        "--keep",
+        type=int,
+        default=10,
+        help="How many last backup to keep (default: 10)",
+    )
 
     # Miscellaneous
     commit_misc_group = all_parser.add_argument_group("Other options")

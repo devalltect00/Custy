@@ -1,4 +1,4 @@
-# tools\utils\tag_strategy\git_count_strategy.py
+# app\utils\tag_strategy\git_count_strategy.py
 """
 GitCountStrategy class
 """

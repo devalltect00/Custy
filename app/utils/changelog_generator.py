@@ -1,4 +1,4 @@
-# tools\git_commit\utils\changelog_generator.py
+# app\utils\changelog_generator.py
 """
 Changelog Generator
 
@@ -9,9 +9,9 @@ Support dry-run mode, and can be configured via [tool.mycz] in pyproject.toml.
 """
 
 import sys
+import tomllib
 from datetime import datetime
 
-import tomllib
 from jinja2 import Template
 
 from .dry_run_support import DryRunSupport

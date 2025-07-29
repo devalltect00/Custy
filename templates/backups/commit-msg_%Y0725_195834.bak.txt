@@ -1,7 +1,0 @@
-feat(versioning): Improve pre-release and full versioning support with PEP 440
-
-- Fix pre-release version format to comply with pep440 for python
-- Add support for full format: [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local]
-- Additionally support Post-release, development, local identifiers, and epoch segment
-
-Changelog: handled separately

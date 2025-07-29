@@ -4,5 +4,6 @@
 
 # specifically used in tools/print_project_structure.py
 
-commit-msg.txt
+templates/commit-msg.txt
+templates/tag-msg.txt
 tools/git-commit/backups/

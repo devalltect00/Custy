@@ -1,4 +1,4 @@
-# tools\utils\tag_strategy\base.py
+# app\utils\tag_strategy\base.py
 """
 TagStrategy protocol/interface
 """

@@ -136,6 +136,12 @@ git-current-branch:
 git-origin-url:
 	git remote get-url origin
 
+git--show-log:
+	git log --oneline --graph
+
+git--show-log-tag:
+	git log --no-walk --tags --pretty="format:%h %d %s"
+
 # -----------------------------
 # 🆘 Help
 # -----------------------------

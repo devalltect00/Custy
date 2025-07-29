@@ -4,30 +4,39 @@ SemverStrategy class
 """
 
 from ..git import GitHelper
-from ..semver_helper import SemverVersionHelper
+from ..pep440_helper import PEP440VersionHelper
 
 # =======================
 # 🔧 Concrete Strategies
 # =======================
 
 
-class SemverStrategy:
+class PEP404Strategy:
     def __init__(
             self,
             bump: str,
+            epoch: int | None,
             pre_release: str | None = None,
-            build_meta: str | None = None,
+            post_release: bool | None = None,
+            dev_release: bool | None = None,
+            local: str | None = None,
         ) -> None:
         self.bump: str = bump
         self.pre_release: str | None = pre_release
-        self.build_meta: str | None = build_meta
+        self.post_release: bool | None = post_release
+        self.dev_release: bool | None = dev_release
+        self.local: str | None = local
+        self.epoch: int | None = epoch
         self.git = GitHelper(dry_run=False)
 
     def get_next_tag(self) -> str:
         latest_tag = self.git.get_latest_tag()
-        helper = SemverVersionHelper(latest_tag)
+        helper = PEP440VersionHelper(latest_tag)
         return helper.get_bump_version(
             level=self.bump,
             target_pre=self.pre_release,
-            build=self.build_meta,
+            post=self.post_release,
+            dev=self.dev_release,
+            local=self.local,
+            epoch=self.epoch,
         )

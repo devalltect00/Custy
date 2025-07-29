@@ -1,4 +1,4 @@
-# tools\utils\commitizen.py
+# app\utils\commitizen.py
 
 import re
 import subprocess

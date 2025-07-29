@@ -1,0 +1,2 @@
+[versioning]
+strategy = "pep440"  # valid values: 440, semver, commitizen, date, gitcount

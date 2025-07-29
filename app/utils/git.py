@@ -1,4 +1,4 @@
-# tools\utils\git.py
+# app\utils\git.py
 
 """
 Utilities Class (Git)
@@ -9,6 +9,7 @@ import subprocess
 import sys
 from collections.abc import Callable
 from pathlib import Path
+from typing import List, Tuple
 
 from ..errors.validation_error import ValidationError
 from .dry_run_support import DryRunSupport
@@ -47,6 +48,21 @@ class GitHelper(DryRunSupport):
     def _error_exit(self, message: str) -> None:
         print(f"❌ ERROR: {message}")
         sys.exit(1)
+
+    def _run_git(self, args: list[str]) -> str:
+        try:
+            result = self.runner.run(
+                ["git"] + args,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+                encoding="utf-8",
+            )
+            return result.stdout
+        except subprocess.CalledProcessError as e:
+            print(f"❌ GIt command failed: git {' '.join(args)}")
+            print(e.stderr)
+            return ""
 
     def is_get_repo(self) -> bool:
         """Git rev-parse --is-inside-work-tree"""
@@ -107,10 +123,21 @@ class GitHelper(DryRunSupport):
         Args:
             files: list[Path]: List of file paths to stage.
         """
+        if not files:
+            print("⚠️ No files provided to stage.")
+            return
+
+        existing_files = [f for f in files if isinstance(f, Path) and  f.exists()]
+        if not existing_files:
+            print("⚠️ No exists to stage.")
+            return
+
+        files_str = [str(f) for f in files]
+
         self.runner.run(
-            ["git", "add", *files],
+            ["git", "add", *files_str],
             check=True,
-            on_error=lambda: self._error_exit(f"Failed to stage files: {', '.join(files)}`"),
+            on_error=lambda: self._error_exit(f"Failed to stage files: {', '.join(files_str)}`"),
         )
 
     def list_staged_files(self) -> list[str]:
@@ -311,6 +338,30 @@ class GitHelper(DryRunSupport):
 
         return commits
 
+    def get_commits_between_tags(self, from_tag: str, to_tag: str) -> list[dict]:
+        """
+        Returns commits between two tags in chronological order (oldest → newest)
+        Each commit: {sha, header, body, author, date}
+        """
+        format_str = "%H%n%s%n%an%n%ad%n%B%n---END---"
+        rev_range = f"{from_tag}..{to_tag}" if from_tag else to_tag
+        raw = self._run_git(["log", "--reverse", "--pretty=format:" + format_str, rev_range])
+        commits = []
+        for chunk in raw.strip().split("---END---"):
+            if not chunk.strip():
+                continue
+            lines = chunk.strip()
+            sha, header, author, date = lines[0:4]
+            body = "\n".join(lines[4:]).strip()
+            commits.append({
+                "sha": sha,
+                "header": header,
+                "author": author,
+                "date": date,
+                "body": body,
+            })
+        return commits
+
     def get_tag_date(self, tag: str) -> str:
         """
         Get the commit date of the given tag
@@ -365,92 +416,71 @@ class GitHelper(DryRunSupport):
             "body": "\n".join(body_lines).strip() if body_lines else None,
         }
 
-    def bump_version(
-            self,
-            current: str,
-            level: str,
-            pre: str | None = None,
-            dev: bool = False,
-            post: bool = False,
-            local: str | None = None,
-            epoch: int | None = None,
-            ) -> str:
+    def get_all_tags(self) -> list[str]:
         """
-        Bump the given semantic version based on the specified level (patch, minor, major).
-        Bumps a semver string like v1.2.3 to the next version.
-        Handles pre-releases like alpha, beta, rc.
-        Bump version using full PEP 440 format:
-        [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local]
+        Returns a list of all Git tags, sorted by creation date.
         """
+        output = self._run_git(["tag", "--sort=creatordate"])
+        return output.strip().splitlines()
 
-        # Match full version wit optional epoch 'v' prefix
-        # Remove pre-release suffix if present
-        # base_tag = re.match(r"v?(\d+)\.(\d+)\.(\d+)", current)
-        base_tag = re.match(r"(?:(\d+)!)?v?(\d+)\.(\d+)\.(\d+)", current)
-        # Matches: v1.2.3, 1.2.3 1.2.3-alpha.1, 1.2.3-beta.9
-        # and extract:
-        # group (1) = major = 1
-        # group (2) = minor = 2
-        # group (3) = patch = 3
-        # pre_tag = re.search(r"-(\w+)\.(\d+)", current)
-        pre_tag = re.search(r"(a|b|rc)(\d+)", current)
-        # Matches: -alpha.1, -beta.2, -rc.5
-        # and extract:
-        # group (1) = label = alpha, beta, or rc
-        # group (2) = number = 1, 2, etc
-        post_tag = re.search(r"post(\d+)", current)
-        dev_tag = re.search(r"dev(\d+)", current)
-        local_tag = re.search(r"\+(.*)", current)
+def parse_pep440_or_semver(tag: str) -> Tuple:
+    """
+    Parse tag into sortable components supporting both SemVer and PEP 440.
 
-        if not base_tag:
-            print(f"❌ Invalid tag format: '{current}' (expected) [N!]X.Y.Z or vX.Y.Z")
-            sys.exit(1)
+    Examples:
+    - 'v1.2.3' -> (1, 2, 3)
+    - '2!1.2.3rc1.post2.dev4+sha.abc123' -> (2, 1, 2, 3, 'rc1', 'post2', 'dev4', 'sha.abc123')
+    - '1.2.3-alpha.1+meta' -> (1, 2, 3, 'alpha.1', 'meta')
+    """
+    tag = tag.lstrip("v")
 
-        epoch_val, major, minor, patch = base_tag.groups()
-        major, minor, patch = map(int, [major, minor, patch])
-        epoch_val = int(epoch_val) if epoch_val else None
+    # Split off epoch
+    epoch = 0
+    if "!" in tag:
+        epoch_str, tag = tag.split("!", 1)
+        if epoch_str.isdigit():
+            epoch = int(epoch_str)
 
-        # Apply bump level
-        if level == "patch":
-            patch += 1
-        elif level == "minor":
-            minor += 1
-            patch = 0
-        elif level == "major":
-            major += 1
-            minor = 0
-            patch = 0
-        else:
-            print("❌ Invalid bump level. Use: Patch, minor, or major.")
-            sys.exit(1)
+    # Split pre-release, post, dev, local
+    main_version = tag
+    pre = post = dev = local = ""
 
-        version = f"{major}.{minor}.{patch}"
+    # local segment
+    if "+" in tag:
+        main_version, local = tag.split("+", 1)
+    if ".post" in main_version:
+        main_version, post = main_version.split(".post", 1)
+        post = "post" + post
+    if ".dev" in main_version:
+        main_version, dev = main_version.split(".dev", 1)
+        dev = "dev" + dev
+    match = re.search(r"(a|b|rc)\d+", main_version)
+    if match:
+        idx = match.start()
+        main_version, pre = main_version[:idx], main_version[idx:]
 
-        # Pre-release
-        if pre:
-            pre_letter = {"alpha": "a", "beta": "b", "rc": "rc"}.get(pre.lower(), pre.lower())
-            if pre_tag and pre_tag.group(1) == pre_letter:
-                pre_num = int(pre_tag.group(2)) + 1
-            else:
-                pre_num = 1
-            version += f"{pre_letter}{pre_num}"
+    parts = tuple(
+        [epoch] +
+        [int(p) if p.isdigit() else p for p in re.split(r"[^\W]+", main_version) if p] +
+        [pre, post, dev, local]
+    )
+    return parts
 
-        # Post-release
-        if post:
-            post_num = int(post_tag.group(1)) + 1 if post_tag else 1
-            version += f".post{post_num}"
+def get_last_tag_before(current_tag: str, all_tags: List[str]) -> str:
+    """
+    Returns the last final (non-prerelease) tag that comes before the given tag.
+    A final tag has no a/b/rc/dev suffix.
+    """
+    clean_current = current_tag.lstrip()("v")
+    for tag in reversed(all_tags):
+        if tag == current_tag:
+            continue
+        if not re.search(r"(a|b|rc|dev)\d*", tag) and tag < clean_current:
+            return tag
+    return ""
 
-        # Development-release
-        if dev:
-            dev_num = int(dev_tag.group(1)) + 1 if dev_tag else 1
-            version += f".dev{dev_num}"
-
-        # Local version metadata
-        if local:
-            version += f"+{local}"
-
-        # Add epoch
-        if epoch and epoch > 0:
-            version = f"{epoch}!{version}"
-
-        return version
+def get_sorted_tags(tags: List[str]) -> List[str]:
+    """
+    Sort tags using combined PEP 440 / SemVer logic.
+    """
+    return sorted(tags, key=parse_pep440_or_semver)
