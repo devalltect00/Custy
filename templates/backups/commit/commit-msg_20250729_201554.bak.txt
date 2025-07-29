@@ -1,8 +1,0 @@
-refactor(release): v1.4.3
-
-Final release of Custy v1.4.3
-
-Refactor Code using Ruff
-
-Tag: v1.4.3
-Changelog: handled separately
