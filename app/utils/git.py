@@ -355,7 +355,11 @@ class GitHelper(DryRunSupport):
         for chunk in raw.strip().split("---END---"):
             if not chunk.strip():
                 continue
-            lines = chunk.strip()
+            # lines = chunk.strip()
+            # sha, header, author, date = lines[0:4]
+            lines = chunk.strip().splitlines()
+            if len(lines) < 4:
+                continue # or log error and skip
             sha, header, author, date = lines[0:4]
             body = "\n".join(lines[4:]).strip()
             commits.append({
