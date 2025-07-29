@@ -60,6 +60,7 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] on CLI parameters, on --bump, add option `final`. So the bump from v1.4.0rc[n] to -> v1.4.0
 -   [ ] bug fixes or improvements, if switch to release/x/y or rc version tag get all message from dev branch like alpha, beta, rc, dev, etc
 -   [ ] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
+-   [ ] Make sure backup and add all of them to stages before commit and push
 
 ---
 
@@ -81,6 +82,7 @@ Personal notes, planning, and roadmap for **Custy**
 -   Automatically set template commit-msg.txt based on stages which one is added and modified.
 -   Automatically create and delete commit-msg.txt when needed if we set argument on CLI or by default like that.
 -   Backup before delete the commit-msg.txt
+-   optionally, we can just see what would the next version by include additional CLI parameters or another ideas or just use --dry-run
 
 ---
 
@@ -101,3 +103,7 @@ solution1: go back to `main` branch. merge them. tagging and push the `main`. Up
 2. Squash Commits Before Merging into dev or main
 3. Use [skip ci] or [ci skip] in Commit Messages like `git commit -m "ci: testing YAML [skip ci]"` or `git commit -m "docs: update README [ci skip]"`
 4. Cleanup Before Tagging/Changelog
+
+### Usage
+
+if the commit type not [feat, fix, perf, docs, refactor] the version will not bump. 💡Hint: use --dry-run before run the actual to see what the next version would be
