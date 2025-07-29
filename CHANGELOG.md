@@ -4,7 +4,60 @@
 
 
 ## Unreleased (2025-07-29)
+### 🔧 Chores
+- **release**: v1.4.2
+  
+  Final release of Custy v1.4.2
+
+Includes modified documentation.
+
+Tag: v1.4.2
+Changelog: handled separately
+  
+- **release**: v1.4.0
+  
+  Final release of Custy v1.4.0 - prompted from release candidate.
+
+Includes all feature and fixes from alpha and RC pre-releases.
+
+Tag: v1.4.0
+Changelog: handled separately
+  
+- **release**: v1.4.0rc2
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Improve docs
+
+Tag: v1.4.0rc2
+  
+- **release**: v1.4.0rc1
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+Includes:
+- Version bump protection within pre-release tier (e.g., rc1 â†’ rc2)
+- Restriction of changelog to final releases only
+- Commit type validation for bump/tag operations
+- Project type detection (PEP 440 or SemVer) for versioning
+- External tag message support (`tag-msg.txt`)
+- Auto-generation of release commit/tag message templates
+- RC â†’ final bump without patch increment
+- `cleanup-backups` CLI command
+- Improved dry-run behavior
+- Expanded documentation and Makefile updates
+- Backup/template folder resolution fixes
+
+Tag: v1.4.0rc1
+  
+- **commit_msg**: support 'release' as valid Conventional Commit type
+  
+  - Added 'release' to allowed commit types in the validator
+
+Changelog: handled separately
+  
 ### 📝 Documentation
+- **changelog**: update changelog
 - **release**: v1.4.1
   
   Final release of Custy v1.4.1
@@ -76,49 +129,6 @@ Tag: v1.4.0rc4
 - Resolved issue with `get_last_tag_before()` in `GitHelper`(`app\utils\git.py`).
 
 Tag: v1.4.0rc3
-  
-### 🔧 Chores
-- **release**: v1.4.0
-  
-  Final release of Custy v1.4.0 - prompted from release candidate.
-
-Includes all feature and fixes from alpha and RC pre-releases.
-
-Tag: v1.4.0
-Changelog: handled separately
-  
-- **release**: v1.4.0rc2
-  
-  Release candidate for v1.4.0, consolidating all pre-release changes.
-
-- Improve docs
-
-Tag: v1.4.0rc2
-  
-- **release**: v1.4.0rc1
-  
-  Release candidate for v1.4.0, consolidating all pre-release changes.
-
-Includes:
-- Version bump protection within pre-release tier (e.g., rc1 â†’ rc2)
-- Restriction of changelog to final releases only
-- Commit type validation for bump/tag operations
-- Project type detection (PEP 440 or SemVer) for versioning
-- External tag message support (`tag-msg.txt`)
-- Auto-generation of release commit/tag message templates
-- RC â†’ final bump without patch increment
-- `cleanup-backups` CLI command
-- Improved dry-run behavior
-- Expanded documentation and Makefile updates
-- Backup/template folder resolution fixes
-
-Tag: v1.4.0rc1
-  
-- **commit_msg**: support 'release' as valid Conventional Commit type
-  
-  - Added 'release' to allowed commit types in the validator
-
-Changelog: handled separately
   
 ### ✨ Features
 - **core**: implement advanced versioning rules and CLI behavior controls
