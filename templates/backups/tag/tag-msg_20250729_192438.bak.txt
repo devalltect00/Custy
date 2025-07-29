@@ -1,9 +1,0 @@
-🧪 Release Candidate 1.4.0rc4
-
-This release candidate prepares the upcoming **Custy CLI v1.4.0** with several feature enhancements, safeguard, and automation improvements. It consolitaes all changes introduces across earlier pre-release.
-
-### 🔍 Highlights
-
-- Resolved issue with `_prepare_release_message_from_prereleases()` in `GitCommitTagger`(`app\git_commit_tagger.py`).
-
-ℹ️ This is a **release-candidate** feature-complete but pending final validation before stable release.
