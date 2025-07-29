@@ -4,6 +4,45 @@
 
 
 ## Unreleased (2025-07-29)
+### 📝 Documentation
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes modified documentation.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes bug fixes.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### 🐛 Bug Fixes
 - **release**: v1.4.1
   
@@ -38,35 +77,6 @@ Tag: v1.4.0rc4
 
 Tag: v1.4.0rc3
   
-### 📝 Documentation
-- **changelog**: update changelog
-- **release**: v1.4.1
-  
-  Final release of Custy v1.4.1
-
-Includes bug fixes.
-
-Tag: v1.4.1
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **TODO.md**: add or change todo
-  
-  - add or change todo
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **TODO.md**: add or change todo
-  
-  - add or change todo
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
 ### 🔧 Chores
 - **release**: v1.4.0
   
@@ -194,6 +204,19 @@ Changelog: handled separately
 
 Changelog: handled separately
   
+
+## 1.4.2 (2025-07-29)
+### 📝 Documentation
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes modified documentation.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
 
 ## 1.4.1 (2025-07-29)
 ### 🐛 Bug Fixes
