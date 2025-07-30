@@ -43,6 +43,7 @@ class GitCommitTagger:
         auto_stage: bool | None = False,
         stage_mode: str | None = "all",
         force_changelog: bool | None = False,
+        force_commit: bool | None = False,
     ) -> None:
         self.message_path: Path = Path(message_file)
         self.tag_input: str | None = tag
@@ -61,6 +62,7 @@ class GitCommitTagger:
         self.auto_stage: bool | None = auto_stage
         self.stage_mode: str | None = stage_mode
         self.force_changelog: bool | None = force_changelog
+        self.force_commit: bool | None = force_commit
 
         self.tag: str = ""
         self.tag_msg: str = ""
@@ -322,6 +324,9 @@ class GitCommitTagger:
             if not self.dry_run:
                 # 🔁 Re-check after auto-staging
                 if not self.git.has_staged_files():
+                    if self.force_commit:
+                        print("⚠️ Still no staged files after auto-staging. but proceeding due to --force-commit.")
+                        return
                     self._error_exit("Still no staged changes after `git add .`")
 
             staged_files = self.git.list_staged_files()
@@ -331,6 +336,13 @@ class GitCommitTagger:
                     print(colored(f"  -{file}", "green"))
             else:
                 print("⚠️ No files were staged.")
+                if self.force_commit:
+                    print("⚠️ Proceeding with empty due to --force-commit.")
+                    return
+                self._error_exit("No files staged after auto-stage.")
+        elif self.force_commit:
+            print("⚠️ No staged files, but proceeding due to --force-commit.")
+            return
         else:
             print("❌ Error: No staged changes to commit.")
             print("💡 Hint: Stage files using `git add <file>` or `git add .`")
@@ -343,8 +355,12 @@ class GitCommitTagger:
             sys.exit(1)
 
     def _commit(self) -> None:
+        command = ["git", "commit", "-F", str(self.message_path)]
+        if self.force_commit and not self.git.has_staged_files():
+            command.append("--allow-empty")
+
         self.git.runner.run(
-            command=["git", "commit", "-F", str(self.message_path)],
+            command=command,
             check=True,
             on_error=lambda: self._error_exit("Failed to commit."),
         )

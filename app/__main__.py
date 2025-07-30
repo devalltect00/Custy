@@ -60,9 +60,8 @@ def build_git_tool(
         version_file=args.version_file if with_version_file else None,
         auto_stage=auto_stage,
         stage_mode=args.stage_mode if auto_stage else None,
-        force_changelog=args.force_changelog
-        if hasattr(args, "force_changelog")
-        else False,
+        force_changelog=getattr(args, "force_changelog", False),
+        force_commit=getattr(args, "force_commit", False),
     )
 
 
@@ -161,6 +160,11 @@ def main() -> None:
             "--dry-run",
             action="store_true",
             help="Simulate commands without executing. Dry run mode.",
+        )
+        p.add_argument(
+            "--force-commit",
+            action="store_true",
+            help="Allow committing even when no staged changes are detected. Creates an empty commit."
         )
 
     def add_tagging_arguments(p):

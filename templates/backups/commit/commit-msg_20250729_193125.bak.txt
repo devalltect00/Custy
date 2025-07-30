@@ -1,7 +1,0 @@
-fix(release): v1.4.0rc5
-
-Release candidate for v1.4.0, consolidating all pre-release changes.
-
-- Resolved issue with `get_commits_between_tags()` in `GitHelper`(`app\utils\git.py`).
-
-Tag: v1.4.0rc5
