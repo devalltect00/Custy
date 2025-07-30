@@ -1,2 +1,6 @@
 [versioning]
 strategy = "pep440"  # valid values: 440, semver, commitizen, date, gitcount
+
+[release]
+custom_author = "devalltect00"
+include_date = true

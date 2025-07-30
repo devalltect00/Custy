@@ -3,6 +3,7 @@
 from .backup_manager import BackupManager
 from .changelog_generator import ChangelogGenerator
 from .commitizen import CommitizenHelper
+from .config import load_custor_config
 from .dry_run import Runner
 from .dry_run_support import DryRunSupport
 from .git import GitHelper, get_last_tag_before, get_sorted_tags
@@ -14,16 +15,16 @@ from .tag_strategy.date_strategy import DateStrategy
 from .tag_strategy.git_count_strategy import GitCountStrategy
 from .tag_strategy.pep404_strategy import PEP404Strategy
 from .tag_strategy.semver_strategy import SemverStrategy
-from .version_utils import (
-    assert_is_final_version,
-    contains_allowed_commit_type,
-    maybe_assert_is_final,
-)
+from .version_utils import (assert_is_final_version,
+                            contains_allowed_commit_type,
+                            maybe_assert_is_final)
+from .versioning import ReleaseInfo, ReleaseNoteBuilder, VersionType
 
 __all__ = [
     "BackupManager",
     "ChangelogGenerator",
     "CommitizenHelper",
+    "load_custor_config",
     "CommitizenStrategy",
     "DateStrategy",
     "DryRunSupport",
@@ -40,4 +41,7 @@ __all__ = [
     "assert_is_final_version",
     "contains_allowed_commit_type",
     "maybe_assert_is_final",
+    "ReleaseInfo",
+    "ReleaseNoteBuilder",
+    "VersionType",
 ]

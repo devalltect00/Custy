@@ -28,7 +28,8 @@ import sys
 from pathlib import Path
 
 from .git_commit_tagger import GitCommitTagger
-from .utils import BackupManager, detect_project_strategy, maybe_assert_is_final
+from .utils import (BackupManager, detect_project_strategy,
+                    maybe_assert_is_final)
 
 # =======================
 # 🏗️ Factory method

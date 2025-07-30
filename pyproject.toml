@@ -18,7 +18,8 @@ dependencies = [
     "termcolor",
     "colorama",
     "jinja2",
-    "toml"
+    "toml",
+    "pydantic",
     ]
 dynamic = ["version"]
 # With this the version will be auto-generated from git tags using setuptools_scm

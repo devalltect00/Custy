@@ -1,0 +1,23 @@
+🧪 Beta Release Custy 1.5.0b1
+
+Beta release for **Custy v1.5.0** — focusing on mid-stage features and improved automation.
+
+### ✨ Features
+- Add structured generation of `commit-msg.txt` and `tag-msg.txt`
+- Improve message clarity, flexibility, and consistency
+- Enhance template customization for different version types (alpha, beta, rc, final)
+
+### 🐛 Bug Fixes
+- Ensure commit/tag message files are properly staged and backed up
+- Fix dry-run behavior in message generation flow
+- Address minor edge cases in automation
+
+### 📝 Documentation
+- Reference commit/tag standards in `docs\git\commit_message.md`
+- Add internal usage notes and automation guidance
+
+---
+
+ℹ️ This is a **beta pre-release** and is **not recommended for production use**.
+_Author: devalltect00_
+_Date: 2025-07-30_

@@ -98,7 +98,7 @@ class SemverVersionHelper:
                 )
 
         # Compose version
-        version = f"{self.major}.{self.minor}.{self.patch}"
+        version = f"v{self.major}.{self.minor}.{self.patch}"
 
         # Add new pre-release
         if target_pre:

@@ -9,21 +9,12 @@ from textwrap import dedent
 
 from termcolor import colored
 
-from .utils import (
-    BackupManager,
-    ChangelogGenerator,
-    CommitizenHelper,
-    CommitizenStrategy,
-    DateStrategy,
-    GitCountStrategy,
-    GitHelper,
-    PEP404Strategy,
-    SemverStrategy,
-    contains_allowed_commit_type,
-    get_last_tag_before,
-    get_sorted_tags,
-    maybe_assert_is_final,
-)
+from .utils import (BackupManager, ChangelogGenerator, CommitizenHelper,
+                    CommitizenStrategy, DateStrategy, GitCountStrategy,
+                    GitHelper, PEP404Strategy, ReleaseInfo, ReleaseNoteBuilder,
+                    SemverStrategy, VersionType, contains_allowed_commit_type,
+                    get_last_tag_before, get_sorted_tags,
+                    maybe_assert_is_final)
 
 # =======================
 # 🚀 Main Class
@@ -56,7 +47,7 @@ class GitCommitTagger:
         self.message_path: Path = Path(message_file)
         self.tag_input: str | None = tag
         self.tag_msg_input: str | None = tag_msg
-        self.tag_msg_file: str | None = tag_msg_file
+        self.tag_msg_file: Path | None = Path(tag_msg_file)
         self.strategy_input: str | None = strategy
         self.bump_level: str | None = bump
         self.pre_release: str | None = pre_release
@@ -151,13 +142,16 @@ class GitCommitTagger:
         self.validate()
         self.git.check_remote_origin()
         self._resolve_tag()
-        self._prepare_and_edit_release_message_if_final()
-        # self._open_editor()
+        self._generate_release_notes()
+        # self._prepare_and_edit_release_message_if_final()
+        self._open_editor(self.tag_msg_file)
+        self._open_editor(self.message_path)
         self._check_commit_type_for_tagging()
         # self.cz.check_commit(path=self.message_path,)  # Use the format  agreed upon with Commitizen.
         self.git.check_commit_message_file(self.message_path)
         self._update_version_file()
         self.cz.update_cz_toml_version(new_version=self.tag)
+        self._backup_tag_message_with_check()
         self._backup_commit_message()
         self._stage_pre_commit()
         self._commit()
@@ -225,21 +219,11 @@ class GitCommitTagger:
             tag_msg_path.write_text(default_content, encoding="utf-8")
             print(f"📝 Created default tag message file: {tag_msg_path}")
 
-        print(f"📝 Opening tag message file for editing: {tag_msg_path}")
-        editors = [["code", "--wait"], ["notepad"]]
-        for editor in editors:
-            try:
-                self.git.runner.run(
-                    command=editor + [str(tag_msg_path)], shell=True, check=True
-                )
-                break
-            except Exception:
-                continue
-
+    def _backup_tag_message_with_check(self):
         # Read edited content
-        if tag_msg_path.exists():
-            self.tag_msg = tag_msg_path.read_text(encoding="utf-8").strip()
-            print(f"📄 Using tag message from: {tag_msg_path}")
+        if self.tag_msg_file.exists():
+            self.tag_msg = self.tag_msg_file.read_text(encoding="utf-8").strip()
+            print(f"📄 Using tag message from: {self.tag_msg_file}")
             self._backup_tag_message()
         else:
             self.tag_msg = self.tag
@@ -282,14 +266,14 @@ class GitCommitTagger:
 
         self.git.stage_files(files_to_stage)
 
-    def _open_editor(self) -> None:
-        print(f"📝 Opening {self.message_path} for editing...")
+    def _open_editor(self, path: Path) -> None:
+        print(f"📝 Opening {path} for editing...")
         editors = [["code", "--wait"], ["notepad"]]
         for editor_cmd in editors:
             try:
                 if not self.dry_run:
                     self.git.runner.run(
-                        command=editor_cmd + [str(self.message_path)],
+                        command=editor_cmd + [str(path)],
                         shell=True,
                         check=True,
                     )
@@ -537,4 +521,48 @@ class GitCommitTagger:
         if not self._is_pre_release(self.tag) and self.pre_release is None:
             notes = self._prepare_release_message_from_prereleases(self.tag)
             self._write_template_to_message_file(notes)
-        self._open_editor()
+        self._open_editor(self.message_path)
+
+    def _generate_release_notes(self):
+        """
+        Generate commit-msg.txt and tag-msg.txt using ReleaseNoteBuilder.
+        """
+        version = self.tag
+        version_type = VersionType.detect(version)
+        all_tags = self.git.get_all_tags()
+        sorted_tags = get_sorted_tags(all_tags)
+        version_prefix = version.removeprefix("v")
+
+        # Find pre-release tags this version (e.g. v1.4.0a1, rc1, etc.)
+        prereleases = [
+            t for t in sorted_tags
+            if t.startswith(version_prefix) and re.search(r"(a|b|rc|dev)", t)
+        ]
+        prereleases = list(reversed(prereleases))
+        latest_pre = prereleases[0] if prereleases else None
+
+        # Determine if there are any changes since last RC/prerelease
+        has_changes = True
+        if version_type == VersionType.FINAL and latest_pre:
+            changes = self.git.get_commits_between_tags(latest_pre, version)
+            has_changes = bool(changes)
+
+        # Build structured release info
+        info = ReleaseInfo(
+            version=version,
+            version_type=version_type,
+            app_name="Custy",
+            prerelease_tags=prereleases,
+            latest_prerelease=latest_pre,
+            has_changes_since_rc=has_changes
+        )
+
+        builder = ReleaseNoteBuilder(info)
+
+        # Write commit-msg.txt
+        if self.message_path:
+            self.message_path.write_text(builder.build_commit_msg(), encoding="utf-8")
+
+        # Write tag-msg.txt
+        if self.tag_msg_file:
+            Path(self.tag_msg_file).write_text(builder.build_tag_msg(), encoding="utf-8")
