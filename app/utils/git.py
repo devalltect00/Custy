@@ -368,6 +368,11 @@ class GitHelper(DryRunSupport):
         raw = self._run_git(
             ["log", "--reverse", "--pretty=format:" + format_str, rev_range]
         )
+
+        if not raw:
+            print(f"⚠️ Skipped log retrieval: {from_tag}..{to_tag} (dry-run?)")
+            return []
+
         commits = []
         for chunk in raw.strip().split("---END---"):
             if not chunk.strip():

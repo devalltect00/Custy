@@ -1,0 +1,20 @@
+feat(release): 1.5.0
+
+Final release of **Custy 1.5.0**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: 1.5.0rc1, 1.5.0b3, 1.5.0b2, 1.5.0b1.
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- Add structured generation of `commit-msg.txt` and `tag-msg.txt`
+- Improve message clarity, flexibility, and consistency
+- Enhance template customization for different version types (alpha, beta, rc, final)
+- Ensure commit/tag message files are properly staged and backed up
+- Fix dry-run behavior in message generation flow
+- Address minor edge cases in automation
+- Reference commit/tag standards in `docs\git\commit_message.md`
+- Add internal usage notes and automation guidance
+- Ensure commit and tag backup files and odl files to staged and commit
+- Handle staged and commit when no staged changes detected
+- Updated `TODO.md`
+
+Tag: 1.5.0
+Changelog: handled separately
