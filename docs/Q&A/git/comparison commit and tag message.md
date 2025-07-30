@@ -98,3 +98,66 @@ Examples of improvements:
 - Improve staging and backup behavior
 
 ```
+
+## ✅ When to Use Summary Placeholder 🅰 vs Full List 🅱 (By Release Type)
+
+| **Situation / Release Type**                                | **Use Summary Placeholder 🅰** | **Use Full List 🅱** | **Notes**                                                              |
+| ----------------------------------------------------------- | ----------------------------- | ------------------- | ---------------------------------------------------------------------- |
+| 🧪 **Alpha / Beta (WIP, partial)**                          | ✅                            | Maybe               | Still unstable. Prefer minimal, avoid duplicating full detail.         |
+| 🧪 **RC (Release Candidate)**                               | ✅ (if stable enough)         | ✅ (if confident)   | Important checkpoint. Summary is okay, full list helpful if validated. |
+| ✅ **Final release**                                        | Maybe                         | ✅                  | User-facing, changelog-worthy — full list preferred.                   |
+| 🛠️ **Dev release (e.g. `1.5.0.dev3`)**                      | ✅                            | ❌                  | Internal/experimental — short, fast iteration. Avoid verbosity.        |
+| 🔁 **Post release (e.g. `1.5.0.post1`)**                    | ✅                            | Maybe               | Often hotfixes or docs — short message is usually enough.              |
+| 🐞 **Hotfix / Patch**                                       | ✅                            | ✅                  | Depends on urgency. Quick fix = summary; more context = full list.     |
+| ✨ **You want clean and minimal commit logs**               | ✅                            | ❌                  | Commit remains short, tag carries full details.                        |
+| 📜 **You want informative `git log` w/o viewing tag**       | ❌                            | ✅                  | Full list gives instant clarity in terminal/CLI-only workflows.        |
+| 🔄 **You’re generating both commit & tag from same script** | ✅                            | ❌                  | Prevents duplication, especially in automated pipelines.               |
+| ✍️ **Manual, curated release commit**                       | Maybe                         | ✅                  | Fine to repeat highlights if message is hand-written.                  |
+
+## 💡 Summary by Release Type
+
+| Release Type     | Preferred Commit Body Style | Why                                                            |
+| ---------------- | --------------------------- | -------------------------------------------------------------- |
+| **dev**          | 🅰 Summary only              | Too fast-changing, not worth listing everything                |
+| **alpha / beta** | 🅰 Summary + optional hints  | Feature-incomplete. Summary enough, but may include 1–2 lines  |
+| **rc**           | 🅱 Full list (if stable)     | Considered stable. Worth describing features in commit         |
+| **final**        | 🅱 Full list preferred       | Be complete — useful for git log, changelog, releases          |
+| **post**         | 🅰 Summary or 🅱 light list   | Bug/doc fix? Short is fine. More details if major backport/fix |
+
+## ✅ Suggested Format for Dev/RC/Post
+
+### 🧪 Dev Example:
+
+```text
+chore(release): 1.5.0.dev3 – early dev iteration
+
+This dev build includes internal tweaks and early test scaffolding.
+- *(Nothing yet)* – See tag message or changelog for details.
+
+Tag: 1.5.0.dev3
+```
+
+### 🔄 RC Example:
+
+```text
+chore(release): 1.5.0rc1 – release candidate for v1.5.0
+
+This RC prepares the final build of Custy 1.5.0 with validated features.
+
+- Add structured message templates
+- Improve dry-run automation logic
+- Final documentation touches
+
+Tag: 1.5.0rc1
+```
+
+### 📌 Post Example:
+
+```text
+chore(release): 1.5.0.post1 – follow-up patch release
+
+Applies minor documentation and backup-related fixes.
+- *(Nothing yet)* – See tag for full breakdown.
+
+Tag: 1.5.0.post1
+```

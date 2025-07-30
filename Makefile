@@ -1,7 +1,7 @@
 .PHONY: run-main \
             structure \
             lint-ruff lint-ruff-fix format-ruff format-black format-all \
-            git-current-branch git-origin-url \
+            git-current-branch git-origin-url git-show-log git-show-log-tag \
             generate_ignore_files \
             custy-all-major custy-all-minor custy-all-patch  \
             custy-all-major-alpha custy-all-minor-alpha custy-all-patch-alpha \
@@ -148,10 +148,10 @@ git-current-branch:
 git-origin-url:
 	git remote get-url origin
 
-git--show-log:
-	git log --oneline --graph --decorate
+git-show-log:
+	git log --oneline --graph --decorate --all
 
-git--show-log-tag:
+git-show-log-tag:
 	git log --no-walk --tags --pretty="format:%h %d %s"
 
 # -----------------------------

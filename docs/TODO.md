@@ -46,7 +46,7 @@ Personal notes, planning, and roadmap for **Custy**
 
 ### 🧩 In Progress
 
--   _(Nothing yet)_
+-   [x] bug fix error where now on post tag and now bump in the same post tag for example 1.5.0.post1 → 1.5.0.post2
 
 ---
 

@@ -54,7 +54,13 @@ class PEP440VersionHelper:
         return (match.group(1), int(match.group(2))) if match else (None, None)
 
     def _search_tag(self, tag: str, group=1):
-        pattern = tag if tag == "post" else tag + r"(\d+)"
+        # pattern = tag if tag == "post" else tag + r"(\d+)"
+        if tag == "post":
+            pattern = r"post(\d+)"
+        elif tag == "dev":
+            pattern = r"dev(\d+)"
+        else:
+            pattern = tag  # fallback for things like r"\+(.*)"
         match = re.search(pattern, self.original)
         return match.group(group) if match else None
 
