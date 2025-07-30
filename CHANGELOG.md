@@ -3,18 +3,78 @@
 
 
 
-## Unreleased (2025-07-29)
-### 🧠 Refactoring
-- **release**: v1.4.3
+## Unreleased (2025-07-31)
+### ✨ Features
+- **release**: 1.5.0
   
-  Final release of Custy v1.4.3
+  Final release of **Custy 1.5.0**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: 1.5.0rc1, 1.5.0b3, 1.5.0b2, 1.5.0b1.
 
-Refactor Code using Ruff
+This final release includes all validated features and fixes from earlier pre-releases:
+- Add structured generation of `commit-msg.txt` and `tag-msg.txt`
+- Improve message clarity, flexibility, and consistency
+- Enhance template customization for different version types (alpha, beta, rc, final)
+- Ensure commit/tag message files are properly staged and backed up
+- Fix dry-run behavior in message generation flow
+- Address minor edge cases in automation
+- Reference commit/tag standards in `docs\git\commit_message.md`
+- Add internal usage notes and automation guidance
+- Ensure commit and tag backup files and odl files to staged and commit
+- Handle staged and commit when no staged changes detected
+- Updated `TODO.md`
 
-Tag: v1.4.3
+Tag: 1.5.0
+Changelog: handled separately
+  
+- **release**: 1.5.0b1
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b1
+  
+- **core**: implement advanced versioning rules and CLI behavior controls
+  
+  This commit introduces a series of improvements across versioning, tagging, changelog generation, and backup handling in Custy CLI.
+
+- Prevents major.minor.patch bump when incrementing within same pre-release tier (e.g. rc1 â†’ rc2)
+- Generates changelog only on final releases (e.g. v1.2.3), skipping pre-releases
+- Enforces bump/tag only for specific types [feat, fix, perf, docs, refactor]; others require CLI override
+- Detects project type (Python or JavaScript) to apply correct versioning scheme (PEP 440 or SemVer)
+- Tag messages now opened in external file like commit-msg.txt; supports default message via flag
+- For release tags, auto-generates commit/tag message template from all prereleases (pre, dev, etc.)
+- Prevents bump from rc â†’ final from incrementing patch (v1.2.3rc1 â†’ v1.2.3, not v1.2.4)
+- Adds cleanup logic for `backups/`, keeping 10 latest (customizable via CLI)
+- Fixes backup and template folder resolution; commit-msg.txt placement corrected
+- Adds `cleanup-backups` CLI handler
+- Updated `.gitignore` to ignore `templates/tag-msg.txt`
+- Updated `.projectignore` to ignore `templates/tag-msg.txt`
+
+Changelog: handled separately
+  
+- **versioning**: Improve pre-release and full versioning support with PEP 440
+  
+  - Fix pre-release version format to comply with pep440 for python
+- Add support for full format: [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local]
+- Additionally support Post-release, development, local identifiers, and epoch segment
+
 Changelog: handled separately
   
 ### 📝 Documentation
+- **release**: 1.5.0rc1
+  
+  Release candidate for **Custy 1.5.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0rc1
+  
+- **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
 - **release**: v1.4.1
@@ -55,7 +115,95 @@ Changelog: handled separately
 - **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
+### 🐛 Bug Fixes
+- **release**: 1.5.0b3
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b3
+  
+- **release**: 1.5.0b2
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b2
+  
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes bug fixes.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **release**: v1.4.0rc5
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `get_commits_between_tags()` in `GitHelper`(`app\utils\git.py`).
+
+Tag: v1.4.0rc5
+  
+- **release**: v1.4.0rc4
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `_prepare_release_message_from_prereleases()` in `GitCommitTagger`(`app\git_commit_tagger.py`).
+
+Tag: v1.4.0rc4
+  
+- **release**: v1.4.0rc3
+  
+  Release candidate for v1.4.0, consolidating all pre-release changes.
+
+- Resolved issue with `get_last_tag_before()` in `GitHelper`(`app\utils\git.py`).
+
+Tag: v1.4.0rc3
+  
 ### 🔧 Chores
+- **release**: 1.5.0b1
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b1
+  
+- **release**: v1.5.0a1
+  
+  - _(Nothing yet)_
+
+Tag: v1.5.0a1
+  
+- **release**: v1.5.0a2
+  
+  - _(Nothing yet)_
+
+Tag: v1.5.0a2
+  
+- **release**: v1.5.0rc1
+  
+  - _(Nothing yet)_
+
+Tag: v1.5.0rc1
+  
+- **release**: v1.5.0
+  
+  - _(Nothing yet)_
+
+Tag: v1.5.0
+  
 - **release**: v1.4.2
   
   Final release of Custy v1.4.2
@@ -107,66 +255,14 @@ Tag: v1.4.0rc1
 
 Changelog: handled separately
   
-### 🐛 Bug Fixes
-- **release**: v1.4.1
+### 🧠 Refactoring
+- **release**: v1.4.3
   
-  Final release of Custy v1.4.1
+  Final release of Custy v1.4.3
 
-Includes bug fixes.
+Refactor Code using Ruff
 
-Tag: v1.4.1
-Changelog: handled separately
-  
-- **release**: v1.4.0rc5
-  
-  Release candidate for v1.4.0, consolidating all pre-release changes.
-
-- Resolved issue with `get_commits_between_tags()` in `GitHelper`(`app\utils\git.py`).
-
-Tag: v1.4.0rc5
-  
-- **release**: v1.4.0rc4
-  
-  Release candidate for v1.4.0, consolidating all pre-release changes.
-
-- Resolved issue with `_prepare_release_message_from_prereleases()` in `GitCommitTagger`(`app\git_commit_tagger.py`).
-
-Tag: v1.4.0rc4
-  
-- **release**: v1.4.0rc3
-  
-  Release candidate for v1.4.0, consolidating all pre-release changes.
-
-- Resolved issue with `get_last_tag_before()` in `GitHelper`(`app\utils\git.py`).
-
-Tag: v1.4.0rc3
-  
-### ✨ Features
-- **core**: implement advanced versioning rules and CLI behavior controls
-  
-  This commit introduces a series of improvements across versioning, tagging, changelog generation, and backup handling in Custy CLI.
-
-- Prevents major.minor.patch bump when incrementing within same pre-release tier (e.g. rc1 â†’ rc2)
-- Generates changelog only on final releases (e.g. v1.2.3), skipping pre-releases
-- Enforces bump/tag only for specific types [feat, fix, perf, docs, refactor]; others require CLI override
-- Detects project type (Python or JavaScript) to apply correct versioning scheme (PEP 440 or SemVer)
-- Tag messages now opened in external file like commit-msg.txt; supports default message via flag
-- For release tags, auto-generates commit/tag message template from all prereleases (pre, dev, etc.)
-- Prevents bump from rc â†’ final from incrementing patch (v1.2.3rc1 â†’ v1.2.3, not v1.2.4)
-- Adds cleanup logic for `backups/`, keeping 10 latest (customizable via CLI)
-- Fixes backup and template folder resolution; commit-msg.txt placement corrected
-- Adds `cleanup-backups` CLI handler
-- Updated `.gitignore` to ignore `templates/tag-msg.txt`
-- Updated `.projectignore` to ignore `templates/tag-msg.txt`
-
-Changelog: handled separately
-  
-- **versioning**: Improve pre-release and full versioning support with PEP 440
-  
-  - Fix pre-release version format to comply with pep440 for python
-- Add support for full format: [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local]
-- Additionally support Post-release, development, local identifiers, and epoch segment
-
+Tag: v1.4.3
 Changelog: handled separately
   
 
@@ -224,6 +320,147 @@ Changelog: handled separately
 - synced version in `cz.toml`
 
 Changelog: handled separately
+  
+
+## 1.5.0rc1 (2025-07-31)
+### 📝 Documentation
+- **release**: 1.5.0rc1
+  
+  Release candidate for **Custy 1.5.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0rc1
+  
+
+## 1.5.0b3 (2025-07-31)
+### 🐛 Bug Fixes
+- **release**: 1.5.0b3
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b3
+  
+
+## 1.5.0b2 (2025-07-30)
+### 🐛 Bug Fixes
+- **release**: 1.5.0b2
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b2
+  
+
+## 1.5.0 (2025-07-31)
+### ✨ Features
+- **release**: 1.5.0
+  
+  Final release of **Custy 1.5.0**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: 1.5.0rc1, 1.5.0b3, 1.5.0b2, 1.5.0b1.
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- Add structured generation of `commit-msg.txt` and `tag-msg.txt`
+- Improve message clarity, flexibility, and consistency
+- Enhance template customization for different version types (alpha, beta, rc, final)
+- Ensure commit/tag message files are properly staged and backed up
+- Fix dry-run behavior in message generation flow
+- Address minor edge cases in automation
+- Reference commit/tag standards in `docs\git\commit_message.md`
+- Add internal usage notes and automation guidance
+- Ensure commit and tag backup files and odl files to staged and commit
+- Handle staged and commit when no staged changes detected
+- Updated `TODO.md`
+
+Tag: 1.5.0
+Changelog: handled separately
+  
+- **release**: 1.5.0b1
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b1
+  
+### 📝 Documentation
+- **release**: 1.5.0rc1
+  
+  Release candidate for **Custy 1.5.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0rc1
+  
+- **changelog**: update changelog
+### 🐛 Bug Fixes
+- **release**: 1.5.0b3
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b3
+  
+- **release**: 1.5.0b2
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b2
+  
+### 🔧 Chores
+- **release**: 1.5.0b1
+  
+  Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0b1
+  
+- **release**: v1.5.0a1
+  
+  - _(Nothing yet)_
+
+Tag: v1.5.0a1
+  
+- **release**: v1.5.0a2
+  
+  - _(Nothing yet)_
+
+Tag: v1.5.0a2
+  
+- **release**: v1.5.0rc1
+  
+  - _(Nothing yet)_
+
+Tag: v1.5.0rc1
+  
+- **release**: v1.5.0
+  
+  - _(Nothing yet)_
+
+Tag: v1.5.0
   
 
 ## 1.4.3 (2025-07-29)
