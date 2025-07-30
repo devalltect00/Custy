@@ -4,6 +4,20 @@
 
 
 ## Unreleased (2025-07-31)
+### 📝 Documentation
+- **release**: 1.7.0.post3
+  
+  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.7.0.
+
+This post-release includes minor updates and corrections after the official release:
+- modified documentation `docs/TODO.md`
+
+Tag: 1.7.0.post3
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### 🐛 Bug Fixes
 - **release**: 1.6.0.post2
   
@@ -18,8 +32,6 @@ This post-release includes minor updates and corrections after the official rele
 Tag: 1.6.0.post2
 Changelog: handled separately
   
-### 📝 Documentation
-- **changelog**: update changelog
 
 ## v1.5.0.post1 (2025-07-31)
 ### 📝 Documentation
@@ -353,6 +365,21 @@ Changelog: handled separately
 
 Changelog: handled separately
   
+
+## 1.7.0.post3 (2025-07-31)
+### 📝 Documentation
+- **release**: 1.7.0.post3
+  
+  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.7.0.
+
+This post-release includes minor updates and corrections after the official release:
+- modified documentation `docs/TODO.md`
+
+Tag: 1.7.0.post3
+Changelog: handled separately
+  
+- **changelog**: update changelog
 
 ## 1.6.0.post2 (2025-07-31)
 ### 🐛 Bug Fixes
