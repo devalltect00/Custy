@@ -1,0 +1,12 @@
+🧪 Beta Release Custy 1.5.0b2
+
+Beta release for **Custy 1.5.0** — focusing on mid-stage features and improved automation.
+
+### 🐛 Bug Fixes
+- Ensure commit and tag backup files and odl files to staged and commit
+
+---
+
+ℹ️ This is a **beta pre-release** and is **not recommended for production use**.
+_Author: devalltect00_
+_Date: 2025-07-30_

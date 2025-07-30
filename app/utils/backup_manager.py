@@ -8,7 +8,7 @@ class BackupManager:
     def __init__(self, keep: int = 10):
         self.keep = keep
 
-    def _prune_old_backups(self, backup_dir: Path, stem: str):
+    def _prune_old_backups(self, backup_dir: Path, stem: str) -> list[Path]:
         """
         Keep only the most recent N backup files. Delete older ones.
         """
@@ -28,3 +28,5 @@ class BackupManager:
                 print(f"🗑️ Removed old backup: {old_file}")
             except Exception as e:
                 print(f"⚠️ Failed to delete old backup: {e}")
+
+        return backup[self.keep :]

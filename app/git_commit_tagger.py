@@ -65,6 +65,8 @@ class GitCommitTagger:
         self.tag: str = ""
         self.tag_msg: str = ""
         self.backup_commit_message_path: Path = None
+        self.backup_tag_message_path: Path = None
+        self.changes_to_staged: list = []
 
         self.git = GitHelper(dry_run=dry_run)
         self.cz = CommitizenHelper(dry_run=dry_run)
@@ -253,16 +255,12 @@ class GitCommitTagger:
         Includes version file, .cz.toml, and optional backup file.
         """
 
-        files_to_stage = [".cz.toml"]
+        self.changes_to_staged.append(".cz.toml")
         if self.version_file:
-            files_to_stage.append(self.version_file)
-        if self.backup_commit_message_path:
-            files_to_stage.append(self.backup_commit_message_path)
-        if self.backup_tag_message_path:
-            files_to_stage.append(self.backup_tag_message_path)
+            self.changes_to_staged.append(self.version_file)
 
         # Optionally deduplicate and remove falsy values
-        files_to_stage = list({f for f in files_to_stage if f})
+        files_to_stage = list({f for f in self.changes_to_staged if f})
 
         self.git.stage_files(files_to_stage)
 
@@ -399,9 +397,15 @@ class GitCommitTagger:
         try:
             self.backup_commit_message_path.write_text(self.message_path.read_text())
             print(f"🗂️ Commit message backed up to: {self.backup_commit_message_path}")
-            self.backup_manager._prune_old_backups(
+            old_files = self.backup_manager._prune_old_backups(
                 backup_dir=backup_dir, stem=self.message_path.stem
             )
+
+            if self.backup_commit_message_path:
+                self.changes_to_staged.append(self.backup_commit_message_path)
+            if old_files:
+                self.changes_to_staged += old_files
+
         except Exception as e:
             print(f"⚠️ Failed to backup commit message: {e}")
 
@@ -427,9 +431,15 @@ class GitCommitTagger:
             content = tag_msg_path.read_text(encoding="utf-8")
             self.backup_tag_message_path.write_text(content, encoding="utf-8")
             print(f"🗂️ Tag message backed up to: {self.backup_tag_message_path}")
-            self.backup_manager._prune_old_backups(
+            old_files = self.backup_manager._prune_old_backups(
                 backup_dir=backup_dir, stem=tag_msg_path.stem
             )
+
+            if self.backup_tag_message_path:
+                self.changes_to_staged.append(self.backup_tag_message_path)
+            if old_files:
+                self.changes_to_staged += old_files
+
         except Exception as e:
             print(f"⚠️ Failed to backup tag commit message: {e}")
 
