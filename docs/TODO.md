@@ -45,7 +45,7 @@ Personal notes, planning, and roadmap for **Custy**
 
 -   [x] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
 -   [x] Make sure backup and add all of them to stages before commit and push
--   [ ] add feature to force commit even no staged changes detected
+-   [x] add feature to force commit even no staged changes detected
 
 ---
 
