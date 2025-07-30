@@ -3,6 +3,24 @@
 
 
 
+## Unreleased (2025-07-31)
+### 🐛 Bug Fixes
+- **release**: 1.6.0.post2
+  
+  Post-release patch for **Custy 1.6.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.6.0.
+
+This post-release includes minor updates and corrections after the official release:
+- Bug fixed case example changes from 1.5.0.post1 â†’ 1.5.0.post2
+- Bug fixed on `Makefile`
+- modified documentation `docs/TODO.md`
+
+Tag: 1.6.0.post2
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+
 ## v1.5.0.post1 (2025-07-31)
 ### 📝 Documentation
 - **release**: v1.5.0.post1
@@ -333,6 +351,60 @@ Changelog: handled separately
   - Update version in `app/__version__.py
 - synced version in `cz.toml`
 
+Changelog: handled separately
+  
+
+## 1.6.0.post2 (2025-07-31)
+### 🐛 Bug Fixes
+- **release**: 1.6.0.post2
+  
+  Post-release patch for **Custy 1.6.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.6.0.
+
+This post-release includes minor updates and corrections after the official release:
+- Bug fixed case example changes from 1.5.0.post1 â†’ 1.5.0.post2
+- Bug fixed on `Makefile`
+- modified documentation `docs/TODO.md`
+
+Tag: 1.6.0.post2
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+- **release**: v1.5.0.post1
+  
+  Post-release patch for **Custy v1.5.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release v1.5.0.
+
+This post-release includes minor updates and corrections after the official release:
+- Added a new documentation `docs/Q&A/git/footer section on tag message.md`
+- modified documentations `docs/Q&A/git/changelogs approach.md`, `docs/Q&A/git/comparison commit and tag message.md`, `docs/TODO.md`
+- Modified Makefile by adding documentations
+
+Tag: v1.5.0.post1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+### ✨ Features
+- **release**: 1.5.0
+  
+  Final release of **Custy 1.5.0**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: 1.5.0rc1, 1.5.0b3, 1.5.0b2, 1.5.0b1.
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- Add structured generation of `commit-msg.txt` and `tag-msg.txt`
+- Improve message clarity, flexibility, and consistency
+- Enhance template customization for different version types (alpha, beta, rc, final)
+- Ensure commit/tag message files are properly staged and backed up
+- Fix dry-run behavior in message generation flow
+- Address minor edge cases in automation
+- Reference commit/tag standards in `docs\git\commit_message.md`
+- Add internal usage notes and automation guidance
+- Ensure commit and tag backup files and odl files to staged and commit
+- Handle staged and commit when no staged changes detected
+- Updated `TODO.md`
+
+Tag: 1.5.0
 Changelog: handled separately
   
 
