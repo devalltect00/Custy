@@ -38,14 +38,15 @@ Personal notes, planning, and roadmap for **Custy**
 -   [x] Backup just 10 maxiumum. 10 lastest/newest backup or we can set on CLI. by default 10
 -   [x] Fix issue where to put backups, templates folders/directory. also with commit-msg.txt if needed
 -   [x] handle cleanup backups CLI
+-   [x] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
+-   [x] Make sure backup and add all of them to stages before commit and push
+-   [x] add feature to force commit even no staged changes detected
 
 ---
 
 ### 🧩 In Progress
 
--   [x] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
--   [x] Make sure backup and add all of them to stages before commit and push
--   [x] add feature to force commit even no staged changes detected
+-   _(Nothing yet)_
 
 ---
 
@@ -61,6 +62,9 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] Give template commit message git-msg.txt
 -   [ ] on CLI parameters, on --bump, add option `final`. So the bump from v1.4.0rc[n] to -> v1.4.0
 -   [ ] bug fixes or improvements, if switch to `release/x/y` or `rc` version tag get all message from `dev` branch like `alpha`, `beta`, `rc`, `dev`, etc
+-   [ ] if post release the commit message header initial commit type is `docs` or maybe `<docs>`
+-   [ ] make `how to use` documentation. We can use the formal or friendly language style
+-   [ ] bug fix when switch from release to post-release use the same version as release but use the post-release format so for example: from 1.5.0 → 1.5.0.post1 instead of from 1.5.0 → 1.6.0.post1
 
 ---
 

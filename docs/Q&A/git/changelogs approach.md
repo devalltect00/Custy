@@ -1,10 +1,10 @@
-## Questions
+# Questions
 
 ```text
 What the most use and common for changelog, use git commit message or git tag message or both or none of them or something else?
 ```
 
-## Answers
+# Answers
 
 ChatGPT said:
 ✅ Most commonly used and recommended approach for changelogs is:

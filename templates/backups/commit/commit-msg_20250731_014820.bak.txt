@@ -1,0 +1,12 @@
+docs(release): v1.5.0.post1
+
+Post-release patch for **Custy v1.5.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release v1.5.0.
+
+This post-release includes minor updates and corrections after the official release:
+- Added a new documentation `docs/Q&A/git/footer section on tag message.md`
+- modified documentations `docs/Q&A/git/changelogs approach.md`, `docs/Q&A/git/comparison commit and tag message.md`, `docs/TODO.md`
+- Modified Makefile by adding documentations
+
+Tag: v1.5.0.post1
+Changelog: handled separately

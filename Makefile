@@ -24,6 +24,9 @@ APP = app
 # 🚀 Main Applicattion Commands
 # -----------------------------
 
+# Example if force commit
+# python -m app all templates\commit-msg.txt --tag-msg-file templates\tag-msg.txt --bump minor --force-commit
+
 run-main:
 	python -m $(APP)
 
