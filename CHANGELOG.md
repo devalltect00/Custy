@@ -3,7 +3,73 @@
 
 
 
-## Unreleased (2025-07-31)
+## v1.5.0.post1 (2025-07-31)
+### 📝 Documentation
+- **release**: v1.5.0.post1
+  
+  Post-release patch for **Custy v1.5.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release v1.5.0.
+
+This post-release includes minor updates and corrections after the official release:
+- Added a new documentation `docs/Q&A/git/footer section on tag message.md`
+- modified documentations `docs/Q&A/git/changelogs approach.md`, `docs/Q&A/git/comparison commit and tag message.md`, `docs/TODO.md`
+- Modified Makefile by adding documentations
+
+Tag: v1.5.0.post1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **release**: 1.5.0rc1
+  
+  Release candidate for **Custy 1.5.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- *(Nothing yet)* â€” See tag message for full context.
+
+Tag: 1.5.0rc1
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes modified documentation.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **release**: v1.4.1
+  
+  Final release of Custy v1.4.1
+
+Includes bug fixes.
+
+Tag: v1.4.1
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **TODO.md**: add or change todo
+  
+  - add or change todo
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### ✨ Features
 - **release**: 1.5.0
   
@@ -63,58 +129,6 @@ Changelog: handled separately
 
 Changelog: handled separately
   
-### 📝 Documentation
-- **release**: 1.5.0rc1
-  
-  Release candidate for **Custy 1.5.0**, consolidating all pre-release changes and preparing for stable release.
-Feature-complete and undergoing final validation before stable release.
-
-This release candidate consolidates finalized features and bug fixes before the stable release:
-- *(Nothing yet)* â€” See tag message for full context.
-
-Tag: 1.5.0rc1
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **release**: v1.4.1
-  
-  Final release of Custy v1.4.1
-
-Includes modified documentation.
-
-Tag: v1.4.1
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **release**: v1.4.1
-  
-  Final release of Custy v1.4.1
-
-Includes bug fixes.
-
-Tag: v1.4.1
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **TODO.md**: add or change todo
-  
-  - add or change todo
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **TODO.md**: add or change todo
-  
-  - add or change todo
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
 ### 🐛 Bug Fixes
 - **release**: 1.5.0b3
   
