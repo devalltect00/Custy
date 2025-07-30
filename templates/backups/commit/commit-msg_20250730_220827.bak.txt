@@ -1,0 +1,9 @@
+feat(release): 1.5.0b1
+
+Beta release for **Custy 1.5.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- *(Nothing yet)* — See tag message for full context.
+
+Tag: 1.5.0b1
