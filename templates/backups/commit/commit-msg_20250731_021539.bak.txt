@@ -1,0 +1,10 @@
+docs(release): 1.7.0.post3
+
+Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.7.0.
+
+This post-release includes minor updates and corrections after the official release:
+- modified documentation `docs/TODO.md`
+
+Tag: 1.7.0.post3
+Changelog: handled separately

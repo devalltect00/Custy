@@ -41,12 +41,11 @@ Personal notes, planning, and roadmap for **Custy**
 -   [x] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
 -   [x] Make sure backup and add all of them to stages before commit and push
 -   [x] add feature to force commit even no staged changes detected
+-   [x] bug fix error where now on post tag and now bump in the same post tag for example 1.5.0.post1 → 1.5.0.post2
 
 ---
 
 ### 🧩 In Progress
-
--   [x] bug fix error where now on post tag and now bump in the same post tag for example 1.5.0.post1 → 1.5.0.post2
 
 ---
 
@@ -65,6 +64,7 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] if post release the commit message header initial commit type is `docs` or maybe `<docs>`
 -   [ ] make `how to use` documentation. We can use the formal or friendly language style
 -   [ ] bug fix when switch from release to post-release use the same version as release but use the post-release format so for example: from 1.5.0 → 1.5.0.post1 instead of from 1.5.0 → 1.6.0.post1
+-   [ ] handle verbose results, the process before generating CHANGELOG.md
 
 ---
 

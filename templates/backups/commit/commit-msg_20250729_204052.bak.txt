@@ -1,5 +1,0 @@
-chore(release): v1.5.0rc1
-
-- _(Nothing yet)_
-
-Tag: v1.5.0rc1
