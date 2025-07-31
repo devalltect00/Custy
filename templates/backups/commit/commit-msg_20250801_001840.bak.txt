@@ -1,0 +1,12 @@
+fix(release): 1.7.1.post1
+
+Post-release patch for **Custy 1.7.1**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.7.1.
+
+This post-release includes minor updates and corrections after the official release:
+- Allow CLI to accept arguments without explicitily requiring the `--bump` flag
+- Fix issue in the `Makefile` execution flow
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+Tag: 1.7.1.post1
+Changelog: handled separately

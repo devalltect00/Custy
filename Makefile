@@ -97,7 +97,7 @@ custy-all-patch-preview:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release preview
 
 custy-all-post:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --post-release
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --post-release
 
 custy-all-dev:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --dev-release

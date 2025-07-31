@@ -174,13 +174,15 @@ class GitCommitTagger:
         #     self.tag = self.tag_input
         if self.tag_input:
             self.tag = self.tag_input
-        elif self.strategy_input == "semver" and self.bump_level:
+        # elif self.strategy_input == "semver" and self.bump_level:
+        elif self.strategy_input == "semver":
             self.tag = SemverStrategy(
                 bump=self.bump_level,
                 pre_release=self.pre_release,
                 build_meta=self.meta,
             ).get_next_tag()
-        elif self.strategy_input == "pep440" and self.bump_level:
+        # elif self.strategy_input == "pep440" and self.bump_level:
+        elif self.strategy_input == "pep440":
             self.tag = PEP440Strategy(
                 bump=self.bump_level,
                 pre_release=self.pre_release,

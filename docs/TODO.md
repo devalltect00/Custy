@@ -43,9 +43,7 @@ Personal notes, planning, and roadmap for **Custy**
 -   [x] add feature to force commit even no staged changes detected
 -   [x] bug fix error where now on post tag and now bump in the same post tag for example 1.5.0.post1 → 1.5.0.post2
 
----
-
-### 🧩 In Progress
+Since v1.7.1
 
 -   [x] fix the file name from pep404_strategy.py to pep440_strategy.py and class name from PEP404Strategy to PEP440Strategy
 -   [x] bug fix when switch from release to post-release use the same version as release but use the post-release format so for example: from 1.5.0 → 1.5.0.post1 instead of from 1.5.0 → 1.6.0.post1
@@ -53,6 +51,12 @@ Personal notes, planning, and roadmap for **Custy**
 -   [x] Add tests to test SemverStrategy and PEP440Strategy class
 -   [x] add new documentation `switching version.md`
 -   [x] handle verbose results, the process before generating CHANGELOG.md
+
+---
+
+### 🧩 In Progress
+
+-   _(Nothing yet)_
 
 ---
 

@@ -181,7 +181,6 @@ def main() -> None:
         p.add_argument(
             "--bump",
             choices=["patch", "minor", "major", "auto"],
-            required=True,
             help="Auto bump from latest tag. Version bump level (Semver bump level when using --strategy=semver. use 'auto' only with --strategy=commitizen)",
         )
         p.add_argument(
