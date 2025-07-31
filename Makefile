@@ -26,6 +26,9 @@ APP = app
 
 # Example if force commit
 # python -m app all templates\commit-msg.txt --tag-msg-file templates\tag-msg.txt --bump minor --force-commit
+#
+# Example to run the debug version
+# python -m app.debug_tag_release_notes all templates\commit-msg.txt --tag-msg-file templates\tag-msg.txt --bump patch
 
 run-main:
 	python -m $(APP)

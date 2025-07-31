@@ -1,6 +1,8 @@
+# app\utils\versioning\models\release_info.py
+
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 from .version_type import VersionType
 
@@ -27,7 +29,9 @@ class ReleaseInfo(BaseModel):
     latest_prerelease: Optional[str] = None
     has_changes_since_rc: bool = True
 
-    @validator("version_type", pre=True, always=True)
+    # @validator("version_type", pre=True, always=True)
+    @field_validator("version_type", mode="before")
+    @classmethod
     def infer_version_type(cls, v, values):
         if not v and "version" in values:
             return VersionType.detect(values["version"])

@@ -9,6 +9,7 @@ from colorama import Fore, Style
 class Runner:
     def __init__(self, is_dry_run: bool = False):
         self.is_dry_run: bool = is_dry_run
+        self.silent: bool = False
 
     def run(
         self,
@@ -28,9 +29,10 @@ class Runner:
         # command = command if isinstance(command, str) else " ".join(command)
 
         if not self.is_dry_run:
-            print(
-                f"{Fore.YELLOW}→{Style.RESET_ALL} {Fore.LIGHTWHITE_EX}{command}{Style.RESET_ALL}",
-            )
+            if not self.silent:
+                print(
+                    f"{Fore.YELLOW}→{Style.RESET_ALL} {Fore.LIGHTWHITE_EX}{command}{Style.RESET_ALL}",
+                )
 
             try:
                 # Avoid `shell=False` when passing **untrusted input**, to prevent shell injection attacks.

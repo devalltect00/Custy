@@ -14,7 +14,7 @@ from ..semver_helper import SemverVersionHelper
 class SemverStrategy:
     def __init__(
         self,
-        bump: str,
+        bump: str | None,
         pre_release: str | None = None,
         build_meta: str | None = None,
     ) -> None:
@@ -30,4 +30,5 @@ class SemverStrategy:
             level=self.bump,
             target_pre=self.pre_release,
             build=self.build_meta,
+            prefix_v=True
         )

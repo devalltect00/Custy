@@ -13,7 +13,7 @@ from .semver_helper import SemverVersionHelper
 from .tag_strategy.commitizen_strategy import CommitizenStrategy
 from .tag_strategy.date_strategy import DateStrategy
 from .tag_strategy.git_count_strategy import GitCountStrategy
-from .tag_strategy.pep404_strategy import PEP404Strategy
+from .tag_strategy.pep440_strategy import PEP440Strategy
 from .tag_strategy.semver_strategy import SemverStrategy
 from .version_utils import (assert_is_final_version,
                             contains_allowed_commit_type,
@@ -29,7 +29,7 @@ __all__ = [
     "DateStrategy",
     "DryRunSupport",
     "GitCountStrategy",
-    "PEP404Strategy",
+    "PEP440Strategy",
     "SemverStrategy",
     "detect_project_strategy",
     "GitHelper",

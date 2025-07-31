@@ -47,6 +47,13 @@ Personal notes, planning, and roadmap for **Custy**
 
 ### 🧩 In Progress
 
+-   [x] fix the file name from pep404_strategy.py to pep440_strategy.py and class name from PEP404Strategy to PEP440Strategy
+-   [x] bug fix when switch from release to post-release use the same version as release but use the post-release format so for example: from 1.5.0 → 1.5.0.post1 instead of from 1.5.0 → 1.6.0.post1
+-   [x] bug fixed, docs, and refactor the SemverStrategy and PEP440Strategy class
+-   [x] Add tests to test SemverStrategy and PEP440Strategy class
+-   [x] add new documentation `switching version.md`
+-   [x] handle verbose results, the process before generating CHANGELOG.md
+
 ---
 
 ### 🧠 Planning
@@ -63,8 +70,6 @@ Personal notes, planning, and roadmap for **Custy**
 -   [ ] bug fixes or improvements, if switch to `release/x/y` or `rc` version tag get all message from `dev` branch like `alpha`, `beta`, `rc`, `dev`, etc
 -   [ ] if post release the commit message header initial commit type is `docs` or maybe `<docs>`
 -   [ ] make `how to use` documentation. We can use the formal or friendly language style
--   [ ] bug fix when switch from release to post-release use the same version as release but use the post-release format so for example: from 1.5.0 → 1.5.0.post1 instead of from 1.5.0 → 1.6.0.post1
--   [ ] handle verbose results, the process before generating CHANGELOG.md
 
 ---
 
@@ -87,6 +92,7 @@ Personal notes, planning, and roadmap for **Custy**
 -   Automatically create and delete commit-msg.txt when needed if we set argument on CLI or by default like that.
 -   Backup before delete the commit-msg.txt
 -   optionally, we can just see what would the next version by include additional CLI parameters or another ideas or just use --dry-run
+-   Automate the build meta or local
 
 ---
 

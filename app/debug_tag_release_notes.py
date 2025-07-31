@@ -11,7 +11,7 @@ from termcolor import colored
 
 from .utils import (BackupManager, ChangelogGenerator, CommitizenHelper,
                     CommitizenStrategy, DateStrategy, GitCountStrategy,
-                    GitHelper, PEP404Strategy, ReleaseInfo, ReleaseNoteBuilder,
+                    GitHelper, PEP440Strategy, ReleaseInfo, ReleaseNoteBuilder,
                     SemverStrategy, VersionType, contains_allowed_commit_type,
                     detect_project_strategy, get_last_tag_before,
                     get_sorted_tags, maybe_assert_is_final)
@@ -31,7 +31,7 @@ class GitCommitTagger:
         tag_msg: str | None,
         tag_msg_file: str | None,
         strategy: str | None,
-        bump: str | None,
+        bump: str | None = None,
         pre_release: str | None = None,
         post_release: bool | None = False,
         dev_release: bool | None = False,
@@ -72,6 +72,8 @@ class GitCommitTagger:
         self.backup_manager = BackupManager(keep=10)
 
     def _resolve_tag(self) -> None:
+        print(f"self.tag##{self.tag}##",)
+        print(f"self.strategy_input##{self.strategy_input}##")
         # if self.bump_level:
         #     current_tag = self.get_latest_tag()
         #     self.tag = self.bump_version(current_tag, self.bump_level)
@@ -85,8 +87,9 @@ class GitCommitTagger:
                 pre_release=self.pre_release,
                 build_meta=self.meta,
             ).get_next_tag()
-        elif self.strategy_input == "pep440" and self.bump_level:
-            self.tag = PEP404Strategy(
+        elif self.strategy_input == "pep440":
+            print("ddddddddd")
+            self.tag = PEP440Strategy(
                 bump=self.bump_level,
                 pre_release=self.pre_release,
                 post_release=self.post_release,
@@ -285,6 +288,10 @@ class GitCommitTagger:
         if self.tag_msg_file:
             Path(self.tag_msg_file).write_text(builder.build_tag_msg(), encoding="utf-8")
 
+    def _generate_changelog(self):
+        rendered = self.changelog_generator.generate()
+        self.changelog_generator.write_to_files(content=rendered, path="CHANGELOG_DEBUG.md")
+
 def build_git_tool(
     args,
     *,
@@ -320,6 +327,7 @@ def handle_all(args):
     tool._resolve_tag()
     tool._generate_release_notes()
     tool._open_editor(args.message_file)
+    tool._generate_changelog()
     # tool._resolve_tag()
     print(f"Next tag version: {tool.tag}")
 
@@ -367,7 +375,6 @@ if __name__ == "__main__":
         p.add_argument(
             "--bump",
             choices=["patch", "minor", "major", "auto"],
-            required=True,
             help="Auto bump from latest tag. Version bump level (Semver bump level when using --strategy=semver. use 'auto' only with --strategy=commitizen)",
         )
         p.add_argument(
