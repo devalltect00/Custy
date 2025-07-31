@@ -11,10 +11,10 @@ from ..pep440_helper import PEP440VersionHelper
 # =======================
 
 
-class PEP404Strategy:
+class PEP440Strategy:
     def __init__(
         self,
-        bump: str,
+        bump: str | None,
         epoch: int | None,
         pre_release: str | None = None,
         post_release: bool | None = None,

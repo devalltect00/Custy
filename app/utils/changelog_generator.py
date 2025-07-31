@@ -13,6 +13,8 @@ import tomllib
 from datetime import datetime
 
 from jinja2 import Template
+from rich.console import Console
+from rich.progress import track
 
 from .dry_run_support import DryRunSupport
 from .git import GitHelper
@@ -105,12 +107,15 @@ class ChangelogGenerator(DryRunSupport):
             str: Formatted changelog string. Rendered changelog.
 
         """
+        original_silent = self.runner.silent
+        self.git.runner.silent = True
+
         tags = self.git.get_tags()
         tags.insert(0, "")  # Include commits before first tag
-
         releases = []
 
-        for i in range(len(tags) - 1):
+        console = Console()
+        for i in track(range(len(tags) - 1), description="[bold cyan]Generating changelog..."):
             prev = tags[i + 1]
             current = tags[i]
             messages = self.git.get_commits_between(prev, current)
@@ -133,6 +138,9 @@ class ChangelogGenerator(DryRunSupport):
                 },
             )
 
+        self.runner.silent = original_silent  # Restore print setting
+
+        # Render
         try:
             with open(self.template_path, encoding="utf-8") as f:
                 template_str = f.read()
@@ -163,4 +171,5 @@ class ChangelogGenerator(DryRunSupport):
 
     # --------------------------------------------------------
     # Internal helpers
+    # --------------------------------------------------------
     # --------------------------------------------------------

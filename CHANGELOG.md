@@ -3,22 +3,28 @@
 
 
 
-## Unreleased (2025-07-31)
-### 📝 Documentation
-- **release**: 1.7.0.post3
+## Unreleased (2025-08-01)
+### 🐛 Bug Fixes
+- **release**: 1.7.1
   
-  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
-Includes minor updates or documentation fixes after release 1.7.0.
+  Final release of **Custy 1.7.1**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: .
 
-This post-release includes minor updates and corrections after the official release:
-- modified documentation `docs/TODO.md`
+This final release includes all validated features and fixes from earlier pre-releases:
+- Fix the file name from `pep404_strategy.py` â†’ `pep440_strategy.py`
+- Rename class from `PEP404Strategy` â†’ `PEP440Strategy`
+- Bug fix: Switch to post-release uses `1.5.0.post1` instead of bumping minor to `1.6.0.post1`
+- Refactor and clean up `SemverStrategy` and `PEP440Strategy` classes
+- Add test coverage for both strategy classes
+- Add documentation: `docs/versioning/switching version.md`
+- Verbose step logging before changelog generation to improve debugging
+- Ensure commit and tag backup files are staged before commit
+- Improve dry-run flow in message generation
+- Update `TODO.md` to reflect current feature status
 
-Tag: 1.7.0.post3
+Tag: 1.7.1
 Changelog: handled separately
   
-- **changelog**: update changelog
-- **changelog**: update changelog
-### 🐛 Bug Fixes
 - **release**: 1.6.0.post2
   
   Post-release patch for **Custy 1.6.0**, addressing minor updates or corrections.
@@ -32,6 +38,21 @@ This post-release includes minor updates and corrections after the official rele
 Tag: 1.6.0.post2
 Changelog: handled separately
   
+### 📝 Documentation
+- **changelog**: update changelog
+- **release**: 1.7.0.post3
+  
+  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.7.0.
+
+This post-release includes minor updates and corrections after the official release:
+- modified documentation `docs/TODO.md`
+
+Tag: 1.7.0.post3
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
 
 ## v1.5.0.post1 (2025-07-31)
 ### 📝 Documentation
@@ -365,6 +386,31 @@ Changelog: handled separately
 
 Changelog: handled separately
   
+
+## 1.7.1 (2025-08-01)
+### 🐛 Bug Fixes
+- **release**: 1.7.1
+  
+  Final release of **Custy 1.7.1**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: .
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- Fix the file name from `pep404_strategy.py` â†’ `pep440_strategy.py`
+- Rename class from `PEP404Strategy` â†’ `PEP440Strategy`
+- Bug fix: Switch to post-release uses `1.5.0.post1` instead of bumping minor to `1.6.0.post1`
+- Refactor and clean up `SemverStrategy` and `PEP440Strategy` classes
+- Add test coverage for both strategy classes
+- Add documentation: `docs/versioning/switching version.md`
+- Verbose step logging before changelog generation to improve debugging
+- Ensure commit and tag backup files are staged before commit
+- Improve dry-run flow in message generation
+- Update `TODO.md` to reflect current feature status
+
+Tag: 1.7.1
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
 
 ## 1.7.0.post3 (2025-07-31)
 ### 📝 Documentation

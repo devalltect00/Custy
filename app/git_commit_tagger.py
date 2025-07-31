@@ -11,7 +11,7 @@ from termcolor import colored
 
 from .utils import (BackupManager, ChangelogGenerator, CommitizenHelper,
                     CommitizenStrategy, DateStrategy, GitCountStrategy,
-                    GitHelper, PEP404Strategy, ReleaseInfo, ReleaseNoteBuilder,
+                    GitHelper, PEP440Strategy, ReleaseInfo, ReleaseNoteBuilder,
                     SemverStrategy, VersionType, contains_allowed_commit_type,
                     get_last_tag_before, get_sorted_tags,
                     maybe_assert_is_final)
@@ -119,17 +119,22 @@ class GitCommitTagger:
         """
         self.execute_commit_tag_bump()
         self.push()
+        self._generate_changelog()
 
+        print(f"\n✅ Success: Commit, tag '{self.tag}', bump and pushed.\n")
+
+    def _generate_changelog(self):
         # Enforce final version before generating changelog
         if maybe_assert_is_final(
             self.tag, context="changelog", force=self.force_changelog
         ):
             # Generate and push changelog
             rendered = self.changelog_generator.generate()
-            self.changelog_generator.write_to_files(rendered)
+            self.changelog_generator.write_to_files(
+                content=rendered,
+                path="CHANGELOG.md"
+            )
             self.git.commit_and_push_changelog()
-
-        print(f"\n✅ Success: Commit, tag '{self.tag}', bump and pushed.\n")
 
     def _handle_commitizen_only(self):
         self.validate()
@@ -176,7 +181,7 @@ class GitCommitTagger:
                 build_meta=self.meta,
             ).get_next_tag()
         elif self.strategy_input == "pep440" and self.bump_level:
-            self.tag = PEP404Strategy(
+            self.tag = PEP440Strategy(
                 bump=self.bump_level,
                 pre_release=self.pre_release,
                 post_release=self.post_release,
