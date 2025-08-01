@@ -4,59 +4,22 @@
 
 
 ## Unreleased (2025-08-02)
-### Release
-- **core**: 1.8.0
+### 🐛 Bug Fixes
+- **push**: 1.8.1
   
-  Final release of **Custy 1.8.0**, promoted from the latest release candidate.
-includes all feature and fixes from pre-releases: 1.8.0rc2, 1.8.0rc1.
+  Final release of **Custy 1.8.1**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: .
 
 This final release includes all validated features and fixes from earlier pre-releases:
-- Git workflow validation via WorkflowManager
-- Temporary branch cleanup with Branch Cleaner
-- Dual remote strategy: GitLab (main), GitHub (backup)
-- Strategy-specific version helpers (PEP 440, SemVer)
-- Cleaner code structure with VersionHelperBase
-- Updated Makefile and improved documentation
+- auto-push backup/main after changelog generation
 
-ðŸ›  Final tweaks after rc2:
-- Allow `custy all` to run `--sync-backup` automatically
-- Minor improvements to support `release` commit type
-- Refined docs and cleaned up TODO list
+Previously, the backup remote (`backup/main`) was not automatically pushed after generating `CHANGELOG.md`. This bug has now been fixed.
 
-Tag: 1.8.0
+Now, after changelog generation completes, `backup/main` is automatically synced to ensure both remotes stay consistent.
+
+Tag: 1.8.1
 Changelog: handled separately
   
-### 🧠 Refactoring
-- **workflow**: 1.8.0rc2
-  
-  Release candidate for **Custy 1.8.0**, consolidating all pre-release changes and preparing for stable release.
-Feature-complete and undergoing final validation before stable release.
-
-This refactor decouples strategy-specific logic (PEP 440, SemVer) from the core
-WorkflowManager class by introducing a VersionHelperBase interface. Both
-PEP440VersionHelper and SemverVersionHelper now implement:
-
-- classify(): identify version tier
-- tier_order(): precedence for tier promotion
-- suggest_tag(): next tag suggestion based on branch
-- get_transition_cases(): valid CASE transitions
-
-WorkflowManager is now cleaner and delegates classification, version suggestion,
-and transition validation to the appropriate strategy helper dynamically.
-
-This release candidate consolidates finalized features and bug fixes before the stable release:
-- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
-
-Other improvements:
-- Reduced branching logic in check_transition()
-- Added docstrings across all helper classes
-- Improved extensibility for future strategies (e.g., CalVer)
-
-BREAKING CHANGE: version helpers must now implement VersionHelperBase interface
-
-Tag: 1.8.0rc2
-  
-### 🐛 Bug Fixes
 - **core**: 1.8.0rc1
   
   Release candidate for **Custy 1.8.0**, consolidating all pre-release changes and preparing for stable release.
@@ -122,6 +85,7 @@ Changelog: handled separately
 - **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
+- **changelog**: update changelog
 - **release**: 1.7.0.post3
   
   Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
@@ -135,6 +99,58 @@ Changelog: handled separately
   
 - **changelog**: update changelog
 - **changelog**: update changelog
+### Release
+- **core**: 1.8.0
+  
+  Final release of **Custy 1.8.0**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: 1.8.0rc2, 1.8.0rc1.
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- Git workflow validation via WorkflowManager
+- Temporary branch cleanup with Branch Cleaner
+- Dual remote strategy: GitLab (main), GitHub (backup)
+- Strategy-specific version helpers (PEP 440, SemVer)
+- Cleaner code structure with VersionHelperBase
+- Updated Makefile and improved documentation
+
+ðŸ›  Final tweaks after rc2:
+- Allow `custy all` to run `--sync-backup` automatically
+- Minor improvements to support `release` commit type
+- Refined docs and cleaned up TODO list
+
+Tag: 1.8.0
+Changelog: handled separately
+  
+### 🧠 Refactoring
+- **workflow**: 1.8.0rc2
+  
+  Release candidate for **Custy 1.8.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This refactor decouples strategy-specific logic (PEP 440, SemVer) from the core
+WorkflowManager class by introducing a VersionHelperBase interface. Both
+PEP440VersionHelper and SemverVersionHelper now implement:
+
+- classify(): identify version tier
+- tier_order(): precedence for tier promotion
+- suggest_tag(): next tag suggestion based on branch
+- get_transition_cases(): valid CASE transitions
+
+WorkflowManager is now cleaner and delegates classification, version suggestion,
+and transition validation to the appropriate strategy helper dynamically.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+Other improvements:
+- Reduced branching logic in check_transition()
+- Added docstrings across all helper classes
+- Improved extensibility for future strategies (e.g., CalVer)
+
+BREAKING CHANGE: version helpers must now implement VersionHelperBase interface
+
+Tag: 1.8.0rc2
+  
 ### 📦 Others
 - **general**: merge release 1.7.1 into main
 
@@ -468,6 +484,48 @@ Changelog: handled separately
   - Update version in `app/__version__.py
 - synced version in `cz.toml`
 
+Changelog: handled separately
+  
+
+## 1.8.1 (2025-08-02)
+### 🐛 Bug Fixes
+- **push**: 1.8.1
+  
+  Final release of **Custy 1.8.1**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: .
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- auto-push backup/main after changelog generation
+
+Previously, the backup remote (`backup/main`) was not automatically pushed after generating `CHANGELOG.md`. This bug has now been fixed.
+
+Now, after changelog generation completes, `backup/main` is automatically synced to ensure both remotes stay consistent.
+
+Tag: 1.8.1
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+### Release
+- **core**: 1.8.0
+  
+  Final release of **Custy 1.8.0**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: 1.8.0rc2, 1.8.0rc1.
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- Git workflow validation via WorkflowManager
+- Temporary branch cleanup with Branch Cleaner
+- Dual remote strategy: GitLab (main), GitHub (backup)
+- Strategy-specific version helpers (PEP 440, SemVer)
+- Cleaner code structure with VersionHelperBase
+- Updated Makefile and improved documentation
+
+ðŸ›  Final tweaks after rc2:
+- Allow `custy all` to run `--sync-backup` automatically
+- Minor improvements to support `release` commit type
+- Refined docs and cleaned up TODO list
+
+Tag: 1.8.0
 Changelog: handled separately
   
 
