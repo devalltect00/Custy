@@ -42,6 +42,9 @@ custy-all-minor:
 custy-all-patch:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --sync-backup
 
+custy-all-release:
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --sync-backup
+
 custy-all-major-alpha:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release alpha --sync-backup
 

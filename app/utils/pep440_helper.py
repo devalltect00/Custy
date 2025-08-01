@@ -58,7 +58,7 @@ class PEP440VersionHelper(VersionHelperBase):
         )
     """
 
-    TIER_ORDER = {"dev": 0, "a": 1, "b": 2, "rc": 3, None: 4, "post": 5}
+    TIER_ORDER = {"dev": 0, "a": 1, "b": 2, "rc": 3, None: 4, "release": 4, "post": 5}
     PRE_TIER_MAP = {"alpha": "a", "beta": "b", "rc": "rc", "a": "a", "b": "b"}
 
     def __init__(self, current: str):

@@ -3,7 +3,7 @@
 import re
 import sys
 
-ALLOWED_COMMIT_TYPES = {"feat", "fix", "perf", "docs", "refactor"}
+ALLOWED_COMMIT_TYPES = {"feat", "fix", "perf", "docs", "refactor", "release"}
 
 
 def assert_is_final_version(version: str, context: str = "changelog") -> bool:

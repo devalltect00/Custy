@@ -1,0 +1,20 @@
+release(core): 1.8.0
+
+Final release of **Custy 1.8.0**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: 1.8.0rc2, 1.8.0rc1.
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- Git workflow validation via WorkflowManager
+- Temporary branch cleanup with Branch Cleaner
+- Dual remote strategy: GitLab (main), GitHub (backup)
+- Strategy-specific version helpers (PEP 440, SemVer)
+- Cleaner code structure with VersionHelperBase
+- Updated Makefile and improved documentation
+
+🛠 Final tweaks after rc2:
+- Allow `custy all` to run `--sync-backup` automatically
+- Minor improvements to support `release` commit type
+- Refined docs and cleaned up TODO list
+
+Tag: 1.8.0
+Changelog: handled separately

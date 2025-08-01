@@ -66,7 +66,7 @@ Since v1.8.0
 -   [x] use 2 branch; `main` and `develop`; `main` is stable one and `develop` is more experimental
 -   [x] use 2 git remote, gitlab as main, and github as backup
 -   [x] use and applied branching workflow checking
--   [ ] Fix bug amd refactor WorkflowManager
+-   [x] Fix bug amd refactor WorkflowManager
 
 ---
 

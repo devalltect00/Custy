@@ -62,7 +62,7 @@ class SemverVersionHelper(VersionHelperBase):
         '1.2.3-beta.1'
     """
 
-    TIER_ORDER = {"alpha": 0, "beta": 1, "rc": 2, None: 3}
+    TIER_ORDER = {"alpha": 0, "beta": 1, "rc": 2, None: 3, "release": 3}
 
     def __init__(self, current: str):
         """
