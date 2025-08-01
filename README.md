@@ -79,4 +79,8 @@ See [CHANGELOG.md](./CHANGELOG.md) for a list of changes and version history
 
 ## 📄 License
 
-MIT License © 2025
+Copyright © 2025
+
+This software is not open source. You may not copy, distribute, or modify any part of this project without prior written permission from the author.
+
+To request permission, contact: rizkypffdev37@gmail.com

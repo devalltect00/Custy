@@ -12,9 +12,9 @@ from termcolor import colored
 from .utils import (BackupManager, ChangelogGenerator, CommitizenHelper,
                     CommitizenStrategy, DateStrategy, GitCountStrategy,
                     GitHelper, PEP440Strategy, ReleaseInfo, ReleaseNoteBuilder,
-                    SemverStrategy, VersionType, contains_allowed_commit_type,
-                    get_last_tag_before, get_sorted_tags,
-                    maybe_assert_is_final)
+                    SemverStrategy, VersionType, WorkflowManager,
+                    contains_allowed_commit_type, get_last_tag_before,
+                    get_sorted_tags, maybe_assert_is_final)
 
 # =======================
 # 🚀 Main Class
@@ -23,6 +23,8 @@ from .utils import (BackupManager, ChangelogGenerator, CommitizenHelper,
 
 class GitCommitTagger:
     """Automates Git commit + tagging flow, with support for bumping, strategy, dry-run, and version file updates."""
+
+    NON_CRITICAL_BRANCHES = ("feature/", "ci/", "sandbox/")
 
     def __init__(
         self,
@@ -44,6 +46,8 @@ class GitCommitTagger:
         stage_mode: str | None = "all",
         force_changelog: bool | None = False,
         force_commit: bool | None = False,
+        sync_backup: bool | None = False,
+        skip_checks: bool | None = False,
     ) -> None:
         self.message_path: Path = Path(message_file)
         self.tag_input: str | None = tag
@@ -63,6 +67,8 @@ class GitCommitTagger:
         self.stage_mode: str | None = stage_mode
         self.force_changelog: bool | None = force_changelog
         self.force_commit: bool | None = force_commit
+        self.sync_backup = sync_backup
+        self.skip_checks = skip_checks
 
         self.tag: str = ""
         self.tag_msg: str = ""
@@ -74,6 +80,8 @@ class GitCommitTagger:
         self.cz = CommitizenHelper(dry_run=dry_run)
         self.changelog_generator = ChangelogGenerator(dry_run=dry_run)
         self.backup_manager = BackupManager(keep=10)
+        self.workflow_manager = None
+        self.workflow_manager = WorkflowManager()
 
     # =======================
     # Public API
@@ -118,10 +126,57 @@ class GitCommitTagger:
         13. backup commit message. Not the commit message for  changelog.md changes
         """
         self.execute_commit_tag_bump()
-        self.push()
+        self.push_changes()
         self._generate_changelog()
 
         print(f"\n✅ Success: Commit, tag '{self.tag}', bump and pushed.\n")
+
+    def validate_workflow_transition(self):
+        """
+        Validates that the current branch and tag match the expected project strategy
+        transition rules (e.g. develop → release → main).
+        """
+        if not self.skip_checks:
+            self.workflow_manager = WorkflowManager()
+            self.workflow_manager.check_transition(to_tag=self.tag)
+
+    def validate(self) -> None:
+        self._ensure_git_repo()
+
+        if not self.message_path.exists():
+            print(f"❌ ERROR: Message file '{self.message_path}' not found.")
+            sys.exit(1)
+
+        self._ensure_staged_changes()
+
+    def push_changes(self):
+        """
+        Pushes commits and tags to the origin remote, and optionally to the backup remote.
+
+        This method always pushes to 'origin'. If `sync_backup` is enabled, it also pushes
+        to 'backup', unless the current branch matches a non-critical pattern (e.g., feature/, ci/, sandbox/).
+
+        Branches excluded from backup push:
+        - feature/*
+        - ci/*
+        - sandbox/*
+        """
+        self._push("origin")
+
+        # Only push to backup if allowed
+        if getattr(self, "sync_backup", False):
+            current_branch = self.git.get_current_branch()
+
+            # Don't sync backup if on feature/*, ci/*, sandbox/*
+            if any(current_branch.startswith(prefix) for prefix in self.NON_CRITICAL_BRANCHES):
+                print(f"⛔ Skipping backup push and branch '{current_branch}' (not critical) on backup remote")
+                return
+
+            self._push("backup")
+
+    # =======================
+    # Private
+    # =======================
 
     def _generate_changelog(self):
         # Enforce final version before generating changelog
@@ -151,6 +206,7 @@ class GitCommitTagger:
         self.validate()
         self.git.check_remote_origin()
         self._resolve_tag()
+        self.validate_workflow_transition()
         self._generate_release_notes()
         # self._prepare_and_edit_release_message_if_final()
         self._open_editor(self.tag_msg_file)
@@ -306,15 +362,6 @@ class GitCommitTagger:
             else:
                 print("⚠️ Warning: forcing tag despite non-semantic commit type.")
 
-    def validate(self) -> None:
-        self._ensure_git_repo()
-
-        if not self.message_path.exists():
-            print(f"❌ ERROR: Message file '{self.message_path}' not found.")
-            sys.exit(1)
-
-        self._ensure_staged_changes()
-
     def _ensure_staged_changes(self) -> None:
         if self.git.has_staged_files():
             return  # ✅ All good
@@ -384,18 +431,30 @@ class GitCommitTagger:
         else:
             print("⏭️ Tag step skipped.")
 
-    def push(self) -> None:
+    def _push(self, remote: str = "origin") -> None:
+        """
+        Pushes the current commit and optionally the tag to the specified remote.
+
+        Args:
+            remote (str): The Git remote to push to (default: "origin")
+
+        Behavior:
+            - Always pushes the current HEAD commit.
+            - Pushes the tag only if tagging is enabled and `self.tag` is set.
+            - Skips tag push if `skip_tag` is True or `self.tag` is not set.
+        """
+        print(f"🔁 Pushing to {remote} remote...")
         self.git.runner.run(
-            command=["git", "push", "origin", "HEAD"],
+            command=["git", "push", remote, "HEAD"],
             check=True,
-            on_error=lambda: self._error_exit("Failed to push commit."),
+            on_error=lambda: self._error_exit(f"Failed to push commit to {remote} remote."),
         )
         # Push tag only if tagging wasn't skipped
         if not getattr(self, "skip_tag", False) and self.tag:
             self.git.runner.run(
-                command=["git", "push", "origin", self.tag],
+                command=["git", "push", remote, self.tag],
                 check=True,
-                on_error=lambda: self._error_exit(f"Failed to push tag '{self.tag}'."),
+                on_error=lambda: self._error_exit(f"Failed to push tag '{self.tag} to {remote} remote'."),
             )
         else:
             print("⏭️ Tag push skipped.")

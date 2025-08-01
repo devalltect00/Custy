@@ -28,8 +28,7 @@ import sys
 from pathlib import Path
 
 from .git_commit_tagger import GitCommitTagger
-from .utils import (BackupManager, detect_project_strategy,
-                    maybe_assert_is_final)
+from .utils import detect_project_strategy, maybe_assert_is_final
 
 # =======================
 # 🏗️ Factory method
@@ -62,6 +61,8 @@ def build_git_tool(
         stage_mode=args.stage_mode if auto_stage else None,
         force_changelog=getattr(args, "force_changelog", False),
         force_commit=getattr(args, "force_commit", False),
+        sync_backup=getattr(args, "sync_backup", False),
+        skip_checks=getattr(args, "skip_checks", False),
     )
 
 
@@ -76,7 +77,7 @@ def handle_commit_tag_bump(args):
 
 def handle_push(args):
     tool = build_git_tool(args, with_tagging=False, with_version_file=False)
-    tool.push()
+    tool.push_changes()
 
 
 def handle_changelog(args):
@@ -114,6 +115,8 @@ def handle_all(args):
 
 
 def handle_cleaned_backups(args):
+    from .utils import BackupManager
+
     manager = BackupManager(keep=args.keep)
 
     def clean(type_dir: str, stem: str):
@@ -126,6 +129,32 @@ def handle_cleaned_backups(args):
     if args.type in ("tag", "all"):
         clean("tag", "tag-msg")
 
+
+def handle_cleanup_branches(args):
+    from .utils import BranchCleaner
+
+    cleaner = BranchCleaner(
+        prefix=args.prefix,
+        merged_only=args.merged_only,
+        older_than=args.older_than,
+    )
+    cleaner.clean()
+
+def handle_workflow(args):
+    from .utils import WorkflowManager
+
+    manager = WorkflowManager()
+
+    if args.enforce:
+        manager.enforce_consistency()
+
+    if args.check_.transition:
+        manager.check_transition(
+            from_branch=args.from_branch,
+            from_tag=args.from_tag,
+            to_branch=args.to_branch,
+            to_tag=args.to_tag,
+        )
 
 # =======================
 # 🏁 CLI Entry
@@ -225,6 +254,11 @@ def main() -> None:
             action="store_true",
             help="Force version bump and tagging even if commit type is not allowed.",
         )
+        p.add_argument(
+            "--sync-backup",
+            action="store_true",
+            help="Also push commit and tag `backup` remote (e.g., Github).",
+        )
 
     def add_force_changelog_argument(p):
         p.add_argument(
@@ -304,6 +338,11 @@ def main() -> None:
     add_common_arguments(all_parser)
     add_tagging_arguments(all_parser)
     add_force_changelog_argument(all_parser)
+    all_parser.add_argument(
+        "--skip-checks",
+        action="store_true",
+        help="Skip branching→tag transition validation (for advanced users)"
+    )
 
     cleanup_parser = subparser.add_parser(
         "cleaned-backups",
@@ -322,6 +361,11 @@ def main() -> None:
         help="How many last backup to keep (default: 10)",
     )
 
+    cleanup_branch_parser = subparser.add_parser("clean-branches", help="Cleanup local + remote branches.")
+    cleanup_branch_parser.add_argument("--prefix", required=True, help="Branch prefix to match (e.g. feature/, release/)")
+    cleanup_branch_parser.add_argument("--merged-only", action="store_true", help="Only cleanup merged branches.")
+    cleanup_branch_parser.add_argument("--older-than", help="Only delete branches older than N days (e.g. 30d)")
+
     # Miscellaneous
     commit_misc_group = all_parser.add_argument_group("Other options")
 
@@ -336,6 +380,14 @@ def main() -> None:
         ),
     )
 
+    workflow_parser = subparser.add_parser("workflow", help="Workflow and enforcement")
+    workflow_parser.add_argument("--enforce", action="store_true", help="Enforce branch-tag strategy")
+    workflow_parser.add_argument("--check_transition", action="store_true", help="Validate a version/branch transition")
+    workflow_parser.add_argument("--from-branch", help="Override from-branch (e.g. main, develop)")
+    workflow_parser.add_argument("--from-tag", help="Override from-tag (e.g. v1.2.3, v1.2.3a1)")
+    workflow_parser.add_argument("--to-branch", help="Override to-branch (e.g. main, develop)")
+    workflow_parser.add_argument("--to-tag", help="Override to-tag (e.g. main, develop)")
+
     # -----------------------------
     # Parse and Dispatch
     # -----------------------------
@@ -347,7 +399,9 @@ def main() -> None:
         "push": handle_push,
         "validate": handle_validate,
         "backup": handle_backup,
+        "cleaned-backups": handle_cleaned_backups,
         "all": handle_all,
+        "cleanup_branches": handle_cleanup_branches,
     }
 
     if args.command in DISPATCH:

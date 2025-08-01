@@ -34,73 +34,73 @@ run-main:
 	python -m $(APP)
 
 custy-all-major:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --sync-backup
 
 custy-all-minor:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --sync-backup
 
 custy-all-patch:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --sync-backup
 
 custy-all-major-alpha:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release alpha
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release alpha --sync-backup
 
 custy-all-minor-alpha:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release alpha
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release alpha --sync-backup
 
 custy-all-patch-alpha:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release alpha
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release alpha --sync-backup
 
 custy-all-major-beta:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release beta
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release beta --sync-backup
 
 custy-all-minor-beta:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release beta
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release beta --sync-backup
 
 custy-all-patch-beta:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release beta
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release beta --sync-backup
 
 custy-all-major-rc:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release rc
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release rc --sync-backup
 
 custy-all-minor-rc:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release rc
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release rc --sync-backup
 
 custy-all-patch-rc:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release rc
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release rc --sync-backup
 
 custy-all-major-dev:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release dev
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release dev --sync-backup
 
 custy-all-minor-dev:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release dev
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release dev --sync-backup
 
 custy-all-patch-dev:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release dev
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release dev --sync-backup
 
 custy-all-major-next:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release next
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release next --sync-backup
 
 custy-all-minor-next:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release next
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release next --sync-backup
 
 custy-all-patch-next:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release next
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release next --sync-backup
 
 custy-all-major-preview:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release preview
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release preview --sync-backup
 
 custy-all-minor-preview:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release preview
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump minor --pre-release preview --sync-backup
 
 custy-all-patch-preview:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release preview
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release preview --sync-backup
 
 custy-all-post:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --post-release
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --post-release --sync-backup
 
 custy-all-dev:
-	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --dev-release
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --dev-release --sync-backup
 
 custy-changelog:
 	python -m $(APP) changelog

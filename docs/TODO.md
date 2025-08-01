@@ -8,6 +8,8 @@ Personal notes, planning, and roadmap for **Custy**
 
 ### ✅ Completed
 
+Earlier
+
 -   [x] handle custy Full workflow
 -   [x] handle custy "git add ."
 -   [x] handle custy generate changelog
@@ -19,6 +21,9 @@ Personal notes, planning, and roadmap for **Custy**
 -   [x] Use format [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local] the pep440 for python
 -   [x] support Post-release, development, local identifiers, and epoch segment
 -   [x] support 'release' on commit type
+
+Since v1.4.0
+
 -   [x] if the current version is pre-release or post or dev and so on. If we want to increment. let's say from rc, next version is rc, the major, minor, and patch won't change. same as from alpha to beta. but not beta to alpha because beta 1 higher level than alpha. for example from v.1.2.3rc1 to v.1.2.3rc2 instead of v.1.2.3rc1 to v.1.2.4rc2; another example from v.1.2.3b1 to v.1.2.3b2 instead of v.1.2.3b1 to v.1.2.4b2;
 -   [x] generate changelog when on release version. So check if the version is major.minor.patch. So allowed to generate changelog and push the changelog
 -   [x] Check if the commit type not [feat, fix, perf, docs, refactor] don't bump or use tagging. Id use types [feat, fix, perf, docs, refactor] we need to use specific parameter if we want to force bump or tagging; or maybe there are better suggestion.
@@ -38,10 +43,14 @@ Personal notes, planning, and roadmap for **Custy**
 -   [x] Backup just 10 maxiumum. 10 lastest/newest backup or we can set on CLI. by default 10
 -   [x] Fix issue where to put backups, templates folders/directory. also with commit-msg.txt if needed
 -   [x] handle cleanup backups CLI
+
+Since v1.5.0
+
 -   [x] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
 -   [x] Make sure backup and add all of them to stages before commit and push
 -   [x] add feature to force commit even no staged changes detected
 -   [x] bug fix error where now on post tag and now bump in the same post tag for example 1.5.0.post1 → 1.5.0.post2
+-   [x] Give template commit message git-msg.txt
 
 Since v1.7.1
 
@@ -56,23 +65,14 @@ Since v1.7.1
 
 ### 🧩 In Progress
 
--   _(Nothing yet)_
+-   [x] use 2 branch; `main` and `develop`; `main` is stable one and `develop` is more experimental
+-   [x] use 2 git remote, gitlab as main, and github as backup
+-   [x] use and applied branching workflow checking
 
 ---
 
 ### 🧠 Planning
 
--   [ ] use 2 git remote, gitlab as main, and github as backup
--   [ ] use 2 branch; `main` and `dev`; `main` is stable one and `dev` is more experimental
--   [ ] Update the major, minor, and patch on `main` branch. But on `dev` branch `main`, I just update pre_release and pre_release
--   [ ] If there is a abandoned branch or experminet or deprecated branch version and want to go back to `main` branch. I choose to rename branch use format like archive/{feature}-{date} or experiment/{feature}-{date}. If I just don't care about archieving the branch I can use option to reset `dev` back to `main`
--   [ ] remote on gitlab push `main` and `dev`. but on github just push `main`
--   [ ] Use .git/config (Local/Repo-specific)
--   [ ] if when running custy is failed prevent or handle the backup files that just created
--   [ ] Give template commit message git-msg.txt
--   [ ] on CLI parameters, on --bump, add option `final`. So the bump from v1.4.0rc[n] to -> v1.4.0
--   [ ] bug fixes or improvements, if switch to `release/x/y` or `rc` version tag get all message from `dev` branch like `alpha`, `beta`, `rc`, `dev`, etc
--   [ ] if post release the commit message header initial commit type is `docs` or maybe `<docs>`
 -   [ ] make `how to use` documentation. We can use the formal or friendly language style
 
 ---
@@ -81,6 +81,10 @@ Since v1.7.1
 
 -   for version use this format major.minor.patch-pre_release.pre_release_number
 -   change the pre-release format
+-   Update the major, minor, and patch on `main` branch. But on `dev` branch `main`, I just update pre_release and pre_release
+-   remote on gitlab push `main` and `dev`. but on github just push `main`
+-   on CLI parameters, on --bump, add option `final`. So the bump from v1.4.0rc[n] to -> v1.4.0
+-   bug fixes or improvements, if switch to `release/x/y` or `rc` version tag get all message from `dev` branch like `alpha`, `beta`, `rc`, `dev`, etc
 
 ---
 
@@ -97,6 +101,10 @@ Since v1.7.1
 -   Backup before delete the commit-msg.txt
 -   optionally, we can just see what would the next version by include additional CLI parameters or another ideas or just use --dry-run
 -   Automate the build meta or local
+-   Use .git/config (Local/Repo-specific)
+-   if post release the commit message header initial commit type is `docs` or maybe `<docs>`
+-   If there is a abandoned branch or experiment or deprecated branch version and want to go back to `main` branch. I choose to rename branch use format like archive/{feature}-{date} or experiment/{feature}-{date}. If I just don't care about archiving the branch I can use option to reset `dev` back to `main`
+-   if when running custy is failed prevent or handle the backup files that just created
 
 ---
 

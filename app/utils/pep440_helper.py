@@ -55,6 +55,7 @@ class PEP440VersionHelper:
         """
         Extract epoch, major, minor, patch.
         """
+        print("version", version)
         match = re.match(r"(?:(\d+)!)?v?(\d+)\.(\d+)\.(\d+)", version)
         if not match:
             raise ValueError(

@@ -31,6 +31,7 @@ class PEP440Strategy:
 
     def get_next_tag(self) -> str:
         latest_tag = self.git.get_latest_tag()
+        print("latest_tag", latest_tag)
         helper = PEP440VersionHelper(latest_tag)
         return helper.get_bump_version(
             level=self.bump,
