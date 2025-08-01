@@ -262,7 +262,7 @@ class GitHelper(DryRunSupport):
         )
         return result.stdout.strip()
 
-    def commit_and_push_changelog(self) -> None:
+    def commit_and_push_changelog(self, remotes: list = []) -> None:
         if not self.has_changelog_changed():
             print("⚠️ No changes in CHANGELOG.md. Skipping commit.")
             return
@@ -275,10 +275,9 @@ class GitHelper(DryRunSupport):
                 check=True,
             )
             branch = self.get_current_branch()
-            subprocess.run(
-                ["git", "push", "--set-upstream", "origin", branch],
-                check=True,
-            )
+            for remote in remotes:
+                self._push(remote=remote, branch=branch)
+
             print("✅ Changelog committed and pushed successfully.")
         except subprocess.CalledProcessError as e:
             print("❌ ERROR: Failed to commit or push CHANGELOG.md")
@@ -455,6 +454,12 @@ class GitHelper(DryRunSupport):
         """
         output = self._run_git(["tag", "--sort=creatordate"])
         return output.strip().splitlines() if output else []
+
+    def _push(self, branch: str, remote: str = "origin"):
+        subprocess.run(
+            ["git", "push", "--set-upstream", remote, branch],
+            check=True,
+        )
 
 
 def parse_pep440_or_semver(tag: str) -> Tuple:

@@ -191,7 +191,10 @@ class GitCommitTagger:
                 content=rendered,
                 path="CHANGELOG.md"
             )
-            self.git.commit_and_push_changelog()
+            remotes=["origin"]
+            if getattr(self, "sync_backup", False):
+                remotes.append("backup")
+            self.git.commit_and_push_changelog(remotes=remotes)
 
     def _handle_commitizen_only(self):
         self.validate()
@@ -459,7 +462,7 @@ class GitCommitTagger:
                 on_error=lambda: self._error_exit(f"Failed to push tag '{self.tag} to {remote} remote'."),
             )
         else:
-            print("⏭️ Tag push skipped.")
+            print(f"⏭️ Tag push to {remote} remote skipped.")
 
     def _error_exit(self, message: str) -> None:
         print(f"❌ ERROR: {message}")
