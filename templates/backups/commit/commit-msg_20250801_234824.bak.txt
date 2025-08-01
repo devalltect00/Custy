@@ -1,0 +1,28 @@
+refactor(workflow): 1.8.0rc2
+
+Release candidate for **Custy 1.8.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This refactor decouples strategy-specific logic (PEP 440, SemVer) from the core
+WorkflowManager class by introducing a VersionHelperBase interface. Both
+PEP440VersionHelper and SemverVersionHelper now implement:
+
+- classify(): identify version tier
+- tier_order(): precedence for tier promotion
+- suggest_tag(): next tag suggestion based on branch
+- get_transition_cases(): valid CASE transitions
+
+WorkflowManager is now cleaner and delegates classification, version suggestion,
+and transition validation to the appropriate strategy helper dynamically.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+Other improvements:
+- Reduced branching logic in check_transition()
+- Added docstrings across all helper classes
+- Improved extensibility for future strategies (e.g., CalVer)
+
+BREAKING CHANGE: version helpers must now implement VersionHelperBase interface
+
+Tag: 1.8.0rc2

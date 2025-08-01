@@ -1,0 +1,27 @@
+📦 Release Candidate Release Custy 1.8.0rc2
+
+Release candidate for **Custy 1.8.0** — Including finalized features and fixes. Awaiting final validation.
+A full refactor of the WorkflowManager to support
+strategy-specific versioning logic via a pluggable architecture.
+
+### ♻ Refactoring
+
+- Introduced `VersionHelperBase` as a common interface for version helpers
+- Refactored `PEP440VersionHelper` and `SemverVersionHelper` to implement the interface
+- WorkflowManager now uses dynamic strategy delegation (Strategy Pattern)
+- Removed inline classification/tier logic from WorkflowManager
+
+### 📚 Documentation
+
+- Added detailed module and method docstrings for:
+  - `workflow_manager.py`
+  - `pep440_helper.py`
+  - `semver_helper.py`
+  - `version_helper_base.py`
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+ℹ️ This is a **release-candidate** feature-complete but pending final validation before stable release.
+_Author: devalltect00_
+_Date: 2025-08-01_

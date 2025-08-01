@@ -140,6 +140,8 @@ class GitCommitTagger:
             self.workflow_manager = WorkflowManager()
             self.workflow_manager.check_transition(to_tag=self.tag)
 
+        input("Press Enter to continue...")
+
     def validate(self) -> None:
         self._ensure_git_repo()
 

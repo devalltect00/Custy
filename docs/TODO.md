@@ -61,19 +61,24 @@ Since v1.7.1
 -   [x] add new documentation `switching version.md`
 -   [x] handle verbose results, the process before generating CHANGELOG.md
 
----
-
-### 🧩 In Progress
+Since v1.8.0
 
 -   [x] use 2 branch; `main` and `develop`; `main` is stable one and `develop` is more experimental
 -   [x] use 2 git remote, gitlab as main, and github as backup
 -   [x] use and applied branching workflow checking
+-   [ ] Fix bug amd refactor WorkflowManager
+
+---
+
+### 🧩 In Progress
 
 ---
 
 ### 🧠 Planning
 
 -   [ ] make `how to use` documentation. We can use the formal or friendly language style
+-   [ ] Make better CLI
+-   [ ] Make better documentations
 
 ---
 

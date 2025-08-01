@@ -1,11 +1,34 @@
 # app\utils\semver_helper.py
 """
+SemverVersionHelper
+
+Implements versioning logic following the Semantic Versioning 2.0.0 specification.
+
+Supports:
+- Major.Minor.Patch
+- Pre-release: -alpha.N, -beta.N, -rc.N
+- Build metadata: +meta
+- v-prefixed versions
+
+Example:
+    helper = SemverVersionHelper("1.2.3-beta.2")
+    new_version = helper.get_bump_version(target_pre="rc")
+    # Returns: '1.2.3-rc.1' or '1.2.4-rc.1' depending on rules
+
+This class does NOT support:
+- Epochs
+- Post-releases
+- Dev releases
+
+Implements VersionHelperBase to support unified version management.
 """
 
 import re
 
+from .version_helper_base import VersionHelperBase
 
-class SemverVersionHelper:
+
+class SemverVersionHelper(VersionHelperBase):
     """
     A helper class for generating valid SemVer-compliant version strings.
 
@@ -184,3 +207,53 @@ class SemverVersionHelper:
             version = f"v{version}"
 
         return version
+
+    def classify(self, tag: str) -> str:
+        """
+        Classifies a SemVer tag into one of: alpha, beta, rc, or release.
+
+        Args:
+            tag (str): The version string stripped of the 'v' prefix
+
+        Returns:
+            str: Tier keyword for classification
+        """
+        # Semver: alpha, beta, rc, release
+        if "rc." in tag:
+            return "rc"
+        elif "beta." in tag:
+            return "beta"
+        elif "alpha." in tag:
+            return "alpha"
+        return "release"
+
+    def tier_order(self) -> dict:
+        return self.TIER_ORDER
+
+    def suggest_tag(self, branch: str) -> str:
+        # Optional: Generate suggested tag
+        if self.branch == "develop":
+            return self.get_bump_version(target_pre="dev")
+        elif self.branch.startswith("release/"):
+            return self.get_bump_version(target_pre="rc")
+        elif self.branch == "main":
+            return self.get_bump_version()  # final
+        elif self.branch.startswith("hotfix/"):
+            return self.get_bump_version(post=True)
+        return self.original  # No change
+
+    def get_transaction_cases(self) -> dict:
+        # Major transition cases
+        # Case transition map
+        return {
+            ("main", "release", "develop", "alpha"): "CASE 1",
+            ("main", "release", "develop", "beta"): "CASE 1",
+
+            ("develop", "alpha", "release", "rc"): "CASE 2",
+            ("develop", "beta", "release", "rc"): "CASE 2",
+
+            ("release", "rc", "main", "release"): "CASE 3",
+
+            ("main", "release", "develop", "alpha"): "CASE 4",
+            ("main", "release", "develop", "beta"): "CASE 4",
+        }

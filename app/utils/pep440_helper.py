@@ -1,11 +1,35 @@
 # app\utils\pep440_helper.py
-""" """
+"""
+PEP440VersionHelper
+
+Implements versioning rules according to PEP 440 for Python projects.
+
+Supports:
+- Epochs (!N)
+- Dev releases (.devN)
+- Pre-releases (aN, bN, rcN)
+- Post-releases (.postN)
+- Local versions (+meta)
+
+Example:
+    helper = PEP440VersionHelper("v1.2.3rc1")
+    new_version = helper.get_bump_version(target_pre="beta")
+    # Returns: '1.2.3b1' or '1.2.4b1' depending on context
+
+Implements VersionHelperBase to provide strategy-specific logic for:
+- Tier classification
+- Tier precedence
+- Suggested version tagging
+- Valid branch-to-tag transitions
+"""
 
 import re
 import sys
 
+from .version_helper_base import VersionHelperBase
 
-class PEP440VersionHelper:
+
+class PEP440VersionHelper(VersionHelperBase):
     """
     A helper class to bump PEP 440-compliant version strings.
 
@@ -43,32 +67,31 @@ class PEP440VersionHelper:
         Parses all tags and segments
         """
         self.original = current
-        self.epoch, self.major, self.minor, self.patch = self._parse_base_version(current)
-        self.current_pre, self.current_pre_num = self._parse_pre(current)
+        self.epoch, self.major, self.minor, self.patch = self._parse_base_version()
+        self.current_pre, self.current_pre_num = self._parse_pre()
         self.post_tag = self._search_tag("post")
         self.dev_tag = self._search_tag("dev")
         self.local_tag = self._search_tag(r"\+(.*)", group=1)
 
         self.going_down = False  # will be set in determine_dump()
 
-    def _parse_base_version(self, version: str):
+    def _parse_base_version(self):
         """
         Extract epoch, major, minor, patch.
         """
-        print("version", version)
-        match = re.match(r"(?:(\d+)!)?v?(\d+)\.(\d+)\.(\d+)", version)
+        match = re.match(r"(?:(\d+)!)?v?(\d+)\.(\d+)\.(\d+)", self.original)
         if not match:
             raise ValueError(
-                f"❌ Invalid PEP440 format: '{version}' (expected) [N!]X.Y.Z or vX.Y.Z"
+                f"❌ Invalid PEP440 format: '{self.original}' (expected) [N!]X.Y.Z or vX.Y.Z"
             )
         epoch, major, minor, patch = match.groups()
         return int(epoch) if epoch else None, int(major), int(minor), int(patch)
 
-    def _parse_pre(self, version: str):
+    def _parse_pre(self):
         """
         Extract pre-release type and number (e.g., a2 → ('a', 2)).
         """
-        match = re.search(r"(a|b|rc)(\d+)", version)
+        match = re.search(r"(a|b|rc)(\d+)", self.original)
         return (match.group(1), int(match.group(2))) if match else (None, None)
 
     def _search_tag(self, tag: str, group=1):
@@ -82,11 +105,11 @@ class PEP440VersionHelper:
         match = re.search(pattern, self.original)
         return match.group(group) if match else None
 
-    def _tier_value(self, short: str | None) -> int:
+    def _tier_value(self, tag: str | None) -> int:
         """
         Get integer value representing tier precedence.
         """
-        return self.TIER_ORDER.get(short, 4)
+        return self.TIER_ORDER.get(tag, 4)
 
     def _current_tier(self) -> str | None:
         """
@@ -223,3 +246,64 @@ class PEP440VersionHelper:
             version = f"{epoch or self.epoch}!{version}"
 
         return version
+
+    def classify(self, tag: str) -> str:
+        """
+        Classifies a version string into one of: dev, a, b, rc, post, release.
+
+        Args:
+            tag (str): The version string, stripped of prefix (e.g., '1.2.3a1')
+
+        Returns:
+            str: Version tier keyword
+        """
+        # PEP 440: dev a, b, rc, release, post
+        if ".post"in tag:
+            return "post"
+        elif "rc"in tag:
+            return "rc"
+        elif "b"in tag:
+            return "b"
+        elif "a"in tag:
+            return "a"
+        elif "dev"in tag:
+            return "dev"
+        return "release"
+
+    def tier_order(self) -> dict:
+        return self.TIER_ORDER
+
+    def suggest_tag(self, branch: str) -> str:
+        # Optional: Generate suggested tag
+        if self.branch == "develop":
+            return self.get_bump_version(target_pre="dev")
+        elif self.branch.startswith("release/"):
+            return self.get_bump_version(target_pre="rc")
+        elif self.branch == "main":
+            return self.get_bump_version()  # final
+        elif self.branch.startswith("hotfix/"):
+            return self.get_bump_version(post=True)
+        return self.original  # No change
+
+    def get_transaction_cases(self) -> dict:
+        # Major transition cases
+        # Case transition map
+        return {
+            ("main", "release", "develop", "dev"): "CASE 1",
+            ("main", "release", "develop", "a"): "CASE 1",
+            ("main", "release", "develop", "b"): "CASE 1",
+
+            ("develop", "dev", "release", "rc"): "CASE 2",
+            ("develop", "a", "release", "rc"): "CASE 2",
+            ("develop", "b", "release", "rc"): "CASE 2",
+
+            ("release", "rc", "main", "release"): "CASE 3",
+
+            ("main", "release", "develop", "dev"): "CASE 4",
+            ("main", "release", "develop", "a"): "CASE 4",
+            ("main", "release", "develop", "b"): "CASE 4",
+
+            ("main", "release", "hotfix", "post"): "CASE 5",
+
+            ("hotfix", "post", "main", "release"): "CASE 6",
+        }

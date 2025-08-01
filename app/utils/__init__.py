@@ -16,6 +16,7 @@ from .tag_strategy.date_strategy import DateStrategy
 from .tag_strategy.git_count_strategy import GitCountStrategy
 from .tag_strategy.pep440_strategy import PEP440Strategy
 from .tag_strategy.semver_strategy import SemverStrategy
+from .version_helper_base import VersionHelperBase
 from .version_utils import (assert_is_final_version,
                             contains_allowed_commit_type,
                             maybe_assert_is_final)
@@ -39,8 +40,9 @@ __all__ = [
     "get_last_tag_before",
     "get_sorted_tags",
     "Runner",
-    "SemverVersionHelper",
     "PEP440VersionHelper",
+    "SemverVersionHelper",
+    "VersionHelperBase",
     "assert_is_final_version",
     "contains_allowed_commit_type",
     "maybe_assert_is_final",

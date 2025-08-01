@@ -1,41 +1,59 @@
 # app\utils\workflow_manager.py
+"""
+workflow_manager.py
+
+Orchestrates Git branching and versioning consistency using strategy-specific helpers.
+
+Supports both PEP 440 and SemVer standards by dynamically delegating logic
+to PEP440VersionHelper or SemverVersionHelper depending on project language.
+
+Responsibilities:
+- Enforces consistency rules for each branch type
+- Suggests the next version based on branch context
+- Validates allowed version transitions between branch/tag combinations
+"""
 
 import re
 
 from .git import GitHelper
 from .pep440_helper import PEP440VersionHelper
+from .project_detector import detect_project_strategy
 from .semver_helper import SemverVersionHelper
 
 
 class WorkflowManager:
     """
-    WorkflowManager handles Git workflow enforcement and validation based on branching and tagging strategy.
+    WorkflowManager enforces Git workflow policies, tag consistency, and versioning transitions.
 
-    It ensures consistency between branch names and version tags by detecting the correct strategy (PEP440 or SemVer).
+    Attributes:
+        branch (str): Current Git branch
+        tag (str): Latest Git tag
+        strategy (str): 'pep440' or 'semver'
+        helper (VersionHelperBase): Strategy-specific helper
 
-    Strategy Selection:
-    - Uses detect_project_strategy() to choose between PEP440VersionHelper (for Python) or SemverVersionHelper (for JS, PHP).
+    Usage:
+        manager = WorkflowManager()
+        manager.enforce_consistency()
+        manager.check_transition(from_branch="develop", to_branch="release/1.3")
 
-    Features:
-    - enforce_consistency(): Validates current branch/tag rules
-    - suggest_tag_for_current_branch(): Suggests next semantic version
-    - check_transition(): Validates state changes between branches and tag states (e.g. develop → release)
+    Available Transition Cases:
+        - CASE 1: main → develop (starting new feature work)
+        - CASE 2: develop → release (promote dev → rc)
+        - CASE 3: release → main (final release)
+        - CASE 4: main → develop (start new cycle after release)
+        - CASE 5: main → hotfix
+        - CASE 6: hotfix → main
     """
-    """
-    WorkflowManager handles Git workflow enforcement and validation based on branching and tagging strategy.
-
-    It ensures consistency between branch names and PEP 440-compliant version tags,
-    and validates transitions across stages like develop → release → main.
-
-    Supported Use Cases:
-    - Enforce version rules on current branch (e.g., dev on develop, rc on release/*, etc.)
-    - Suggest next tag based on branch context
-    - Validate branch + version transitions (e.g., Case 1–5 logic)
-    """
-    def __init(self):
+    def __init__(self):
         self.git = GitHelper()
         self.branch = self.git.get_current_branch()
         self.tag = self.git.get_latest_tag()
+        self.strategy = detect_project_strategy()
+
+        if self.strategy == "pep440":
+            self.helper = PEP440VersionHelper(self.tag)
+        else:
+            self.helper = SemverVersionHelper(self.tag)
 
     def enforce_consistency(self) -> None:
         print(f"✨ Current branch: {self.branch}")
@@ -84,24 +102,8 @@ class WorkflowManager:
             print(f"❌ Post-release tag expected to have '.postN' suffix.")
 
     def suggest_tag_for_current_branch(self) -> str:
-        # Optional: Generate suggested tag
-        from .project_detector import detect_project_strategy
-        strategy = detect_project_strategy()
 
-        if strategy == "pep440":
-            helper = PEP440VersionHelper(self.tag)
-        else:
-            helper = SemverVersionHelper(self.tag)
-        if self.branch == "develop":
-            return helper.get_bump_version(target_pre="dev")
-        elif self.branch.startswith("release/"):
-            return helper.get_bump_version(target_pre="rc")
-        elif self.branch == "main":
-            return helper.get_bump_version()  # final
-        elif self.branch.startswith("hotfix/"):
-            return helper.get_bump_version(post=True)
-        else:
-            return self.tag  # No change
+        return self.helper.suggest_tag(self.branch)
 
     def check_transition(
             self,
@@ -110,19 +112,14 @@ class WorkflowManager:
             to_branch: str = None,
             to_tag: str = None
         ) -> None:
-        def classify(tag: str) -> str:
-            if re.search(r"\.post\d+", tag):
-                return "post"
-            elif re.search(r"(a|alpha)\d+", tag):
-                return "a"
-            elif re.search(r"(b|beta)\d+", tag):
-                return "b"
-            elif re.search(r"(rc\d+", tag):
-                return "rc"
-            elif re.search(r"dev\d+", tag):
-                return "dev"
-            else:
-                return "release"
+        """
+        Validates transition between two branches and version types.
+
+        - Allows defined CASE transitions (e.g., CASE 1–6)
+        - Allows same-branch tier progression (e.g., dev → a → b)
+        - Allows same-branch stable updates (e.g., rc1 → rc2)
+        - Flags others as unrecognized
+        """
 
         #  Auto-detect if not given
         f_branch = from_branch or self.git.get_current_branch()
@@ -130,25 +127,29 @@ class WorkflowManager:
         t_branch = to_branch or f_branch
         t_tag = to_tag or f_tag
 
-        f_ver = classify(f_tag.lstrip("v"))
-        t_ver = classify(t_tag.lstrip("v"))
+        f_ver = self.helper.classify(f_tag.lstrip("v"))
+        t_ver = self.helper.classify(t_tag.lstrip("v"))
 
         # Summary view
         print(f"📦 From: {f_branch} ({f_ver})")
         print(f"➡️ To: {t_branch} ({t_ver})\n")
 
-        # Case transition map
-        cases = {
-            ("main", "release", "develop", "dev"): "CASE 1",
-            ("develop", "dev", "release", "rc"): "CASE 2",
-            ("release", "rc", "main", "release"): "CASE 3",
-            ("main", "release", "develop", "dev"): "CASE 4",
-            ("main", "release", "hotfix", "post"): "CASE 5",
-            ("hotfix", "post", "main", "release"): "CASE 6",
-        }
+        # ✅ Allow stable, same-branch transitions
+        if f_branch == t_branch and f_ver == t_ver:
+            print(f"✅ Stable iteration: {f_branch} ({f_ver}) → {t_branch} ({t_tag})")
+            return
 
-        matched_case = cases.get((f_branch.split("/")[0], f_ver, t_branch.split("/")[0], t_ver))
-        if matched_case:
-            print(f"✅ Valid transition {matched_case} — {f_branch} ({f_ver}) → {t_branch} ({t_ver})")
+        # ✅ Allow in-place tier progression (e.g. dev → a → b → rc)
+        if f_branch == t_branch:
+            tier_order = self.helper.tier_order()
+            if tier_order.get(f_ver, -1) < tier_order.get(t_ver):
+                print(f"✅ Valid in-place promotion: {f_branch} ({f_ver}) → {t_branch} ({t_tag})")
+                return
+
+        case_key = (f_branch.split("/")[0], f_ver, t_branch.split("/")[0], t_ver)
+        cases = self.helper.get_transaction_cases()
+
+        if case_key in cases:
+            print(f"✅ Valid transition {cases[case_key]} — {f_branch} ({f_ver}) → {t_branch} ({t_ver})")
         else:
             print(f"❌ Invalid or unrecognized transitions: {f_branch} ({f_ver}) → {t_branch} ({t_ver})")
