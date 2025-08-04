@@ -42,12 +42,20 @@ class ReleaseNoteBuilder:
             bullet_placeholder = "- *(Nothing yet)* — See tag message for full context."
 
             # Merge description and additional  into one cohesive paragraph block
-            body_block = "\n".join(filter(None, [description, additional]))
+            # body_block = "\n".join(filter(None, [description, additional]))
 
             lines = [
                 header,
                 "",
-                body_block,
+                description,
+                "",
+            ]
+
+            if additional:
+                lines.append(additional)
+
+            lines += [
+                "All functionality has been fully validated and production-ready.",
                 "",
                 bullet_placeholder,
                 "",
@@ -56,7 +64,7 @@ class ReleaseNoteBuilder:
                 f"🎉 **{app} {ver} is now stable and ready for production use.**",
                 "",
                 "🔖 **Tags**:",
-                f"- `{commit_type}`",
+                f"- Type: `#{commit_type}`",
                 "",
                 "Changelog: handled separately",
             ]
@@ -179,7 +187,7 @@ class ReleaseNoteBuilder:
         ver = self.info.version
         if vt == VersionType.FINAL:
             tags = ", ".join(self.info.prerelease_tags)
-            msg = f"Includes all feature and fixes from pre-releases:\n{tags}."
+            msg = f"Includes all feature and fixes from pre-releases: {tags}."
             if (
                 len(self.info.prerelease_tags) == 1
                 and not self.info.has_changes_since_rc
