@@ -395,19 +395,22 @@ class GitCommitTagger:
                     print(f"🚫 Skipping tag: commit types `{commit_type}` is not allowed.",)
                     print(f"ℹ️ Allowed types: {sorted(ALLOWED_COMMIT_TYPES)}")
                     print("ℹ️ Use --force-tag to override.")
-                    input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
-                    self.skip_tag = True
-                else:
-                    print(f"⚠️ Forcing tag despite disallowed commit type `{commit_type}`.")
-            else:
-                if not self.force_tag:
-                    print(f"🚫 Skipping tag: could not detect valid commit type.",)
-                    print(f"ℹ️ Allowed types: {sorted(ALLOWED_COMMIT_TYPES)}")
+                    print("💡 Note: Don't forget to manually update the version in commit-msg.txt")
+                    print("           → Use the current latest tag or whatever version you determine.")
                     print("ℹ️ Use --force-tag to override.")
                     input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
                     self.skip_tag = True
                 else:
-                    print(f"⚠️ Forcing tag despite unrecognized commit type.")
+                    print(f"⚠️ Forcing tag despite disallowed commit type `{commit_type}`.")
+        else:
+            if not self.force_tag:
+                print(f"🚫 Skipping tag: could not detect valid commit type.",)
+                print(f"ℹ️ Allowed types: {sorted(ALLOWED_COMMIT_TYPES)}")
+                print("ℹ️ Use --force-tag to override.")
+                input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
+                self.skip_tag = True
+            else:
+                print(f"⚠️ Forcing tag despite unrecognized commit type.")
 
     def _ensure_staged_changes(self) -> None:
         if self.git.has_staged_files():

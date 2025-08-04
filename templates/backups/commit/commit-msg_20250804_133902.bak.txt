@@ -1,0 +1,16 @@
+fix(core): 1.9.0b3
+
+Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- Fixed a minor internal bug affecting stability
+
+---
+
+_Tag: `1.9.0b3`_
+
+---
+
+🔖 **Tags**:
+- Type: `#bugfix`
