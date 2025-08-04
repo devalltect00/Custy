@@ -68,9 +68,7 @@ Since v1.8.0
 -   [x] use and applied branching workflow checking
 -   [x] Fix bug amd refactor WorkflowManager
 
----
-
-### 🧩 In Progress
+Since v1.9.0
 
 -   [x] Make better CLI
 -   [x] Make sure they use valid path, to prevent ambiguity. ["app/__version__.py", ".cz.toml", "template" (and its child), "docs", "tests", "tools/templates/changelog.j2", ".cz_changelog.j2", ".custor.toml", ".editorconfig", ".gitignore", ".projectignore", "CHANGELOG.md", "Makefile", "pyproject.toml"]
@@ -83,6 +81,11 @@ Since v1.8.0
 -   [x] clean project app
 -   [x] Regenerate project structure documentation
 -   [x] Format code
+
+---
+
+### 🧩 In Progress
+
 -   [ ] Make sure it is ready to use, installing and usage
 
 ---
