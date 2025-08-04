@@ -699,8 +699,10 @@ class GitCommitTagger:
         # Determine if there are any changes since last RC/prerelease
         has_changes = True
         if version_type == VersionType.FINAL and latest_pre:
-            changes = self.git.get_commits_between_tags(latest_pre, version)
-            has_changes = bool(changes)
+            # changes = self.git.get_commits_between_tags(latest_pre, version)
+            rc_tags = [tag for tag in prereleases if re.search(r"rc\d+", tag.lower())]
+            # has_changes = bool(changes)
+            has_changes = len(rc_tags) > 1
 
         # Build structured release info
         info = ReleaseInfo(

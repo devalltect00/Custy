@@ -53,3 +53,29 @@ class VersionType(str, Enum):
             return cls.DEV
 
         return cls.FINAL
+
+    def is_dev(self) -> bool:
+        return self == VersionType.DEV
+
+    def is_alpha(self) -> bool:
+        return self == VersionType.ALPHA
+
+    def is_beta(self) -> bool:
+        return self == VersionType.BETA
+
+    def is_rc(self) -> bool:
+        return self == VersionType.RC
+
+    def is_pre_release(self) -> bool:
+        return self in {
+            VersionType.DEV,
+            VersionType.ALPHA,
+            VersionType.BETA,
+            VersionType.RC,
+            }
+
+    def is_final_release(self) -> bool:
+        return self == VersionType.FINAL
+
+    def is_post_release(self) -> bool:
+        return self == VersionType.POST

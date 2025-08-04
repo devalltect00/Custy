@@ -29,33 +29,70 @@ class ReleaseNoteBuilder:
         """
         Generate the commit-msg.txt content.
         """
-        header = f"{self._commit_type()}(release): {self.info.version}"
-        description = self._description()
-        additional = self._additional_info()
-        intro = self._manual_section_intro()
-        placeholder = "- *(Nothing yet)* — See tag message for full context."
+        vt = self.info.version_type
+        ver = self.info.version
+        app = self.info.app_name
+        commit_type = self._commit_type()
 
-        # Merge description and additional  into one cohesive paragraph block
-        body_block = "\n".join(filter(None, [description, additional]))
+        if vt.is_final_release():
+            # === Final release commit message ===
+            header = f"{commit_type}(main): {ver}"
+            description = self._description()
+            additional = self._additional_info()
+            bullet_placeholder = "- *(Nothing yet)* — See tag message for full context."
 
-        lines = [
-            header,
-            "",
-            body_block,
-            "",
-            intro,
-            placeholder,
-            "",
-            "---",
-            "",
-            f"_Tag: `{self.info.version}`_",
-            "",
-            "---",
-            "",
-            f"🔖 **Tags**: `#{self._commit_type()}`"
-        ]
-        if self.info.version_type in [VersionType.FINAL, VersionType.POST]:
-            lines.append("Changelog: handled separately")
+            # Merge description and additional  into one cohesive paragraph block
+            body_block = "\n".join(filter(None, [description, additional]))
+
+            lines = [
+                header,
+                "",
+                body_block,
+                "",
+                bullet_placeholder,
+                "",
+                "---",
+                "",
+                f"🎉 **{app} {ver} is now stable and ready for production use.**",
+                "",
+                "🔖 **Tags**:",
+                f"- `{commit_type}`",
+                "",
+                "Changelog: handled separately",
+            ]
+        else:
+            # === Pre-release commit message ===
+            header = f"{self._commit_type()}(release): {self.info.version}"
+            description = self._description()
+            additional = self._additional_info()
+            intro = self._manual_section_intro()
+            bullet_placeholder = "- *(Nothing yet)* — See tag message for full context."
+
+            # Merge description and additional  into one cohesive paragraph block
+            # body_block = "\n".join(filter(None, [description, additional]))
+
+            lines = [
+                header,
+                "",
+                description
+            ]
+
+            if additional:
+                lines.append(additional)
+
+            lines += [
+                "",
+                intro,
+                bullet_placeholder,
+                "",
+                "---",
+                "",
+                f"_Tag: `{ver}`_",
+                "",
+                "🔖 **Tags**:",
+                f"- Type: `#{commit_type}`"
+            ]
+
 
         return "\n".join(lines)
 
@@ -142,7 +179,7 @@ class ReleaseNoteBuilder:
         ver = self.info.version
         if vt == VersionType.FINAL:
             tags = ", ".join(self.info.prerelease_tags)
-            msg = f"includes all feature and fixes from pre-releases: {tags}."
+            msg = f"Includes all feature and fixes from pre-releases:\n{tags}."
             if (
                 len(self.info.prerelease_tags) == 1
                 and not self.info.has_changes_since_rc
