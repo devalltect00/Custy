@@ -238,6 +238,7 @@ class GitCommitTagger:
         self._open_editor(self.message_path)
         print(f"\n{Fore.LIGHTBLUE_EX}[*] Validating messages...{Style.RESET_ALL}\n")
         self._validate_commit_type_for_tagging()
+        self._maybe_use_latest_tag()
         # self.cz.check_commit(path=self.message_path,)  # Use the format  agreed upon with Commitizen.
         self.git.check_commit_message_file(self.message_path)
         print(f"\n{Fore.MAGENTA}[*] Writing version to files...{Style.RESET_ALL}\n")
@@ -257,11 +258,6 @@ class GitCommitTagger:
         #     self.tag = self.bump_version(current_tag, self.bump_level)
         # elif self.tag_input:
         #     self.tag = self.tag_input
-        if getattr(self, "skip_tag", False):
-            self.tag = self.git.get_latest_tag()
-            print(f"🚫 Skipping tag resolution due to disallowed commit type. Using current tag: {self.tag}")
-            return
-
         if self.tag_input:
             self.tag = self.tag_input
         # elif self.strategy_input == "semver" and self.bump_level:
@@ -333,6 +329,12 @@ class GitCommitTagger:
                 f"ℹ️ No tag message provided. Using tag name as message: '{self.tag_msg}'",
             )
 
+    def _maybe_use_latest_tag(self):
+        if getattr(self, "skip_tag", False):
+            self.tag = self.git.get_latest_tag()
+            print(f"🚫 Skipping tag resolution due to disallowed commit type. Using current tag instead: {self.tag}")
+            return
+
     def _update_version_file(self) -> None:
         if not self.version_file:
             return
@@ -388,6 +390,7 @@ class GitCommitTagger:
         commits_msg = self.message_path.read_text(encoding="utf-8")
         first_line = commits_msg.strip().splitlines()[0] if commits_msg.strip() else ""
         commit_type = classify_commit_type(first_line=first_line)
+
 
         if commit_type:
             if commit_type not in ALLOWED_COMMIT_TYPES:
