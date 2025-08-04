@@ -3,8 +3,95 @@
 
 
 
-## Unreleased (2025-08-02)
+## Unreleased (2025-08-04)
 ### 🐛 Bug Fixes
+- **main**: 1.9.1
+  
+  Final release of **Custy 1.9.1**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- 🐛 Fixed a minor internal bug to improve stability
+
+---
+
+🎉 **Custy 1.9.1 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#bugfix`
+
+Changelog: handled separately
+  
+- **release**: 1.9.0rc3
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- 🐛 Fixed a minor internal bug to improve stability
+
+---
+
+_Tag: `1.9.0rc3`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+- **release**: 1.9.0rc2
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- 🐛 Fixed a minor internal bug to improve stability
+
+---
+
+_Tag: `1.9.0rc2`_
+
+---
+
+🔖 **Tags**: `#<type>`
+  
+- **core**: 1.9.0b3
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- Fixed a minor internal bug affecting stability
+
+---
+
+_Tag: `1.9.0b3`_
+
+---
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+- **core**: 1.9.0b2 — fix commit-type validation and pipeline creation issue
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+### 🐛 Bug Fixes
+- Fixed a bug where commit type wasn't validated before resolving version, which could lead to invalid version bumps
+- Fixed issue where pipeline couldn’t be created due to misconfigured job or script condition
+
+---
+
+_Tag: `1.9.0b2`_
+
+---
+
+🔖 **Tags**:
+- Type: `#bugfix`
+- CI/CD: `#pipeline`
+- Versioning: `#versioning`
+  
 - **push**: 1.8.1
   
   Final release of **Custy 1.8.1**, promoted from the latest release candidate.
@@ -54,8 +141,8 @@ Changelog: handled separately
 includes all feature and fixes from pre-releases: .
 
 This final release includes all validated features and fixes from earlier pre-releases:
-- Fix the file name from `pep404_strategy.py` â†’ `pep440_strategy.py`
-- Rename class from `PEP404Strategy` â†’ `PEP440Strategy`
+- Fix the file name from `pep404_strategy.py` → `pep440_strategy.py`
+- Rename class from `PEP404Strategy` → `PEP440Strategy`
 - Bug fix: Switch to post-release uses `1.5.0.post1` instead of bumping minor to `1.6.0.post1`
 - Refactor and clean up `SemverStrategy` and `PEP440Strategy` classes
 - Add test coverage for both strategy classes
@@ -74,14 +161,147 @@ Changelog: handled separately
 Includes minor updates or documentation fixes after release 1.6.0.
 
 This post-release includes minor updates and corrections after the official release:
-- Bug fixed case example changes from 1.5.0.post1 â†’ 1.5.0.post2
+- Bug fixed case example changes from 1.5.0.post1 → 1.5.0.post2
 - Bug fixed on `Makefile`
 - modified documentation `docs/TODO.md`
 
 Tag: 1.6.0.post2
 Changelog: handled separately
   
+### 🚀 Release
+- **main**: 1.9.0
+  
+  Final release of **Custy 1.9.0**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.9.0rc3, 1.9.0rc2, 1.9.0rc1, 1.9.0b3, 1.9.0b2, 1.9.0b1.
+All functionality has been fully validated and production-ready.
+
+### ✨ Features
+- Redesigned CLI interface with support for `--silent` / `--debug` modes
+- Smart path resolution for configs and templates to prevent ambiguity
+- Improved commit/tag message template generation logic
+
+### 📚 Documentation
+- Rewrote and cleaned `README.md`, `HOW_TO_USE.md`, and `docs/TODO.md`
+- Added badge list and regenerated project structure documentation
+
+### ⚙️ CI/CD
+- GitHub Actions and GitLab CI pipelines now support testing and deployment
+- Makefile updated with silent execution support (`--no-debug`)
+
+### 🧹 Maintenance & Structure
+- Refactored and cleaned up the `app/` structure
+- Relocated and organized all templates
+- Applied code formatting using `ruff`
+
+### 🐛 Bug Fixes
+- Commit type now validated before version resolution
+- Fixed pipeline creation issues due to misconfigured jobs
+- Resolved internal logic bugs to improve stability
+- `assert_is_final_version()` now gracefully handles pre-releases
+
+---
+
+🎉 **Custy 1.9.0 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#feature`, `#bugfix`, `#refactor`
+- Docs: `#docs`, `#template`
+- CI/CD: `#ci`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+- **core**: 1.8.0
+  
+  Final release of **Custy 1.8.0**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: 1.8.0rc2, 1.8.0rc1.
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- Git workflow validation via WorkflowManager
+- Temporary branch cleanup with Branch Cleaner
+- Dual remote strategy: GitLab (main), GitHub (backup)
+- Strategy-specific version helpers (PEP 440, SemVer)
+- Cleaner code structure with VersionHelperBase
+- Updated Makefile and improved documentation
+
+🛠 Final tweaks after rc2:
+- Allow `custy all` to run `--sync-backup` automatically
+- Minor improvements to support `release` commit type
+- Refined docs and cleaned up TODO list
+
+Tag: 1.8.0
+Changelog: handled separately
+  
+### 🔧 Chores
+- **release**: 1.9.0rc1
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 📚 Documentation
+- Updated `docs/TODO.md` to reflect recent changes and clean up outdated tasks
+- Confirmed installation steps and usage instructions are ready and verified
+
+---
+
+_Tag: `1.9.0rc1`_
+
+---
+
+🔖 **Tags**:
+- Type: `#chore`
+  
+- **release**: 1.9.0b2
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements.
+
+### 📄 Template Enhancements
+- Added more example templates for `commit-msg.txt` and `tag-msg.txt` to guide custom formatting
+
+### 🛠️ Makefile Improvements
+- Updated Makefile commands to include `--no-debug` for cleaner production runs
+  - Example: `custy-all-major` now includes `--no-debug` for silent execution
+
+### ⚙️ Logic Refinement
+- Tweaked `assert_is_final_version()`:
+  - From blocking pre-releases to simply skipping generation with a warning
+  - More graceful handling for versions like `1.9.0b2`, `rc`, `a`, etc.
+
+---
+
+_Tag: `1.9.0b2`_
+
+---
+
+🔖 **Tags**:
+- Type: `#chore`, `#cleanup`
+- Docs: `#template`
+- Config: `#makefile`
+  
 ### 📝 Documentation
+- **release**: 1.9.0rc1
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.9.0rc1`_
+
+---
+
+🔖 **Tags**: `#<type>`
+  
+- **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
@@ -99,29 +319,52 @@ Changelog: handled separately
   
 - **changelog**: update changelog
 - **changelog**: update changelog
-### Release
-- **core**: 1.8.0
-  
-  Final release of **Custy 1.8.0**, promoted from the latest release candidate.
-includes all feature and fixes from pre-releases: 1.8.0rc2, 1.8.0rc1.
-
-This final release includes all validated features and fixes from earlier pre-releases:
-- Git workflow validation via WorkflowManager
-- Temporary branch cleanup with Branch Cleaner
-- Dual remote strategy: GitLab (main), GitHub (backup)
-- Strategy-specific version helpers (PEP 440, SemVer)
-- Cleaner code structure with VersionHelperBase
-- Updated Makefile and improved documentation
-
-ðŸ›  Final tweaks after rc2:
-- Allow `custy all` to run `--sync-backup` automatically
-- Minor improvements to support `release` commit type
-- Refined docs and cleaned up TODO list
-
-Tag: 1.8.0
-Changelog: handled separately
-  
 ### 🧠 Refactoring
+- **core**: 1.9.0b1 — improve CLI, docs, pipeline, templates, and structure
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This update delivers improved CLI usability, updated documentation, better automation, refactored project structure, and improved message templates.
+
+### ✨ Features
+- Redesigned CLI interface with clearer UX and new arguments (e.g., silent/debug flags)
+- Enhanced file path resolution to avoid ambiguity for key config and template files
+
+### 📚 Documentation
+- Rewrote `README.md` and added badges (`docs/badges.md`)
+- Created user guide: `docs/HOW_TO_USE.md`
+- Regenerated project structure documentation
+
+### ⚙️ CI/CD
+- Added GitHub Actions workflow and GitLab CI pipeline to run tests on push
+
+### 🧹 Maintenance
+- Cleaned and refactored `app/` directory
+- Code formatted with `ruff`
+
+### 📄 Template Improvements
+- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
+- Updated commit/tag message generation to use new structure
+
+### 🐛 Bug Fix
+- Fixed a minor internal bug affecting stability
+
+### 🛠️ Misc
+- Updated `Makefile`, `pyproject.toml`, and related config files
+- Removed unused file `q`
+
+---
+
+_Tag: `1.9.0b1`_
+
+---
+
+🔖 **Tags**:
+- Type: `#feature`, `#bugfix`, `#refactor`
+- Docs: `#docs`, `#template`
+- CI/CD: `#ci`, `#cleanup`
+  
 - **workflow**: 1.8.0rc2
   
   Release candidate for **Custy 1.8.0**, consolidating all pre-release changes and preparing for stable release.
@@ -176,7 +419,7 @@ Changelog: handled separately
 Feature-complete and undergoing final validation before stable release.
 
 This release candidate consolidates finalized features and bug fixes before the stable release:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0rc1
   
@@ -249,7 +492,7 @@ Changelog: handled separately
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b1
   
@@ -257,13 +500,13 @@ Tag: 1.5.0b1
   
   This commit introduces a series of improvements across versioning, tagging, changelog generation, and backup handling in Custy CLI.
 
-- Prevents major.minor.patch bump when incrementing within same pre-release tier (e.g. rc1 â†’ rc2)
+- Prevents major.minor.patch bump when incrementing within same pre-release tier (e.g. rc1 → rc2)
 - Generates changelog only on final releases (e.g. v1.2.3), skipping pre-releases
 - Enforces bump/tag only for specific types [feat, fix, perf, docs, refactor]; others require CLI override
 - Detects project type (Python or JavaScript) to apply correct versioning scheme (PEP 440 or SemVer)
 - Tag messages now opened in external file like commit-msg.txt; supports default message via flag
 - For release tags, auto-generates commit/tag message template from all prereleases (pre, dev, etc.)
-- Prevents bump from rc â†’ final from incrementing patch (v1.2.3rc1 â†’ v1.2.3, not v1.2.4)
+- Prevents bump from rc → final from incrementing patch (v1.2.3rc1 → v1.2.3, not v1.2.4)
 - Adds cleanup logic for `backups/`, keeping 10 latest (customizable via CLI)
 - Fixes backup and template folder resolution; commit-msg.txt placement corrected
 - Adds `cleanup-backups` CLI handler
@@ -287,7 +530,7 @@ Changelog: handled separately
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b3
   
@@ -297,7 +540,7 @@ Tag: 1.5.0b3
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b2
   
@@ -341,7 +584,7 @@ Tag: v1.4.0rc3
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b1
   
@@ -400,13 +643,13 @@ Tag: v1.4.0rc2
   Release candidate for v1.4.0, consolidating all pre-release changes.
 
 Includes:
-- Version bump protection within pre-release tier (e.g., rc1 â†’ rc2)
+- Version bump protection within pre-release tier (e.g., rc1 → rc2)
 - Restriction of changelog to final releases only
 - Commit type validation for bump/tag operations
 - Project type detection (PEP 440 or SemVer) for versioning
 - External tag message support (`tag-msg.txt`)
 - Auto-generation of release commit/tag message templates
-- RC â†’ final bump without patch increment
+- RC → final bump without patch increment
 - `cleanup-backups` CLI command
 - Improved dry-run behavior
 - Expanded documentation and Makefile updates
@@ -487,6 +730,454 @@ Changelog: handled separately
 Changelog: handled separately
   
 
+## 1.9.1 (2025-08-04)
+### 🐛 Bug Fixes
+- **main**: 1.9.1
+  
+  Final release of **Custy 1.9.1**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- 🐛 Fixed a minor internal bug to improve stability
+
+---
+
+🎉 **Custy 1.9.1 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#bugfix`
+
+Changelog: handled separately
+  
+### 🚀 Release
+- **main**: 1.9.0
+  
+  Final release of **Custy 1.9.0**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.9.0rc3, 1.9.0rc2, 1.9.0rc1, 1.9.0b3, 1.9.0b2, 1.9.0b1.
+All functionality has been fully validated and production-ready.
+
+### ✨ Features
+- Redesigned CLI interface with support for `--silent` / `--debug` modes
+- Smart path resolution for configs and templates to prevent ambiguity
+- Improved commit/tag message template generation logic
+
+### 📚 Documentation
+- Rewrote and cleaned `README.md`, `HOW_TO_USE.md`, and `docs/TODO.md`
+- Added badge list and regenerated project structure documentation
+
+### ⚙️ CI/CD
+- GitHub Actions and GitLab CI pipelines now support testing and deployment
+- Makefile updated with silent execution support (`--no-debug`)
+
+### 🧹 Maintenance & Structure
+- Refactored and cleaned up the `app/` structure
+- Relocated and organized all templates
+- Applied code formatting using `ruff`
+
+### 🐛 Bug Fixes
+- Commit type now validated before version resolution
+- Fixed pipeline creation issues due to misconfigured jobs
+- Resolved internal logic bugs to improve stability
+- `assert_is_final_version()` now gracefully handles pre-releases
+
+---
+
+🎉 **Custy 1.9.0 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#feature`, `#bugfix`, `#refactor`
+- Docs: `#docs`, `#template`
+- CI/CD: `#ci`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+
+## 1.9.0rc3 (2025-08-04)
+### 🐛 Bug Fixes
+- **release**: 1.9.0rc3
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- 🐛 Fixed a minor internal bug to improve stability
+
+---
+
+_Tag: `1.9.0rc3`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+
+## 1.9.0rc2 (2025-08-04)
+### 🐛 Bug Fixes
+- **release**: 1.9.0rc2
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- 🐛 Fixed a minor internal bug to improve stability
+
+---
+
+_Tag: `1.9.0rc2`_
+
+---
+
+🔖 **Tags**: `#<type>`
+  
+### 🔧 Chores
+- **release**: 1.9.0rc1
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 📚 Documentation
+- Updated `docs/TODO.md` to reflect recent changes and clean up outdated tasks
+- Confirmed installation steps and usage instructions are ready and verified
+
+---
+
+_Tag: `1.9.0rc1`_
+
+---
+
+🔖 **Tags**:
+- Type: `#chore`
+  
+
+## 1.9.0rc1 (2025-08-04)
+### 📝 Documentation
+- **release**: 1.9.0rc1
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.9.0rc1`_
+
+---
+
+🔖 **Tags**: `#<type>`
+  
+
+## 1.9.0b3 (2025-08-04)
+### 🐛 Bug Fixes
+- **core**: 1.9.0b3
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- Fixed a minor internal bug affecting stability
+
+---
+
+_Tag: `1.9.0b3`_
+
+---
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+
+## 1.9.0b2 (2025-08-04)
+### 🐛 Bug Fixes
+- **core**: 1.9.0b2 — fix commit-type validation and pipeline creation issue
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+### 🐛 Bug Fixes
+- Fixed a bug where commit type wasn't validated before resolving version, which could lead to invalid version bumps
+- Fixed issue where pipeline couldn’t be created due to misconfigured job or script condition
+
+---
+
+_Tag: `1.9.0b2`_
+
+---
+
+🔖 **Tags**:
+- Type: `#bugfix`
+- CI/CD: `#pipeline`
+- Versioning: `#versioning`
+  
+### 🔧 Chores
+- **release**: 1.9.0b2
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements.
+
+### 📄 Template Enhancements
+- Added more example templates for `commit-msg.txt` and `tag-msg.txt` to guide custom formatting
+
+### 🛠️ Makefile Improvements
+- Updated Makefile commands to include `--no-debug` for cleaner production runs
+  - Example: `custy-all-major` now includes `--no-debug` for silent execution
+
+### ⚙️ Logic Refinement
+- Tweaked `assert_is_final_version()`:
+  - From blocking pre-releases to simply skipping generation with a warning
+  - More graceful handling for versions like `1.9.0b2`, `rc`, `a`, etc.
+
+---
+
+_Tag: `1.9.0b2`_
+
+---
+
+🔖 **Tags**:
+- Type: `#chore`, `#cleanup`
+- Docs: `#template`
+- Config: `#makefile`
+  
+
+## 1.9.0 (2025-08-04)
+### 🚀 Release
+- **main**: 1.9.0
+  
+  Final release of **Custy 1.9.0**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.9.0rc3, 1.9.0rc2, 1.9.0rc1, 1.9.0b3, 1.9.0b2, 1.9.0b1.
+All functionality has been fully validated and production-ready.
+
+### ✨ Features
+- Redesigned CLI interface with support for `--silent` / `--debug` modes
+- Smart path resolution for configs and templates to prevent ambiguity
+- Improved commit/tag message template generation logic
+
+### 📚 Documentation
+- Rewrote and cleaned `README.md`, `HOW_TO_USE.md`, and `docs/TODO.md`
+- Added badge list and regenerated project structure documentation
+
+### ⚙️ CI/CD
+- GitHub Actions and GitLab CI pipelines now support testing and deployment
+- Makefile updated with silent execution support (`--no-debug`)
+
+### 🧹 Maintenance & Structure
+- Refactored and cleaned up the `app/` structure
+- Relocated and organized all templates
+- Applied code formatting using `ruff`
+
+### 🐛 Bug Fixes
+- Commit type now validated before version resolution
+- Fixed pipeline creation issues due to misconfigured jobs
+- Resolved internal logic bugs to improve stability
+- `assert_is_final_version()` now gracefully handles pre-releases
+
+---
+
+🎉 **Custy 1.9.0 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#feature`, `#bugfix`, `#refactor`
+- Docs: `#docs`, `#template`
+- CI/CD: `#ci`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+### 🐛 Bug Fixes
+- **release**: 1.9.0rc3
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- 🐛 Fixed a minor internal bug to improve stability
+
+---
+
+_Tag: `1.9.0rc3`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+- **release**: 1.9.0rc2
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- 🐛 Fixed a minor internal bug to improve stability
+
+---
+
+_Tag: `1.9.0rc2`_
+
+---
+
+🔖 **Tags**: `#<type>`
+  
+- **core**: 1.9.0b3
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- Fixed a minor internal bug affecting stability
+
+---
+
+_Tag: `1.9.0b3`_
+
+---
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+- **core**: 1.9.0b2 — fix commit-type validation and pipeline creation issue
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+### 🐛 Bug Fixes
+- Fixed a bug where commit type wasn't validated before resolving version, which could lead to invalid version bumps
+- Fixed issue where pipeline couldn’t be created due to misconfigured job or script condition
+
+---
+
+_Tag: `1.9.0b2`_
+
+---
+
+🔖 **Tags**:
+- Type: `#bugfix`
+- CI/CD: `#pipeline`
+- Versioning: `#versioning`
+  
+### 🔧 Chores
+- **release**: 1.9.0rc1
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 📚 Documentation
+- Updated `docs/TODO.md` to reflect recent changes and clean up outdated tasks
+- Confirmed installation steps and usage instructions are ready and verified
+
+---
+
+_Tag: `1.9.0rc1`_
+
+---
+
+🔖 **Tags**:
+- Type: `#chore`
+  
+- **release**: 1.9.0b2
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements.
+
+### 📄 Template Enhancements
+- Added more example templates for `commit-msg.txt` and `tag-msg.txt` to guide custom formatting
+
+### 🛠️ Makefile Improvements
+- Updated Makefile commands to include `--no-debug` for cleaner production runs
+  - Example: `custy-all-major` now includes `--no-debug` for silent execution
+
+### ⚙️ Logic Refinement
+- Tweaked `assert_is_final_version()`:
+  - From blocking pre-releases to simply skipping generation with a warning
+  - More graceful handling for versions like `1.9.0b2`, `rc`, `a`, etc.
+
+---
+
+_Tag: `1.9.0b2`_
+
+---
+
+🔖 **Tags**:
+- Type: `#chore`, `#cleanup`
+- Docs: `#template`
+- Config: `#makefile`
+  
+### 📝 Documentation
+- **release**: 1.9.0rc1
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.9.0rc1`_
+
+---
+
+🔖 **Tags**: `#<type>`
+  
+- **changelog**: update changelog
+### 🧠 Refactoring
+- **core**: 1.9.0b1 — improve CLI, docs, pipeline, templates, and structure
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This update delivers improved CLI usability, updated documentation, better automation, refactored project structure, and improved message templates.
+
+### ✨ Features
+- Redesigned CLI interface with clearer UX and new arguments (e.g., silent/debug flags)
+- Enhanced file path resolution to avoid ambiguity for key config and template files
+
+### 📚 Documentation
+- Rewrote `README.md` and added badges (`docs/badges.md`)
+- Created user guide: `docs/HOW_TO_USE.md`
+- Regenerated project structure documentation
+
+### ⚙️ CI/CD
+- Added GitHub Actions workflow and GitLab CI pipeline to run tests on push
+
+### 🧹 Maintenance
+- Cleaned and refactored `app/` directory
+- Code formatted with `ruff`
+
+### 📄 Template Improvements
+- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
+- Updated commit/tag message generation to use new structure
+
+### 🐛 Bug Fix
+- Fixed a minor internal bug affecting stability
+
+### 🛠️ Misc
+- Updated `Makefile`, `pyproject.toml`, and related config files
+- Removed unused file `q`
+
+---
+
+_Tag: `1.9.0b1`_
+
+---
+
+🔖 **Tags**:
+- Type: `#feature`, `#bugfix`, `#refactor`
+- Docs: `#docs`, `#template`
+- CI/CD: `#ci`, `#cleanup`
+  
+
 ## 1.8.1 (2025-08-02)
 ### 🐛 Bug Fixes
 - **push**: 1.8.1
@@ -506,7 +1197,7 @@ Changelog: handled separately
   
 ### 📝 Documentation
 - **changelog**: update changelog
-### Release
+### 🚀 Release
 - **core**: 1.8.0
   
   Final release of **Custy 1.8.0**, promoted from the latest release candidate.
@@ -520,7 +1211,7 @@ This final release includes all validated features and fixes from earlier pre-re
 - Cleaner code structure with VersionHelperBase
 - Updated Makefile and improved documentation
 
-ðŸ›  Final tweaks after rc2:
+🛠 Final tweaks after rc2:
 - Allow `custy all` to run `--sync-backup` automatically
 - Minor improvements to support `release` commit type
 - Refined docs and cleaned up TODO list
@@ -562,7 +1253,7 @@ Tag: 1.8.0rc2
   
 
 ## 1.8.0 (2025-08-02)
-### Release
+### 🚀 Release
 - **core**: 1.8.0
   
   Final release of **Custy 1.8.0**, promoted from the latest release candidate.
@@ -576,7 +1267,7 @@ This final release includes all validated features and fixes from earlier pre-re
 - Cleaner code structure with VersionHelperBase
 - Updated Makefile and improved documentation
 
-ðŸ›  Final tweaks after rc2:
+🛠 Final tweaks after rc2:
 - Allow `custy all` to run `--sync-backup` automatically
 - Minor improvements to support `release` commit type
 - Refined docs and cleaned up TODO list
@@ -661,8 +1352,8 @@ Changelog: handled separately
 includes all feature and fixes from pre-releases: .
 
 This final release includes all validated features and fixes from earlier pre-releases:
-- Fix the file name from `pep404_strategy.py` â†’ `pep440_strategy.py`
-- Rename class from `PEP404Strategy` â†’ `PEP440Strategy`
+- Fix the file name from `pep404_strategy.py` → `pep440_strategy.py`
+- Rename class from `PEP404Strategy` → `PEP440Strategy`
 - Bug fix: Switch to post-release uses `1.5.0.post1` instead of bumping minor to `1.6.0.post1`
 - Refactor and clean up `SemverStrategy` and `PEP440Strategy` classes
 - Add test coverage for both strategy classes
@@ -701,7 +1392,7 @@ Changelog: handled separately
 Includes minor updates or documentation fixes after release 1.6.0.
 
 This post-release includes minor updates and corrections after the official release:
-- Bug fixed case example changes from 1.5.0.post1 â†’ 1.5.0.post2
+- Bug fixed case example changes from 1.5.0.post1 → 1.5.0.post2
 - Bug fixed on `Makefile`
 - modified documentation `docs/TODO.md`
 
@@ -755,7 +1446,7 @@ Changelog: handled separately
 Feature-complete and undergoing final validation before stable release.
 
 This release candidate consolidates finalized features and bug fixes before the stable release:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0rc1
   
@@ -768,7 +1459,7 @@ Tag: 1.5.0rc1
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b3
   
@@ -781,7 +1472,7 @@ Tag: 1.5.0b3
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b2
   
@@ -815,7 +1506,7 @@ Changelog: handled separately
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b1
   
@@ -826,7 +1517,7 @@ Tag: 1.5.0b1
 Feature-complete and undergoing final validation before stable release.
 
 This release candidate consolidates finalized features and bug fixes before the stable release:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0rc1
   
@@ -838,7 +1529,7 @@ Tag: 1.5.0rc1
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b3
   
@@ -848,7 +1539,7 @@ Tag: 1.5.0b3
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b2
   
@@ -859,7 +1550,7 @@ Tag: 1.5.0b2
 Partially validated features and improvements. Some issue still remain.
 
 This beta includes several bug fixes and enhancements:
-- *(Nothing yet)* â€” See tag message for full context.
+- *(Nothing yet)* — See tag message for full context.
 
 Tag: 1.5.0b1
   
@@ -1006,13 +1697,13 @@ Tag: v1.4.0rc2
   Release candidate for v1.4.0, consolidating all pre-release changes.
 
 Includes:
-- Version bump protection within pre-release tier (e.g., rc1 â†’ rc2)
+- Version bump protection within pre-release tier (e.g., rc1 → rc2)
 - Restriction of changelog to final releases only
 - Commit type validation for bump/tag operations
 - Project type detection (PEP 440 or SemVer) for versioning
 - External tag message support (`tag-msg.txt`)
 - Auto-generation of release commit/tag message templates
-- RC â†’ final bump without patch increment
+- RC → final bump without patch increment
 - `cleanup-backups` CLI command
 - Improved dry-run behavior
 - Expanded documentation and Makefile updates
@@ -1057,13 +1748,13 @@ Tag: v1.4.0rc2
   Release candidate for v1.4.0, consolidating all pre-release changes.
 
 Includes:
-- Version bump protection within pre-release tier (e.g., rc1 â†’ rc2)
+- Version bump protection within pre-release tier (e.g., rc1 → rc2)
 - Restriction of changelog to final releases only
 - Commit type validation for bump/tag operations
 - Project type detection (PEP 440 or SemVer) for versioning
 - External tag message support (`tag-msg.txt`)
 - Auto-generation of release commit/tag message templates
-- RC â†’ final bump without patch increment
+- RC → final bump without patch increment
 - `cleanup-backups` CLI command
 - Improved dry-run behavior
 - Expanded documentation and Makefile updates
@@ -1101,13 +1792,13 @@ Tag: v1.4.0rc3
   
   This commit introduces a series of improvements across versioning, tagging, changelog generation, and backup handling in Custy CLI.
 
-- Prevents major.minor.patch bump when incrementing within same pre-release tier (e.g. rc1 â†’ rc2)
+- Prevents major.minor.patch bump when incrementing within same pre-release tier (e.g. rc1 → rc2)
 - Generates changelog only on final releases (e.g. v1.2.3), skipping pre-releases
 - Enforces bump/tag only for specific types [feat, fix, perf, docs, refactor]; others require CLI override
 - Detects project type (Python or JavaScript) to apply correct versioning scheme (PEP 440 or SemVer)
 - Tag messages now opened in external file like commit-msg.txt; supports default message via flag
 - For release tags, auto-generates commit/tag message template from all prereleases (pre, dev, etc.)
-- Prevents bump from rc â†’ final from incrementing patch (v1.2.3rc1 â†’ v1.2.3, not v1.2.4)
+- Prevents bump from rc → final from incrementing patch (v1.2.3rc1 → v1.2.3, not v1.2.4)
 - Adds cleanup logic for `backups/`, keeping 10 latest (customizable via CLI)
 - Fixes backup and template folder resolution; commit-msg.txt placement corrected
 - Adds `cleanup-backups` CLI handler
