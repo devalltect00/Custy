@@ -91,12 +91,16 @@ def handle_changelog(args):
     latest_tag = GitHelper().get_latest_tag()
 
     # Enforce final version before generating changelog
-    maybe_assert_is_final(latest_tag, context="changelog", force=args.force_changelog)
+    # maybe_assert_is_final(latest_tag, context="changelog", force=args.force_changelog)
 
-    # build_git_tool(args, with_tagging=False)
-    gen = ChangelogGenerator()
-    rendered = gen.generate()
-    gen.write_to_files(rendered)
+    tool = build_git_tool(args, with_tagging=False)
+    tool.tag = latest_tag
+    # gen = ChangelogGenerator()
+    # rendered = gen.generate()
+    # gen.write_to_files(rendered)
+
+    tool._generate_changelog()
+    tool.force_changelog = True
 
 
 def handle_validate(args):
@@ -304,6 +308,8 @@ def main() -> None:
             action="store_true",
             help="Force version bump and tagging even if commit type is not allowed.",
         )
+
+    def add_sync_argument(p):
         p.add_argument(
             "--sync-backup",
             action="store_true",
@@ -367,6 +373,13 @@ def main() -> None:
         p.add_argument("--to-branch", help="Override to-branch (e.g. main, develop)")
         p.add_argument("--to-tag", help="Override to-tag (e.g. main, develop)")
 
+    def add_check_skip(p):
+        p.add_argument(
+        "--skip-checks",
+        action="store_true",
+        help="Skip branching→tag transition validation (for advanced users)",
+    )
+
     # -----------------------------
     # Subcommand: commit-tag-bump
     # -----------------------------
@@ -393,7 +406,9 @@ def main() -> None:
         help="Generate and push changelog",
     )
     add_common_arguments(changelog_parser)
+    add_sync_argument(changelog_parser)
     add_force_changelog_argument(changelog_parser)
+    add_control_debug_argument(changelog_parser)
 
     # -----------------------------
     # Subcommand: push
@@ -438,13 +453,10 @@ def main() -> None:
     )
     add_common_arguments(all_parser)
     add_tagging_arguments(all_parser)
+    add_sync_argument(all_parser)
     add_force_changelog_argument(all_parser)
     add_control_debug_argument(all_parser)
-    all_parser.add_argument(
-        "--skip-checks",
-        action="store_true",
-        help="Skip branching→tag transition validation (for advanced users)",
-    )
+    add_check_skip(all_parser)
 
     cleanup_backup_parser = subparser.add_parser(
         "cleaned-backups",

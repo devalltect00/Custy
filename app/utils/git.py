@@ -349,11 +349,14 @@ class GitHelper(DryRunSupport):
                 show_cmd,
                 capture_output=True,
                 text=True,
+                encoding="utf-8",
                 check=True,
                 on_error=self._on_error(f"read commit {sha}"),
             )
-            if show_result:
+            if show_result and show_result.stdout:
                 commits.append(show_result.stdout.strip())
+            else:
+                print(f"⚠️ Skipping commit {sha}: no output or command failed.")
 
         return commits
 

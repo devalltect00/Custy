@@ -125,7 +125,7 @@ custy-all-dev:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --dev-release --sync-backup --no-debug
 
 custy-changelog:
-	python -m $(APP) changelog
+	python -m $(APP) changelog --force-changelog --sync-backup --no-debug
 
 custy-validate:
 	python -m $(APP) validate
