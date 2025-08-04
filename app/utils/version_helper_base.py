@@ -28,25 +28,23 @@ class VersionHelperBase(ABC):
         """
         Args:
             tag (str): The current Git tag string (e.g., 'v1.2.3', '1.2.3rc1')
+
         """
         self.original = tag
 
     @abstractmethod
     def _parse_base_version(self):
-        """
-        """
+        """ """
         ...
 
     @abstractmethod
     def _parse_pre(self):
-        """
-        """
+        """ """
         ...
 
     @abstractmethod
     def _tier_value(self, short: str | None) -> int:
-        """
-        """
+        """ """
         ...
 
     @abstractmethod
@@ -59,6 +57,7 @@ class VersionHelperBase(ABC):
 
         Returns:
             str: One of {'dev', 'a', 'b', 'rc', 'release', 'post'} or {'alpha', 'beta', 'rc', 'release'}
+
         """
         ...
 
@@ -69,6 +68,7 @@ class VersionHelperBase(ABC):
 
         Returns:
             dict: Mapping from tier name to an integer for sorting.
+
         """
         ...
 
@@ -82,6 +82,7 @@ class VersionHelperBase(ABC):
 
         Returns:
             str: Suggested tag version (e.g., '1.2.3rc1')
+
         """
         ...
 
@@ -92,6 +93,6 @@ class VersionHelperBase(ABC):
 
         Returns:
             dict: Mapping of (from_branch, from_tier, to_branch, to_tier) to case name (e.g. 'CASE 2')
+
         """
         ...
-

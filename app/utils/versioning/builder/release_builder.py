@@ -3,7 +3,7 @@
 import re
 from datetime import datetime
 
-from ... import detect_project_strategy, load_custor_config
+from ... import load_custor_config
 from ..models.release_info import ReleaseInfo
 from ..models.version_type import VersionType
 
@@ -20,6 +20,7 @@ class ReleaseNoteBuilder:
         commit_msg = builder.build_commit_msg()
         tag_msg = builder.build_tag_msg()
     """
+
     def __init__(self, info: ReleaseInfo):
         self.info = info
         self.settings = load_custor_config()
@@ -45,7 +46,13 @@ class ReleaseNoteBuilder:
             intro,
             placeholder,
             "",
-            f"Tag: {self.info.version}"
+            "---",
+            "",
+            f"_Tag: `{self.info.version}`_",
+            "",
+            "---",
+            "",
+            f"🔖 **Tags**: `#{self._commit_type()}`"
         ]
         if self.info.version_type in [VersionType.FINAL, VersionType.POST]:
             lines.append("Changelog: handled separately")
@@ -65,9 +72,9 @@ class ReleaseNoteBuilder:
             "",
             description,
             "",
-            "### 🔍 Highlights",
+            "### ✨ Highlights",
             "",
-            f"- *(Nothing yet)*",
+            "- *(Nothing yet)*",
         ]
 
         if self.info.version_type == VersionType.FINAL and self.info.latest_prerelease:
@@ -75,7 +82,7 @@ class ReleaseNoteBuilder:
                 "",
                 f"### 🛠️ Other improvements since {self.info.latest_prerelease}",
                 "",
-                "(manual edits)"
+                "(manual edits)",
             ]
 
         lines += [
@@ -117,15 +124,15 @@ class ReleaseNoteBuilder:
 
         if vt == VersionType.FINAL:
             return f"Final release of **{app} {short_ver}**, promoted from the latest release candidate."
-        elif vt == VersionType.POST:
+        if vt == VersionType.POST:
             return f"Post-release patch for **{app} {short_ver}**, addressing minor updates or corrections."
-        elif vt == VersionType.RC:
+        if vt == VersionType.RC:
             return f"Release candidate for **{app} {short_ver}**, consolidating all pre-release changes and preparing for stable release."
-        elif vt == VersionType.BETA:
+        if vt == VersionType.BETA:
             return f"Beta release for **{app} {short_ver}**, introducing mid-stage features and workflow improvements."
-        elif vt == VersionType.ALPHA:
+        if vt == VersionType.ALPHA:
             return f"Alpha release for **{app} {short_ver}**, containing early foundational changes and experimental features."
-        elif vt == VersionType.DEV:
+        if vt == VersionType.DEV:
             return f"Internal dev snapshot for **{app} {short_ver}**, used for unstable testing only."
         return ""
 
@@ -136,18 +143,21 @@ class ReleaseNoteBuilder:
         if vt == VersionType.FINAL:
             tags = ", ".join(self.info.prerelease_tags)
             msg = f"includes all feature and fixes from pre-releases: {tags}."
-            if len(self.info.prerelease_tags) == 1 and not self.info.has_changes_since_rc:
+            if (
+                len(self.info.prerelease_tags) == 1
+                and not self.info.has_changes_since_rc
+            ):
                 msg += f"No Changes since {self.info.latest_prerelease}."
             return msg
-        elif vt == VersionType.POST:
+        if vt == VersionType.POST:
             return f"Includes minor updates or documentation fixes after release {ver.split('.post')[0]}."
-        elif vt == VersionType.RC:
+        if vt == VersionType.RC:
             return "Feature-complete and undergoing final validation before stable release."
-        elif vt == VersionType.BETA:
+        if vt == VersionType.BETA:
             return "Partially validated features and improvements. Some issue still remain."
-        elif vt == VersionType.ALPHA:
+        if vt == VersionType.ALPHA:
             return "Used for early testing and feedback"
-        elif vt == VersionType.DEV:
+        if vt == VersionType.DEV:
             return "Unstable and experimental build and internal testing."
         return ""
 
@@ -189,7 +199,7 @@ class ReleaseNoteBuilder:
             VersionType.RC: f"Release candidate for **{app} {short_ver}** — Including finalized features and fixes. Awaiting final validation.",
             VersionType.BETA: f"Beta release for **{app} {short_ver}** — focusing on mid-stage features and improved automation.",
             VersionType.ALPHA: f"Alpha release for **{app} {short_ver}** — introducing experimental features and foundational changes.",
-            VersionType.DEV: f"Internal development snapshot for testing unstable or work-in-progress features.",
+            VersionType.DEV: "Internal development snapshot for testing unstable or work-in-progress features.",
         }.get(vt, "")
 
     def _tag_footer(self) -> str:

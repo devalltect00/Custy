@@ -1,86 +1,155 @@
-# Custy
+# 🧠 Custy — Git Commit & Version Automation Tool
 
-**Custy** — Automate your Git commits, bumps, tags, and changelogs.
+[![Build Status](https://gitlab.com/devalltects-group/custy/badges/main/pipeline.svg)](https://gitlab.com/devalltects-group/custy/-/pipelines)
+[![Coverage](https://gitlab.com/devalltects-group/custy/badges/main/coverage.svg)](https://gitlab.com/devalltects-group/custy/-/graphs/main/charts)
+![Python](https://img.shields.io/badge/python-3.11+-blue.svg)
+![License](https://img.shields.io/badge/license-Proprietary-red.svg)
+![Versioning](https://img.shields.io/badge/versioning-PEP%20440-blueviolet.svg)
+![Commitizen](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)
 
----
-
-## 📦 Features
-
-Custy simplifies and automates your Git workflow with feature like:
-
--   Validate git repository, files, etc
--   Add stage if needed
--   Open editor for commit message
--   Check commit message
--   Determine next version (tag)
--   Update **version**.py with that tag
--   Update cz.toml version with that tag
--   Stage and commit all changes (including version bump)
--   Tag that commit
--   Push commit and tag
--   generate CHANGELOG.md
--   Commit and push CHANGELOG.md
--   backup commit message. Not the commit message for changelog.md changes
+**Custy** helps you automate Git commit + versioning workflows with ease.
+It supports SemVer and PEP 440 versioning, changelog generation, commit/tag templating, dual remote push, and workflow validation.
 
 ---
 
-## 📁 Project Structure
+## ✨ Features
 
-You can see the project structure on [project_structure.md](./docs/project_structure.md)
+-   ✅ Commit with message file or Commitizen
+-   🔖 Auto bump and tag using:
+    -   SemVer (`1.2.3`, `1.2.3-beta.1`)
+    -   PEP 440 (`1!1.2.3`, `1.2.3rc1`, `1.2.3.post1+sha.abc`)
+    -   Date and Git commit count
+-   📁 Auto-update `__version__.py` and `.cz.toml`
+-   📝 Generate and commit changelog (`CHANGELOG.md`)
+-   🔁 Push to origin and backup (e.g. GitLab + GitHub)
+-   💡 Smart workflow checks and enforcement
+-   🧪 Dry-run mode, force options, and tag validation
+-   🧼 Backup commit and tag message files
+-   🧹 Cleanup old backup and temporary branches
 
-## 🚀 Getting Started
+---
 
-### ▶️ Run the main app
+## 🗂 Project Structure
+
+Project layout follows best practices. See full structure in [`project_structure.md`](docs/project_structure.md).
+
+---
+
+## 🚀 Quick Start
+
+### ▶️ Run from CLI
+
+```bash
+python app/__main__.py all templates/commit-msg.txt \
+  --strategy pep440 \
+  --bump patch \
+  --force-changelog \
+  --sync-backup
+```
+
+Or use `make`:
 
 ```bash
 make run-main
 ```
 
-## 🧪 Dependencies
+---
 
-### 📌 Install via requirements.txt:
+## 🧪 Installation
+
+### 📌 From requirements.txt
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 📦 Or install via PEP 621 (`pyproject.toml`):
-
-(setup in pyproject.toml)
+### 📦 From `pyproject.toml`
 
 ```bash
 pip install .
 ```
 
-### 🛠️ Or want to install with Development Dependencies too:
-
-Use the --extra flag like this.
+### 🛠️ With dev dependencies
 
 ```bash
 pip install .[dev]
 ```
 
-This tells pip to install the optional group named `dev` inside `pyproject.toml`.
+Includes `commitizen`, `ruff`, etc.
+
+---
 
 ## 🛠️ Makefile Commands
 
-| Command                | Description                                 |
-| ---------------------- | ------------------------------------------- |
-| make run-main          | Run the main application                    |
-| make format-all        | Format code using `ruff`                    |
-| make structure         | print and validate project structure        |
-| generate_ignore_files: | Generate .gitignore and .dockerignore files |
+| Command                      | Description                                 |
+| ---------------------------- | ------------------------------------------- |
+| `make run-main`              | Run main app entrypoint                     |
+| `make format-all`            | Format code using `ruff`                    |
+| `make structure`             | Print and validate project structure        |
+| `make generate_ignore_files` | Generate .gitignore and .dockerignore files |
 
-For CLI usage examples and arguments, see [cli_commands_custy.md](./docs/cli_commands_custy.md)
+---
+
+## 🧰 Useful Docs
+
+-   📘 [How TO Use Custy](docs\HOW_TO_USE.md)
+-   📖 [CLI Commands Reference](docs/cli_commands_custy.md)
+-   🧠 [Git Branch Strategy](docs/git/branch_workflow.md)
+-   📄 [Versioning Guide](docs/versioning/versioning.md)
+-   🔀 [PEP 440 vs SemVer Comparison](docs/versioning/git_branching_strategy_pep440.md)
+-   🌐 [Dual Remote Strategy](docs/versioning/git_dual_remote_strategy.md)
+
+---
+
+## 📦 CLI Usage Examples
+
+### Commit with auto tag bump (SemVer)
+
+```bash
+custy commit-tag-bump commit-msg.txt --strategy semver --bump patch
+```
+
+### Final Release with changelog (PEP 440)
+
+```bash
+custy all commit-msg.txt --strategy pep440 --bump patch --force-changelog
+```
+
+### Push only
+
+```bash
+custy push
+```
+
+---
+
+## 🧼 Maintenance Commands
+
+| Command                    | Description                          |
+| -------------------------- | ------------------------------------ |
+| `custy backup`             | Backup current commit message        |
+| `custy cleaned-backups`    | Cleanup old backup messages          |
+| `custy clean-branches`     | Delete temporary Git branches        |
+| `custy changelog`          | Generate changelog manually          |
+| `custy validate`           | Validate commit and repository state |
+| `custy workflow --enforce` | Enforce Git workflow policy          |
+
+---
 
 ## 📜 Changelog
 
-See [CHANGELOG.md](./CHANGELOG.md) for a list of changes and version history
+See [`CHANGELOG.md`](CHANGELOG.md)
+
+---
 
 ## 📄 License
 
 Copyright © 2025
+This software is **not open source**.
+You may not copy, distribute, or modify any part of this project without prior written permission from the author.
 
-This software is not open source. You may not copy, distribute, or modify any part of this project without prior written permission from the author.
+📧 Contact for permission: `rizkypffdev37@gmail.com`
 
-To request permission, contact: rizkypffdev37@gmail.com
+---
+
+_Handcrafted with ❤️ by Devalltect / Rizky Fernandes_

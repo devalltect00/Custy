@@ -72,13 +72,20 @@ Since v1.8.0
 
 ### 🧩 In Progress
 
+-   [x] Make better CLI
+-   [x] Make sure they use valid path, to prevent ambiguity. ["app/__version__.py", ".cz.toml", "template" (and its child), "docs", "tests", "tools/templates/changelog.j2", ".cz_changelog.j2", ".custor.toml", ".editorconfig", ".gitignore", ".projectignore", "CHANGELOG.md", "Makefile", "pyproject.toml"]
+-   [x] Add specific args CLI, if true don't debug, or silent run
+-   [x] add gitlab pipeline job at least run test on gitlab and github workflow
+-   [x] make `how to use` documentation. We can use the formal or friendly language style
+-   [x] Make better documentations, Readme.md file
+-   [x] clean project app
+-   [x] Regenerate project structure documentation
+-   [x] Format code
+-   [ ] Make sure it is ready to use, installing and usage
+
 ---
 
 ### 🧠 Planning
-
--   [ ] make `how to use` documentation. We can use the formal or friendly language style
--   [ ] Make better CLI
--   [ ] Make better documentations
 
 ---
 
@@ -110,6 +117,7 @@ Since v1.8.0
 -   if post release the commit message header initial commit type is `docs` or maybe `<docs>`
 -   If there is a abandoned branch or experiment or deprecated branch version and want to go back to `main` branch. I choose to rename branch use format like archive/{feature}-{date} or experiment/{feature}-{date}. If I just don't care about archiving the branch I can use option to reset `dev` back to `main`
 -   if when running custy is failed prevent or handle the backup files that just created
+-   Use docker
 
 ---
 

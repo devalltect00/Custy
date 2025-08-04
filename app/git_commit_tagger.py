@@ -7,14 +7,28 @@ from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
 
+from colorama import Fore, Style
 from termcolor import colored
 
-from .utils import (BackupManager, ChangelogGenerator, CommitizenHelper,
-                    CommitizenStrategy, DateStrategy, GitCountStrategy,
-                    GitHelper, PEP440Strategy, ReleaseInfo, ReleaseNoteBuilder,
-                    SemverStrategy, VersionType, WorkflowManager,
-                    contains_allowed_commit_type, get_last_tag_before,
-                    get_sorted_tags, maybe_assert_is_final)
+from .utils import (
+    BackupManager,
+    ChangelogGenerator,
+    CommitizenHelper,
+    CommitizenStrategy,
+    DateStrategy,
+    GitCountStrategy,
+    GitHelper,
+    PEP440Strategy,
+    ReleaseInfo,
+    ReleaseNoteBuilder,
+    SemverStrategy,
+    VersionType,
+    WorkflowManager,
+    contains_allowed_commit_type,
+    get_last_tag_before,
+    get_sorted_tags,
+    maybe_assert_is_final,
+)
 
 # =======================
 # 🚀 Main Class
@@ -48,6 +62,7 @@ class GitCommitTagger:
         force_commit: bool | None = False,
         sync_backup: bool | None = False,
         skip_checks: bool | None = False,
+        no_debug: bool | None = False,
     ) -> None:
         self.message_path: Path = Path(message_file)
         self.tag_input: str | None = tag
@@ -69,6 +84,7 @@ class GitCommitTagger:
         self.force_commit: bool | None = force_commit
         self.sync_backup = sync_backup
         self.skip_checks = skip_checks
+        self.no_debug = no_debug
 
         self.tag: str = ""
         self.tag_msg: str = ""
@@ -80,8 +96,13 @@ class GitCommitTagger:
         self.cz = CommitizenHelper(dry_run=dry_run)
         self.changelog_generator = ChangelogGenerator(dry_run=dry_run)
         self.backup_manager = BackupManager(keep=10)
-        self.workflow_manager = None
-        self.workflow_manager = WorkflowManager()
+        self.workflow_manager = WorkflowManager(no_debug=self.no_debug)
+
+        if self.no_debug:
+            self.git.runner.silent = self.cz.runner.silent = (
+                self.changelog_generator.runner.silent
+            ) = True
+            print("🐞  No Debug")
 
     # =======================
     # Public API
@@ -126,6 +147,7 @@ class GitCommitTagger:
         13. backup commit message. Not the commit message for  changelog.md changes
         """
         self.execute_commit_tag_bump()
+        print(f"\n{Fore.LIGHTCYAN_EX}[*] Push changes...{Style.RESET_ALL}\n")
         self.push_changes()
         self._generate_changelog()
 
@@ -137,10 +159,10 @@ class GitCommitTagger:
         transition rules (e.g. develop → release → main).
         """
         if not self.skip_checks:
-            self.workflow_manager = WorkflowManager()
+            self.workflow_manager = WorkflowManager(no_debug=self.no_debug)
             self.workflow_manager.check_transition(to_tag=self.tag)
 
-        input("Press Enter to continue...")
+        input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
 
     def validate(self) -> None:
         self._ensure_git_repo()
@@ -170,8 +192,13 @@ class GitCommitTagger:
             current_branch = self.git.get_current_branch()
 
             # Don't sync backup if on feature/*, ci/*, sandbox/*
-            if any(current_branch.startswith(prefix) for prefix in self.NON_CRITICAL_BRANCHES):
-                print(f"⛔ Skipping backup push and branch '{current_branch}' (not critical) on backup remote")
+            if any(
+                current_branch.startswith(prefix)
+                for prefix in self.NON_CRITICAL_BRANCHES
+            ):
+                print(
+                    f"⛔ Skipping backup push and branch '{current_branch}' (not critical) on backup remote"
+                )
                 return
 
             self._push("backup")
@@ -183,15 +210,18 @@ class GitCommitTagger:
     def _generate_changelog(self):
         # Enforce final version before generating changelog
         if maybe_assert_is_final(
-            self.tag, context="changelog", force=self.force_changelog
+            self.tag,
+            context="changelog",
+            force=self.force_changelog,
         ):
             # Generate and push changelog
+            print(f"\n{Fore.BLUE}[*] Generating changelog...{Style.RESET_ALL}\n")
             rendered = self.changelog_generator.generate()
             self.changelog_generator.write_to_files(
                 content=rendered,
-                path="CHANGELOG.md"
+                path="CHANGELOG.md",
             )
-            remotes=["origin"]
+            remotes = ["origin"]
             if getattr(self, "sync_backup", False):
                 remotes.append("backup")
             self.git.commit_and_push_changelog(remotes=remotes)
@@ -208,21 +238,27 @@ class GitCommitTagger:
         self._tag()
 
     def _handle_manual_or_semver(self):
+        print(f"\n{Fore.LIGHTYELLOW_EX}[*] Begin validation...{Style.RESET_ALL}\n")
         self.validate()
         self.git.check_remote_origin()
         self._resolve_tag()
         self.validate_workflow_transition()
+        print(f"\n{Fore.CYAN}[*] Opening editor...{Style.RESET_ALL}\n")
         self._generate_release_notes()
         # self._prepare_and_edit_release_message_if_final()
         self._open_editor(self.tag_msg_file)
         self._open_editor(self.message_path)
+        print(f"\n{Fore.LIGHTBLUE_EX}[*] Validating messages...{Style.RESET_ALL}\n")
         self._check_commit_type_for_tagging()
         # self.cz.check_commit(path=self.message_path,)  # Use the format  agreed upon with Commitizen.
         self.git.check_commit_message_file(self.message_path)
+        print(f"\n{Fore.MAGENTA}[*] Writing version to files...{Style.RESET_ALL}\n")
         self._update_version_file()
         self.cz.update_cz_toml_version(new_version=self.tag)
+        print(f"\n{Fore.LIGHTYELLOW_EX}[*] Backup phase...{Style.RESET_ALL}\n")
         self._backup_tag_message_with_check()
         self._backup_commit_message()
+        print(f"\n{Fore.GREEN}[*] Commit & tag operation...{Style.RESET_ALL}\n")
         self._stage_pre_commit()
         self._commit()
         self._tag()
@@ -241,6 +277,7 @@ class GitCommitTagger:
                 bump=self.bump_level,
                 pre_release=self.pre_release,
                 build_meta=self.meta,
+                no_debug=self.no_debug,
             ).get_next_tag()
         # elif self.strategy_input == "pep440" and self.bump_level:
         elif self.strategy_input == "pep440":
@@ -251,6 +288,7 @@ class GitCommitTagger:
                 dev_release=self.dev_release,
                 local=self.meta,
                 epoch=self.epoch,
+                no_debug=self.no_debug,
             ).get_next_tag()
         elif self.strategy_input == "commitizen" and self.bump_level == "auto":
             self.tag = CommitizenStrategy(self.pre_release).get_next_tag()
@@ -262,7 +300,7 @@ class GitCommitTagger:
             print("❌ ERROR: Provide either --tag or use  --strategy with --bump.")
             sys.exit(1)
 
-        print(self.tag)
+        print(f"🔖  Next version: {self.tag}")
 
         # self.tag_msg = self.tag_msg_input or self.tag
         self._resolve_tag_message()
@@ -274,7 +312,6 @@ class GitCommitTagger:
         2. CLI argument --tag-msg-file (self.tag_msg_file) (Open editor if file doesn't exist)
         3. Fallback to default: 'Release vX.Y.Z'
         """
-
         if self.tag_msg_input:
             self.tag_msg = self.tag_msg_input
             print("✅ Using tag message from --tag-msg CLI input.")
@@ -300,7 +337,7 @@ class GitCommitTagger:
         else:
             self.tag_msg = self.tag
             print(
-                f"ℹ️ No tag message provided. Using tag name as message: '{self.tag_msg}'"
+                f"ℹ️ No tag message provided. Using tag name as message: '{self.tag_msg}'",
             )
 
     def _update_version_file(self) -> None:
@@ -324,7 +361,6 @@ class GitCommitTagger:
         Stage all relevant files before committing.
         Includes version file, .cz.toml, and optional backup file.
         """
-
         self.changes_to_staged.append(".cz.toml")
         if self.version_file:
             self.changes_to_staged.append(self.version_file)
@@ -360,7 +396,7 @@ class GitCommitTagger:
         if not contains_allowed_commit_type([commits_msg]):
             if not self.force_tag:
                 print(
-                    "🚫 Skipping tag: no allowed commit types (feat, fix, perf. docs, re)"
+                    "🚫 Skipping tag: no allowed commit types (feat, fix, perf. docs, re)",
                 )
                 print("ℹ️ Use --force-tag to override.")
                 self.skip_tag = True
@@ -384,7 +420,9 @@ class GitCommitTagger:
                 # 🔁 Re-check after auto-staging
                 if not self.git.has_staged_files():
                     if self.force_commit:
-                        print("⚠️ Still no staged files after auto-staging. but proceeding due to --force-commit.")
+                        print(
+                            "⚠️ Still no staged files after auto-staging. but proceeding due to --force-commit."
+                        )
                         return
                     self._error_exit("Still no staged changes after `git add .`")
 
@@ -430,7 +468,7 @@ class GitCommitTagger:
                 command=["git", "tag", "-a", self.tag, "-m", self.tag_msg],
                 check=True,
                 on_error=lambda: self._error_exit(
-                    f"Failed to create tag '{self.tag}'."
+                    f"Failed to create tag '{self.tag}'.",
                 ),
             )
         else:
@@ -447,19 +485,24 @@ class GitCommitTagger:
             - Always pushes the current HEAD commit.
             - Pushes the tag only if tagging is enabled and `self.tag` is set.
             - Skips tag push if `skip_tag` is True or `self.tag` is not set.
+
         """
         print(f"🔁 Pushing to {remote} remote...")
         self.git.runner.run(
             command=["git", "push", remote, "HEAD"],
             check=True,
-            on_error=lambda: self._error_exit(f"Failed to push commit to {remote} remote."),
+            on_error=lambda: self._error_exit(
+                f"Failed to push commit to {remote} remote."
+            ),
         )
         # Push tag only if tagging wasn't skipped
         if not getattr(self, "skip_tag", False) and self.tag:
             self.git.runner.run(
                 command=["git", "push", remote, self.tag],
                 check=True,
-                on_error=lambda: self._error_exit(f"Failed to push tag '{self.tag} to {remote} remote'."),
+                on_error=lambda: self._error_exit(
+                    f"Failed to push tag '{self.tag} to {remote} remote'."
+                ),
             )
         else:
             print(f"⏭️ Tag push to {remote} remote skipped.")
@@ -485,7 +528,8 @@ class GitCommitTagger:
             self.backup_commit_message_path.write_text(self.message_path.read_text())
             print(f"🗂️ Commit message backed up to: {self.backup_commit_message_path}")
             old_files = self.backup_manager._prune_old_backups(
-                backup_dir=backup_dir, stem=self.message_path.stem
+                backup_dir=backup_dir,
+                stem=self.message_path.stem,
             )
 
             if self.backup_commit_message_path:
@@ -519,7 +563,8 @@ class GitCommitTagger:
             self.backup_tag_message_path.write_text(content, encoding="utf-8")
             print(f"🗂️ Tag message backed up to: {self.backup_tag_message_path}")
             old_files = self.backup_manager._prune_old_backups(
-                backup_dir=backup_dir, stem=tag_msg_path.stem
+                backup_dir=backup_dir,
+                stem=tag_msg_path.stem,
             )
 
             if self.backup_tag_message_path:
@@ -632,7 +677,8 @@ class GitCommitTagger:
 
         # Find pre-release tags this version (e.g. v1.4.0a1, rc1, etc.)
         prereleases = [
-            t for t in sorted_tags
+            t
+            for t in sorted_tags
             if t.startswith(version_prefix) and re.search(r"(a|b|rc|dev)", t)
         ]
         prereleases = list(reversed(prereleases))
@@ -651,7 +697,7 @@ class GitCommitTagger:
             app_name="Custy",
             prerelease_tags=prereleases,
             latest_prerelease=latest_pre,
-            has_changes_since_rc=has_changes
+            has_changes_since_rc=has_changes,
         )
 
         builder = ReleaseNoteBuilder(info)
@@ -662,4 +708,6 @@ class GitCommitTagger:
 
         # Write tag-msg.txt
         if self.tag_msg_file:
-            Path(self.tag_msg_file).write_text(builder.build_tag_msg(), encoding="utf-8")
+            Path(self.tag_msg_file).write_text(
+                builder.build_tag_msg(), encoding="utf-8"
+            )

@@ -33,7 +33,6 @@ class Runner:
                 print(
                     f"{Fore.YELLOW}→{Style.RESET_ALL} {Fore.LIGHTWHITE_EX}{command}{Style.RESET_ALL}",
                 )
-
             try:
                 # Avoid `shell=False` when passing **untrusted input**, to prevent shell injection attacks.
                 result = subprocess.run(command, **kwargs)
@@ -58,7 +57,8 @@ class Runner:
             kwargs["shell"] = False  # safest default
 
         if not self.is_dry_run:
-            print(f"{Fore.YELLOW}→{Style.RESET_ALL} {command}")
+            if not self.silent:
+                print(f"{Fore.YELLOW}→{Style.RESET_ALL} {command}")
 
             try:
                 # Avoid `shell=False` when passing **untrusted input**, to prevent shell injection attacks.

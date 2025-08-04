@@ -21,6 +21,7 @@ dependencies = [
     "toml",
     "pydantic",
     "rich",
+    "pyfiglet",
     ]
 dynamic = ["version"]
 # With this the version will be auto-generated from git tags using setuptools_scm
@@ -44,7 +45,7 @@ dev = [
 
 [tool.mycz]
 show_types = true
-template_path = "tools/templates/changelog.j2"
+template_path = "templates/changelog/changelog.j2"
 
 [tool.setuptools_scm]
 version_scheme = "post-release"

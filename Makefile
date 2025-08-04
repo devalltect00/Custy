@@ -1,15 +1,15 @@
 .PHONY: run-main \
             structure \
             lint-ruff lint-ruff-fix format-ruff format-black format-all \
-            git-current-branch git-origin-url git-show-log git-show-log-tag \
+            git-current-branch git-origin-url git-log git-log-tag \
             generate_ignore_files \
             custy-all-major custy-all-minor custy-all-patch  \
-            custy-all-major-alpha custy-all-minor-alpha custy-all-patch-alpha \
-            custy-all-major-beta custy-all-minor-beta custy-all-patch-beta \
-            custy-all-major-rc custy-all-minor-rc custy-all-patch-rc \
-            custy-all-major-dev custy-all-minor-dev custy-all-patch-dev \
-            custy-all-major-next custy-all-minor-next custy-all-patch-next \
-            custy-all-major-preview custy-all-minor-preview custy-all-patch-preview \
+            custy-all-alpha custy-all-major-alpha custy-all-minor-alpha custy-all-patch-alpha \
+            custy-all-beta custy-all-major-beta custy-all-minor-beta custy-all-patch-beta \
+            custy-all-rc custy-all-major-rc custy-all-minor-rc custy-all-patch-rc \
+            custy-all-dev custy-all-major-dev custy-all-minor-dev custy-all-patch-dev \
+            custy-all-next custy-all-major-next custy-all-minor-next custy-all-patch-next \
+            custy-all-preview custy-all-major-preview custy-all-minor-preview custy-all-patch-preview \
             custy-changelog custy-validate custy-push custy-backup
 
 # -----------------------------
@@ -29,6 +29,7 @@ APP = app
 #
 # Example to run the debug version
 # python -m app.debug_tag_release_notes all templates\commit-msg.txt --tag-msg-file templates\tag-msg.txt --bump patch
+# python -m app all templates\commit-msg.txt --tag-msg-file templates\tag-msg.txt --bump patch --sync-backup --no-debug
 
 run-main:
 	python -m $(APP)
@@ -45,6 +46,9 @@ custy-all-patch:
 custy-all-release:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --sync-backup
 
+custy-all-alpha:
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --pre-release alpha --sync-backup
+
 custy-all-major-alpha:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release alpha --sync-backup
 
@@ -53,6 +57,9 @@ custy-all-minor-alpha:
 
 custy-all-patch-alpha:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release alpha --sync-backup
+
+custy-all-beta:
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --pre-release beta --sync-backup
 
 custy-all-major-beta:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release beta --sync-backup
@@ -63,6 +70,9 @@ custy-all-minor-beta:
 custy-all-patch-beta:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release beta --sync-backup
 
+custy-all-rc:
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --pre-release rc --sync-backup
+
 custy-all-major-rc:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release rc --sync-backup
 
@@ -71,6 +81,9 @@ custy-all-minor-rc:
 
 custy-all-patch-rc:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release rc --sync-backup
+
+custy-all-dev:
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --pre-release dev --sync-backup
 
 custy-all-major-dev:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release dev --sync-backup
@@ -81,6 +94,9 @@ custy-all-minor-dev:
 custy-all-patch-dev:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release dev --sync-backup
 
+custy-all-next:
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --pre-release next --sync-backup
+
 custy-all-major-next:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release next --sync-backup
 
@@ -89,6 +105,9 @@ custy-all-minor-next:
 
 custy-all-patch-next:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump patch --pre-release next --sync-backup
+
+custy-all-preview:
+	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --pre-release preview --sync-backup
 
 custy-all-major-preview:
 	python -m $(APP) all $(COMMIT_MESSAGE_FILE_PATH) --tag-msg-file $(TAG_COMMIT_MESSAGE_FILE_PATH) --bump major --pre-release preview --sync-backup
@@ -154,10 +173,10 @@ git-current-branch:
 git-origin-url:
 	git remote get-url origin
 
-git-show-log:
-	git log --oneline --graph --decorate --all
+git-log:
+	git log --oneline --graph --decorate --all -n 25
 
-git-show-log-tag:
+git-log-tag:
 	git log --no-walk --tags --pretty="format:%h %d %s"
 
 # -----------------------------

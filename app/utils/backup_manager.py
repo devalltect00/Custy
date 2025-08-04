@@ -14,7 +14,7 @@ class BackupManager:
         """
         if not backup_dir.exists():
             print(f"⚠️ Backup directory not found: {backup_dir}")
-            return
+            return None
 
         backup = sorted(
             backup_dir.glob(f"{stem}_*.bak.txt"),

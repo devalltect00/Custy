@@ -9,7 +9,6 @@ import subprocess
 import sys
 from collections.abc import Callable
 from pathlib import Path
-from typing import List, Tuple
 
 from ..errors.validation_error import ValidationError
 from .dry_run_support import DryRunSupport
@@ -60,10 +59,9 @@ class GitHelper(DryRunSupport):
             )
             if result is not None:
                 return result.stdout
-            else:
-                print(f"⚠️ Dry-run or command skipped: git {' '.join(args)}")
-                # return "" # ✅ fix: always return string, never None
-                return
+            print(f"⚠️ Dry-run or command skipped: git {' '.join(args)}")
+            # return "" # ✅ fix: always return string, never None
+            return None
         except subprocess.CalledProcessError as e:
             print(f"❌ GIt command failed: git {' '.join(args)}")
             print(e.stderr)
@@ -127,6 +125,7 @@ class GitHelper(DryRunSupport):
 
         Args:
             files: list[Path]: List of file paths to stage.
+
         """
         if not files:
             print("⚠️ No files provided to stage.")
@@ -143,7 +142,7 @@ class GitHelper(DryRunSupport):
             ["git", "add", *files_str],
             check=True,
             on_error=lambda: self._error_exit(
-                f"Failed to stage files: {', '.join(files_str)}`"
+                f"Failed to stage files: {', '.join(files_str)}`",
             ),
         )
 
@@ -169,8 +168,8 @@ class GitHelper(DryRunSupport):
 
         Args:
             file_path (Path): Path to the commit message file.
-        """
 
+        """
         CONVENTIONAL_TYPES = {
             "feat",
             "fix",
@@ -185,7 +184,7 @@ class GitHelper(DryRunSupport):
             "release",
         }
         HEADER_REGEX = re.compile(
-            r"(?P<type>\w+)(\((?P<scope>[^\)]+)\))?!?: (?P<summary>.+)$"
+            r"(?P<type>\w+)(\((?P<scope>[^\)]+)\))?!?: (?P<summary>.+)$",
         )
         try:
             if not file_path.exists() or not file_path.is_file():
@@ -193,24 +192,24 @@ class GitHelper(DryRunSupport):
 
             lines = file_path.read_text(encoding="utf-8").strip().splitlines()
             if not lines:
-                raise ValidationError(f"❌ Commit message is empty.")
+                raise ValidationError("❌ Commit message is empty.")
 
             header = lines[0].strip()
             match = HEADER_REGEX.match(header)
             if not match:
                 raise ValidationError(
-                    f"❌ Invalid format. Expected: type(scope?): description"
+                    "❌ Invalid format. Expected: type(scope?): description",
                 )
 
             commit_type = match.group("type")
             if commit_type not in CONVENTIONAL_TYPES:
                 raise ValidationError(
-                    f"❌ Invalid type '{commit_type}'. Must be one of: {', '.join(CONVENTIONAL_TYPES)}"
+                    f"❌ Invalid type '{commit_type}'. Must be one of: {', '.join(CONVENTIONAL_TYPES)}",
                 )
 
             summary = match.group("summary").strip()
             if not summary:
-                raise ValidationError(f"❌ Summary is empty.")
+                raise ValidationError("❌ Summary is empty.")
 
             # Optional: check body exists and is not blank if present
             if len(lines) > 1:
@@ -275,6 +274,7 @@ class GitHelper(DryRunSupport):
                 check=True,
             )
             branch = self.get_current_branch()
+            print("00000000000000000000000")
             for remote in remotes:
                 self._push(remote=remote, branch=branch)
 
@@ -365,7 +365,7 @@ class GitHelper(DryRunSupport):
         format_str = "%H%n%s%n%an%n%ad%n%B%n---END---"
         rev_range = f"{from_tag}..{to_tag}" if from_tag else to_tag
         raw = self._run_git(
-            ["log", "--reverse", "--pretty=format:" + format_str, rev_range]
+            ["log", "--reverse", "--pretty=format:" + format_str, rev_range],
         )
 
         if not raw:
@@ -390,7 +390,7 @@ class GitHelper(DryRunSupport):
                     "author": author,
                     "date": date,
                     "body": body,
-                }
+                },
             )
         return commits
 
@@ -462,7 +462,7 @@ class GitHelper(DryRunSupport):
         )
 
 
-def parse_pep440_or_semver(tag: str) -> Tuple:
+def parse_pep440_or_semver(tag: str) -> tuple:
     """
     Parse tag into sortable components supporting both SemVer and PEP 440.
 
@@ -470,6 +470,7 @@ def parse_pep440_or_semver(tag: str) -> Tuple:
     - 'v1.2.3' -> (1, 2, 3)
     - '2!1.2.3rc1.post2.dev4+sha.abc123' -> (2, 1, 2, 3, 'rc1', 'post2', 'dev4', 'sha.abc123')
     - '1.2.3-alpha.1+meta' -> (1, 2, 3, 'alpha.1', 'meta')
+
     """
     tag = tag.lstrip("v")
 
@@ -501,12 +502,12 @@ def parse_pep440_or_semver(tag: str) -> Tuple:
     parts = tuple(
         [epoch]
         + [int(p) if p.isdigit() else p for p in re.split(r"[^\W]+", main_version) if p]
-        + [pre, post, dev, local]
+        + [pre, post, dev, local],
     )
     return parts
 
 
-def get_last_tag_before(current_tag: str, all_tags: List[str]) -> str:
+def get_last_tag_before(current_tag: str, all_tags: list[str]) -> str:
     """
     Returns the last final (non-prerelease) tag that comes before the given tag.
     A final tag has no a/b/rc/dev suffix.
@@ -520,7 +521,7 @@ def get_last_tag_before(current_tag: str, all_tags: List[str]) -> str:
     return ""
 
 
-def get_sorted_tags(tags: List[str]) -> List[str]:
+def get_sorted_tags(tags: list[str]) -> list[str]:
     """
     Sort tags using combined PEP 440 / SemVer logic.
     """

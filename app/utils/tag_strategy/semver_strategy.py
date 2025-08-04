@@ -17,11 +17,14 @@ class SemverStrategy:
         bump: str | None,
         pre_release: str | None = None,
         build_meta: str | None = None,
+        no_debug: bool | None = False,
     ) -> None:
         self.bump: str = bump
         self.pre_release: str | None = pre_release
         self.build_meta: str | None = build_meta
         self.git = GitHelper(dry_run=False)
+
+        self.git.runner.silent = no_debug
 
     def get_next_tag(self) -> str:
         latest_tag = self.git.get_latest_tag()
@@ -30,5 +33,5 @@ class SemverStrategy:
             level=self.bump,
             target_pre=self.pre_release,
             build=self.build_meta,
-            prefix_v=True
+            prefix_v=True,
         )

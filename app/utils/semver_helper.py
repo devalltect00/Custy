@@ -21,6 +21,7 @@ This class does NOT support:
 - Dev releases
 
 Implements VersionHelperBase to support unified version management.
+
 """
 
 import re
@@ -60,6 +61,7 @@ class SemverVersionHelper(VersionHelperBase):
     Example:
         >>> SemverVersionHelper("1.2.3-alpha.2").get_bump_version(target_pre="beta")
         '1.2.3-beta.1'
+
     """
 
     TIER_ORDER = {"alpha": 0, "beta": 1, "rc": 2, None: 3, "release": 3}
@@ -70,6 +72,7 @@ class SemverVersionHelper(VersionHelperBase):
 
         Args:
             current (str): Version string (e.g. "1.2.3", "v1.2.3-beta.2+sha.abc123")
+
         """
         self.original = current
         self.prefix_v = current.startswith("v")
@@ -87,7 +90,7 @@ class SemverVersionHelper(VersionHelperBase):
         match = re.match(r"(\d+)\.(\d+)\.(\d+)", self.original)
         if not match:
             raise ValueError(
-                f"❌ Invalid SemVer format: '{self.original}' (expected) X.Y.Z or vX.Y.Z"
+                f"❌ Invalid SemVer format: '{self.original}' (expected) X.Y.Z or vX.Y.Z",
             )
         return tuple(map(int, match.groups()))
 
@@ -117,6 +120,7 @@ class SemverVersionHelper(VersionHelperBase):
 
         Returns:
             bool: True if bump required, False otherwise.
+
         """
         current_val = self._tier_value(self.current_pre)
         target_val = self._tier_value(target_pre)
@@ -152,6 +156,7 @@ class SemverVersionHelper(VersionHelperBase):
         Example:
             >>> SemverVersionHelper("1.2.3").get_bump_version(target_pre="alpha")
             '1.2.4-alpha.1'
+
         """
         current_tier = self.current_pre
         target_tier = target_pre
@@ -162,7 +167,9 @@ class SemverVersionHelper(VersionHelperBase):
             and target_tier in {"alpha", "beta", "rc"}
             and self._tier_value(target_tier) < self._tier_value(current_tier)
         ):
-            raise ValueError(f"❌ Cannot downgrade pre-release tier: {current_tier} → {target_tier}")
+            raise ValueError(
+                f"❌ Cannot downgrade pre-release tier: {current_tier} → {target_tier}"
+            )
 
         # Determine if based dump is needed
         if target_tier:
@@ -186,7 +193,7 @@ class SemverVersionHelper(VersionHelperBase):
                 self.patch = 0
             else:
                 raise ValueError(
-                    f"❌ Unknown bump level: {level}. Use: Patch, minor, or major."
+                    f"❌ Unknown bump level: {level}. Use: Patch, minor, or major.",
                 )
 
         version = f"{self.major}.{self.minor}.{self.patch}"
@@ -217,13 +224,14 @@ class SemverVersionHelper(VersionHelperBase):
 
         Returns:
             str: Tier keyword for classification
+
         """
         # Semver: alpha, beta, rc, release
         if "rc." in tag:
             return "rc"
-        elif "beta." in tag:
+        if "beta." in tag:
             return "beta"
-        elif "alpha." in tag:
+        if "alpha." in tag:
             return "alpha"
         return "release"
 
@@ -234,11 +242,11 @@ class SemverVersionHelper(VersionHelperBase):
         # Optional: Generate suggested tag
         if self.branch == "develop":
             return self.get_bump_version(target_pre="dev")
-        elif self.branch.startswith("release/"):
+        if self.branch.startswith("release/"):
             return self.get_bump_version(target_pre="rc")
-        elif self.branch == "main":
+        if self.branch == "main":
             return self.get_bump_version()  # final
-        elif self.branch.startswith("hotfix/"):
+        if self.branch.startswith("hotfix/"):
             return self.get_bump_version(post=True)
         return self.original  # No change
 
@@ -248,12 +256,9 @@ class SemverVersionHelper(VersionHelperBase):
         return {
             ("main", "release", "develop", "alpha"): "CASE 1",
             ("main", "release", "develop", "beta"): "CASE 1",
-
             ("develop", "alpha", "release", "rc"): "CASE 2",
             ("develop", "beta", "release", "rc"): "CASE 2",
-
             ("release", "rc", "main", "release"): "CASE 3",
-
             ("main", "release", "develop", "alpha"): "CASE 4",
             ("main", "release", "develop", "beta"): "CASE 4",
         }

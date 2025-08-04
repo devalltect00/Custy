@@ -1,0 +1,37 @@
+image: python:3.11
+
+before_script:
+    - pip install -r requirements.txt
+    - pip install ruff pytest
+
+stages:
+    - test
+    - format
+    - lint
+
+.default_rules:
+    rules:
+        - if: '$CI_COMMIT_BRANCH =~ /^main|develop|release\/.*|hotfix\/.*ci\/.*/'
+          when: always
+        - when: never # don't run otherwise
+
+test:
+    stage: test
+    script:
+        - pytest tests
+    interruptible: true
+    <<: *default_rules
+
+format:
+    stage: format
+    script:
+        - ruff format --check app tests || true
+    interruptible: true
+    <<: *default_rules
+
+lint:
+    stage: lint
+    script:
+        - ruff lint app tests || true
+    interruptible: true
+    <<: *default_rules

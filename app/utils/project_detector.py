@@ -6,7 +6,9 @@ import os
 import toml
 
 
-def detect_project_strategy(cli_value: str | None = None) -> str:
+def detect_project_strategy(
+    cli_value: str | None = None, no_debug: bool | None = False
+) -> str:
     """
     Detects the appropriate versioning strategy for the project.
 
@@ -28,7 +30,8 @@ def detect_project_strategy(cli_value: str | None = None) -> str:
                 config = toml.load(path)
                 strategy = config.get("versioning", {}).get("strategy")
                 if strategy:
-                    print(f"⚙️  Detected strategy from config: {strategy}")
+                    if not no_debug:
+                        print(f"⚙️  Detected strategy from config: {strategy}")
                     return strategy
             except Exception as e:
                 print(f"⚠️ Failed to parse config '{path}': {e}")
@@ -39,14 +42,18 @@ def detect_project_strategy(cli_value: str | None = None) -> str:
         or os.path.exists("setup.py")
         or os.path.exists("requirements.txt")
     ):
-        print("🧠 Detected Python project → strategy: pep440")
+        if not no_debug:
+            print("🧠 Detected Python project → strategy: pep440")
         return "pep440"
     if os.path.exists("package.json"):
-        print("🧠 Detected Javascript project → strategy: semver")
+        if not no_debug:
+            print("🧠 Detected Javascript project → strategy: semver")
         return "semver"
     if os.path.exists("composer.json"):
-        print("🧠 Detected PHP project → strategy: semver")
+        if not no_debug:
+            print("🧠 Detected PHP project → strategy: semver")
 
     # step 4: Default fallback
-    print("⚠️ No strategy detected, using default: semver")
+    if not no_debug:
+        print("⚠️ No strategy detected, using default: semver")
     return "semver"

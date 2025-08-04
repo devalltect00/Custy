@@ -28,27 +28,28 @@ class VersionType(str, Enum):
 
         Returns:
             VersionType: Enum corresponding to detected stage.
+
         """
         version = version.lower()
 
         # SemVer patterns
         if "-alpha" in version or ".alpha" in version:
             return cls.ALPHA
-        elif "-beta" in version or ".beta" in version:
+        if "-beta" in version or ".beta" in version:
             return cls.BETA
-        elif "-rc" in version or ".rc" in version or "rc" in version:
+        if "-rc" in version or ".rc" in version or "rc" in version:
             return cls.RC
 
         # PEP 440 patterns
         if re.search(r"[\d]a\d+", version):
             return cls.ALPHA
-        elif re.search(r"[\d]b\d+", version):
+        if re.search(r"[\d]b\d+", version):
             return cls.BETA
-        elif re.search(r"[\d]rc\d+", version):
+        if re.search(r"[\d]rc\d+", version):
             return cls.RC
-        elif ".post" in version:
+        if ".post" in version:
             return cls.POST
-        elif ".dev" in version or "dev" in version:
+        if ".dev" in version or "dev" in version:
             return cls.DEV
 
         return cls.FINAL

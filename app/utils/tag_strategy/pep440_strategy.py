@@ -20,6 +20,7 @@ class PEP440Strategy:
         post_release: bool | None = None,
         dev_release: bool | None = None,
         local: str | None = None,
+        no_debug: bool | None = False,
     ) -> None:
         self.bump: str = bump
         self.pre_release: str | None = pre_release
@@ -28,6 +29,8 @@ class PEP440Strategy:
         self.local: str | None = local
         self.epoch: int | None = epoch
         self.git = GitHelper(dry_run=False)
+
+        self.git.runner.silent = no_debug
 
     def get_next_tag(self) -> str:
         latest_tag = self.git.get_latest_tag()

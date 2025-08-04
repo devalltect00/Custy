@@ -1,7 +1,6 @@
 # app\utils\version_utils.py
 
 import re
-import sys
 
 ALLOWED_COMMIT_TYPES = {"feat", "fix", "perf", "docs", "refactor", "release"}
 
@@ -27,7 +26,7 @@ def maybe_assert_is_final(version: str, context: str, force: bool = False) -> bo
     """
     if force:
         print(
-            f"⚠️  Skipping final version check for {context} due to --force-changelog flag."
+            f"⚠️  Skipping final version check for {context} due to --force-changelog flag.",
         )
         return True
     return assert_is_final_version(version, context)

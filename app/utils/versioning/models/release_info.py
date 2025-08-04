@@ -1,6 +1,5 @@
 # app\utils\versioning\models\release_info.py
 
-from typing import List, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -21,12 +20,14 @@ class ReleaseInfo(BaseModel):
         prerelease_tags (List[str]): Tags of pre-release versions leading up to this one.
         latest_prerelease (Optional[str]): The latest prerelease tag, if any.
         has_changes_since_rc (bool): Whether this release has changes after the last RC.
+
     """
+
     version: str
     version_type: VersionType = Field(default=VersionType.FINAL)
     app_name: str = "Custy"
-    prerelease_tags: List[str] = []
-    latest_prerelease: Optional[str] = None
+    prerelease_tags: list[str] = []
+    latest_prerelease: str | None = None
     has_changes_since_rc: bool = True
 
     # @validator("version_type", pre=True, always=True)

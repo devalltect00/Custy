@@ -5,7 +5,7 @@ from .models.release_info import ReleaseInfo
 from .models.version_type import VersionType
 
 __all__ = [
-    "ReleaseNoteBuilder",
     "ReleaseInfo",
+    "ReleaseNoteBuilder",
     "VersionType",
 ]

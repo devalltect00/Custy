@@ -1,6 +1,5 @@
 # app\utils\branch_cleaner.py
-"""
-"""
+""" """
 
 import subprocess
 from datetime import datetime, timedelta
@@ -9,7 +8,9 @@ from .dry_run_support import DryRunSupport
 
 
 class BranchCleaner(DryRunSupport):
-    def __init__(self, prefix: str, merged_only: bool = False, older_than: str | None = None) -> None:
+    def __init__(
+        self, prefix: str, merged_only: bool = False, older_than: str | None = None
+    ) -> None:
         self.prefix = prefix
         self.merged_only = merged_only
         self.cutoff = self._parsse_older_than(older_than)
@@ -30,9 +31,13 @@ class BranchCleaner(DryRunSupport):
     def _is_old_enough(self, branch: str) -> bool:
         if not self.cutoff:
             return True
-        timestamp = subprocess.check_output(
-            ["git", "log", "-1", "--format=%ct", branch]
-        ).decode().strip()
+        timestamp = (
+            subprocess.check_output(
+                ["git", "log", "-1", "--format=%ct", branch],
+            )
+            .decode()
+            .strip()
+        )
         last_commit = datetime.fromtimestamp(int(timestamp))
         return last_commit < self.cutoff
 

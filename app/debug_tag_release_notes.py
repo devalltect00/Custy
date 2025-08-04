@@ -1,5 +1,6 @@
 # app\git_commit_tagger.py
 """ """
+
 import argparse
 import re
 import sys
@@ -7,14 +8,23 @@ from datetime import datetime
 from pathlib import Path
 from textwrap import dedent
 
-from termcolor import colored
-
-from .utils import (BackupManager, ChangelogGenerator, CommitizenHelper,
-                    CommitizenStrategy, DateStrategy, GitCountStrategy,
-                    GitHelper, PEP440Strategy, ReleaseInfo, ReleaseNoteBuilder,
-                    SemverStrategy, VersionType, contains_allowed_commit_type,
-                    detect_project_strategy, get_last_tag_before,
-                    get_sorted_tags, maybe_assert_is_final)
+from .utils import (
+    BackupManager,
+    ChangelogGenerator,
+    CommitizenHelper,
+    CommitizenStrategy,
+    DateStrategy,
+    GitCountStrategy,
+    GitHelper,
+    PEP440Strategy,
+    ReleaseInfo,
+    ReleaseNoteBuilder,
+    SemverStrategy,
+    VersionType,
+    detect_project_strategy,
+    get_last_tag_before,
+    get_sorted_tags,
+)
 
 # =======================
 # 🚀 Main Class
@@ -72,7 +82,7 @@ class GitCommitTagger:
         self.backup_manager = BackupManager(keep=10)
 
     def _resolve_tag(self) -> None:
-        print(f"self.tag##{self.tag}##",)
+        print(f"self.tag##{self.tag}##")
         print(f"self.strategy_input##{self.strategy_input}##")
         # if self.bump_level:
         #     current_tag = self.get_latest_tag()
@@ -117,7 +127,6 @@ class GitCommitTagger:
         2. CLI argument --tag-msg-file (self.tag_msg_file) (Open editor if file doesn't exist)
         3. Fallback to default: 'Release vX.Y.Z'
         """
-
         if self.tag_msg_input:
             self.tag_msg = self.tag_msg_input
             print("✅ Using tag message from --tag-msg CLI input.")
@@ -256,7 +265,8 @@ class GitCommitTagger:
 
         # Find pre-release tags this version (e.g. v1.4.0a1, rc1, etc.)
         prereleases = [
-            t for t in sorted_tags
+            t
+            for t in sorted_tags
             if t.startswith(version_prefix) and re.search(r"(a|b|rc|dev)", t)
         ]
         prereleases = list(reversed(prereleases))
@@ -275,7 +285,7 @@ class GitCommitTagger:
             app_name="Custy",
             prerelease_tags=prereleases,
             latest_prerelease=latest_pre,
-            has_changes_since_rc=has_changes
+            has_changes_since_rc=has_changes,
         )
 
         builder = ReleaseNoteBuilder(info)
@@ -286,11 +296,16 @@ class GitCommitTagger:
 
         # Write tag-msg.txt
         if self.tag_msg_file:
-            Path(self.tag_msg_file).write_text(builder.build_tag_msg(), encoding="utf-8")
+            Path(self.tag_msg_file).write_text(
+                builder.build_tag_msg(), encoding="utf-8"
+            )
 
     def _generate_changelog(self):
         rendered = self.changelog_generator.generate()
-        self.changelog_generator.write_to_files(content=rendered, path="CHANGELOG_DEBUG.md")
+        self.changelog_generator.write_to_files(
+            content=rendered, path="CHANGELOG_DEBUG.md"
+        )
+
 
 def build_git_tool(
     args,
@@ -321,6 +336,7 @@ def build_git_tool(
         else False,
     )
 
+
 def handle_all(args):
     tool = build_git_tool(args, auto_stage=True)
     # tool._prepare_and_edit_release_message_if_final()
@@ -330,6 +346,7 @@ def handle_all(args):
     tool._generate_changelog()
     # tool._resolve_tag()
     print(f"Next tag version: {tool.tag}")
+
 
 if __name__ == "__main__":
     print("✅ CLI launched!")
@@ -435,5 +452,3 @@ if __name__ == "__main__":
 
     if args.command in DISPATCH:
         DISPATCH[args.command](args)
-
-

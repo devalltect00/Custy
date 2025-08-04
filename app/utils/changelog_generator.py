@@ -9,9 +9,9 @@ Support dry-run mode, and can be configured via [tool.mycz] in pyproject.toml.
 """
 
 import sys
-import tomllib
 from datetime import datetime
 
+import tomllib
 from jinja2 import Template
 from rich.console import Console
 from rich.progress import track
@@ -46,7 +46,7 @@ class ChangelogGenerator(DryRunSupport):
         self.config = self._load_config(config_path)
         self.template_path = template_path or self.config.get(
             "template_path",
-            "tools/templates/changelog.j2",
+            "templates/changelog/changelog.j2",
         )
 
         self.git = GitHelper(dry_run=dry_run)
@@ -115,7 +115,9 @@ class ChangelogGenerator(DryRunSupport):
         releases = []
 
         console = Console()
-        for i in track(range(len(tags) - 1), description="[bold cyan]Generating changelog..."):
+        for i in track(
+            range(len(tags) - 1), description="[bold cyan]Generating changelog..."
+        ):
             prev = tags[i + 1]
             current = tags[i]
             messages = self.git.get_commits_between(prev, current)

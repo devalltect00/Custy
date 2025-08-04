@@ -24,8 +24,12 @@ Usage:
 """
 
 import argparse
+import pathlib
 import sys
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
+
+from pyfiglet import Figlet
 
 from .git_commit_tagger import GitCommitTagger
 from .utils import detect_project_strategy, maybe_assert_is_final
@@ -63,6 +67,7 @@ def build_git_tool(
         force_commit=getattr(args, "force_commit", False),
         sync_backup=getattr(args, "sync_backup", False),
         skip_checks=getattr(args, "skip_checks", False),
+        no_debug=getattr(args, "no_debug", False),
     )
 
 
@@ -140,6 +145,7 @@ def handle_cleanup_branches(args):
     )
     cleaner.clean()
 
+
 def handle_workflow(args):
     from .utils import WorkflowManager
 
@@ -156,13 +162,57 @@ def handle_workflow(args):
             to_tag=args.to_tag,
         )
 
+
+def get_version(pkg_name="custy") -> str:
+    try:
+        return version(pkg_name)
+    except PackageNotFoundError:
+        # Try read from local __version__.py if available
+        try:
+            here = pathlib.Path(__file__).resolve()
+
+            version_path = here.parent / "__version__.py"
+
+            if version_path.exists():
+                with open(version_path) as f:
+                    for line in f:
+                        if "__version__" in line:
+                            return line.split("=")[-1].strip().strip('"')
+        except FileNotFoundError:
+            pass
+        return "0.0.0"
+
+
+def show_banner():
+    app_name = "custy"
+    app_version = get_version(pkg_name="name")
+
+    font = "cosmic"
+    fig = Figlet(font=font)
+    custy_banner = fig.renderText(app_name)
+    version_banner = f"v{app_version}"
+
+    # ANSI Colors
+    BOLD_CYAN = "\033[1;96m"
+    BOLD_WHITE = "\033[1;97m"
+    RESET = "\033[0m"
+
+    # print(f"\033[95m{custy_banner}\033[0m")
+    # print(f"\033[96m{version_banner.center(50)}\033[0m")
+
+    print(f"\n{BOLD_CYAN}{custy_banner}{RESET}")
+    print(f"{BOLD_WHITE}{version_banner.center(50)}{RESET}\n")
+
+
 # =======================
 # 🏁 CLI Entry
 # =======================
 
 
 def main() -> None:
-    print("✅ CLI launched!")
+    show_banner()
+
+    detect_project_strategy(no_debug=False)
 
     parser = argparse.ArgumentParser(
         description="Git commit, tag, and version automation tool",
@@ -193,14 +243,14 @@ def main() -> None:
         p.add_argument(
             "--force-commit",
             action="store_true",
-            help="Allow committing even when no staged changes are detected. Creates an empty commit."
+            help="Allow committing even when no staged changes are detected. Creates an empty commit.",
         )
 
     def add_tagging_arguments(p):
         p.add_argument(
             "--strategy",
             choices=["semver", "pep440", "date", "gitcount", "commitizen"],
-            default=detect_project_strategy(),  # <-- auto logic
+            default=detect_project_strategy(no_debug=True),  # <-- auto logic
             help=(
                 "Strategy to generate tag (Auto generate tag using a strategy). ",
                 "Tagging strategy (e.g. pep440, semver, date, gitcount, or commitizen). ",
@@ -267,6 +317,56 @@ def main() -> None:
             help="Force changelog generation even for pre-release versions.",
         )
 
+    def add_control_debug_argument(p):
+        p.add_argument(
+            "--no-debug",
+            action="store_true",
+            help="Hide debug message",
+        )
+
+    def add_cleanup_backup_argument(p):
+        p.add_argument(
+            "--type",
+            choices=["commit", "tag", "all"],
+            default="all",
+            help="Which backup type to clean (default: all)",
+        )
+        p.add_argument(
+            "--keep",
+            type=int,
+            default=10,
+            help="How many last backup to keep (default: 10)",
+        )
+
+    def add_cleanup_branch_argument(p):
+        p.add_argument(
+            "--prefix",
+            required=True,
+            help="Branch prefix to match (e.g. feature/, release/)",
+        )
+        p.add_argument(
+            "--merged-only", action="store_true", help="Only cleanup merged branches."
+        )
+        p.add_argument(
+            "--older-than", help="Only delete branches older than N days (e.g. 30d)"
+        )
+
+    def add_workflow_argument(p):
+        p.add_argument(
+            "--enforce", action="store_true", help="Enforce branch-tag strategy"
+        )
+        p.add_argument(
+            "--check_transition",
+            action="store_true",
+            help="Validate a version/branch transition",
+        )
+        p.add_argument(
+            "--from-branch", help="Override from-branch (e.g. main, develop)"
+        )
+        p.add_argument("--from-tag", help="Override from-tag (e.g. v1.2.3, v1.2.3a1)")
+        p.add_argument("--to-branch", help="Override to-branch (e.g. main, develop)")
+        p.add_argument("--to-tag", help="Override to-tag (e.g. main, develop)")
+
     # -----------------------------
     # Subcommand: commit-tag-bump
     # -----------------------------
@@ -276,6 +376,7 @@ def main() -> None:
     )
     add_common_arguments(commit_parser)
     add_tagging_arguments(commit_parser)
+    add_control_debug_argument(commit_parser)
 
     commit_parser.add_argument(
         "message_file",
@@ -338,33 +439,24 @@ def main() -> None:
     add_common_arguments(all_parser)
     add_tagging_arguments(all_parser)
     add_force_changelog_argument(all_parser)
+    add_control_debug_argument(all_parser)
     all_parser.add_argument(
         "--skip-checks",
         action="store_true",
-        help="Skip branching→tag transition validation (for advanced users)"
+        help="Skip branching→tag transition validation (for advanced users)",
     )
 
-    cleanup_parser = subparser.add_parser(
+    cleanup_backup_parser = subparser.add_parser(
         "cleaned-backups",
         help="Cleaned old backup files for commit/tag messages",
     )
-    cleanup_parser.add_argument(
-        "--type",
-        choices=["commit", "tag", "all"],
-        default="all",
-        help="Which backup type to clean (default: all)",
-    )
-    cleanup_parser.add_argument(
-        "--keep",
-        type=int,
-        default=10,
-        help="How many last backup to keep (default: 10)",
-    )
+    add_cleanup_backup_argument(cleanup_backup_parser)
 
-    cleanup_branch_parser = subparser.add_parser("clean-branches", help="Cleanup local + remote branches.")
-    cleanup_branch_parser.add_argument("--prefix", required=True, help="Branch prefix to match (e.g. feature/, release/)")
-    cleanup_branch_parser.add_argument("--merged-only", action="store_true", help="Only cleanup merged branches.")
-    cleanup_branch_parser.add_argument("--older-than", help="Only delete branches older than N days (e.g. 30d)")
+    cleanup_branch_parser = subparser.add_parser(
+        "clean-branches", help="Cleanup local + remote branches."
+    )
+    add_cleanup_branch_argument(cleanup_branch_parser)
+    add_control_debug_argument(cleanup_branch_parser)
 
     # Miscellaneous
     commit_misc_group = all_parser.add_argument_group("Other options")
@@ -381,12 +473,8 @@ def main() -> None:
     )
 
     workflow_parser = subparser.add_parser("workflow", help="Workflow and enforcement")
-    workflow_parser.add_argument("--enforce", action="store_true", help="Enforce branch-tag strategy")
-    workflow_parser.add_argument("--check_transition", action="store_true", help="Validate a version/branch transition")
-    workflow_parser.add_argument("--from-branch", help="Override from-branch (e.g. main, develop)")
-    workflow_parser.add_argument("--from-tag", help="Override from-tag (e.g. v1.2.3, v1.2.3a1)")
-    workflow_parser.add_argument("--to-branch", help="Override to-branch (e.g. main, develop)")
-    workflow_parser.add_argument("--to-tag", help="Override to-tag (e.g. main, develop)")
+
+    add_workflow_argument(workflow_parser)
 
     # -----------------------------
     # Parse and Dispatch

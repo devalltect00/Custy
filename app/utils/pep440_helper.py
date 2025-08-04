@@ -21,10 +21,10 @@ Implements VersionHelperBase to provide strategy-specific logic for:
 - Tier precedence
 - Suggested version tagging
 - Valid branch-to-tag transitions
+
 """
 
 import re
-import sys
 
 from .version_helper_base import VersionHelperBase
 
@@ -82,7 +82,7 @@ class PEP440VersionHelper(VersionHelperBase):
         match = re.match(r"(?:(\d+)!)?v?(\d+)\.(\d+)\.(\d+)", self.original)
         if not match:
             raise ValueError(
-                f"❌ Invalid PEP440 format: '{self.original}' (expected) [N!]X.Y.Z or vX.Y.Z"
+                f"❌ Invalid PEP440 format: '{self.original}' (expected) [N!]X.Y.Z or vX.Y.Z",
             )
         epoch, major, minor, patch = match.groups()
         return int(epoch) if epoch else None, int(major), int(minor), int(patch)
@@ -133,7 +133,7 @@ class PEP440VersionHelper(VersionHelperBase):
 
         if current == target_tier:
             return False
-        if curr_val <  target_value:
+        if curr_val < target_value:
             return False
         return True
 
@@ -162,6 +162,7 @@ class PEP440VersionHelper(VersionHelperBase):
 
         Raises:
             ValueError: for invalid format or illegal transitions
+
         """
         short = self.PRE_TIER_MAP.get(target_pre, target_pre)
         target_tier = "dev" if dev else short if short else "post" if post else None
@@ -169,37 +170,45 @@ class PEP440VersionHelper(VersionHelperBase):
 
         # ❌ Disallow dev/post addition on pre-release
         if current_tier in {"a", "b", "rc"} and post:
-            raise ValueError(f"❌ Cannot add post-release to pre-release version: {self.original}")
+            raise ValueError(
+                f"❌ Cannot add post-release to pre-release version: {self.original}"
+            )
         if current_tier in {"a", "b", "rc"} and dev:
-            raise ValueError(f"❌ Cannot add dev-release to pre-release version: {self.original}")
+            raise ValueError(
+                f"❌ Cannot add dev-release to pre-release version: {self.original}"
+            )
         if current_tier == "dev" and post:
-            raise ValueError(f"❌ Cannot add post-release to dev-release version: {self.original}")
+            raise ValueError(
+                f"❌ Cannot add post-release to dev-release version: {self.original}"
+            )
 
         # ❌ Disallow tier regression only if base not bumped
         if self._tier_value(target_tier) < self._tier_value(current_tier):
             if not self._needs_base_bump(target_tier):
-                raise ValueError(f"❌ Invalid tier regression: {self.original} → {target_tier}")
+                raise ValueError(
+                    f"❌ Invalid tier regression: {self.original} → {target_tier}"
+                )
 
         # ❌ Disallow pre → lower-pre even if base will bump
         if current_tier in {"a", "b", "rc"} and target_tier in {"a", "b", "rc"}:
             if self._tier_value(target_tier) < self._tier_value(current_tier):
-                raise ValueError(f"❌ Cannot downgrade pre-release tier: {self.original} → {target_tier}")
+                raise ValueError(
+                    f"❌ Cannot downgrade pre-release tier: {self.original} → {target_tier}"
+                )
 
         # ❌ Disallow post → post without bump intent
         if current_tier == "post" and target_tier is None and not level:
-            raise ValueError(f"❌ No version bump or tier specified for post-release: {self.original}")
+            raise ValueError(
+                f"❌ No version bump or tier specified for post-release: {self.original}"
+            )
 
         # Determine base bump
         if target_tier or post or dev:
             needs_bump = self._needs_base_bump(target_tier)
-        elif current_tier in {"a", "b", "rc", "dev"}:
+        elif current_tier in {"a", "b", "rc", "dev"} or local or epoch:
             needs_bump = False
         else:
-            # 🩹 Patch: Avoid bump if only epoch or local specified
-            if local or epoch:
-                needs_bump = False
-            else:
-                needs_bump = True
+            needs_bump = True
 
         # Apply level bump if needed
         if needs_bump:
@@ -215,7 +224,7 @@ class PEP440VersionHelper(VersionHelperBase):
                 self.patch = 0
             else:
                 raise ValueError(
-                    f"❌ Unknown bump level: {level}. Use: Patch, minor, or major."
+                    f"❌ Unknown bump level: {level}. Use: Patch, minor, or major.",
                 )
 
         version = f"{self.major}.{self.minor}.{self.patch}"
@@ -256,17 +265,18 @@ class PEP440VersionHelper(VersionHelperBase):
 
         Returns:
             str: Version tier keyword
+
         """
         # PEP 440: dev a, b, rc, release, post
-        if ".post"in tag:
+        if ".post" in tag:
             return "post"
-        elif "rc"in tag:
+        if "rc" in tag:
             return "rc"
-        elif "b"in tag:
+        if "b" in tag:
             return "b"
-        elif "a"in tag:
+        if "a" in tag:
             return "a"
-        elif "dev"in tag:
+        if "dev" in tag:
             return "dev"
         return "release"
 
@@ -277,11 +287,11 @@ class PEP440VersionHelper(VersionHelperBase):
         # Optional: Generate suggested tag
         if self.branch == "develop":
             return self.get_bump_version(target_pre="dev")
-        elif self.branch.startswith("release/"):
+        if self.branch.startswith("release/"):
             return self.get_bump_version(target_pre="rc")
-        elif self.branch == "main":
+        if self.branch == "main":
             return self.get_bump_version()  # final
-        elif self.branch.startswith("hotfix/"):
+        if self.branch.startswith("hotfix/"):
             return self.get_bump_version(post=True)
         return self.original  # No change
 
@@ -292,18 +302,16 @@ class PEP440VersionHelper(VersionHelperBase):
             ("main", "release", "develop", "dev"): "CASE 1",
             ("main", "release", "develop", "a"): "CASE 1",
             ("main", "release", "develop", "b"): "CASE 1",
-
+            ("develop", "release", "develop", "dev"): "CASE 1",
+            ("develop", "release", "develop", "a"): "CASE 1",
+            ("develop", "release", "develop", "b"): "CASE 1",
             ("develop", "dev", "release", "rc"): "CASE 2",
             ("develop", "a", "release", "rc"): "CASE 2",
             ("develop", "b", "release", "rc"): "CASE 2",
-
             ("release", "rc", "main", "release"): "CASE 3",
-
-            ("main", "release", "develop", "dev"): "CASE 4",
-            ("main", "release", "develop", "a"): "CASE 4",
-            ("main", "release", "develop", "b"): "CASE 4",
-
+            ("develop", "release", "develop", "dev"): "CASE 4",
+            ("develop", "release", "develop", "a"): "CASE 4",
+            ("develop", "release", "develop", "b"): "CASE 4",
             ("main", "release", "hotfix", "post"): "CASE 5",
-
             ("hotfix", "post", "main", "release"): "CASE 6",
         }

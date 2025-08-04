@@ -43,12 +43,15 @@ class WorkflowManager:
         - CASE 4: main → develop (start new cycle after release)
         - CASE 5: main → hotfix
         - CASE 6: hotfix → main
+
     """
-    def __init__(self):
+
+    def __init__(self, no_debug: bool | None = False):
         self.git = GitHelper()
+        self.git.runner.silent = no_debug
         self.branch = self.git.get_current_branch()
         self.tag = self.git.get_latest_tag()
-        self.strategy = detect_project_strategy()
+        self.strategy = detect_project_strategy(no_debug=no_debug)
 
         if self.strategy == "pep440":
             self.helper = PEP440VersionHelper(self.tag)
@@ -85,33 +88,34 @@ class WorkflowManager:
         if re.search(rf"({'|'.join(tiers)})\d+", tag):
             print(f"✅ Tag '{self.tag}' matches allowed pre-release tiers: {tiers}")
         else:
-            print(f"❌ Tag '{self.tag}' does NOT match expected pre-release tier {tiers} for this branch.")
+            print(
+                f"❌ Tag '{self.tag}' does NOT match expected pre-release tier {tiers} for this branch."
+            )
 
     def _check_final_release(self):
         tag = self.tag.lstrip("v")
         if re.search(r"(a|b|rc|dev|post)\d*", tag):
-            print(f"❌ Final release must not include pre/post/dev suffix.")
+            print("❌ Final release must not include pre/post/dev suffix.")
         else:
-            print(f"✅ Tag looks like a valid stable release.")
+            print("✅ Tag looks like a valid stable release.")
 
     def _check_post_release(self):
         tag = self.tag.lstrip("v")
         if ".post" in tag:
-            print(f"✅ Tag includes '.post' suffix expected.")
+            print("✅ Tag includes '.post' suffix expected.")
         else:
-            print(f"❌ Post-release tag expected to have '.postN' suffix.")
+            print("❌ Post-release tag expected to have '.postN' suffix.")
 
     def suggest_tag_for_current_branch(self) -> str:
-
         return self.helper.suggest_tag(self.branch)
 
     def check_transition(
-            self,
-            from_branch: str = None,
-            from_tag: str = None,
-            to_branch: str = None,
-            to_tag: str = None
-        ) -> None:
+        self,
+        from_branch: str = None,
+        from_tag: str = None,
+        to_branch: str = None,
+        to_tag: str = None,
+    ) -> None:
         """
         Validates transition between two branches and version types.
 
@@ -120,7 +124,6 @@ class WorkflowManager:
         - Allows same-branch stable updates (e.g., rc1 → rc2)
         - Flags others as unrecognized
         """
-
         #  Auto-detect if not given
         f_branch = from_branch or self.git.get_current_branch()
         f_tag = from_tag or self.git.get_latest_tag()
@@ -131,8 +134,8 @@ class WorkflowManager:
         t_ver = self.helper.classify(t_tag.lstrip("v"))
 
         # Summary view
-        print(f"📦 From: {f_branch} ({f_ver})")
-        print(f"➡️ To: {t_branch} ({t_ver})\n")
+        print(f"📦  From: {f_branch} ({f_ver})")
+        print(f"➡️  To: {t_branch} ({t_ver})\n")
 
         # ✅ Allow stable, same-branch transitions
         if f_branch == t_branch and f_ver == t_ver:
@@ -143,13 +146,19 @@ class WorkflowManager:
         if f_branch == t_branch:
             tier_order = self.helper.tier_order()
             if tier_order.get(f_ver, -1) < tier_order.get(t_ver):
-                print(f"✅ Valid in-place promotion: {f_branch} ({f_ver}) → {t_branch} ({t_tag})")
+                print(
+                    f"✅ Valid in-place promotion: {f_branch} ({f_ver}) → {t_branch} ({t_tag})"
+                )
                 return
 
         case_key = (f_branch.split("/")[0], f_ver, t_branch.split("/")[0], t_ver)
         cases = self.helper.get_transaction_cases()
 
         if case_key in cases:
-            print(f"✅ Valid transition {cases[case_key]} — {f_branch} ({f_ver}) → {t_branch} ({t_ver})")
+            print(
+                f"✅ Valid transition {cases[case_key]} — {f_branch} ({f_ver}) → {t_branch} ({t_ver})"
+            )
         else:
-            print(f"❌ Invalid or unrecognized transitions: {f_branch} ({f_ver}) → {t_branch} ({t_ver})")
+            print(
+                f"❌ Invalid or unrecognized transitions: {f_branch} ({f_ver}) → {t_branch} ({t_ver})"
+            )
