@@ -13,7 +13,7 @@ def assert_is_final_version(version: str, context: str = "changelog") -> bool:
     """
     # validate final version version if used in release context
     if re.search(r"(a|b|rc|dev)\d+", version):
-        print(f"❌ Cannot generate {context} for pre-release versions: {version}")
+        print(f"⚠️ Skipping {context} generation for pre-release versions: {version}")
         print("ℹ️ Only final versions like v1.2.3 are allowed.")
         return False
         # sys.exit(1)
