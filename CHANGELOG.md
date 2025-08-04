@@ -3,7 +3,61 @@
 
 
 
-## Unreleased (2025-08-04)
+## Unreleased (2025-08-05)
+### 📝 Documentation
+- **todo.md**: 1.9.2
+  
+  Final release of **Custy 1.9.2**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- *(Nothing yet)* — See tag message for full context.
+
+---
+
+🎉 **Custy 1.9.2 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#<type>`
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **release**: 1.9.0rc1
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.9.0rc1`_
+
+---
+
+🔖 **Tags**: `#<type>`
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **release**: 1.7.0.post3
+  
+  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.7.0.
+
+This post-release includes minor updates and corrections after the official release:
+- modified documentation `docs/TODO.md`
+
+Tag: 1.7.0.post3
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### 🐛 Bug Fixes
 - **main**: 1.9.1
   
@@ -284,41 +338,6 @@ _Tag: `1.9.0b2`_
 - Docs: `#template`
 - Config: `#makefile`
   
-### 📝 Documentation
-- **release**: 1.9.0rc1
-  
-  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
-Feature-complete and undergoing final validation before stable release.
-
-This release candidate consolidates finalized features and bug fixes before the stable release:
-- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
-
----
-
-_Tag: `1.9.0rc1`_
-
----
-
-🔖 **Tags**: `#<type>`
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **release**: 1.7.0.post3
-  
-  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
-Includes minor updates or documentation fixes after release 1.7.0.
-
-This post-release includes minor updates and corrections after the official release:
-- modified documentation `docs/TODO.md`
-
-Tag: 1.7.0.post3
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
 ### 🧠 Refactoring
 - **core**: 1.9.0b1 — improve CLI, docs, pipeline, templates, and structure
   
@@ -729,6 +748,28 @@ Changelog: handled separately
 
 Changelog: handled separately
   
+
+## 1.9.2 (2025-08-05)
+### 📝 Documentation
+- **todo.md**: 1.9.2
+  
+  Final release of **Custy 1.9.2**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- *(Nothing yet)* — See tag message for full context.
+
+---
+
+🎉 **Custy 1.9.2 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#<type>`
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
 
 ## 1.9.1 (2025-08-04)
 ### 🐛 Bug Fixes
