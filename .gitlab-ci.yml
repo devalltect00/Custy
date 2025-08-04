@@ -9,7 +9,7 @@ stages:
     - format
     - lint
 
-.default_rules:
+.default_rules: &default_rules
     rules:
         - if: '$CI_COMMIT_BRANCH =~ /^main|develop|release\/.*|hotfix\/.*ci\/.*/'
           when: always

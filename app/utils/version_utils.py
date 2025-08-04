@@ -43,3 +43,11 @@ def contains_allowed_commit_type(commits: list[str]) -> bool:
         if match and match.group(1) in ALLOWED_COMMIT_TYPES:
             return True
         return False
+
+def classify_commit_type(first_line: str) -> str | None:
+    """
+    Extract the commit type (e.g., feat, fix, fix, chore) from the first line of a commit message.
+    Returns None if not matched.
+    """
+    match = re.match(r"(\w+)(\(.*\))?!?:", first_line)
+    return match.group(1) if match else None

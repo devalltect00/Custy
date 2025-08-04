@@ -1,0 +1,16 @@
+🧪 Beta Release Custy 1.9.0b2 — Fix Commit Type Validation & Pipeline Issue
+
+Beta release for **Custy 1.9.0** — focusing on mid-stage features and improved automation.
+
+This patch resolves two critical issues affecting commit handling and CI/CD execution.
+
+### 🐞 Fixes
+
+- ✅ Commit type is now properly validated before version resolution
+- ✅ Pipeline creation bug resolved to ensure successful CI execution
+
+---
+
+ℹ️ This is a **beta pre-release** and is **not recommended for production use**.
+_Author: devalltect00_
+_Date: 2025-08-04_

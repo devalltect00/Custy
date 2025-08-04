@@ -78,6 +78,8 @@ Since v1.8.0
 -   [x] add gitlab pipeline job at least run test on gitlab and github workflow
 -   [x] make `how to use` documentation. We can use the formal or friendly language style
 -   [x] Make better documentations, Readme.md file
+-   [x] bug fixed where need to check the allowed commit type before resolve version
+-   [x] bug fixed where unable to create pipeline
 -   [x] clean project app
 -   [x] Regenerate project structure documentation
 -   [x] Format code

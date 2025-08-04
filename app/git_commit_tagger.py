@@ -10,25 +10,12 @@ from textwrap import dedent
 from colorama import Fore, Style
 from termcolor import colored
 
-from .utils import (
-    BackupManager,
-    ChangelogGenerator,
-    CommitizenHelper,
-    CommitizenStrategy,
-    DateStrategy,
-    GitCountStrategy,
-    GitHelper,
-    PEP440Strategy,
-    ReleaseInfo,
-    ReleaseNoteBuilder,
-    SemverStrategy,
-    VersionType,
-    WorkflowManager,
-    contains_allowed_commit_type,
-    get_last_tag_before,
-    get_sorted_tags,
-    maybe_assert_is_final,
-)
+from .utils import (ALLOWED_COMMIT_TYPES, BackupManager, ChangelogGenerator,
+                    CommitizenHelper, CommitizenStrategy, DateStrategy,
+                    GitCountStrategy, GitHelper, PEP440Strategy, ReleaseInfo,
+                    ReleaseNoteBuilder, SemverStrategy, VersionType,
+                    WorkflowManager, classify_commit_type, get_last_tag_before,
+                    get_sorted_tags, maybe_assert_is_final)
 
 # =======================
 # 🚀 Main Class
@@ -247,9 +234,10 @@ class GitCommitTagger:
         self._generate_release_notes()
         # self._prepare_and_edit_release_message_if_final()
         self._open_editor(self.tag_msg_file)
+        print(f"📋 Allowed commit types: {', '.join(sorted(ALLOWED_COMMIT_TYPES))}")
         self._open_editor(self.message_path)
         print(f"\n{Fore.LIGHTBLUE_EX}[*] Validating messages...{Style.RESET_ALL}\n")
-        self._check_commit_type_for_tagging()
+        self._validate_commit_type_for_tagging()
         # self.cz.check_commit(path=self.message_path,)  # Use the format  agreed upon with Commitizen.
         self.git.check_commit_message_file(self.message_path)
         print(f"\n{Fore.MAGENTA}[*] Writing version to files...{Style.RESET_ALL}\n")
@@ -269,6 +257,11 @@ class GitCommitTagger:
         #     self.tag = self.bump_version(current_tag, self.bump_level)
         # elif self.tag_input:
         #     self.tag = self.tag_input
+        if getattr(self, "skip_tag", False):
+            self.tag = self.git.get_latest_tag()
+            print(f"🚫 Skipping tag resolution due to disallowed commit type. Using current tag: {self.tag}")
+            return
+
         if self.tag_input:
             self.tag = self.tag_input
         # elif self.strategy_input == "semver" and self.bump_level:
@@ -387,21 +380,34 @@ class GitCommitTagger:
         print("❌ ERROR: Could not open editor. Please edit the message file manually.")
         sys.exit(1)
 
-    def _check_commit_type_for_tagging(self) -> None:
+    def _validate_commit_type_for_tagging(self) -> None:
         """
         Check if commit message matches an allowed type for tagging.
         If not and --force-tag is not used, set skip_tag=True.
         """
         commits_msg = self.message_path.read_text(encoding="utf-8")
-        if not contains_allowed_commit_type([commits_msg]):
-            if not self.force_tag:
-                print(
-                    "🚫 Skipping tag: no allowed commit types (feat, fix, perf. docs, re)",
-                )
-                print("ℹ️ Use --force-tag to override.")
-                self.skip_tag = True
+        first_line = commits_msg.strip().splitlines()[0] if commits_msg.strip() else ""
+        commit_type = classify_commit_type(first_line=first_line)
+
+        if commit_type:
+            if commit_type not in ALLOWED_COMMIT_TYPES:
+                if not self.force_tag:
+                    print(f"🚫 Skipping tag: commit types `{commit_type}` is not allowed.",)
+                    print(f"ℹ️ Allowed types: {sorted(ALLOWED_COMMIT_TYPES)}")
+                    print("ℹ️ Use --force-tag to override.")
+                    input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
+                    self.skip_tag = True
+                else:
+                    print(f"⚠️ Forcing tag despite disallowed commit type `{commit_type}`.")
             else:
-                print("⚠️ Warning: forcing tag despite non-semantic commit type.")
+                if not self.force_tag:
+                    print(f"🚫 Skipping tag: could not detect valid commit type.",)
+                    print(f"ℹ️ Allowed types: {sorted(ALLOWED_COMMIT_TYPES)}")
+                    print("ℹ️ Use --force-tag to override.")
+                    input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
+                    self.skip_tag = True
+                else:
+                    print(f"⚠️ Forcing tag despite unrecognized commit type.")
 
     def _ensure_staged_changes(self) -> None:
         if self.git.has_staged_files():
