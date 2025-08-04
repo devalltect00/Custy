@@ -43,6 +43,9 @@ dev = [
     "commitizen",
 ]
 
+[project.scripts]
+custy = "app.__main__:main"
+
 [tool.mycz]
 show_types = true
 template_path = "templates/changelog/changelog.j2"

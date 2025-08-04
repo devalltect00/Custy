@@ -81,12 +81,13 @@ Since v1.9.0
 -   [x] clean project app
 -   [x] Regenerate project structure documentation
 -   [x] Format code
+-   [x] Make sure it is ready to use, installing and usage
 
 ---
 
 ### 🧩 In Progress
 
--   [ ] Make sure it is ready to use, installing and usage
+-   [ ] _(Nothing yet)_
 
 ---
 
