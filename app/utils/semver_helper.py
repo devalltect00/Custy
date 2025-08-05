@@ -259,6 +259,6 @@ class SemverVersionHelper(VersionHelperBase):
             ("develop", "alpha", "release", "rc"): "CASE 2",
             ("develop", "beta", "release", "rc"): "CASE 2",
             ("release", "rc", "main", "release"): "CASE 3",
-            ("main", "release", "develop", "alpha"): "CASE 4",
-            ("main", "release", "develop", "beta"): "CASE 4",
+            ("develop", "release", "develop", "alpha"): "CASE 4",
+            ("develop", "release", "develop", "beta"): "CASE 4",
         }

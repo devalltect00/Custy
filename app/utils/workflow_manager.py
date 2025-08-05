@@ -11,47 +11,51 @@ Responsibilities:
 - Enforces consistency rules for each branch type
 - Suggests the next version based on branch context
 - Validates allowed version transitions between branch/tag combinations
+- Executes initial and final Git workflow commands based on workflow case
 """
 
 import re
 
+from .dry_run_support import DryRunSupport
 from .git import GitHelper
 from .pep440_helper import PEP440VersionHelper
 from .project_detector import detect_project_strategy
 from .semver_helper import SemverVersionHelper
 
 
-class WorkflowManager:
+class WorkflowManager(DryRunSupport):
     """
-    WorkflowManager enforces Git workflow policies, tag consistency, and versioning transitions.
+    WorkflowManager
 
-    Attributes:
-        branch (str): Current Git branch
-        tag (str): Latest Git tag
-        strategy (str): 'pep440' or 'semver'
-        helper (VersionHelperBase): Strategy-specific helper
+    Handles Git workflow validation and branching operations
+    according to version transition CASEs and project strategy.
 
-    Usage:
-        manager = WorkflowManager()
-        manager.enforce_consistency()
-        manager.check_transition(from_branch="develop", to_branch="release/1.3")
+    - Detects versioning strategy (PEP 440 or SemVer)
+    - Validates transitions between branch/tag combinations (e.g. dev → rc, rc → final)
+    - Provides initial and final Git workflow steps based on transition case
+    - run_initial_workflow(): prepares appropriate branch before tagging
+    - run_final_workflow(): performs necessary merges or cleanup after tagging
 
-    Available Transition Cases:
-        - CASE 1: main → develop (starting new feature work)
-        - CASE 2: develop → release (promote dev → rc)
-        - CASE 3: release → main (final release)
-        - CASE 4: main → develop (start new cycle after release)
-        - CASE 5: main → hotfix
-        - CASE 6: hotfix → main
-
+    Transition CASEs:
+    - CASE 1: develop (dev/beta/alpha) → develop (next pre)
+    - CASE 2: develop (pre) → release/x.y (rc)
+    - CASE 3: release/x.y (rc) → main (final)
+    - CASE 4: main (final) → develop (next dev)
+    - CASE 5: main (final) → hotfix/x.y.z (post)
+    - CASE 6: hotfix/x.y.z (post) → main (final)
+    - CASE 7: feature/* → develop
+    - CASE 8: archive/* cleanup only
     """
 
-    def __init__(self, no_debug: bool | None = False):
+    def __init__(self, no_debug: bool | None = False, sync_backup: bool | None = False, dry_run: bool | None = False,):
+        super().__init__(dry_run=dry_run)
         self.git = GitHelper()
-        self.git.runner.silent = no_debug
+        self.git.runner.set_silent(no_debug)
         self.branch = self.git.get_current_branch()
         self.tag = self.git.get_latest_tag()
         self.strategy = detect_project_strategy(no_debug=no_debug)
+        self.runner.set_silent(no_debug)
+        self.sync_backup = sync_backup
 
         if self.strategy == "pep440":
             self.helper = PEP440VersionHelper(self.tag)
@@ -59,6 +63,12 @@ class WorkflowManager:
             self.helper = SemverVersionHelper(self.tag)
 
     def enforce_consistency(self) -> None:
+        """
+        Validates that the current branch and latest tag follow expected conventions.
+
+        - Checks if tags match expected tier (e.g., dev/beta on develop, rc on release/x.y)
+        - Helps enforce clean separation of version stages across branches
+        """
         print(f"✨ Current branch: {self.branch}")
         print(f"📅 Latest tag: {self.tag}\n")
 
@@ -107,6 +117,14 @@ class WorkflowManager:
             print("❌ Post-release tag expected to have '.postN' suffix.")
 
     def suggest_tag_for_current_branch(self) -> str:
+        """
+        Suggests the next tag based on current branch context.
+
+        For example:
+        - develop → 1.4.0.dev1
+        - release/1.4 → 1.4.0rc1
+        - main → 1.4.0
+        """
         return self.helper.suggest_tag(self.branch)
 
     def check_transition(
@@ -115,7 +133,7 @@ class WorkflowManager:
         from_tag: str = None,
         to_branch: str = None,
         to_tag: str = None,
-    ) -> None:
+    ) -> str:
         """
         Validates transition between two branches and version types.
 
@@ -123,6 +141,12 @@ class WorkflowManager:
         - Allows same-branch tier progression (e.g., dev → a → b)
         - Allows same-branch stable updates (e.g., rc1 → rc2)
         - Flags others as unrecognized
+
+        Returns the matching CASE identifier if transition is valid,
+        or empty string if it’s an in-place promotion.
+
+        Returns:
+            str: CASE identifier (e.g. 'CASE 2') or "" for stable/in-place bump
         """
         #  Auto-detect if not given
         f_branch = from_branch or self.git.get_current_branch()
@@ -140,7 +164,7 @@ class WorkflowManager:
         # ✅ Allow stable, same-branch transitions
         if f_branch == t_branch and f_ver == t_ver:
             print(f"✅ Stable iteration: {f_branch} ({f_ver}) → {t_branch} ({t_tag})")
-            return
+            return ""
 
         # ✅ Allow in-place tier progression (e.g. dev → a → b → rc)
         if f_branch == t_branch:
@@ -149,7 +173,7 @@ class WorkflowManager:
                 print(
                     f"✅ Valid in-place promotion: {f_branch} ({f_ver}) → {t_branch} ({t_tag})"
                 )
-                return
+                return ""
 
         case_key = (f_branch.split("/")[0], f_ver, t_branch.split("/")[0], t_ver)
         cases = self.helper.get_transaction_cases()
@@ -158,7 +182,85 @@ class WorkflowManager:
             print(
                 f"✅ Valid transition {cases[case_key]} — {f_branch} ({f_ver}) → {t_branch} ({t_ver})"
             )
+            return cases[case_key]
         else:
             print(
                 f"❌ Invalid or unrecognized transitions: {f_branch} ({f_ver}) → {t_branch} ({t_ver})"
             )
+            return ""
+
+    def run_initial_workflow(self, case: str, to_tag: str):
+        """
+        Executes necessary Git commands to prepare branch context
+        before commit/tag/bump is performed.
+
+        Args:
+            case (str): CASE identifier from check_transition()
+            to_tag (str): Target tag version string
+        """
+        if case == "CASE 1":
+            self.runner.run(["git", "checkout", "develop"], check=True)
+            self.runner.run(["git", "pull", "origin", "develop"], check=True)
+        elif case == "CASE 2":
+            branch = f"release/{self.helper.major}/{self.helper.minor}"
+            self.runner.run(["git", "checkout", "-b", branch], check=True)
+        elif case == "CASE 3":
+            branch = f"release/{self.helper.major}/{self.helper.minor}"
+            self.runner.run(["git", "checkout", "main"], check=True)
+            self.runner.run(["git", "pull", "origin", "main"], check=True)
+            self.runner.run(["git", "merge", branch], check=True)
+            self.runner.run(["git", "checkout", "develop"], check=True)
+            self.runner.run(["git", "rebase", "main"], check=True)
+            self.runner.run(["git", "push", "--follow-tags", "origin", "develop"], check=True)
+            if self.sync_backup: self.runner.run(["git", "push", "--follow-tags", "backup", "develop"], check=True)
+        elif case == "CASE 4":
+            self.runner.run(["git", "checkout", "develop"], check=True)
+            self.runner.run(["git", "pull", "origin", "develop"], check=True)
+        elif case == "CASE 5":
+            branch = f"hotfix/{self.helper.major}/{self.helper.minor}.{self.helper.patch}"
+            self.runner.run(["git", "checkout", "main"], check=True)
+            self.runner.run(["git", "pull", "origin", "main"], check=True)
+            self.runner.run(["git", "checkout", "-b", branch], check=True)
+        elif case == "CASE 6":
+            print("📦 CASE 6: hotfix merging is finalized in run_final_workflow.")
+        elif case == "CASE 7":
+            print("📦 CASE 7: Feature branch, no initial workflow needed.")
+        elif case == "CASE 8":
+            print("📦 CASE 8: Archive strategy is manual cleanup or tool-based.")
+        elif case == "CASE 9":
+            print("📦 CASE 9: CI branch, no preparation needed..")
+
+    def run_final_workflow(self, case: str, to_tag: str):
+        """
+        Executes follow-up Git operations after push/tagging step,
+        such as merging hotfix branches or cleaning up.
+
+        Args:
+            case (str): CASE identifier from check_transition()
+            to_tag (str): Target tag version string
+        """
+        if case == "CASE 1":
+            print("📦 CASE 1: Dev flow finalized on develop. No merge needed.")
+        elif case == "CASE 2":
+            print("📦 CASE 2: RC phase continues. No finalization needed.")
+        elif case == "CASE 3":
+            print("📦 CASE 3: Main branch updated from release. No extra step.")
+        elif case == "CASE 4":
+            print("📦 CASE 4: Cycle restart. Develop branch will resume new versioning.")
+        elif case == "CASE 5":
+            print("📦 CASE 5: Hotfix branch created. Finalization handled in CASE 6.")
+        elif case == "CASE 6":
+            branch = f"hotfix/{self.helper.major}/{self.helper.minor}.{self.helper.patch}"
+            self.runner.run(["git", "checkout", "main"], check=True)
+            self.runner.run(["git", "merge", branch], check=True)
+            self.runner.run(["git", "push" "origin", "main"], check=True)
+            if self.sync_backup: self.runner.run(["git", "push" "backup", "main"], check=True)
+            self.runner.run(["git", "branch" "-d", branch], check=True)
+            # self.runner.run(["git", "push" "origin", "--delete", branch], check=True)
+            # self.runner.run(["git", "push" "backup", "--delete", branch], check=True)
+        elif case == "CASE 7":
+            print("📦 CASE 7: Feature branch merged develop.")
+        elif case == "CASE 8":
+            print("📦 CASE 8: Archive cleanup complete..")
+        elif case == "CASE 9":
+            print("📦 CASE 9: CI flow does not require finalization..")

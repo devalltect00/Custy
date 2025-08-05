@@ -9,9 +9,9 @@ Support dry-run mode, and can be configured via [tool.mycz] in pyproject.toml.
 """
 
 import sys
+import tomllib
 from datetime import datetime
 
-import tomllib
 from jinja2 import Template
 from rich.console import Console
 from rich.progress import track
@@ -107,8 +107,8 @@ class ChangelogGenerator(DryRunSupport):
             str: Formatted changelog string. Rendered changelog.
 
         """
-        original_silent = self.runner.silent
-        self.git.runner.silent = True
+        original_silent = self.runner.get_silent()
+        self.git.runner.set_silent(True)
 
         tags = self.git.get_tags()
         tags.insert(0, "")  # Include commits before first tag
@@ -140,7 +140,7 @@ class ChangelogGenerator(DryRunSupport):
                 },
             )
 
-        self.runner.silent = original_silent  # Restore print setting
+        self.runner.set_silent(original_silent)  # Restore print setting
 
         # Render
         try:

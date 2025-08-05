@@ -3,6 +3,7 @@
 from .backup_manager import BackupManager
 from .branch_cleaner import BranchCleaner
 from .changelog_generator import ChangelogGenerator
+from .cli_formatter import ColoredHelpFormatter
 from .commitizen import CommitizenHelper
 from .config import load_custor_config
 from .dry_run import Runner
@@ -27,6 +28,7 @@ __all__ = [
     "BackupManager",
     "BranchCleaner",
     "ChangelogGenerator",
+    "ColoredHelpFormatter",
     "CommitizenHelper",
     "CommitizenStrategy",
     "DateStrategy",

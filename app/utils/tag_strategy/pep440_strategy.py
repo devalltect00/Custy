@@ -30,7 +30,7 @@ class PEP440Strategy:
         self.epoch: int | None = epoch
         self.git = GitHelper(dry_run=False)
 
-        self.git.runner.silent = no_debug
+        self.git.runner.set_silent(no_debug)
 
     def get_next_tag(self) -> str:
         latest_tag = self.git.get_latest_tag()

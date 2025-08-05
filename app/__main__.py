@@ -32,7 +32,8 @@ from pathlib import Path
 from pyfiglet import Figlet
 
 from .git_commit_tagger import GitCommitTagger
-from .utils import detect_project_strategy, maybe_assert_is_final
+from .utils import (ColoredHelpFormatter, detect_project_strategy,
+                    maybe_assert_is_final)
 
 # =======================
 # 🏗️ Factory method
@@ -153,17 +154,25 @@ def handle_cleanup_branches(args):
 def handle_workflow(args):
     from .utils import WorkflowManager
 
-    manager = WorkflowManager()
+    manager = WorkflowManager(
+        no_debug=args.no_debug,
+        sync_backup=args.sync_backup,
+        dry_run=args.dry_run,
+    )
 
     if args.enforce:
         manager.enforce_consistency()
 
-    if args.check_.transition:
-        manager.check_transition(
+    if args.check_transition:
+        workflow_case = manager.check_transition(
             from_branch=args.from_branch,
             from_tag=args.from_tag,
             to_branch=args.to_branch,
             to_tag=args.to_tag,
+        )
+        manager.run_initial_workflow(
+            case=workflow_case,
+            to_tag=args.to_tag
         )
 
 
@@ -216,14 +225,15 @@ def show_banner():
 def main() -> None:
     show_banner()
 
-    detect_project_strategy(no_debug=False)
+    # detect_project_strategy(no_debug=False)
 
     parser = argparse.ArgumentParser(
         description="Git commit, tag, and version automation tool",
+        # formatter_class=ColoredHelpFormatter,
     )
     subparser = parser.add_subparsers(
         dest="command",
-        required=True,
+        # required=True,
     )
 
     def add_common_arguments(p):
@@ -256,9 +266,9 @@ def main() -> None:
             choices=["semver", "pep440", "date", "gitcount", "commitizen"],
             default=detect_project_strategy(no_debug=True),  # <-- auto logic
             help=(
-                "Strategy to generate tag (Auto generate tag using a strategy). ",
-                "Tagging strategy (e.g. pep440, semver, date, gitcount, or commitizen). ",
-                "CLI overrides config or auto-detect.",
+                "Strategy to generate tag (Auto generate tag using a strategy). "
+                "Tagging strategy (e.g. pep440, semver, date, gitcount, or commitizen). "
+                "CLI overrides config or auto-detect."
             ),
         )
         p.add_argument(
@@ -362,7 +372,7 @@ def main() -> None:
             "--enforce", action="store_true", help="Enforce branch-tag strategy"
         )
         p.add_argument(
-            "--check_transition",
+            "--check-transition",
             action="store_true",
             help="Validate a version/branch transition",
         )
@@ -487,6 +497,13 @@ def main() -> None:
     workflow_parser = subparser.add_parser("workflow", help="Workflow and enforcement")
 
     add_workflow_argument(workflow_parser)
+    add_sync_argument(workflow_parser)
+    add_control_debug_argument(workflow_parser)
+    workflow_parser.add_argument(
+            "--dry-run",
+            action="store_true",
+            help="Simulate commands without executing. Dry run mode.",
+        )
 
     # -----------------------------
     # Parse and Dispatch
@@ -501,6 +518,7 @@ def main() -> None:
         "backup": handle_backup,
         "cleaned-backups": handle_cleaned_backups,
         "all": handle_all,
+        "workflow": handle_workflow,
         "cleanup_branches": handle_cleanup_branches,
     }
 

@@ -296,15 +296,19 @@ class PEP440VersionHelper(VersionHelperBase):
         return self.original  # No change
 
     def get_transaction_cases(self) -> dict:
+        """
+        Returns valid transition mappings from (from_branch, from_tier, to_branch, to_tier)
+        to a CASE identifier used by WorkflowManager.
+
+        These transitions help determine which Git commands to run
+        during initial/final workflow steps.
+        """
         # Major transition cases
         # Case transition map
         return {
             ("main", "release", "develop", "dev"): "CASE 1",
             ("main", "release", "develop", "a"): "CASE 1",
             ("main", "release", "develop", "b"): "CASE 1",
-            ("develop", "release", "develop", "dev"): "CASE 1",
-            ("develop", "release", "develop", "a"): "CASE 1",
-            ("develop", "release", "develop", "b"): "CASE 1",
             ("develop", "dev", "release", "rc"): "CASE 2",
             ("develop", "a", "release", "rc"): "CASE 2",
             ("develop", "b", "release", "rc"): "CASE 2",
@@ -314,4 +318,9 @@ class PEP440VersionHelper(VersionHelperBase):
             ("develop", "release", "develop", "b"): "CASE 4",
             ("main", "release", "hotfix", "post"): "CASE 5",
             ("hotfix", "post", "main", "release"): "CASE 6",
+
+            # === EXTENDED CASES ===
+            ("feature", "release", "develop", "dev"): "CASE 7",
+            ("archive", "release", "develop", "dev"): "CASE 8",
+            ("ci", "release", "develop", "dev"): "CASE 9",
         }

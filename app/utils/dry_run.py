@@ -11,6 +11,12 @@ class Runner:
         self.is_dry_run: bool = is_dry_run
         self.silent: bool = False
 
+    def set_silent(self, is_silent: bool) -> None:
+        self.silent = is_silent
+
+    def get_silent(self) -> bool:
+        return self.silent
+
     def run(
         self,
         command: str,
@@ -29,7 +35,7 @@ class Runner:
         # command = command if isinstance(command, str) else " ".join(command)
 
         if not self.is_dry_run:
-            if not self.silent:
+            if not self.get_silent():
                 print(
                     f"{Fore.YELLOW}→{Style.RESET_ALL} {Fore.LIGHTWHITE_EX}{command}{Style.RESET_ALL}",
                 )
@@ -57,7 +63,7 @@ class Runner:
             kwargs["shell"] = False  # safest default
 
         if not self.is_dry_run:
-            if not self.silent:
+            if not self.get_silent():
                 print(f"{Fore.YELLOW}→{Style.RESET_ALL} {command}")
 
             try:

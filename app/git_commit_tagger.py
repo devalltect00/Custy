@@ -83,12 +83,16 @@ class GitCommitTagger:
         self.cz = CommitizenHelper(dry_run=dry_run)
         self.changelog_generator = ChangelogGenerator(dry_run=dry_run)
         self.backup_manager = BackupManager(keep=10)
-        self.workflow_manager = WorkflowManager(no_debug=self.no_debug)
+        self.workflow_manager = WorkflowManager(
+            no_debug=self.no_debug,
+            sync_backup=self.sync_backup,
+            dry_run=self.dry_run,
+        )
 
         if self.no_debug:
-            self.git.runner.silent = self.cz.runner.silent = (
-                self.changelog_generator.runner.silent
-            ) = True
+            self.git.runner.set_silent(True)
+            self.cz.runner.set_silent(True)
+            self.changelog_generator.runner.set_silent(True)
             print("🐞  No Debug")
 
     # =======================
@@ -138,6 +142,8 @@ class GitCommitTagger:
         self.push_changes()
         self._generate_changelog()
 
+        self.finalize_workflow()
+
         print(f"\n✅ Success: Commit, tag '{self.tag}', bump and pushed.\n")
 
     def validate_workflow_transition(self):
@@ -146,8 +152,29 @@ class GitCommitTagger:
         transition rules (e.g. develop → release → main).
         """
         if not self.skip_checks:
-            self.workflow_manager = WorkflowManager(no_debug=self.no_debug)
-            self.workflow_manager.check_transition(to_tag=self.tag)
+            self.workflow_manager = WorkflowManager(
+                no_debug=self.no_debug,
+                sync_backup=self.sync_backup,
+                dry_run=self.dry_run,
+            )
+            self.workflow_case = self.workflow_manager.check_transition(to_tag=self.tag)
+            input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
+            self.workflow_manager.run_initial_workflow(
+                case=self.workflow_case,
+                to_tag=self.tag,
+            )
+        else:
+            input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
+
+
+    def finalize_workflow(self):
+        """
+        Executes the final workflow steps after tagging and pushing,
+        such as merging hotfixes or cleaning up release branches.
+        """
+        if not self.skip_checks:
+            if hasattr(self, "workflow_case") and hasattr(self, "workflow_manager"):
+                self.workflow_manager.run_final_workflow(case=self.workflow_case, to_tag=self.tag)
 
         input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
 

@@ -88,7 +88,6 @@ Since v1.9.0
 ### 🧩 In Progress
 
 -   [ ] advancing workflow manager functionality
--   [ ] ask GPT what type of commit message based on thsese changes
 
 ---
 
