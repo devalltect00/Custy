@@ -18,13 +18,18 @@ from .tag_strategy.git_count_strategy import GitCountStrategy
 from .tag_strategy.pep440_strategy import PEP440Strategy
 from .tag_strategy.semver_strategy import SemverStrategy
 from .version_helper_base import VersionHelperBase
-from .version_utils import (ALLOWED_COMMIT_TYPES, assert_is_final_version,
-                            classify_commit_type, contains_allowed_commit_type,
-                            maybe_assert_is_final)
+from .version_utils import (
+    ALLOWED_COMMIT_TYPES,
+    assert_is_final_version,
+    classify_commit_type,
+    contains_allowed_commit_type,
+    maybe_assert_is_final,
+)
 from .versioning import ReleaseInfo, ReleaseNoteBuilder, VersionType
 from .workflow_manager import WorkflowManager
 
 __all__ = [
+    "ALLOWED_COMMIT_TYPES",
     "BackupManager",
     "BranchCleaner",
     "ChangelogGenerator",
@@ -45,13 +50,12 @@ __all__ = [
     "VersionHelperBase",
     "VersionType",
     "WorkflowManager",
-    "ALLOWED_COMMIT_TYPES",
     "assert_is_final_version",
     "classify_commit_type",
     "contains_allowed_commit_type",
-    "maybe_assert_is_final",
     "detect_project_strategy",
     "get_last_tag_before",
     "get_sorted_tags",
     "load_custor_config",
+    "maybe_assert_is_final",
 ]

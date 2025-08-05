@@ -9,7 +9,10 @@ from .dry_run_support import DryRunSupport
 
 class BranchCleaner(DryRunSupport):
     def __init__(
-        self, prefix: str, merged_only: bool = False, older_than: str | None = None
+        self,
+        prefix: str,
+        merged_only: bool = False,
+        older_than: str | None = None,
     ) -> None:
         self.prefix = prefix
         self.merged_only = merged_only

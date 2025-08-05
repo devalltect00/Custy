@@ -32,8 +32,7 @@ from pathlib import Path
 from pyfiglet import Figlet
 
 from .git_commit_tagger import GitCommitTagger
-from .utils import (ColoredHelpFormatter, detect_project_strategy,
-                    maybe_assert_is_final)
+from .utils import detect_project_strategy
 
 # =======================
 # 🏗️ Factory method
@@ -87,7 +86,7 @@ def handle_push(args):
 
 
 def handle_changelog(args):
-    from .utils import ChangelogGenerator, GitHelper
+    from .utils import GitHelper
 
     latest_tag = GitHelper().get_latest_tag()
 
@@ -170,10 +169,7 @@ def handle_workflow(args):
             to_branch=args.to_branch,
             to_tag=args.to_tag,
         )
-        manager.run_initial_workflow(
-            case=workflow_case,
-            to_tag=args.to_tag
-        )
+        manager.run_initial_workflow(case=workflow_case, to_tag=args.to_tag)
 
 
 def get_version(pkg_name="custy") -> str:
@@ -361,15 +357,20 @@ def main() -> None:
             help="Branch prefix to match (e.g. feature/, release/)",
         )
         p.add_argument(
-            "--merged-only", action="store_true", help="Only cleanup merged branches."
+            "--merged-only",
+            action="store_true",
+            help="Only cleanup merged branches.",
         )
         p.add_argument(
-            "--older-than", help="Only delete branches older than N days (e.g. 30d)"
+            "--older-than",
+            help="Only delete branches older than N days (e.g. 30d)",
         )
 
     def add_workflow_argument(p):
         p.add_argument(
-            "--enforce", action="store_true", help="Enforce branch-tag strategy"
+            "--enforce",
+            action="store_true",
+            help="Enforce branch-tag strategy",
         )
         p.add_argument(
             "--check-transition",
@@ -377,7 +378,8 @@ def main() -> None:
             help="Validate a version/branch transition",
         )
         p.add_argument(
-            "--from-branch", help="Override from-branch (e.g. main, develop)"
+            "--from-branch",
+            help="Override from-branch (e.g. main, develop)",
         )
         p.add_argument("--from-tag", help="Override from-tag (e.g. v1.2.3, v1.2.3a1)")
         p.add_argument("--to-branch", help="Override to-branch (e.g. main, develop)")
@@ -385,10 +387,10 @@ def main() -> None:
 
     def add_check_skip(p):
         p.add_argument(
-        "--skip-checks",
-        action="store_true",
-        help="Skip branching→tag transition validation (for advanced users)",
-    )
+            "--skip-checks",
+            action="store_true",
+            help="Skip branching→tag transition validation (for advanced users)",
+        )
 
     # -----------------------------
     # Subcommand: commit-tag-bump
@@ -475,7 +477,8 @@ def main() -> None:
     add_cleanup_backup_argument(cleanup_backup_parser)
 
     cleanup_branch_parser = subparser.add_parser(
-        "clean-branches", help="Cleanup local + remote branches."
+        "clean-branches",
+        help="Cleanup local + remote branches.",
     )
     add_cleanup_branch_argument(cleanup_branch_parser)
     add_control_debug_argument(cleanup_branch_parser)
@@ -500,10 +503,10 @@ def main() -> None:
     add_sync_argument(workflow_parser)
     add_control_debug_argument(workflow_parser)
     workflow_parser.add_argument(
-            "--dry-run",
-            action="store_true",
-            help="Simulate commands without executing. Dry run mode.",
-        )
+        "--dry-run",
+        action="store_true",
+        help="Simulate commands without executing. Dry run mode.",
+    )
 
     # -----------------------------
     # Parse and Dispatch

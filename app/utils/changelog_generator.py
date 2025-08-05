@@ -9,9 +9,9 @@ Support dry-run mode, and can be configured via [tool.mycz] in pyproject.toml.
 """
 
 import sys
-import tomllib
 from datetime import datetime
 
+import tomllib
 from jinja2 import Template
 from rich.console import Console
 from rich.progress import track
@@ -116,7 +116,8 @@ class ChangelogGenerator(DryRunSupport):
 
         console = Console()
         for i in track(
-            range(len(tags) - 1), description="[bold cyan]Generating changelog..."
+            range(len(tags) - 1),
+            description="[bold cyan]Generating changelog...",
         ):
             prev = tags[i + 1]
             current = tags[i]

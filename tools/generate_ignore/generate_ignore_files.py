@@ -267,11 +267,11 @@ def generate_ignore_files(project_type=None):
 
     # Step 1: Load your main .gitignore.template
     base_gitignore = read_optional_file(
-        "templates/example/gitignore/.gitignore.template"
+        "templates/example/gitignore/.gitignore.template",
     )
     if not base_gitignore:
         print(
-            "❌ Missing templates/example/gitignore/.gitignore.template. Please create one."
+            "❌ Missing templates/example/gitignore/.gitignore.template. Please create one.",
         )
         return
 
@@ -282,7 +282,7 @@ def generate_ignore_files(project_type=None):
 
     # Step 3 Optional .gitignore.append
     custom_gitignore = read_optional_file(
-        "templates/example/gitignore/.gitignore.append"
+        "templates/example/gitignore/.gitignore.append",
     )
     if custom_gitignore:
         base_gitignore += f"\n\n# Custom ignore entries\n{custom_gitignore.strip()}"

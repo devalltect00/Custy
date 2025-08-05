@@ -79,11 +79,7 @@ class ReleaseNoteBuilder:
             # Merge description and additional  into one cohesive paragraph block
             # body_block = "\n".join(filter(None, [description, additional]))
 
-            lines = [
-                header,
-                "",
-                description
-            ]
+            lines = [header, "", description]
 
             if additional:
                 lines.append(additional)
@@ -98,9 +94,8 @@ class ReleaseNoteBuilder:
                 f"_Tag: `{ver}`_",
                 "",
                 "🔖 **Tags**:",
-                f"- Type: `#{commit_type}`"
+                f"- Type: `#{commit_type}`",
             ]
-
 
         return "\n".join(lines)
 

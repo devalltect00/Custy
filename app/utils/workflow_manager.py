@@ -45,9 +45,15 @@ class WorkflowManager(DryRunSupport):
     - CASE 6: hotfix/x.y.z (post) → main (final)
     - CASE 7: feature/* → develop
     - CASE 8: archive/* cleanup only
+    - CASE 9: ci/* integration only
     """
 
-    def __init__(self, no_debug: bool | None = False, sync_backup: bool | None = False, dry_run: bool | None = False,):
+    def __init__(
+        self,
+        no_debug: bool | None = False,
+        sync_backup: bool | None = False,
+        dry_run: bool | None = False,
+    ):
         super().__init__(dry_run=dry_run)
         self.git = GitHelper()
         self.git.runner.set_silent(no_debug)
@@ -99,7 +105,7 @@ class WorkflowManager(DryRunSupport):
             print(f"✅ Tag '{self.tag}' matches allowed pre-release tiers: {tiers}")
         else:
             print(
-                f"❌ Tag '{self.tag}' does NOT match expected pre-release tier {tiers} for this branch."
+                f"❌ Tag '{self.tag}' does NOT match expected pre-release tier {tiers} for this branch.",
             )
 
     def _check_final_release(self):
@@ -147,6 +153,7 @@ class WorkflowManager(DryRunSupport):
 
         Returns:
             str: CASE identifier (e.g. 'CASE 2') or "" for stable/in-place bump
+
         """
         #  Auto-detect if not given
         f_branch = from_branch or self.git.get_current_branch()
@@ -161,6 +168,21 @@ class WorkflowManager(DryRunSupport):
         print(f"📦  From: {f_branch} ({f_ver})")
         print(f"➡️  To: {t_branch} ({t_ver})\n")
 
+        simplified_key = (f_branch.split("/")[0], f_ver, t_branch.split("/")[0], t_ver)
+        simplified_cases = self.helper.get_transaction_cases()
+        reference_cases = self.helper.get_transaction_cases()
+
+        # Match simplified case, then get its full canonical reference
+        if simplified_key in simplified_cases:
+            case_id = simplified_cases[simplified_key]
+            for ref_key, ref_case in reference_cases.items():
+                if ref_case == case_id:
+                    ref_from_branch, _, ref_to_branch, _ = ref_key
+                    print(
+                        f"✅ Valid transition {case_id} — {ref_from_branch} ({f_ver}) → {ref_to_branch} ({t_ver})",
+                    )
+                    return case_id
+
         # ✅ Allow stable, same-branch transitions
         if f_branch == t_branch and f_ver == t_ver:
             print(f"✅ Stable iteration: {f_branch} ({f_ver}) → {t_branch} ({t_tag})")
@@ -171,23 +193,15 @@ class WorkflowManager(DryRunSupport):
             tier_order = self.helper.tier_order()
             if tier_order.get(f_ver, -1) < tier_order.get(t_ver):
                 print(
-                    f"✅ Valid in-place promotion: {f_branch} ({f_ver}) → {t_branch} ({t_tag})"
+                    f"✅ Valid in-place promotion: {f_branch} ({f_ver}) → {t_branch} ({t_tag})",
                 )
                 return ""
 
-        case_key = (f_branch.split("/")[0], f_ver, t_branch.split("/")[0], t_ver)
-        cases = self.helper.get_transaction_cases()
+        print(
+            f"❌ Invalid or unrecognized transitions: {f_branch} ({f_ver}) → {t_branch} ({t_ver})",
+        )
 
-        if case_key in cases:
-            print(
-                f"✅ Valid transition {cases[case_key]} — {f_branch} ({f_ver}) → {t_branch} ({t_ver})"
-            )
-            return cases[case_key]
-        else:
-            print(
-                f"❌ Invalid or unrecognized transitions: {f_branch} ({f_ver}) → {t_branch} ({t_ver})"
-            )
-            return ""
+        return ""
 
     def run_initial_workflow(self, case: str, to_tag: str):
         """
@@ -197,38 +211,66 @@ class WorkflowManager(DryRunSupport):
         Args:
             case (str): CASE identifier from check_transition()
             to_tag (str): Target tag version string
+
         """
-        if case == "CASE 1":
-            self.runner.run(["git", "checkout", "develop"], check=True)
-            self.runner.run(["git", "pull", "origin", "develop"], check=True)
-        elif case == "CASE 2":
-            branch = f"release/{self.helper.major}/{self.helper.minor}"
-            self.runner.run(["git", "checkout", "-b", branch], check=True)
-        elif case == "CASE 3":
-            branch = f"release/{self.helper.major}/{self.helper.minor}"
-            self.runner.run(["git", "checkout", "main"], check=True)
-            self.runner.run(["git", "pull", "origin", "main"], check=True)
-            self.runner.run(["git", "merge", branch], check=True)
-            self.runner.run(["git", "checkout", "develop"], check=True)
-            self.runner.run(["git", "rebase", "main"], check=True)
-            self.runner.run(["git", "push", "--follow-tags", "origin", "develop"], check=True)
-            if self.sync_backup: self.runner.run(["git", "push", "--follow-tags", "backup", "develop"], check=True)
-        elif case == "CASE 4":
-            self.runner.run(["git", "checkout", "develop"], check=True)
-            self.runner.run(["git", "pull", "origin", "develop"], check=True)
-        elif case == "CASE 5":
-            branch = f"hotfix/{self.helper.major}/{self.helper.minor}.{self.helper.patch}"
-            self.runner.run(["git", "checkout", "main"], check=True)
-            self.runner.run(["git", "pull", "origin", "main"], check=True)
-            self.runner.run(["git", "checkout", "-b", branch], check=True)
-        elif case == "CASE 6":
-            print("📦 CASE 6: hotfix merging is finalized in run_final_workflow.")
-        elif case == "CASE 7":
-            print("📦 CASE 7: Feature branch, no initial workflow needed.")
-        elif case == "CASE 8":
-            print("📦 CASE 8: Archive strategy is manual cleanup or tool-based.")
-        elif case == "CASE 9":
-            print("📦 CASE 9: CI branch, no preparation needed..")
+        # self.helper.set_version(to_tag)
+
+        match case:
+            # CASE 1: Restart dev cycle after release
+            # e.g., main → develop, release → dev
+            case "CASE 1":
+                self.runner.run(["git", "checkout", "develop"], check=True)
+                self.runner.run(["git", "pull", "origin", "develop"], check=True)
+
+            # CASE 2: Prepare a release candidate branch
+            # e.g., develop → release/x.y
+            case "CASE 2":
+                release_branch = f"release/{self.helper.major}/{self.helper.minor}"
+                self.runner.run(["git", "checkout", "-b", release_branch], check=True)
+
+            # CASE 3: Final release merge setup
+            # e.g., release/x.y → main
+            case "CASE 3":
+                release_branch = f"release/{self.helper.major}/{self.helper.minor}"
+                self.runner.run(["git", "checkout", "main"], check=True)
+                self.runner.run(["git", "pull", "origin", "main"], check=True)
+                self.runner.run(["git", "merge", release_branch], check=True)
+
+            # CASE 4: Return to development after release (continue on develop)
+            # Continue development after release
+            # e.g., develop remains active
+            case "CASE 4":
+                self.runner.run(["git", "checkout", "develop"], check=True)
+                self.runner.run(["git", "pull", "origin", "develop"], check=True)
+
+            # CASE 5: Start post-release hotfix from main
+            # e.g., main → hotfix/x.y.z
+            case "CASE 5":
+                hotfix_branch = f"hotfix/{self.helper.major}/{self.helper.minor}.{self.helper.patch}"
+                self.runner.run(["git", "checkout", "main"], check=True)
+                self.runner.run(["git", "pull", "origin", "main"], check=True)
+                self.runner.run(["git", "checkout", "-b", hotfix_branch], check=True)
+
+            # CASE 6: No-op
+            case "CASE 6":
+                print("📦 CASE 6: hotfix merging is finalized in run_final_workflow.")
+
+            # CASE 7: Merge feature into develop
+            # e.g., feature/foo → develop
+            case "CASE 7":
+                self.runner.run(["git", "checkout", "develop"], check=True)
+                self.runner.run(["git", "pull", "origin", "develop"], check=True)
+                self.runner.run(["git", "merge", self.branch], check=True)
+
+            # CASE 8: Archive branch (no-op)
+            case "CASE 8":
+                print("🗃️ Archive branch — no initial workflow actions required")
+
+            # CASE 9: Merge CI changes into develop
+            # e.g., ci/* → develop
+            case "CASE 9":
+                self.runner.run(["git", "checkout", "develop"], check=True)
+                self.runner.run(["git", "merge", self.branch], check=True)
 
     def run_final_workflow(self, case: str, to_tag: str):
         """
@@ -238,29 +280,77 @@ class WorkflowManager(DryRunSupport):
         Args:
             case (str): CASE identifier from check_transition()
             to_tag (str): Target tag version string
+
         """
-        if case == "CASE 1":
-            print("📦 CASE 1: Dev flow finalized on develop. No merge needed.")
-        elif case == "CASE 2":
-            print("📦 CASE 2: RC phase continues. No finalization needed.")
-        elif case == "CASE 3":
-            print("📦 CASE 3: Main branch updated from release. No extra step.")
-        elif case == "CASE 4":
-            print("📦 CASE 4: Cycle restart. Develop branch will resume new versioning.")
-        elif case == "CASE 5":
-            print("📦 CASE 5: Hotfix branch created. Finalization handled in CASE 6.")
-        elif case == "CASE 6":
-            branch = f"hotfix/{self.helper.major}/{self.helper.minor}.{self.helper.patch}"
-            self.runner.run(["git", "checkout", "main"], check=True)
-            self.runner.run(["git", "merge", branch], check=True)
-            self.runner.run(["git", "push" "origin", "main"], check=True)
-            if self.sync_backup: self.runner.run(["git", "push" "backup", "main"], check=True)
-            self.runner.run(["git", "branch" "-d", branch], check=True)
-            # self.runner.run(["git", "push" "origin", "--delete", branch], check=True)
-            # self.runner.run(["git", "push" "backup", "--delete", branch], check=True)
-        elif case == "CASE 7":
-            print("📦 CASE 7: Feature branch merged develop.")
-        elif case == "CASE 8":
-            print("📦 CASE 8: Archive cleanup complete..")
-        elif case == "CASE 9":
-            print("📦 CASE 9: CI flow does not require finalization..")
+        # self.helper.set_version(to_tag)
+
+        match case:
+            # CASE 1: No final steps required after restart
+            case "CASE 1":
+                self.runner.run(
+                    "ℹ️ CASE 1: No final merge needed. Development cycle restarted.",
+                )
+
+            # CASE 2: No final step needed after release/x.y branch is created
+            case "CASE 2":
+                self.runner.run(
+                    "ℹ️ CASE 2: No final merge needed. RC development in progress.",
+                )
+
+            # CASE 3: Finalize main branch and push
+            case "CASE 3":
+                self.runner.run(["git", "checkout", "develop"], check=True)
+                self.runner.run(["git", "rebase", "main"], check=True)
+                self.runner.run(
+                    ["git", "push", "--follow-tags", "origin", "develop"],
+                    check=True,
+                )
+                if self.sync_backup:
+                    self.runner.run(
+                        ["git", "push", "--follow-tags", "backup", "develop"],
+                        check=True,
+                    )
+
+            # CASE 4: No final merge needed
+            case "CASE 4":
+                print(
+                    "ℹ️ CASE 4: No final merge needed. Continue working in 'develop'.",
+                )
+
+            # CASE 5: No-op
+            case "CASE 5":
+                print(
+                    "📦 CASE 5: Hotfix branch created. Finalization handled in CASE 6.",
+                )
+
+            # CASE 6: Merge hotfix/x.y.z → main and cleanup
+            case "CASE 6":
+                hotfix_branch = f"hotfix/{self.helper.major}/{self.helper.minor}.{self.helper.patch}"
+                self.runner.run(["git", "checkout", "main"], check=True)
+                self.runner.run(["git", "merge", hotfix_branch], check=True)
+                self.runner.run(["git", "push", "origin", "main"], check=True)
+                if self.sync_backup:
+                    self.runner.run(["git", "push", "backup", "main"], check=True)
+                self.runner.run(["git", "branch", "-d", hotfix_branch], check=True)
+                # self.runner.run(["git", "push" "origin", "--delete", hotfix_branch], check=True)
+                self.runner.run(
+                    ["git", "push", "backup", "--delete", hotfix_branch], check=True,
+                )
+
+            # CASE 7: No final merge needed
+            case "CASE 7":
+                print(
+                    "ℹ🔁 CASE 7: Feature branch merged into develop. You may delete it if desired.",
+                )
+
+            # CASE 8: Archive branch finalization (informational)
+            case "CASE 8":
+                print("✅ Archived branch is finalized. You may delete or preserve it.")
+
+            # CASE 9: Finalize CI/CD logic merge to main
+            case "CASE 9":
+                self.runner.run(["git", "checkout", "main"], check=True)
+                self.runner.run(["git", "merge", self.branch], check=True)
+                self.runner.run(["git", "push", "origin", "main"], check=True)
+                if self.sync_backup:
+                    self.runner.run(["git", "push", "backup", "main"], check=True)

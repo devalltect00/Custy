@@ -297,13 +297,15 @@ class GitCommitTagger:
         # Write tag-msg.txt
         if self.tag_msg_file:
             Path(self.tag_msg_file).write_text(
-                builder.build_tag_msg(), encoding="utf-8"
+                builder.build_tag_msg(),
+                encoding="utf-8",
             )
 
     def _generate_changelog(self):
         rendered = self.changelog_generator.generate()
         self.changelog_generator.write_to_files(
-            content=rendered, path="CHANGELOG_DEBUG.md"
+            content=rendered,
+            path="CHANGELOG_DEBUG.md",
         )
 
 

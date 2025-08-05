@@ -72,7 +72,7 @@ class VersionType(str, Enum):
             VersionType.ALPHA,
             VersionType.BETA,
             VersionType.RC,
-            }
+        }
 
     def is_final_release(self) -> bool:
         return self == VersionType.FINAL

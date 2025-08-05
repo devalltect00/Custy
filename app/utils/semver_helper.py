@@ -82,6 +82,16 @@ class SemverVersionHelper(VersionHelperBase):
         self.current_pre, self.current_pre_num = self._parse_pre()
         self.build_meta = self._parse_build()
 
+    def set_version(self, new_version: str):
+        """
+        Sets and reinitializes the helper with a new version string.
+
+        Args:
+            new_version (str): The new PEP 440-compliant version string.
+
+        """
+        self.__init__(new_version)
+
     def _parse_base_version(self):
         """
         Extract major, minor, and patch from version.
@@ -168,7 +178,7 @@ class SemverVersionHelper(VersionHelperBase):
             and self._tier_value(target_tier) < self._tier_value(current_tier)
         ):
             raise ValueError(
-                f"❌ Cannot downgrade pre-release tier: {current_tier} → {target_tier}"
+                f"❌ Cannot downgrade pre-release tier: {current_tier} → {target_tier}",
             )
 
         # Determine if based dump is needed
@@ -253,6 +263,17 @@ class SemverVersionHelper(VersionHelperBase):
     def get_transaction_cases(self) -> dict:
         # Major transition cases
         # Case transition map
+        return {
+            ("develop", "release", "develop", "alpha"): "CASE 1",
+            ("develop", "release", "develop", "beta"): "CASE 1",
+            ("develop", "alpha", "develop", "rc"): "CASE 2",
+            ("develop", "beta", "develop", "rc"): "CASE 2",
+            ("release", "rc", "release", "release"): "CASE 3",
+            ("main", "release", "main", "alpha"): "CASE 4",
+            ("main", "release", "main", "beta"): "CASE 4",
+        }
+
+    def get_reference_transaction_cases(self) -> dict:
         return {
             ("main", "release", "develop", "alpha"): "CASE 1",
             ("main", "release", "develop", "beta"): "CASE 1",

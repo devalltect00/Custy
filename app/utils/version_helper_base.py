@@ -33,6 +33,14 @@ class VersionHelperBase(ABC):
         self.original = tag
 
     @abstractmethod
+    def set_version(self, new_version: str):
+        """
+        Update the internal version to a new version string.
+        Re-parse all internal components.
+        """
+        ...
+
+    @abstractmethod
     def _parse_base_version(self):
         """ """
         ...
@@ -90,6 +98,17 @@ class VersionHelperBase(ABC):
     def get_transaction_cases(self) -> dict:
         """
         Returns a dictionary of valid CASE transitions.
+
+        Returns:
+            dict: Mapping of (from_branch, from_tier, to_branch, to_tier) to case name (e.g. 'CASE 2')
+
+        """
+        ...
+
+    @abstractmethod
+    def get_reference_transaction_cases(self) -> dict:
+        """
+        Returns a dictionary of valid CASE transitions reference.
 
         Returns:
             dict: Mapping of (from_branch, from_tier, to_branch, to_tier) to case name (e.g. 'CASE 2')

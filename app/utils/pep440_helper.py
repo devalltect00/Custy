@@ -75,6 +75,17 @@ class PEP440VersionHelper(VersionHelperBase):
 
         self.going_down = False  # will be set in determine_dump()
 
+    def set_version(self, new_version: str):
+        """
+        Update the helper’s version state to a new version.
+        Re-parses all internal state based on new version string.
+
+        Args:
+            new_version (str): The new version string (e.g., '1.3.0rc1')
+
+        """
+        self.__init__(new_version)
+
     def _parse_base_version(self):
         """
         Extract epoch, major, minor, patch.
@@ -171,35 +182,35 @@ class PEP440VersionHelper(VersionHelperBase):
         # ❌ Disallow dev/post addition on pre-release
         if current_tier in {"a", "b", "rc"} and post:
             raise ValueError(
-                f"❌ Cannot add post-release to pre-release version: {self.original}"
+                f"❌ Cannot add post-release to pre-release version: {self.original}",
             )
         if current_tier in {"a", "b", "rc"} and dev:
             raise ValueError(
-                f"❌ Cannot add dev-release to pre-release version: {self.original}"
+                f"❌ Cannot add dev-release to pre-release version: {self.original}",
             )
         if current_tier == "dev" and post:
             raise ValueError(
-                f"❌ Cannot add post-release to dev-release version: {self.original}"
+                f"❌ Cannot add post-release to dev-release version: {self.original}",
             )
 
         # ❌ Disallow tier regression only if base not bumped
         if self._tier_value(target_tier) < self._tier_value(current_tier):
             if not self._needs_base_bump(target_tier):
                 raise ValueError(
-                    f"❌ Invalid tier regression: {self.original} → {target_tier}"
+                    f"❌ Invalid tier regression: {self.original} → {target_tier}",
                 )
 
         # ❌ Disallow pre → lower-pre even if base will bump
         if current_tier in {"a", "b", "rc"} and target_tier in {"a", "b", "rc"}:
             if self._tier_value(target_tier) < self._tier_value(current_tier):
                 raise ValueError(
-                    f"❌ Cannot downgrade pre-release tier: {self.original} → {target_tier}"
+                    f"❌ Cannot downgrade pre-release tier: {self.original} → {target_tier}",
                 )
 
         # ❌ Disallow post → post without bump intent
         if current_tier == "post" and target_tier is None and not level:
             raise ValueError(
-                f"❌ No version bump or tier specified for post-release: {self.original}"
+                f"❌ No version bump or tier specified for post-release: {self.original}",
             )
 
         # Determine base bump
@@ -306,6 +317,29 @@ class PEP440VersionHelper(VersionHelperBase):
         # Major transition cases
         # Case transition map
         return {
+            ("develop", "release", "develop", "dev"): "CASE 1",
+            ("develop", "release", "develop", "a"): "CASE 1",
+            ("develop", "release", "develop", "b"): "CASE 1",
+            ("develop", "dev", "develop", "rc"): "CASE 2",
+            ("develop", "a", "develop", "rc"): "CASE 2",
+            ("develop", "b", "develop", "rc"): "CASE 2",
+            ("release", "rc", "release", "release"): "CASE 3",
+            ("main", "release", "main", "dev"): "CASE 4",
+            ("main", "release", "main", "a"): "CASE 4",
+            ("main", "release", "main", "b"): "CASE 4",
+            ("main", "release", "main", "post"): "CASE 5",
+            ("hotfix", "post", "hotfix", "release"): "CASE 6",
+            # === EXTENDED CASES ===
+            ("feature", "release", "feature", "dev"): "CASE 7",
+            ("feature", "dev", "feature", "dev"): "CASE 7",
+            ("archive", "release", "archive", "release"): "CASE 8",
+            ("archive", "dev", "archive", "release"): "CASE 8",
+            ("ci", "release", "ci", "dev"): "CASE 9",
+            ("ci", "dev", "ci", "dev"): "CASE 9",
+        }
+
+    def get_reference_transaction_cases(self) -> dict:
+        return {
             ("main", "release", "develop", "dev"): "CASE 1",
             ("main", "release", "develop", "a"): "CASE 1",
             ("main", "release", "develop", "b"): "CASE 1",
@@ -318,9 +352,8 @@ class PEP440VersionHelper(VersionHelperBase):
             ("develop", "release", "develop", "b"): "CASE 4",
             ("main", "release", "hotfix", "post"): "CASE 5",
             ("hotfix", "post", "main", "release"): "CASE 6",
-
             # === EXTENDED CASES ===
-            ("feature", "release", "develop", "dev"): "CASE 7",
-            ("archive", "release", "develop", "dev"): "CASE 8",
-            ("ci", "release", "develop", "dev"): "CASE 9",
+            ("feature", "dev", "develop", "dev"): "CASE 7",
+            ("archive", "release", "main", "release"): "CASE 8",
+            ("ci", "dev", "main", "dev"): "CASE 9",
         }

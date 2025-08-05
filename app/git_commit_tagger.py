@@ -10,12 +10,26 @@ from textwrap import dedent
 from colorama import Fore, Style
 from termcolor import colored
 
-from .utils import (ALLOWED_COMMIT_TYPES, BackupManager, ChangelogGenerator,
-                    CommitizenHelper, CommitizenStrategy, DateStrategy,
-                    GitCountStrategy, GitHelper, PEP440Strategy, ReleaseInfo,
-                    ReleaseNoteBuilder, SemverStrategy, VersionType,
-                    WorkflowManager, classify_commit_type, get_last_tag_before,
-                    get_sorted_tags, maybe_assert_is_final)
+from .utils import (
+    ALLOWED_COMMIT_TYPES,
+    BackupManager,
+    ChangelogGenerator,
+    CommitizenHelper,
+    CommitizenStrategy,
+    DateStrategy,
+    GitCountStrategy,
+    GitHelper,
+    PEP440Strategy,
+    ReleaseInfo,
+    ReleaseNoteBuilder,
+    SemverStrategy,
+    VersionType,
+    WorkflowManager,
+    classify_commit_type,
+    get_last_tag_before,
+    get_sorted_tags,
+    maybe_assert_is_final,
+)
 
 # =======================
 # 🚀 Main Class
@@ -166,7 +180,6 @@ class GitCommitTagger:
         else:
             input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
 
-
     def finalize_workflow(self):
         """
         Executes the final workflow steps after tagging and pushing,
@@ -174,7 +187,10 @@ class GitCommitTagger:
         """
         if not self.skip_checks:
             if hasattr(self, "workflow_case") and hasattr(self, "workflow_manager"):
-                self.workflow_manager.run_final_workflow(case=self.workflow_case, to_tag=self.tag)
+                self.workflow_manager.run_final_workflow(
+                    case=self.workflow_case,
+                    to_tag=self.tag,
+                )
 
         input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
 
@@ -211,7 +227,7 @@ class GitCommitTagger:
                 for prefix in self.NON_CRITICAL_BRANCHES
             ):
                 print(
-                    f"⛔ Skipping backup push and branch '{current_branch}' (not critical) on backup remote"
+                    f"⛔ Skipping backup push and branch '{current_branch}' (not critical) on backup remote",
                 )
                 return
 
@@ -359,7 +375,9 @@ class GitCommitTagger:
     def _maybe_use_latest_tag(self):
         if getattr(self, "skip_tag", False):
             self.tag = self.git.get_latest_tag()
-            print(f"🚫 Skipping tag resolution due to disallowed commit type. Using current tag instead: {self.tag}")
+            print(
+                f"🚫 Skipping tag resolution due to disallowed commit type. Using current tag instead: {self.tag}",
+            )
             return
 
     def _update_version_file(self) -> None:
@@ -418,29 +436,41 @@ class GitCommitTagger:
         first_line = commits_msg.strip().splitlines()[0] if commits_msg.strip() else ""
         commit_type = classify_commit_type(first_line=first_line)
 
-
         if commit_type:
             if commit_type not in ALLOWED_COMMIT_TYPES:
                 if not self.force_tag:
-                    print(f"🚫 Skipping tag: commit types `{commit_type}` is not allowed.",)
+                    print(
+                        f"🚫 Skipping tag: commit types `{commit_type}` is not allowed.",
+                    )
                     print(f"ℹ️ Allowed types: {sorted(ALLOWED_COMMIT_TYPES)}")
                     print("ℹ️ Use --force-tag to override.")
-                    print("💡 Note: Don't forget to manually update the version in commit-msg.txt")
-                    print("           → Use the current latest tag or whatever version you determine.")
+                    print(
+                        "💡 Note: Don't forget to manually update the version in commit-msg.txt",
+                    )
+                    print(
+                        "           → Use the current latest tag or whatever version you determine.",
+                    )
                     print("ℹ️ Use --force-tag to override.")
-                    input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
+                    input(
+                        f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}",
+                    )
                     self.skip_tag = True
                 else:
-                    print(f"⚠️ Forcing tag despite disallowed commit type `{commit_type}`.")
+                    print(
+                        f"⚠️ Forcing tag despite disallowed commit type `{commit_type}`.",
+                    )
+        elif not self.force_tag:
+            print(
+                "🚫 Skipping tag: could not detect valid commit type.",
+            )
+            print(f"ℹ️ Allowed types: {sorted(ALLOWED_COMMIT_TYPES)}")
+            print("ℹ️ Use --force-tag to override.")
+            input(
+                f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}",
+            )
+            self.skip_tag = True
         else:
-            if not self.force_tag:
-                print(f"🚫 Skipping tag: could not detect valid commit type.",)
-                print(f"ℹ️ Allowed types: {sorted(ALLOWED_COMMIT_TYPES)}")
-                print("ℹ️ Use --force-tag to override.")
-                input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
-                self.skip_tag = True
-            else:
-                print(f"⚠️ Forcing tag despite unrecognized commit type.")
+            print("⚠️ Forcing tag despite unrecognized commit type.")
 
     def _ensure_staged_changes(self) -> None:
         if self.git.has_staged_files():
@@ -460,7 +490,7 @@ class GitCommitTagger:
                 if not self.git.has_staged_files():
                     if self.force_commit:
                         print(
-                            "⚠️ Still no staged files after auto-staging. but proceeding due to --force-commit."
+                            "⚠️ Still no staged files after auto-staging. but proceeding due to --force-commit.",
                         )
                         return
                     self._error_exit("Still no staged changes after `git add .`")
@@ -531,7 +561,7 @@ class GitCommitTagger:
             command=["git", "push", remote, "HEAD"],
             check=True,
             on_error=lambda: self._error_exit(
-                f"Failed to push commit to {remote} remote."
+                f"Failed to push commit to {remote} remote.",
             ),
         )
         # Push tag only if tagging wasn't skipped
@@ -540,7 +570,7 @@ class GitCommitTagger:
                 command=["git", "push", remote, self.tag],
                 check=True,
                 on_error=lambda: self._error_exit(
-                    f"Failed to push tag '{self.tag} to {remote} remote'."
+                    f"Failed to push tag '{self.tag} to {remote} remote'.",
                 ),
             )
         else:
@@ -750,5 +780,6 @@ class GitCommitTagger:
         # Write tag-msg.txt
         if self.tag_msg_file:
             Path(self.tag_msg_file).write_text(
-                builder.build_tag_msg(), encoding="utf-8"
+                builder.build_tag_msg(),
+                encoding="utf-8",
             )

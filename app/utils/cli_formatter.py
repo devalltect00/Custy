@@ -27,6 +27,7 @@ from colorama import init as colorama_init
 
 colorama_init(autoreset=True)
 
+
 class ColoredHelpFormatter(argparse.HelpFormatter):
     """
     Custom HelpFormatter that wraps each help line in colored borders.
@@ -39,6 +40,7 @@ class ColoredHelpFormatter(argparse.HelpFormatter):
     - `format_help()` for the overall help output
     - `_format_action()` for formatting each subcommand or argument line
     """
+
     def _format_action(self, action: Action) -> str:
         """
         Format an individual action (argument or subcommand) line with color borders.
@@ -48,9 +50,15 @@ class ColoredHelpFormatter(argparse.HelpFormatter):
 
         Returns:
             str: Colored and bordered action help line.
+
         """
         parts = super()._format_action(action).splitlines()
-        return '\n'.join(f"{Fore.GREEN}| {line} {Fore.CYAN}|{Style.RESET_ALL}" for line in parts) + '\n'
+        return (
+            "\n".join(
+                f"{Fore.GREEN}| {line} {Fore.CYAN}|{Style.RESET_ALL}" for line in parts
+            )
+            + "\n"
+        )
 
     def format_help(self) -> str:
         """
@@ -58,6 +66,13 @@ class ColoredHelpFormatter(argparse.HelpFormatter):
 
         Returns:
             str: Entire help message with each line bordered in color.
+
         """
         help_text = super().format_help().splitlines()
-        return '\n'.join(f"{Fore.GREEN}| {line} {Fore.CYAN}|{Style.RESET_ALL}" for line in help_text) + '\n'
+        return (
+            "\n".join(
+                f"{Fore.GREEN}| {line} {Fore.CYAN}|{Style.RESET_ALL}"
+                for line in help_text
+            )
+            + "\n"
+        )

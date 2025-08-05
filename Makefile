@@ -1,6 +1,6 @@
 .PHONY: run-main \
             structure \
-            lint-ruff lint-ruff-fix format-ruff format-black format-all \
+            lint-ruff lint-ruff-fix format-ruff format-all \
             git-current-branch git-origin-url git-log git-log-tag \
             generate_ignore_files \
             custy-all-major custy-all-minor custy-all-patch  \

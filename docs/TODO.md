@@ -83,11 +83,14 @@ Since v1.9.0
 -   [x] Format code
 -   [x] Make sure it is ready to use, installing and usage
 
+Since v1.10.0
+
 ---
 
 ### 🧩 In Progress
 
--   [ ] advancing workflow manager functionality
+-   [x] advancing workflow manager functionality
+-   [x] add test for transition_case on workflow_manager and its helper
 
 ---
 

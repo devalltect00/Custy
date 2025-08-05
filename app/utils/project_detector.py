@@ -7,7 +7,8 @@ import toml
 
 
 def detect_project_strategy(
-    cli_value: str | None = None, no_debug: bool | None = False
+    cli_value: str | None = None,
+    no_debug: bool | None = False,
 ) -> str:
     """
     Detects the appropriate versioning strategy for the project.
