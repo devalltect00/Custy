@@ -1,0 +1,14 @@
+fix(workflow): 1.10.1b1
+
+Beta release for **Custy 1.10.1**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- Improved commit/tag message template generation logic
+
+---
+
+_Tag: `1.10.1b1`_
+
+🔖 **Tags**:
+- Type: `#fix`

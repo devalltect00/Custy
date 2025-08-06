@@ -225,13 +225,13 @@ class WorkflowManager(DryRunSupport):
             # CASE 2: Prepare a release candidate branch
             # e.g., develop → release/x.y
             case "CASE 2":
-                release_branch = f"release/{self.helper.major}/{self.helper.minor}"
+                release_branch = f"release/{self.helper.major}.{self.helper.minor}"
                 self.runner.run(["git", "checkout", "-b", release_branch], check=True)
 
             # CASE 3: Final release merge setup
             # e.g., release/x.y → main
             case "CASE 3":
-                release_branch = f"release/{self.helper.major}/{self.helper.minor}"
+                release_branch = f"release/{self.helper.major}.{self.helper.minor}"
                 self.runner.run(["git", "checkout", "main"], check=True)
                 self.runner.run(["git", "pull", "origin", "main"], check=True)
                 self.runner.run(["git", "merge", release_branch], check=True)
@@ -246,7 +246,7 @@ class WorkflowManager(DryRunSupport):
             # CASE 5: Start post-release hotfix from main
             # e.g., main → hotfix/x.y.z
             case "CASE 5":
-                hotfix_branch = f"hotfix/{self.helper.major}/{self.helper.minor}.{self.helper.patch}"
+                hotfix_branch = f"hotfix/{self.helper.major}.{self.helper.minor}.{self.helper.patch}"
                 self.runner.run(["git", "checkout", "main"], check=True)
                 self.runner.run(["git", "pull", "origin", "main"], check=True)
                 self.runner.run(["git", "checkout", "-b", hotfix_branch], check=True)
@@ -325,7 +325,7 @@ class WorkflowManager(DryRunSupport):
 
             # CASE 6: Merge hotfix/x.y.z → main and cleanup
             case "CASE 6":
-                hotfix_branch = f"hotfix/{self.helper.major}/{self.helper.minor}.{self.helper.patch}"
+                hotfix_branch = f"hotfix/{self.helper.major}.{self.helper.minor}.{self.helper.patch}"
                 self.runner.run(["git", "checkout", "main"], check=True)
                 self.runner.run(["git", "merge", hotfix_branch], check=True)
                 self.runner.run(["git", "push", "origin", "main"], check=True)
