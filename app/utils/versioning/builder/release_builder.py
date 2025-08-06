@@ -123,7 +123,7 @@ class ReleaseNoteBuilder:
                 "",
                 f"### 🛠️ Other improvements since {self.info.latest_prerelease}",
                 "",
-                "(manual edits)",
+                "- *(Nothing yet)*",
             ]
 
         lines += [
