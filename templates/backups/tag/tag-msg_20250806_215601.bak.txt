@@ -1,10 +1,11 @@
-📦 Release Candidate Release Custy 1.10.4rc1
+📦 Release Candidate Release Custy 1.10.6rc1
 
-Release candidate for **Custy 1.10.4** — Including finalized features and fixes. Awaiting final validation.
+Release candidate for **Custy 1.10.6** — Including finalized features and fixes. Awaiting final validation.
 
 ### ✨ Highlights
 
 - 🐛 Fixed a minor internal bug to improve stability
+- 📘 update `project structure` documentation
 
 ---
 

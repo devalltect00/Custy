@@ -234,8 +234,10 @@ class WorkflowManager(DryRunSupport):
             # CASE 3: Final release merge setup
             # e.g., release/x.y → main
             case "CASE 3":
+                release_branch = f"release/{self.helper.major}.{self.helper.minor}"
                 self.runner.run(["git", "checkout", "main"], check=True)
                 self.runner.run(["git", "pull", "origin", "main"], check=True)
+                self.runner.run(["git", "merge", release_branch], check=True)
 
             # CASE 4: Return to development after release (continue on develop)
             # Continue development after release
@@ -298,7 +300,6 @@ class WorkflowManager(DryRunSupport):
             # CASE 3: Finalize main branch and push
             case "CASE 3":
                 release_branch = f"release/{self.helper.major}.{self.helper.minor}"
-                self.runner.run(["git", "merge", release_branch], check=True)
                 self.runner.run(["git", "checkout", "develop"], check=True)
                 self.runner.run(["git", "rebase", "main"], check=True)
                 self.runner.run(
