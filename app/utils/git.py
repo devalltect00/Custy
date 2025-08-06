@@ -464,6 +464,14 @@ class GitHelper(DryRunSupport):
             check=True,
         )
 
+    def branch_exists(self, branch_name: str) -> bool:
+        result = self.runner.run(
+            command=["git", "rev-parse", "--verify", "--quite", branch_name],
+            check=False,
+            capture_output=True,
+        )
+        return result.returncode==0
+
 
 def parse_pep440_or_semver(tag: str) -> tuple:
     """

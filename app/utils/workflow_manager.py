@@ -226,6 +226,9 @@ class WorkflowManager(DryRunSupport):
             # e.g., develop → release/x.y
             case "CASE 2":
                 release_branch = f"release/{self.helper.major}.{self.helper.minor}"
+                if self.git.branch_exists(release_branch):
+                    print(f"🧹 Cleaning up existing branch: {release_branch}")
+                    self.cleanup_release_branch()
                 self.runner.run(["git", "checkout", "-b", release_branch], check=True)
 
             # CASE 3: Final release merge setup
@@ -307,7 +310,7 @@ class WorkflowManager(DryRunSupport):
                         ["git", "push", "--follow-tags", "backup", "develop"],
                         check=True,
                     )
-                self.cleanup_release_branch()
+                # self.cleanup_release_branch()
                 executed = True
 
             # CASE 4: No final merge needed
@@ -328,7 +331,7 @@ class WorkflowManager(DryRunSupport):
                 self.runner.run(["git", "push", "origin", "main"], check=True)
                 if self.sync_backup:
                     self.runner.run(["git", "push", "backup", "main"], check=True)
-                self.cleanup_hotfix_branch()
+                # self.cleanup_hotfix_branch()
                 executed = True
 
             # CASE 7: No final merge needed
