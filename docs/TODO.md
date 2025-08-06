@@ -85,12 +85,14 @@ Since v1.9.0
 
 Since v1.10.0
 
+-   [x] advancing workflow manager functionality
+-   [x] add test for transition_case on workflow_manager and its helper
+
 ---
 
 ### 🧩 In Progress
 
--   [x] advancing workflow manager functionality
--   [x] add test for transition_case on workflow_manager and its helper
+-   _(Nothing yet)_
 
 ---
 
