@@ -287,15 +287,11 @@ class WorkflowManager(DryRunSupport):
         match case:
             # CASE 1: No final steps required after restart
             case "CASE 1":
-                self.runner.run(
-                    "ℹ️ CASE 1: No final merge needed. Development cycle restarted.",
-                )
+                print("ℹ️ CASE 1: No final merge needed. Development cycle restarted.")
 
             # CASE 2: No final step needed after release/x.y branch is created
             case "CASE 2":
-                self.runner.run(
-                    "ℹ️ CASE 2: No final merge needed. RC development in progress.",
-                )
+                print("ℹ️ CASE 2: No final merge needed. RC development in progress.")
 
             # CASE 3: Finalize main branch and push
             case "CASE 3":
@@ -313,9 +309,7 @@ class WorkflowManager(DryRunSupport):
 
             # CASE 4: No final merge needed
             case "CASE 4":
-                print(
-                    "ℹ️ CASE 4: No final merge needed. Continue working in 'develop'.",
-                )
+                print("ℹ️ CASE 4: No final merge needed. Continue working in 'develop'.")
 
             # CASE 5: No-op
             case "CASE 5":
@@ -334,7 +328,8 @@ class WorkflowManager(DryRunSupport):
                 self.runner.run(["git", "branch", "-d", hotfix_branch], check=True)
                 # self.runner.run(["git", "push" "origin", "--delete", hotfix_branch], check=True)
                 self.runner.run(
-                    ["git", "push", "backup", "--delete", hotfix_branch], check=True,
+                    ["git", "push", "backup", "--delete", hotfix_branch],
+                    check=True,
                 )
 
             # CASE 7: No final merge needed

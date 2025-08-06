@@ -65,7 +65,7 @@ class ReleaseNoteBuilder:
                 "",
                 "🔖 **Tags**:",
                 f"- Type: `#{commit_type}`",
-                f"- Stability: `#stable`",
+                "- Stability: `#stable`",
                 "",
                 "Changelog: handled separately",
             ]
