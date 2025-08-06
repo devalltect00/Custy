@@ -476,6 +476,7 @@ class GitCommitTagger:
             if not self.dry_run:
                 # 🔁 Re-check after auto-staging
                 if not self.git.has_staged_files():
+                    print("self.force_commit", self.force_commit)
                     if self.force_commit:
                         print(
                             "⚠️ Still no staged files after auto-staging. but proceeding due to --force-commit.",

@@ -1,6 +1,6 @@
-refactor(release): 1.10.1rc1
+refactor(workflow): 1.10.6rc2
 
-Release candidate for **Custy 1.10.1**, consolidating all pre-release changes and preparing for stable release.
+Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
 Feature-complete and undergoing final validation before stable release.
 
 This release candidate consolidates finalized features and bug fixes before the stable release:
@@ -8,7 +8,7 @@ This release candidate consolidates finalized features and bug fixes before the 
 
 ---
 
-_Tag: `1.10.1rc1`_
+_Tag: `1.10.6rc2`_
 
 🔖 **Tags**:
-- Type: `#refactor`
+- Type: `#refactor`workflow
