@@ -1,0 +1,14 @@
+refactor(core): 1.10.4b1
+
+Beta release for **Custy 1.10.4**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- This release just for testing the app for release
+
+---
+
+_Tag: `1.10.4b1`_
+
+🔖 **Tags**:
+- Type: `#refactor`

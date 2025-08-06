@@ -1,0 +1,13 @@
+🧪 Beta Release Custy 1.10.4b1
+
+Beta release for **Custy 1.10.4** — focusing on mid-stage features and improved automation.
+
+### ✨ Highlights
+
+- This release just for testing the app for release
+
+---
+
+ℹ️ This is a **beta pre-release** and is **not recommended for production use**.
+_Author: devalltect00_
+_Date: 2025-08-06_
