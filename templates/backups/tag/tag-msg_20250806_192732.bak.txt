@@ -1,0 +1,17 @@
+✅ Final Release Custy 1.10.2
+
+**Custy 1.10.2** is now stable and production-ready. All feature and fixes from pre-releases (alpha, beta, rc) are included.
+
+### ✨ Highlights
+
+- 🐛 Fixed a minor internal bug to improve stability
+
+### 🛠️ Other improvements since 1.10.2rc1
+
+(manual edits)
+
+---
+
+✅ This version is **stable** and **suitable** for production use.
+_Author: devalltect00_
+_Date: 2025-08-06_
