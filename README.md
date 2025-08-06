@@ -77,6 +77,48 @@ pip install .[dev]
 
 Includes `commitizen`, `ruff`, etc.
 
+## 🌐 From Git Repository (Recommended for Other Projects)
+
+Install `custor` into another project directly from Github or Gitlab
+
+### ✅ From Github
+
+```bash
+pip install git+https://github.com/<user-or-org>/<repo>.git<tag-or-branch>
+```
+
+### ✅ From Gitlab
+
+```bash
+pip install git+https://gitlab.com/<user-or-org>/<repo>.git<tag-or-branch>
+```
+
+📌 Replace:
+
+-   `<user-or-org>` with GitHub or GitLab username or group
+-   `<repo>` with the repository name (e.g., `Custy`)
+-   `<tag-or-branch>` with a version tag like `v1.2.3`, or a branch like `main`
+
+### 🔁 Examples
+
+```bash
+pip install git+https://github.com/devalltect00/Custy.git
+```
+
+install latest from `main`
+
+```bash
+pip install git+https://github.com/devalltect00/Custy.git@main
+```
+
+install pinned version
+
+```bash
+pip install git+https://github.com/devalltect00/Custy.git@1.2.3
+```
+
+✅ This method is ideal when using `Custy` as a shared CLI tool across multiple projects.
+
 ---
 
 ## 🛠️ Makefile Commands
