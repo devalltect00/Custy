@@ -3,8 +3,28 @@
 
 
 
-## Unreleased (2025-08-06)
+## Unreleased (2025-08-07)
 ### 🚀 Release
+- **main**: 1.10.7
+  
+  Final release of **Custy 1.10.7**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- Updated `README.md`
+
+---
+
+🎉 **Custy 1.10.7 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`
+- Docs: `#docs`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
 - **main**: 1.10.6 — improve workflow safety, templates, and user interaction
   
   Final release of **Custy 1.10.6**, promoted from the latest release candidate.
@@ -255,6 +275,98 @@ This final release includes all validated features and fixes from earlier pre-re
 Tag: 1.8.0
 Changelog: handled separately
   
+### 📝 Documentation
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **todo**: 1.10.0rc1
+  
+  Release candidate for **Custy 1.10.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.10.0rc1`_
+
+🔖 **Tags**:
+- Type: `#docs`
+  
+- **template**: 1.10.0b3
+  
+  Beta release for **Custy 1.10.0**, introducing mid-stage docsures and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
+
+---
+
+_Tag: `1.10.0b3`_
+
+🔖 **Tags**:
+- Type: `#docs`
+  
+- **changelog**: update changelog
+- **todo.md**: 1.9.2
+  
+  Final release of **Custy 1.9.2**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- *(Nothing yet)* — See tag message for full context.
+
+---
+
+🎉 **Custy 1.9.2 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#<type>`
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **release**: 1.9.0rc1
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.9.0rc1`_
+
+---
+
+🔖 **Tags**: `#<type>`
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **release**: 1.7.0.post3
+  
+  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.7.0.
+
+This post-release includes minor updates and corrections after the official release:
+- modified documentation `docs/TODO.md`
+
+Tag: 1.7.0.post3
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### 🧠 Refactoring
 - **template**: 1.10.6rc4
   
@@ -728,97 +840,6 @@ This post-release includes minor updates and corrections after the official rele
 Tag: 1.6.0.post2
 Changelog: handled separately
   
-### 📝 Documentation
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **todo**: 1.10.0rc1
-  
-  Release candidate for **Custy 1.10.0**, consolidating all pre-release changes and preparing for stable release.
-Feature-complete and undergoing final validation before stable release.
-
-This release candidate consolidates finalized features and bug fixes before the stable release:
-- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
-
----
-
-_Tag: `1.10.0rc1`_
-
-🔖 **Tags**:
-- Type: `#docs`
-  
-- **template**: 1.10.0b3
-  
-  Beta release for **Custy 1.10.0**, introducing mid-stage docsures and workflow improvements.
-Partially validated features and improvements. Some issue still remain.
-
-This beta includes several bug fixes and enhancements:
-- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
-
----
-
-_Tag: `1.10.0b3`_
-
-🔖 **Tags**:
-- Type: `#docs`
-  
-- **changelog**: update changelog
-- **todo.md**: 1.9.2
-  
-  Final release of **Custy 1.9.2**, promoted from the latest release candidate.
-
-Includes all feature and fixes from pre-releases: .
-All functionality has been fully validated and production-ready.
-
-- *(Nothing yet)* — See tag message for full context.
-
----
-
-🎉 **Custy 1.9.2 is now stable and ready for production use.**
-
-🔖 **Tags**:
-- Type: `#<type>`
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **release**: 1.9.0rc1
-  
-  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
-Feature-complete and undergoing final validation before stable release.
-
-This release candidate consolidates finalized features and bug fixes before the stable release:
-- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
-
----
-
-_Tag: `1.9.0rc1`_
-
----
-
-🔖 **Tags**: `#<type>`
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **release**: 1.7.0.post3
-  
-  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
-Includes minor updates or documentation fixes after release 1.7.0.
-
-This post-release includes minor updates and corrections after the official release:
-- modified documentation `docs/TODO.md`
-
-Tag: 1.7.0.post3
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
 ### 🔧 Chores
 - **release**: 1.10.1rc1
   
@@ -2413,6 +2434,67 @@ Changelog: handled separately
 - **commit_msg**: support 'release' as valid Conventional Commit type
   
   - Added 'release' to allowed commit types in the validator
+
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+
+## 1.10.7 (2025-08-07)
+### 🚀 Release
+- **main**: 1.10.7
+  
+  Final release of **Custy 1.10.7**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- Updated `README.md`
+
+---
+
+🎉 **Custy 1.10.7 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`
+- Docs: `#docs`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+- **main**: 1.10.6 — improve workflow safety, templates, and user interaction
+  
+  Final release of **Custy 1.10.6**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.10.6rc4, 1.10.6rc3, 1.10.6rc2, 1.10.6rc1, 1.10.6b1.
+All functionality has been fully validated and production-ready.
+It focuses on refining the WorkflowManager, enhancing commit/tag templates, and introducing safety improvements for merge operations.
+
+### 🐛 Fixes
+- Prevented unsafe execution in CASE 3, 6, and 9 if staged files exist
+- Added interactive prompt when no files are staged to confirm whether to continue
+
+### 🧠 UX Improvements
+- Safer tagging and merging via confirmation-based logic
+- More resilient and predictable branching flow
+
+### 📄 Templates
+- Refactored and expanded `commit-msg.txt` and `tag-msg.txt` example templates
+
+### 📚 Documentation
+- Updated project structure docs to reflect current implementation
+
+---
+
+🎉 **Custy 1.10.6 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#bugfix`, `#refactor
+- UX: `#ux`
+- docs: `#docs`, `#template`
+- Workflow: `#workflow`
+- Maintenance: `#cleanup``
+- Stability: `#stable`
 
 Changelog: handled separately
   
