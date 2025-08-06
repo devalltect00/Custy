@@ -1,0 +1,24 @@
+✅ Final Release Custy 1.10.0
+
+**Custy 1.10.0** is now stable and production-ready. All feature and fixes from pre-releases (alpha, beta, rc) are included.
+
+### ✨ Highlights
+
+- ✅ Support for CASE 1–9 Git transitions
+  - Core: `develop → release → main → post-release`
+  - Extended: `ci/*`, `feature/*`, `archive/*`
+- 🧠 `WorkflowManager` now supports automated flow setup, merging, and cleanup
+- 🧪 Test coverage added for CASE transition logic
+- 📚 New documentation: `git_workflow_cases.md`, plus inline docstrings
+- 📄 More examples for commit/tag message templates
+- 🧹 Code linted and cleaned using `ruff`
+
+### 🛠️ Other improvements since 1.10.0rc1
+
+- Improved commit/tag message template generation logic
+
+---
+
+✅ This version is **stable** and **suitable** for production use.
+_Author: devalltect00_
+_Date: 2025-08-06_

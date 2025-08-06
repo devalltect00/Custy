@@ -65,6 +65,7 @@ class ReleaseNoteBuilder:
                 "",
                 "🔖 **Tags**:",
                 f"- Type: `#{commit_type}`",
+                f"- Stability: `#stable`",
                 "",
                 "Changelog: handled separately",
             ]
@@ -247,8 +248,8 @@ class ReleaseNoteBuilder:
         Generate the footer notice section.
         """
         return {
-            VersionType.FINAL: "✅ This version is stable and suitable for production use.",
-            VersionType.POST: "✅ This version is stable and suitable for production use.",
+            VersionType.FINAL: "✅ This version is **stable** and **suitable** for production use.",
+            VersionType.POST: "✅ This version is **stable** and **suitable** for production use.",
             VersionType.RC: "ℹ️ This is a **release-candidate** feature-complete but pending final validation before stable release.",
             VersionType.BETA: "ℹ️ This is a **beta pre-release** and is **not recommended for production use**.",
             VersionType.ALPHA: "ℹ️ This is an **alpha pre-release** and is **not intended for production use**.",
