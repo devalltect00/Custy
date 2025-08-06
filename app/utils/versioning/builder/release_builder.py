@@ -96,6 +96,7 @@ class ReleaseNoteBuilder:
                 "",
                 "🔖 **Tags**:",
                 f"- Type: `#{commit_type}`",
+                f"- Stability: `#{vt.value}`",
             ]
 
         return "\n".join(lines)
