@@ -1,0 +1,26 @@
+✅ Final Release Custy 1.10.6 — Safer Workflow, Template Overhaul, UX Improvements
+
+**Custy 1.10.6** is now stable and production-ready. All feature and fixes from pre-releases (alpha, beta, rc) are included.
+It focuses on making CASE-based workflows safer and more predictable, while also enhancing templates and documentation.
+
+### 🛡️ Workflow Safety
+- Prevented execution in CASE 3, 6, and 9 if staged files are present
+- Added interactive prompt to confirm continuation when no files are staged
+
+### ✨ Enhancements
+- Improved commit/tag templates for consistency and clarity
+- Safer branching flow via enforced confirmations and merge checks
+
+### 📚 Docs & Maintenance
+- Updated `project structure` documentation
+- Clean internal refactoring for stability and readability
+
+### 🛠️ Other improvements since 1.10.6rc4
+
+- *(Nothing yet)*
+
+---
+
+✅ This version is **stable** and **suitable** for production use.
+_Author: devalltect00_
+_Date: 2025-08-06_
