@@ -10,26 +10,12 @@ from textwrap import dedent
 from colorama import Fore, Style
 from termcolor import colored
 
-from .utils import (
-    ALLOWED_COMMIT_TYPES,
-    BackupManager,
-    ChangelogGenerator,
-    CommitizenHelper,
-    CommitizenStrategy,
-    DateStrategy,
-    GitCountStrategy,
-    GitHelper,
-    PEP440Strategy,
-    ReleaseInfo,
-    ReleaseNoteBuilder,
-    SemverStrategy,
-    VersionType,
-    WorkflowManager,
-    classify_commit_type,
-    get_last_tag_before,
-    get_sorted_tags,
-    maybe_assert_is_final,
-)
+from .utils import (ALLOWED_COMMIT_TYPES, BackupManager, ChangelogGenerator,
+                    CommitizenHelper, CommitizenStrategy, DateStrategy,
+                    GitCountStrategy, GitHelper, PEP440Strategy, ReleaseInfo,
+                    ReleaseNoteBuilder, SemverStrategy, VersionType,
+                    WorkflowManager, classify_commit_type, get_last_tag_before,
+                    get_sorted_tags, maybe_assert_is_final)
 
 # =======================
 # 🚀 Main Class
@@ -185,14 +171,16 @@ class GitCommitTagger:
         Executes the final workflow steps after tagging and pushing,
         such as merging hotfixes or cleaning up release branches.
         """
+        executed = False
         if not self.skip_checks:
             if hasattr(self, "workflow_case") and hasattr(self, "workflow_manager"):
-                self.workflow_manager.run_final_workflow(
+                executed = self.workflow_manager.run_final_workflow(
                     case=self.workflow_case,
                     to_tag=self.tag,
                 )
 
-        input(f"{Fore.LIGHTWHITE_EX}Press Enter to continue...{Style.RESET_ALL}")
+        if executed:
+            input(f"{Fore.LIGHTWHITE_EX}Press Enter to exit...{Style.RESET_ALL}")
 
     def validate(self) -> None:
         self._ensure_git_repo()

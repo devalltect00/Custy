@@ -272,7 +272,7 @@ class WorkflowManager(DryRunSupport):
                 self.runner.run(["git", "checkout", "develop"], check=True)
                 self.runner.run(["git", "merge", self.branch], check=True)
 
-    def run_final_workflow(self, case: str, to_tag: str):
+    def run_final_workflow(self, case: str, to_tag: str) -> bool:
         """
         Executes follow-up Git operations after push/tagging step,
         such as merging hotfix branches or cleaning up.
@@ -283,6 +283,7 @@ class WorkflowManager(DryRunSupport):
 
         """
         # self.helper.set_version(to_tag)
+        executed = False
 
         match case:
             # CASE 1: No final steps required after restart
@@ -295,11 +296,6 @@ class WorkflowManager(DryRunSupport):
 
             # CASE 3: Finalize main branch and push
             case "CASE 3":
-                release_branch = f"release/{self.helper.major}.{self.helper.minor}"
-                self.runner.run(["git", "branch", "-d", release_branch], check=True)
-                self.runner.run(["git", "push", "origin", "--delete", release_branch], check=True)
-                if self.sync_backup: self.runner.run(["git", "push", "backup", "--delete", release_branch], check=True)
-                self.runner.run(["git", "checkout", "develop"], check=True)
                 self.runner.run(["git", "checkout", "develop"], check=True)
                 self.runner.run(["git", "rebase", "main"], check=True)
                 self.runner.run(
@@ -311,6 +307,8 @@ class WorkflowManager(DryRunSupport):
                         ["git", "push", "--follow-tags", "backup", "develop"],
                         check=True,
                     )
+                self.cleanup_branch()
+                executed = True
 
             # CASE 4: No final merge needed
             case "CASE 4":
@@ -330,12 +328,8 @@ class WorkflowManager(DryRunSupport):
                 self.runner.run(["git", "push", "origin", "main"], check=True)
                 if self.sync_backup:
                     self.runner.run(["git", "push", "backup", "main"], check=True)
-                self.runner.run(["git", "branch", "-d", hotfix_branch], check=True)
-                self.runner.run(["git", "push" "origin", "--delete", hotfix_branch], check=True)
-                self.runner.run(
-                    ["git", "push", "backup", "--delete", hotfix_branch],
-                    check=True,
-                )
+                self.cleanup_hotfix_branch()
+                executed = True
 
             # CASE 7: No final merge needed
             case "CASE 7":
@@ -354,3 +348,18 @@ class WorkflowManager(DryRunSupport):
                 self.runner.run(["git", "push", "origin", "main"], check=True)
                 if self.sync_backup:
                     self.runner.run(["git", "push", "backup", "main"], check=True)
+                executed = True
+
+        return executed
+
+    def cleanup_branch(self):
+        release_branch = f"release/{self.helper.major}.{self.helper.minor}"
+        self.runner.run(["git", "branch", "-d", release_branch], check=True)
+        self.runner.run(["git", "push", "origin", "--delete", release_branch], check=True)
+        if self.sync_backup: self.runner.run(["git", "push", "backup", "--delete", release_branch], check=True)
+
+    def cleanup_hotfix_branch(self):
+        hotfix_branch = f"hotfix/{self.helper.major}.{self.helper.minor}.{self.helper.patch}"
+        self.runner.run(["git", "branch", "-d", hotfix_branch], check=True)
+        self.runner.run(["git", "push" "origin", "--delete", hotfix_branch], check=True)
+        if self.sync_backup: self.runner.run(["git", "push", "backup", "--delete", hotfix_branch], check=True)
