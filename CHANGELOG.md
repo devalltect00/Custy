@@ -5,6 +5,26 @@
 
 ## Unreleased (2025-08-06)
 ### 🚀 Release
+- **main**: 1.10.5
+  
+  Final release of **Custy 1.10.5**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.10.5rc1, 1.10.5b1.
+All functionality has been fully validated and production-ready.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+---
+
+🎉 **Custy 1.10.5 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#bugfix`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
 - **main**: 1.10.4
   
   Final release of **Custy 1.10.4**, promoted from the latest release candidate.
@@ -200,6 +220,38 @@ Tag: 1.8.0
 Changelog: handled separately
   
 ### 🐛 Bug Fixes
+- **workflow**: 1.10.5rc1
+  
+  Release candidate for **Custy 1.10.5**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+---
+
+_Tag: `1.10.5rc1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+- **workflow**: 1.10.5b1
+  
+  Beta release for **Custy 1.10.5**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- reapplied clean branch functionality
+
+---
+
+_Tag: `1.10.5b1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
 - **core**: 1.10.4rc1
   
   Release candidate for **Custy 1.10.4**, consolidating all pre-release changes and preparing for stable release.
@@ -440,6 +492,96 @@ This post-release includes minor updates and corrections after the official rele
 Tag: 1.6.0.post2
 Changelog: handled separately
   
+### 📝 Documentation
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **todo**: 1.10.0rc1
+  
+  Release candidate for **Custy 1.10.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.10.0rc1`_
+
+🔖 **Tags**:
+- Type: `#docs`
+  
+- **template**: 1.10.0b3
+  
+  Beta release for **Custy 1.10.0**, introducing mid-stage docsures and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
+
+---
+
+_Tag: `1.10.0b3`_
+
+🔖 **Tags**:
+- Type: `#docs`
+  
+- **changelog**: update changelog
+- **todo.md**: 1.9.2
+  
+  Final release of **Custy 1.9.2**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- *(Nothing yet)* — See tag message for full context.
+
+---
+
+🎉 **Custy 1.9.2 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#<type>`
+
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **release**: 1.9.0rc1
+  
+  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.9.0rc1`_
+
+---
+
+🔖 **Tags**: `#<type>`
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **changelog**: update changelog
+- **release**: 1.7.0.post3
+  
+  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
+Includes minor updates or documentation fixes after release 1.7.0.
+
+This post-release includes minor updates and corrections after the official release:
+- modified documentation `docs/TODO.md`
+
+Tag: 1.7.0.post3
+Changelog: handled separately
+  
+- **changelog**: update changelog
+- **changelog**: update changelog
 ### 🧠 Refactoring
 - **core**: 1.10.4b1
   
@@ -545,95 +687,6 @@ BREAKING CHANGE: version helpers must now implement VersionHelperBase interface
 
 Tag: 1.8.0rc2
   
-### 📝 Documentation
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **todo**: 1.10.0rc1
-  
-  Release candidate for **Custy 1.10.0**, consolidating all pre-release changes and preparing for stable release.
-Feature-complete and undergoing final validation before stable release.
-
-This release candidate consolidates finalized features and bug fixes before the stable release:
-- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
-
----
-
-_Tag: `1.10.0rc1`_
-
-🔖 **Tags**:
-- Type: `#docs`
-  
-- **template**: 1.10.0b3
-  
-  Beta release for **Custy 1.10.0**, introducing mid-stage docsures and workflow improvements.
-Partially validated features and improvements. Some issue still remain.
-
-This beta includes several bug fixes and enhancements:
-- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
-
----
-
-_Tag: `1.10.0b3`_
-
-🔖 **Tags**:
-- Type: `#docs`
-  
-- **changelog**: update changelog
-- **todo.md**: 1.9.2
-  
-  Final release of **Custy 1.9.2**, promoted from the latest release candidate.
-
-Includes all feature and fixes from pre-releases: .
-All functionality has been fully validated and production-ready.
-
-- *(Nothing yet)* — See tag message for full context.
-
----
-
-🎉 **Custy 1.9.2 is now stable and ready for production use.**
-
-🔖 **Tags**:
-- Type: `#<type>`
-
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **release**: 1.9.0rc1
-  
-  Release candidate for **Custy 1.9.0**, consolidating all pre-release changes and preparing for stable release.
-Feature-complete and undergoing final validation before stable release.
-
-This release candidate consolidates finalized features and bug fixes before the stable release:
-- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
-
----
-
-_Tag: `1.9.0rc1`_
-
----
-
-🔖 **Tags**: `#<type>`
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **changelog**: update changelog
-- **release**: 1.7.0.post3
-  
-  Post-release patch for **Custy 1.7.0**, addressing minor updates or corrections.
-Includes minor updates or documentation fixes after release 1.7.0.
-
-This post-release includes minor updates and corrections after the official release:
-- modified documentation `docs/TODO.md`
-
-Tag: 1.7.0.post3
-Changelog: handled separately
-  
-- **changelog**: update changelog
-- **changelog**: update changelog
 ### 🔧 Chores
 - **release**: 1.10.1rc1
   
@@ -2230,6 +2283,104 @@ Changelog: handled separately
   - Added 'release' to allowed commit types in the validator
 
 Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+
+## 1.10.5rc1 (2025-08-06)
+### 🐛 Bug Fixes
+- **workflow**: 1.10.5rc1
+  
+  Release candidate for **Custy 1.10.5**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+---
+
+_Tag: `1.10.5rc1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+
+## 1.10.5 (2025-08-06)
+### 🚀 Release
+- **main**: 1.10.5
+  
+  Final release of **Custy 1.10.5**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.10.5rc1, 1.10.5b1.
+All functionality has been fully validated and production-ready.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+---
+
+🎉 **Custy 1.10.5 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#bugfix`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+- **main**: 1.10.4
+  
+  Final release of **Custy 1.10.4**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.10.4rc1, 1.10.4b1.
+All functionality has been fully validated and production-ready.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+---
+
+🎉 **Custy 1.10.4 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#bugfix`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+### 🐛 Bug Fixes
+- **workflow**: 1.10.5rc1
+  
+  Release candidate for **Custy 1.10.5**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+---
+
+_Tag: `1.10.5rc1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+- **workflow**: 1.10.5b1
+  
+  Beta release for **Custy 1.10.5**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- reapplied clean branch functionality
+
+---
+
+_Tag: `1.10.5b1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
   
 ### 📝 Documentation
 - **changelog**: update changelog
