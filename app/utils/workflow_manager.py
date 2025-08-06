@@ -295,6 +295,11 @@ class WorkflowManager(DryRunSupport):
 
             # CASE 3: Finalize main branch and push
             case "CASE 3":
+                release_branch = f"release/{self.helper.major}.{self.helper.minor}"
+                self.runner.run(["git", "branch", "-d", release_branch], check=True)
+                self.runner.run(["git", "push", "origin", "--delete", release_branch], check=True)
+                if self.sync_backup: self.runner.run(["git", "push", "backup", "--delete", release_branch], check=True)
+                self.runner.run(["git", "checkout", "develop"], check=True)
                 self.runner.run(["git", "checkout", "develop"], check=True)
                 self.runner.run(["git", "rebase", "main"], check=True)
                 self.runner.run(
@@ -326,7 +331,7 @@ class WorkflowManager(DryRunSupport):
                 if self.sync_backup:
                     self.runner.run(["git", "push", "backup", "main"], check=True)
                 self.runner.run(["git", "branch", "-d", hotfix_branch], check=True)
-                # self.runner.run(["git", "push" "origin", "--delete", hotfix_branch], check=True)
+                self.runner.run(["git", "push" "origin", "--delete", hotfix_branch], check=True)
                 self.runner.run(
                     ["git", "push", "backup", "--delete", hotfix_branch],
                     check=True,
