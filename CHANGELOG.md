@@ -5,6 +5,42 @@
 
 ## Unreleased (2025-08-06)
 ### 🚀 Release
+- **main**: 1.10.6 — improve workflow safety, templates, and user interaction
+  
+  Final release of **Custy 1.10.6**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.10.6rc4, 1.10.6rc3, 1.10.6rc2, 1.10.6rc1, 1.10.6b1.
+All functionality has been fully validated and production-ready.
+It focuses on refining the WorkflowManager, enhancing commit/tag templates, and introducing safety improvements for merge operations.
+
+### 🐛 Fixes
+- Prevented unsafe execution in CASE 3, 6, and 9 if staged files exist
+- Added interactive prompt when no files are staged to confirm whether to continue
+
+### 🧠 UX Improvements
+- Safer tagging and merging via confirmation-based logic
+- More resilient and predictable branching flow
+
+### 📄 Templates
+- Refactored and expanded `commit-msg.txt` and `tag-msg.txt` example templates
+
+### 📚 Documentation
+- Updated project structure docs to reflect current implementation
+
+---
+
+🎉 **Custy 1.10.6 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#bugfix`, `#refactor
+- UX: `#ux`
+- docs: `#docs`, `#template`
+- Workflow: `#workflow`
+- Maintenance: `#cleanup``
+- Stability: `#stable`
+
+Changelog: handled separately
+  
 - **main**: 1.10.5
   
   Final release of **Custy 1.10.5**, promoted from the latest release candidate.
@@ -219,7 +255,207 @@ This final release includes all validated features and fixes from earlier pre-re
 Tag: 1.8.0
 Changelog: handled separately
   
+### 🧠 Refactoring
+- **template**: 1.10.6rc4
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 📄 Templates
+    - Refactored and expanded example templates for commit and tag messages
+
+---
+
+_Tag: `1.10.6rc4`_
+
+🔖 **Tags**:
+- Type: `#refactor`
+- Stability: `#rc`
+  
+- **workflow**: 1.10.6rc2
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- *(Nothing yet)* — See tag message for full context.
+
+---
+
+_Tag: `1.10.6rc2`_
+
+🔖 **Tags**:
+- Type: `#refactor`workflow
+  
+- **core**: 1.10.4b1
+  
+  Beta release for **Custy 1.10.4**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- This release just for testing the app for release
+
+---
+
+_Tag: `1.10.4b1`_
+
+🔖 **Tags**:
+- Type: `#refactor`
+  
+- **release**: 1.10.1rc1
+  
+  Release candidate for **Custy 1.10.1**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- *(Nothing yet)* — See tag message for full context.
+
+---
+
+_Tag: `1.10.1rc1`_
+
+🔖 **Tags**:
+- Type: `#refactor`
+  
+- **core**: 1.9.0b1 — improve CLI, docs, pipeline, templates, and structure
+  
+  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This update delivers improved CLI usability, updated documentation, better automation, refactored project structure, and improved message templates.
+
+### ✨ Features
+- Redesigned CLI interface with clearer UX and new arguments (e.g., silent/debug flags)
+- Enhanced file path resolution to avoid ambiguity for key config and template files
+
+### 📚 Documentation
+- Rewrote `README.md` and added badges (`docs/badges.md`)
+- Created user guide: `docs/HOW_TO_USE.md`
+- Regenerated project structure documentation
+
+### ⚙️ CI/CD
+- Added GitHub Actions workflow and GitLab CI pipeline to run tests on push
+
+### 🧹 Maintenance
+- Cleaned and refactored `app/` directory
+- Code formatted with `ruff`
+
+### 📄 Template Improvements
+- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
+- Updated commit/tag message generation to use new structure
+
+### 🐛 Bug Fix
+- Fixed a minor internal bug affecting stability
+
+### 🛠️ Misc
+- Updated `Makefile`, `pyproject.toml`, and related config files
+- Removed unused file `q`
+
+---
+
+_Tag: `1.9.0b1`_
+
+---
+
+🔖 **Tags**:
+- Type: `#feature`, `#bugfix`, `#refactor`
+- Docs: `#docs`, `#template`
+- CI/CD: `#ci`, `#cleanup`
+  
+- **workflow**: 1.8.0rc2
+  
+  Release candidate for **Custy 1.8.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This refactor decouples strategy-specific logic (PEP 440, SemVer) from the core
+WorkflowManager class by introducing a VersionHelperBase interface. Both
+PEP440VersionHelper and SemverVersionHelper now implement:
+
+- classify(): identify version tier
+- tier_order(): precedence for tier promotion
+- suggest_tag(): next tag suggestion based on branch
+- get_transition_cases(): valid CASE transitions
+
+WorkflowManager is now cleaner and delegates classification, version suggestion,
+and transition validation to the appropriate strategy helper dynamically.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+Other improvements:
+- Reduced branching logic in check_transition()
+- Added docstrings across all helper classes
+- Improved extensibility for future strategies (e.g., CalVer)
+
+BREAKING CHANGE: version helpers must now implement VersionHelperBase interface
+
+Tag: 1.8.0rc2
+  
 ### 🐛 Bug Fixes
+- **workflow**: 1.10.6rc3
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+### 🐛 Fixes
+- Prevent unintended execution in CASE 3, 6, and 9 if staged files exist
+- Ensures safety during critical merge operations inside `WorkflowManager`
+
+### 🧠 UX Improvement
+- Added interactive prompt (`y/n`) when no files are staged during validation
+- Allows user to explicitly confirm whether to proceed or abort
+
+These changes make the workflow execution more resilient and user-aware during tagging phases.
+
+---
+
+_Tag: `1.10.6rc3`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+- Workflow: `#workflow`
+- Stability: `#safety`
+- Pre-release: `#rc`
+  
+- **workflow**: 1.10.6rc1
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+### 📚 Documentation
+- 📘 update `project structure` documentation
+
+---
+
+_Tag: `1.10.6rc1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+- **workflow**: 1.10.6b1
+  
+  Beta release for **Custy 1.10.6**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+---
+
+_Tag: `1.10.6b1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
 - **workflow**: 1.10.5rc1
   
   Release candidate for **Custy 1.10.5**, consolidating all pre-release changes and preparing for stable release.
@@ -498,6 +734,7 @@ Changelog: handled separately
 - **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
+- **changelog**: update changelog
 - **todo**: 1.10.0rc1
   
   Release candidate for **Custy 1.10.0**, consolidating all pre-release changes and preparing for stable release.
@@ -582,111 +819,6 @@ Changelog: handled separately
   
 - **changelog**: update changelog
 - **changelog**: update changelog
-### 🧠 Refactoring
-- **core**: 1.10.4b1
-  
-  Beta release for **Custy 1.10.4**, introducing mid-stage features and workflow improvements.
-Partially validated features and improvements. Some issue still remain.
-
-This beta includes several bug fixes and enhancements:
-- This release just for testing the app for release
-
----
-
-_Tag: `1.10.4b1`_
-
-🔖 **Tags**:
-- Type: `#refactor`
-  
-- **release**: 1.10.1rc1
-  
-  Release candidate for **Custy 1.10.1**, consolidating all pre-release changes and preparing for stable release.
-Feature-complete and undergoing final validation before stable release.
-
-This release candidate consolidates finalized features and bug fixes before the stable release:
-- *(Nothing yet)* — See tag message for full context.
-
----
-
-_Tag: `1.10.1rc1`_
-
-🔖 **Tags**:
-- Type: `#refactor`
-  
-- **core**: 1.9.0b1 — improve CLI, docs, pipeline, templates, and structure
-  
-  Beta release for **Custy 1.9.0**, introducing mid-stage features and workflow improvements.
-Partially validated features and improvements. Some issue still remain.
-
-This update delivers improved CLI usability, updated documentation, better automation, refactored project structure, and improved message templates.
-
-### ✨ Features
-- Redesigned CLI interface with clearer UX and new arguments (e.g., silent/debug flags)
-- Enhanced file path resolution to avoid ambiguity for key config and template files
-
-### 📚 Documentation
-- Rewrote `README.md` and added badges (`docs/badges.md`)
-- Created user guide: `docs/HOW_TO_USE.md`
-- Regenerated project structure documentation
-
-### ⚙️ CI/CD
-- Added GitHub Actions workflow and GitLab CI pipeline to run tests on push
-
-### 🧹 Maintenance
-- Cleaned and refactored `app/` directory
-- Code formatted with `ruff`
-
-### 📄 Template Improvements
-- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
-- Updated commit/tag message generation to use new structure
-
-### 🐛 Bug Fix
-- Fixed a minor internal bug affecting stability
-
-### 🛠️ Misc
-- Updated `Makefile`, `pyproject.toml`, and related config files
-- Removed unused file `q`
-
----
-
-_Tag: `1.9.0b1`_
-
----
-
-🔖 **Tags**:
-- Type: `#feature`, `#bugfix`, `#refactor`
-- Docs: `#docs`, `#template`
-- CI/CD: `#ci`, `#cleanup`
-  
-- **workflow**: 1.8.0rc2
-  
-  Release candidate for **Custy 1.8.0**, consolidating all pre-release changes and preparing for stable release.
-Feature-complete and undergoing final validation before stable release.
-
-This refactor decouples strategy-specific logic (PEP 440, SemVer) from the core
-WorkflowManager class by introducing a VersionHelperBase interface. Both
-PEP440VersionHelper and SemverVersionHelper now implement:
-
-- classify(): identify version tier
-- tier_order(): precedence for tier promotion
-- suggest_tag(): next tag suggestion based on branch
-- get_transition_cases(): valid CASE transitions
-
-WorkflowManager is now cleaner and delegates classification, version suggestion,
-and transition validation to the appropriate strategy helper dynamically.
-
-This release candidate consolidates finalized features and bug fixes before the stable release:
-- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
-
-Other improvements:
-- Reduced branching logic in check_transition()
-- Added docstrings across all helper classes
-- Improved extensibility for future strategies (e.g., CalVer)
-
-BREAKING CHANGE: version helpers must now implement VersionHelperBase interface
-
-Tag: 1.8.0rc2
-  
 ### 🔧 Chores
 - **release**: 1.10.1rc1
   
@@ -2283,6 +2415,254 @@ Changelog: handled separately
   - Added 'release' to allowed commit types in the validator
 
 Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+
+## 1.10.6rc4 (2025-08-06)
+### 🧠 Refactoring
+- **template**: 1.10.6rc4
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 📄 Templates
+    - Refactored and expanded example templates for commit and tag messages
+
+---
+
+_Tag: `1.10.6rc4`_
+
+🔖 **Tags**:
+- Type: `#refactor`
+- Stability: `#rc`
+  
+
+## 1.10.6rc3 (2025-08-06)
+### 🐛 Bug Fixes
+- **workflow**: 1.10.6rc3
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+### 🐛 Fixes
+- Prevent unintended execution in CASE 3, 6, and 9 if staged files exist
+- Ensures safety during critical merge operations inside `WorkflowManager`
+
+### 🧠 UX Improvement
+- Added interactive prompt (`y/n`) when no files are staged during validation
+- Allows user to explicitly confirm whether to proceed or abort
+
+These changes make the workflow execution more resilient and user-aware during tagging phases.
+
+---
+
+_Tag: `1.10.6rc3`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+- Workflow: `#workflow`
+- Stability: `#safety`
+- Pre-release: `#rc`
+  
+
+## 1.10.6rc2 (2025-08-06)
+### 🧠 Refactoring
+- **workflow**: 1.10.6rc2
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- *(Nothing yet)* — See tag message for full context.
+
+---
+
+_Tag: `1.10.6rc2`_
+
+🔖 **Tags**:
+- Type: `#refactor`workflow
+  
+
+## 1.10.6rc1 (2025-08-06)
+### 🐛 Bug Fixes
+- **workflow**: 1.10.6rc1
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+### 📚 Documentation
+- 📘 update `project structure` documentation
+
+---
+
+_Tag: `1.10.6rc1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+
+## 1.10.6 (2025-08-06)
+### 🚀 Release
+- **main**: 1.10.6 — improve workflow safety, templates, and user interaction
+  
+  Final release of **Custy 1.10.6**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.10.6rc4, 1.10.6rc3, 1.10.6rc2, 1.10.6rc1, 1.10.6b1.
+All functionality has been fully validated and production-ready.
+It focuses on refining the WorkflowManager, enhancing commit/tag templates, and introducing safety improvements for merge operations.
+
+### 🐛 Fixes
+- Prevented unsafe execution in CASE 3, 6, and 9 if staged files exist
+- Added interactive prompt when no files are staged to confirm whether to continue
+
+### 🧠 UX Improvements
+- Safer tagging and merging via confirmation-based logic
+- More resilient and predictable branching flow
+
+### 📄 Templates
+- Refactored and expanded `commit-msg.txt` and `tag-msg.txt` example templates
+
+### 📚 Documentation
+- Updated project structure docs to reflect current implementation
+
+---
+
+🎉 **Custy 1.10.6 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#bugfix`, `#refactor
+- UX: `#ux`
+- docs: `#docs`, `#template`
+- Workflow: `#workflow`
+- Maintenance: `#cleanup``
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+- **main**: 1.10.5
+  
+  Final release of **Custy 1.10.5**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.10.5rc1, 1.10.5b1.
+All functionality has been fully validated and production-ready.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+---
+
+🎉 **Custy 1.10.5 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#bugfix`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+### 🧠 Refactoring
+- **template**: 1.10.6rc4
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 📄 Templates
+    - Refactored and expanded example templates for commit and tag messages
+
+---
+
+_Tag: `1.10.6rc4`_
+
+🔖 **Tags**:
+- Type: `#refactor`
+- Stability: `#rc`
+  
+- **workflow**: 1.10.6rc2
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- *(Nothing yet)* — See tag message for full context.
+
+---
+
+_Tag: `1.10.6rc2`_
+
+🔖 **Tags**:
+- Type: `#refactor`workflow
+  
+### 🐛 Bug Fixes
+- **workflow**: 1.10.6rc3
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+### 🐛 Fixes
+- Prevent unintended execution in CASE 3, 6, and 9 if staged files exist
+- Ensures safety during critical merge operations inside `WorkflowManager`
+
+### 🧠 UX Improvement
+- Added interactive prompt (`y/n`) when no files are staged during validation
+- Allows user to explicitly confirm whether to proceed or abort
+
+These changes make the workflow execution more resilient and user-aware during tagging phases.
+
+---
+
+_Tag: `1.10.6rc3`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+- Workflow: `#workflow`
+- Stability: `#safety`
+- Pre-release: `#rc`
+  
+- **workflow**: 1.10.6rc1
+  
+  Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+### 📚 Documentation
+- 📘 update `project structure` documentation
+
+---
+
+_Tag: `1.10.6rc1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
+  
+- **workflow**: 1.10.6b1
+  
+  Beta release for **Custy 1.10.6**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements.
+
+### 🐛 Bug Fixes
+- Minor internal logic bugs resolved for better stability
+
+---
+
+_Tag: `1.10.6b1`_
+
+🔖 **Tags**:
+- Type: `#bugfix`
   
 ### 📝 Documentation
 - **changelog**: update changelog
