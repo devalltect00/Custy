@@ -234,6 +234,7 @@ class WorkflowManager(DryRunSupport):
             # CASE 3: Final release merge setup
             # e.g., release/x.y → main
             case "CASE 3":
+                self._ensure_no_staged_changes()
                 release_branch = f"release/{self.helper.major}.{self.helper.minor}"
                 self.runner.run(["git", "checkout", "main"], check=True)
                 self.runner.run(["git", "pull", "origin", "main"], check=True)
@@ -329,6 +330,7 @@ class WorkflowManager(DryRunSupport):
 
             # CASE 6: Merge hotfix/x.y.z → main and cleanup
             case "CASE 6":
+                self._ensure_no_staged_changes()
                 hotfix_branch = f"hotfix/{self.helper.major}.{self.helper.minor}.{self.helper.patch}"
                 self.runner.run(["git", "checkout", "main"], check=True)
                 self.runner.run(["git", "merge", hotfix_branch], check=True)
@@ -350,6 +352,7 @@ class WorkflowManager(DryRunSupport):
 
             # CASE 9: Finalize CI/CD logic merge to main
             case "CASE 9":
+                self._ensure_no_staged_changes()
                 self.runner.run(["git", "checkout", "main"], check=True)
                 self.runner.run(["git", "merge", self.branch], check=True)
                 self.runner.run(["git", "push", "origin", "main"], check=True)
@@ -370,3 +373,10 @@ class WorkflowManager(DryRunSupport):
         self.runner.run(["git", "branch", "-d", hotfix_branch], check=True)
         self.runner.run(["git", "push" "origin", "--delete", hotfix_branch], check=True)
         if self.sync_backup: self.runner.run(["git", "push", "backup", "--delete", hotfix_branch], check=True)
+
+    def _ensure_no_staged_changes(self, context: str = "merge") -> None:
+        if self.git.has_staged_files():
+            print(f"❌ ERROR: You have staged changes. Cannot perform `{context}` safely.")
+            print("💡 Please commit or stash your changes before continuing")
+            import sys
+            sys.exit(1)

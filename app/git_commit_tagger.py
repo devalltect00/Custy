@@ -476,13 +476,21 @@ class GitCommitTagger:
             if not self.dry_run:
                 # 🔁 Re-check after auto-staging
                 if not self.git.has_staged_files():
-                    print("self.force_commit", self.force_commit)
                     if self.force_commit:
                         print(
                             "⚠️ Still no staged files after auto-staging. but proceeding due to --force-commit.",
                         )
                         return
-                    self._error_exit("Still no staged changes after `git add .`")
+                    print("⚠️ Warning: Still no staged changes after `git add .`")
+                    confirm = input(f"{Fore.LIGHTYELLOW_EX}Are you sure you want to continue? (y/n): {Style.RESET_ALL}")
+                    confirm = confirm.strip().lower()
+                    if confirm == "y" or confirm == "yes":
+                        print("⚠️ Continuing despite no staged. files.")
+                        return
+                    else:
+                        print("🛑 Aborting due to empty staging.")
+                        sys.exit(1)
+
 
             staged_files = self.git.list_staged_files()
             if staged_files:

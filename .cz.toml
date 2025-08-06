@@ -1,6 +1,6 @@
 [tool.commitizen]
 name = "custy"
-version = "1.10.6rc2"
+version = "1.10.6rc3"
 tag_format = "v$version"
 changelog_file = "CHANGELOG.md"
 changelog_incremental = true

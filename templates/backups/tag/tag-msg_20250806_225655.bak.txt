@@ -1,0 +1,15 @@
+📦 Release Candidate Release Custy 1.10.6rc3
+
+Release candidate for **Custy 1.10.6** — Including finalized features and fixes. Awaiting final validation.
+
+### 🛡️ Fixes & Improvements
+
+- Prevent execution in CASE 3, 6, and 9 when merge conditions are unsafe (e.g., staged files present)
+- Added confirmation prompt when no files are staged — ensures user intent before proceeding
+
+
+---
+
+ℹ️ This is a **release-candidate** feature-complete but pending final validation before stable release.
+_Author: devalltect00_
+_Date: 2025-08-06_
