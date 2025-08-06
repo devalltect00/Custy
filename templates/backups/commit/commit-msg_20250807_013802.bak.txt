@@ -1,0 +1,19 @@
+release(main): 1.10.8
+
+Final release of **Custy 1.10.8**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- Updated `README.md`
+
+---
+
+🎉 **Custy 1.10.8 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`
+- Docs: `#docs`
+- Stability: `#stable`
+
+Changelog: handled separately

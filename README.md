@@ -134,7 +134,7 @@ pip install git+https://github.com/devalltect00/Custy.git@1.2.3
 
 ## 🧰 Useful Docs
 
--   📘 [How TO Use Custy](docs\HOW_TO_USE.md)
+-   📘 [How TO Use Custy](docs/HOW_TO_USE.md)
 -   📖 [CLI Commands Reference](docs/cli_commands_custy.md)
 -   🧠 [Git Branch Strategy](docs/git/branch_workflow.md)
 -   📄 [Versioning Guide](docs/versioning/versioning.md)
