@@ -5,6 +5,26 @@
 
 ## Unreleased (2025-08-07)
 ### 🚀 Release
+- **main**: 1.10.8
+  
+  Final release of **Custy 1.10.8**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- Updated `README.md`
+
+---
+
+🎉 **Custy 1.10.8 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`
+- Docs: `#docs`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
 - **main**: 1.10.7
   
   Final release of **Custy 1.10.7**, promoted from the latest release candidate.
@@ -276,6 +296,7 @@ Tag: 1.8.0
 Changelog: handled separately
   
 ### 📝 Documentation
+- **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
@@ -2434,6 +2455,31 @@ Changelog: handled separately
 - **commit_msg**: support 'release' as valid Conventional Commit type
   
   - Added 'release' to allowed commit types in the validator
+
+Changelog: handled separately
+  
+### 📝 Documentation
+- **changelog**: update changelog
+
+## 1.10.8 (2025-08-07)
+### 🚀 Release
+- **main**: 1.10.8
+  
+  Final release of **Custy 1.10.8**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- Updated `README.md`
+
+---
+
+🎉 **Custy 1.10.8 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`
+- Docs: `#docs`
+- Stability: `#stable`
 
 Changelog: handled separately
   
