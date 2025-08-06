@@ -3,8 +3,150 @@
 
 
 
-## Unreleased (2025-08-05)
+## Unreleased (2025-08-06)
+### 🚀 Release
+- **main**: 1.10.0
+  
+  Final release of **Custy 1.10.0**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.10.0rc1, 1.10.0b3, 1.10.0b2, 1.10.0b1.
+All functionality has been fully validated and production-ready.
+
+### ✨ Features
+- Full CASE 1–9 support in `WorkflowManager`:
+  - Core flow: `develop → release → main → post-release`
+  - Extended handling: `feature/*`, `ci/*`, `archive/*`
+- Automatic workflow execution with `run_initial_workflow()` and `run_final_workflow()`
+- Backup push handling, context setup, and cleanup automation
+
+### 📚 Documentation
+- Added `git_workflow_cases.md` for CASE logic
+- Documented `WorkflowManager` classes and transition behavior
+- Updated `README.md`, `TODO.md`, and added usage notes
+
+### 📄 Templates
+- Refactored and expanded example templates for commit and tag messages
+
+### 🧪 Tests
+- Introduced test coverage for `WorkflowManager` and CASE transitions
+
+### 🐛 Fixes
+- Fixed transition bugs and branching issues within `WorkflowManager`
+
+### 🧹 Maintenance
+- Linted and formatted the codebase using `ruff`
+- Cleanup of legacy TODOs and refactoring for clarity
+
+---
+
+🎉 **Custy 1.10.0 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#feature`, `#bugfix`
+- Docs: `#docs`, `#template`
+- Workflow: `#workflow`, `#automation`
+- QA: `#tests`
+- Maintenance: `#cleanup`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+- **main**: 1.9.0
+  
+  Final release of **Custy 1.9.0**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: 1.9.0rc3, 1.9.0rc2, 1.9.0rc1, 1.9.0b3, 1.9.0b2, 1.9.0b1.
+All functionality has been fully validated and production-ready.
+
+### ✨ Features
+- Redesigned CLI interface with support for `--silent` / `--debug` modes
+- Smart path resolution for configs and templates to prevent ambiguity
+- Improved commit/tag message template generation logic
+
+### 📚 Documentation
+- Rewrote and cleaned `README.md`, `HOW_TO_USE.md`, and `docs/TODO.md`
+- Added badge list and regenerated project structure documentation
+
+### ⚙️ CI/CD
+- GitHub Actions and GitLab CI pipelines now support testing and deployment
+- Makefile updated with silent execution support (`--no-debug`)
+
+### 🧹 Maintenance & Structure
+- Refactored and cleaned up the `app/` structure
+- Relocated and organized all templates
+- Applied code formatting using `ruff`
+
+### 🐛 Bug Fixes
+- Commit type now validated before version resolution
+- Fixed pipeline creation issues due to misconfigured jobs
+- Resolved internal logic bugs to improve stability
+- `assert_is_final_version()` now gracefully handles pre-releases
+
+---
+
+🎉 **Custy 1.9.0 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`, `#feature`, `#bugfix`, `#refactor`
+- Docs: `#docs`, `#template`
+- CI/CD: `#ci`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+- **core**: 1.8.0
+  
+  Final release of **Custy 1.8.0**, promoted from the latest release candidate.
+includes all feature and fixes from pre-releases: 1.8.0rc2, 1.8.0rc1.
+
+This final release includes all validated features and fixes from earlier pre-releases:
+- Git workflow validation via WorkflowManager
+- Temporary branch cleanup with Branch Cleaner
+- Dual remote strategy: GitLab (main), GitHub (backup)
+- Strategy-specific version helpers (PEP 440, SemVer)
+- Cleaner code structure with VersionHelperBase
+- Updated Makefile and improved documentation
+
+🛠 Final tweaks after rc2:
+- Allow `custy all` to run `--sync-backup` automatically
+- Minor improvements to support `release` commit type
+- Refined docs and cleaned up TODO list
+
+Tag: 1.8.0
+Changelog: handled separately
+  
 ### 📝 Documentation
+- **todo**: 1.10.0rc1
+  
+  Release candidate for **Custy 1.10.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.10.0rc1`_
+
+🔖 **Tags**:
+- Type: `#docs`
+  
+- **template**: 1.10.0b3
+  
+  Beta release for **Custy 1.10.0**, introducing mid-stage docsures and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
+
+---
+
+_Tag: `1.10.0b3`_
+
+🔖 **Tags**:
+- Type: `#docs`
+  
+- **changelog**: update changelog
 - **todo.md**: 1.9.2
   
   Final release of **Custy 1.9.2**, promoted from the latest release candidate.
@@ -58,6 +200,73 @@ Changelog: handled separately
   
 - **changelog**: update changelog
 - **changelog**: update changelog
+### ✨ Features
+- **workflow**: 1.10.0b2
+  
+  Beta release for **Custy 1.10.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+Expands test coverage, improves documentation, and refines the logic of the WorkflowManager.
+
+### 📄 Templates
+- Added more example templates for `commit-msg.txt` and `tag-msg.txt`
+
+### 🧪 Tests
+- Introduced automated tests for `WorkflowManager` functionality
+
+### 🐛 Fixes
+- Fixed logic issues in `WorkflowManager` related to CASE transitions
+
+### 📚 Documentation
+- Added `docs/git/git_workflow_cases.md` explaining CASE logic
+- Documented `WorkflowManager` classes, functions, and transitions
+- Updated `docs/TODO.md` to reflect recent changes
+
+### 🧹 Maintenance
+- Linted and formatted codebase using `ruff`
+
+---
+
+_Tag: `1.10.0b2`_
+
+🔖 **Tags**:
+- Type: `#feature`, `#bugfix`
+- Docs: `#docs`, `#template`
+- Tests: `#tests`
+- Maintenance: `#cleanup`
+  
+- **workflow**: 1.10.0b1 — CASE-based Git workflow automation
+  
+  Beta release for **Custy 1.10.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta release introduces full support for CASE-based Git flow automation through an upgraded `WorkflowManager`.
+
+### ✨ Features
+- ✅ CASE 1–6: core transitions (develop → release → main → post-release)
+- ✅ CASE 7–9: extended transitions for `feature/*`, `ci/*`, and `archive/*` branches
+- `run_initial_workflow()` sets up Git context before tag
+- `run_final_workflow()` automates merge, cleanup, and post-release steps
+- `get_transaction_cases()` includes a complete CASE 1–9 transition map
+- Integrated backup push for critical paths
+
+### 📚 Documentation
+- Added detailed documentation for `WorkflowManager` logic and CASE transitions
+- Documented branching behavior, initial/final hooks, and example flow diagrams
+
+### ⚠️ Breaking Change
+- Tag-driven branching now enforced through CASE transition rules
+
+This version brings reliable Git automation to support structured release processes and simplify branching flows.
+
+_Tag: `1.10.0b1`_
+
+🔖 **Tags**:
+- Type: `#feature`
+- Docs: `#docs`
+- Workflow: `#workflow`, `automation`
+- ⚠️ Stability: `#breaking-change`
+  
 ### 🐛 Bug Fixes
 - **main**: 1.9.1
   
@@ -220,71 +429,6 @@ This post-release includes minor updates and corrections after the official rele
 - modified documentation `docs/TODO.md`
 
 Tag: 1.6.0.post2
-Changelog: handled separately
-  
-### 🚀 Release
-- **main**: 1.9.0
-  
-  Final release of **Custy 1.9.0**, promoted from the latest release candidate.
-
-Includes all feature and fixes from pre-releases: 1.9.0rc3, 1.9.0rc2, 1.9.0rc1, 1.9.0b3, 1.9.0b2, 1.9.0b1.
-All functionality has been fully validated and production-ready.
-
-### ✨ Features
-- Redesigned CLI interface with support for `--silent` / `--debug` modes
-- Smart path resolution for configs and templates to prevent ambiguity
-- Improved commit/tag message template generation logic
-
-### 📚 Documentation
-- Rewrote and cleaned `README.md`, `HOW_TO_USE.md`, and `docs/TODO.md`
-- Added badge list and regenerated project structure documentation
-
-### ⚙️ CI/CD
-- GitHub Actions and GitLab CI pipelines now support testing and deployment
-- Makefile updated with silent execution support (`--no-debug`)
-
-### 🧹 Maintenance & Structure
-- Refactored and cleaned up the `app/` structure
-- Relocated and organized all templates
-- Applied code formatting using `ruff`
-
-### 🐛 Bug Fixes
-- Commit type now validated before version resolution
-- Fixed pipeline creation issues due to misconfigured jobs
-- Resolved internal logic bugs to improve stability
-- `assert_is_final_version()` now gracefully handles pre-releases
-
----
-
-🎉 **Custy 1.9.0 is now stable and ready for production use.**
-
-🔖 **Tags**:
-- Type: `#release`, `#feature`, `#bugfix`, `#refactor`
-- Docs: `#docs`, `#template`
-- CI/CD: `#ci`
-- Stability: `#stable`
-
-Changelog: handled separately
-  
-- **core**: 1.8.0
-  
-  Final release of **Custy 1.8.0**, promoted from the latest release candidate.
-includes all feature and fixes from pre-releases: 1.8.0rc2, 1.8.0rc1.
-
-This final release includes all validated features and fixes from earlier pre-releases:
-- Git workflow validation via WorkflowManager
-- Temporary branch cleanup with Branch Cleaner
-- Dual remote strategy: GitLab (main), GitHub (backup)
-- Strategy-specific version helpers (PEP 440, SemVer)
-- Cleaner code structure with VersionHelperBase
-- Updated Makefile and improved documentation
-
-🛠 Final tweaks after rc2:
-- Allow `custy all` to run `--sync-backup` automatically
-- Minor improvements to support `release` commit type
-- Refined docs and cleaned up TODO list
-
-Tag: 1.8.0
 Changelog: handled separately
   
 ### 🔧 Chores
@@ -1879,3 +2023,75 @@ Changelog: handled separately
   
 ### 📝 Documentation
 - **changelog**: update changelog
+
+## 1.10.0rc1 (2025-08-06)
+### 📝 Documentation
+- **todo**: 1.10.0rc1
+  
+  Release candidate for **Custy 1.10.0**, consolidating all pre-release changes and preparing for stable release.
+Feature-complete and undergoing final validation before stable release.
+
+This release candidate consolidates finalized features and bug fixes before the stable release:
+- Update `docs/TODO.md` to reflect recent changes and clean up outdated entries
+
+---
+
+_Tag: `1.10.0rc1`_
+
+🔖 **Tags**:
+- Type: `#docs`
+  
+
+## 1.10.0b3 (2025-08-06)
+### 📝 Documentation
+- **template**: 1.10.0b3
+  
+  Beta release for **Custy 1.10.0**, introducing mid-stage docsures and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta includes several bug fixes and enhancements:
+- Reorganized and renamed `commit-msg.txt` and `tag-msg.txt` templates
+
+---
+
+_Tag: `1.10.0b3`_
+
+🔖 **Tags**:
+- Type: `#docs`
+  
+
+## 1.10.0b2 (2025-08-06)
+### ✨ Features
+- **workflow**: 1.10.0b2
+  
+  Beta release for **Custy 1.10.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+Expands test coverage, improves documentation, and refines the logic of the WorkflowManager.
+
+### 📄 Templates
+- Added more example templates for `commit-msg.txt` and `tag-msg.txt`
+
+### 🧪 Tests
+- Introduced automated tests for `WorkflowManager` functionality
+
+### 🐛 Fixes
+- Fixed logic issues in `WorkflowManager` related to CASE transitions
+
+### 📚 Documentation
+- Added `docs/git/git_workflow_cases.md` explaining CASE logic
+- Documented `WorkflowManager` classes, functions, and transitions
+- Updated `docs/TODO.md` to reflect recent changes
+
+### 🧹 Maintenance
+- Linted and formatted codebase using `ruff`
+
+---
+
+_Tag: `1.10.0b2`_
+
+🔖 **Tags**:
+- Type: `#feature`, `#bugfix`
+- Docs: `#docs`, `#template`
+- Tests: `#tests`
+- Maintenance: `#cleanup`
