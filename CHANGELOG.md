@@ -5,6 +5,25 @@
 
 ## Unreleased (2025-11-11)
 ### 🚀 Release
+- **main**: 1.10.11
+  
+  Final release of **Custy 1.10.11**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- modified `requirements.txt`
+
+---
+
+🎉 **Custy 1.10.11 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#bugfix`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
 - **main**: 1.10.10
   
   Final release of **Custy 1.10.10**, promoted from the latest release candidate.
@@ -335,7 +354,14 @@ This final release includes all validated features and fixes from earlier pre-re
 Tag: 1.8.0
 Changelog: handled separately
   
+### 📦 Others
+- **general**: Merge pull request #1 from devalltect00/develop
+  
+  Develop
+  
+- **general**: merge release 1.7.1 into main
 ### 📝 Documentation
+- **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
 - **changelog**: update changelog
@@ -1036,8 +1062,6 @@ _Tag: `1.10.0b1`_
 - Workflow: `#workflow`, `automation`
 - ⚠️ Stability: `#breaking-change`
   
-### 📦 Others
-- **general**: merge release 1.7.1 into main
 
 ## v1.5.0.post1 (2025-07-31)
 ### 📝 Documentation
@@ -3232,6 +3256,35 @@ _Tag: `1.10.1b2`_
 🔖 **Tags**:
 - Type: `#bugfix`
   
+
+## 1.10.11 (2025-11-11)
+### 🚀 Release
+- **main**: 1.10.11
+  
+  Final release of **Custy 1.10.11**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- modified `requirements.txt`
+
+---
+
+🎉 **Custy 1.10.11 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#bugfix`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+### 📦 Others
+- **general**: Merge pull request #1 from devalltect00/develop
+  
+  Develop
+  
+### 📝 Documentation
+- **changelog**: update changelog
 
 ## 1.10.10 (2025-11-11)
 ### 🚀 Release
