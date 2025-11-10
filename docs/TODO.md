@@ -153,3 +153,21 @@ solution1: go back to `main` branch. merge them. tagging and push the `main`. Up
 ### Usage
 
 if the commit type not [feat, fix, perf, docs, refactor] the version will not bump. 💡Hint: use --dry-run before run the actual to see what the next version would be
+
+===============
+
+bug fix and improvement GitHelper.branch_exists()
+bug fix and improvement GitHelper.get_current_branch()
+bug fix and improvement GitHelper.commit_and_push_changelog()
+new method GitHelper.is_repo_empty()
+new method GitHelper.is_repo_empty()
+bug fix and improvement GitCommitTagger.push_changes()
+bug fix and improvement GitCommitTagger.validate()
+
+fix the bug where the branch does not exists or when get branch but the no commit on git repo. So make sure the repo has a branch and HEAD.
+
+modified and improve README.md
+
+new cli command to handle when the repo branch
+
+branch name can custom name get from configuration file
