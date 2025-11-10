@@ -57,6 +57,29 @@ make run-main
 
 ## 🧪 Installation
 
+### 🐍 Python Version
+
+-   **Supported:** Python **3.11** and **3.12**
+-   **Recommended:** Python **3.11** and **3.12**. The pinned packages in `requirements.txt` are verified to work with these versions; other versions may not be compatible.
+
+Create a virtual environment:
+
+-   **Windows (PowerShell):**
+    ```powershell
+    py -3.12 -m venv venv
+    .\venv\Scripts\Activate.psl
+    ```
+-   **Windows (Git Bash):**
+    ```bash
+    py -3.12 -m venv venv
+    source venv/Scripts/activate
+    ```
+-   **Linux/macOS:**
+    ```bash
+    python3.12 -m venv venv
+    source venv/bin/activate
+    ```
+
 ### 📌 From requirements.txt
 
 ```bash
