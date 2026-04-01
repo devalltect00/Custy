@@ -194,7 +194,7 @@ def get_version(pkg_name="custy") -> str:
 
 def show_banner():
     app_name = "custy"
-    app_version = get_version(pkg_name="name")
+    app_version = get_version(pkg_name="custy")
 
     font = "cosmic"
     fig = Figlet(font=font)

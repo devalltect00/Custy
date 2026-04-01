@@ -1,0 +1,19 @@
+release(main): 1.10.11
+
+Final release of **Custy 1.10.11**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- fix bug. Bugs: handling errors when the repository detected is new and no commits yet
+- fix little bugs and typo.
+
+---
+
+🎉 **Custy 1.10.11 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#release`
+- Stability: `#stable`
+
+Changelog: handled separately

@@ -57,11 +57,11 @@ class GitHelper(DryRunSupport):
                 check=True,
                 encoding="utf-8",
             )
-            if result is not None:
-                return result.stdout
-            print(f"⚠️ Dry-run or command skipped: git {' '.join(args)}")
-            # return "" # ✅ fix: always return string, never None
-            return None
+            if result is None:
+                print(f"⚠️ Dry-run or command skipped: git {' '.join(args)}")
+                # return "" # ✅ fix: always return string, never None
+                return None
+            return result.stdout
         except subprocess.CalledProcessError as e:
             print(f"❌ GIt command failed: git {' '.join(args)}")
             print(e.stderr)
@@ -251,15 +251,76 @@ class GitHelper(DryRunSupport):
         )
         return "CHANGELOG.md" in result.stdout
 
+    def has_commit(self):
+        """
+        Check if the repository has at least one commit.
+
+        Command:
+            git rev-parse --verify HEAD
+        """
+        try:
+            result = self.runner.run(
+                ["git", "rev-parse", "--verify", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            return bool(result and result.returncode == 0)
+        except Exception as e:
+            # Failed to check commits
+            print(f"⚠️ Unable to verify HEAD: {e}")
+            return False
+
     def get_current_branch(self) -> str:
-        """Git rev-parse --abbrev-ref HEAD"""
-        result = self.runner.run(
-            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        return result.stdout.strip()
+        """
+        Safely determine the current branch.
+        Handles:
+        - new repository (no commits yet)
+        - detached HEAD state
+        - git failure
+
+        Commands used:
+            git rev-parse --abbrev-ref HEAD
+            git symbolic-ref --short HEAD
+        """
+        try:
+            # Case 1: repository has no commits yet
+            if not self.has_commit():
+                print(f"🆕 New repository detected (no commits yet).")
+
+                result = self.runner.run(
+                        ["git", "symbolic-ref", "--short", "HEAD"],
+                        capture_output=True,
+                        text=True,
+                        check=True,
+                    )
+
+                if result and result.stdout:
+                    return result.stdout.strip()
+
+                # fallback default branch
+                return "main"
+
+            # Case 2: normal case with commits
+            result = self.runner.run(
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+
+            if result and result.stdout:
+                branch = result.stdout.strip()
+
+                if branch == "HEAD":
+                    print(f"⚠️ Detached HEAD state detected.")
+
+                return branch
+
+        except Exception as e:
+            print(f"⚠️ Failed to determine current branch: {e}")
+
+        return "unknown"
 
     def commit_and_push_changelog(self, remotes: list = []) -> None:
         if not self.has_changelog_changed():
