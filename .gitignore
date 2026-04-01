@@ -145,3 +145,4 @@ dist/
 templates/commit-msg.txt
 templates/tag-msg.txt
 tools/git-commit/backups/
+temp.txt
