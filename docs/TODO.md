@@ -87,15 +87,14 @@ Since v1.10.0
 
 - [x] advancing workflow manager functionality
 - [x] add test for transition_case on workflow_manager and its helper
+- [x] fix bug. Bugs: handling errors when the repository detected is new and no commits yet
+- [x] fix little bugs and typo.
 
 ---
 
 ### 🧩 In Progress
 
-<!-- -   _(Nothing yet)_ -->
-
-- [x] fix bug. Bugs: handling errors when the repository detected is new and no commits yet
-- [x] fix little bugs and typo.
+- _(Nothing yet)_
 
 ---
 

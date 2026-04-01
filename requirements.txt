@@ -3,7 +3,6 @@ argcomplete==3.6.2
 charset-normalizer==3.4.2
 colorama==0.4.6
 commitizen==4.8.3
-custy @ git+https://github.com/devalltect00/Custy.git@42715b2d8b7e5d3b9382e05a56e9e6228c66be1c
 decli==0.6.3
 importlib_metadata==8.7.0
 iniconfig==2.1.0
