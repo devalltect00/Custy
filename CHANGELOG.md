@@ -3,7 +3,93 @@
 
 
 
-## Unreleased (2025-11-11)
+## Unreleased (2026-04-01)
+### ✨ Features
+- **main**: 1.10.12
+  
+  Final release of **Custy 1.10.12**, promoted from the latest release candidate.
+
+Includes all feature and fixes from pre-releases: .
+All functionality has been fully validated and production-ready.
+
+- *(Nothing yet)* — See tag message for full context.
+
+---
+
+🎉 **Custy 1.10.12 is now stable and ready for production use.**
+
+🔖 **Tags**:
+- Type: `#feat`
+- Stability: `#stable`
+
+Changelog: handled separately
+  
+- **workflow**: 1.10.0b2
+  
+  Beta release for **Custy 1.10.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+Expands test coverage, improves documentation, and refines the logic of the WorkflowManager.
+
+### 📄 Templates
+- Added more example templates for `commit-msg.txt` and `tag-msg.txt`
+
+### 🧪 Tests
+- Introduced automated tests for `WorkflowManager` functionality
+
+### 🐛 Fixes
+- Fixed logic issues in `WorkflowManager` related to CASE transitions
+
+### 📚 Documentation
+- Added `docs/git/git_workflow_cases.md` explaining CASE logic
+- Documented `WorkflowManager` classes, functions, and transitions
+- Updated `docs/TODO.md` to reflect recent changes
+
+### 🧹 Maintenance
+- Linted and formatted codebase using `ruff`
+
+---
+
+_Tag: `1.10.0b2`_
+
+🔖 **Tags**:
+- Type: `#feature`, `#bugfix`
+- Docs: `#docs`, `#template`
+- Tests: `#tests`
+- Maintenance: `#cleanup`
+  
+- **workflow**: 1.10.0b1 — CASE-based Git workflow automation
+  
+  Beta release for **Custy 1.10.0**, introducing mid-stage features and workflow improvements.
+Partially validated features and improvements. Some issue still remain.
+
+This beta release introduces full support for CASE-based Git flow automation through an upgraded `WorkflowManager`.
+
+### ✨ Features
+- ✅ CASE 1–6: core transitions (develop → release → main → post-release)
+- ✅ CASE 7–9: extended transitions for `feature/*`, `ci/*`, and `archive/*` branches
+- `run_initial_workflow()` sets up Git context before tag
+- `run_final_workflow()` automates merge, cleanup, and post-release steps
+- `get_transaction_cases()` includes a complete CASE 1–9 transition map
+- Integrated backup push for critical paths
+
+### 📚 Documentation
+- Added detailed documentation for `WorkflowManager` logic and CASE transitions
+- Documented branching behavior, initial/final hooks, and example flow diagrams
+
+### ⚠️ Breaking Change
+- Tag-driven branching now enforced through CASE transition rules
+
+This version brings reliable Git automation to support structured release processes and simplify branching flows.
+
+_Tag: `1.10.0b1`_
+
+🔖 **Tags**:
+- Type: `#feature`
+- Docs: `#docs`
+- Workflow: `#workflow`, `automation`
+- ⚠️ Stability: `#breaking-change`
+  
 ### 🚀 Release
 - **main**: 1.10.11
   
