@@ -870,7 +870,6 @@ Common directories include:
 │   │   │   ├── diagrams.md
 │   │   │   └── workflow_engine.md
 │   │   └── make_workflows.md
-│   ├── temp/ ... (collapsed)
 │   ├── badges.md
 │   ├── cli_commands_custy.md
 │   ├── HOW_TO_USE.md
@@ -1227,8 +1226,6 @@ Common directories include:
 ├── .projectignore
 ├── AGENTS.md
 ├── CHANGELOG.md
-├── CHANGES FOR THIS ANOTHER.txt
-├── CHANGES FOR THIS.txt
 ├── CONTRIBUTING.md
 ├── docker-compose.dev.yml
 ├── docker-compose.prod.yml
@@ -1236,14 +1233,10 @@ Common directories include:
 ├── Dockerfile
 ├── LICENSE
 ├── Makefile
-├── NOTES_WHILE_DEVELOPMENT.md
 ├── pyproject.toml
 ├── README.md
 ├── requirements.txt
-├── SECURITY.md
-├── temp_todo.md
-├── TODO.md
-└── WHAT_TO_DO.md
+└── SECURITY.md
 ```
 
 ---
@@ -1257,7 +1250,6 @@ Common directories include:
 | `LICENSE` | Project license information. |
 | `CONTRIBUTING.md` | Guidelines for contributing to the project. |
 | `SECURITY.md` | Security policy and vulnerability reporting instructions. |
-| `TODO.md` | Pending tasks and future improvements. |
 | `AGENTS.md` | Instructions and guidance for AI agents and automation tools. |
 | `pyproject.toml` | Main Python project configuration file. |
 | `requirements.txt` | Python package dependencies. |
