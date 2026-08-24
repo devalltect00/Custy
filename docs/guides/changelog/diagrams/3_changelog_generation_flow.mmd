@@ -1,0 +1,19 @@
+flowchart TD
+    A[Tags List] --> B[Loop Tags]
+
+    B --> C["Get Messages (Git + Template)"]
+
+    C --> D["Pipeline.run()"]
+
+    D --> E[Parsed Commits]
+
+    E --> F[Group by Type]
+    F --> G[Group by Scope]
+
+    G --> H[Deduplicate]
+
+    H --> I[Build Release Object]
+
+    I --> J[Render Template]
+
+    J --> K["CHANGELOG.md"]

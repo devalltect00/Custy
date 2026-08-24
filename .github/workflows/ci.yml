@@ -1,0 +1,71 @@
+# .github/workflows/ci.yml
+
+name: 🧪 Continuous Integration
+
+run-name: ✅ CI Validation • ${{ github.ref_name }}
+
+# =========================================================
+# 🧪 Continuous Integration Workflow
+# ---------------------------------------------------------
+# Purpose:
+# - Run tests on every push to main
+# - Run tests on every Pull Request
+# - Ensure compatibility across multiple Python versions
+#
+# Why matrix?
+# - Guarantees your package works across Python versions
+# =========================================================
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - dev
+
+  pull_request:
+    branches:
+      - main
+      - develop
+      - dev
+
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: 🧪 Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    # -----------------------------------------------------
+    # Run tests across multiple Python versions
+    # -----------------------------------------------------
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          # - "3.11"
+          # - "3.12"
+          # - "3.13"
+          - "3.14"
+
+    steps:
+      # 📥 Checkout repository
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      # 🐍 Setup Python
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip" # ⚡ Speeds up dependency installation
+
+      # 📦 Install dependencies (editable mode with dev deps)
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      # ✅ FULL VALIDATION
+      - name: ✅ Run validation workflow
+        run: make check-ci

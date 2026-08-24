@@ -1,0 +1,140 @@
+{
+  // =========================================================
+  // Python Interpreter
+  // =========================================================
+  // // "python.pythonPath": "venv\\Scripts\\python.exe",
+  "python.defaultInterpreterPath": "${workspaceFolder}\\venv\\Scripts\\python.exe",
+
+  // =========================================================
+  // Formatting
+  // =========================================================
+  "editor.formatOnSave": true,
+  "editor.tabSize": 4,
+  "editor.insertSpaces": true,
+
+  // // "python.formatting.provider": "black",
+
+  // Python formatter
+  "[python]": {
+    // "editor.defaultFormatter": "ms-python.autopep8",
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit",
+
+      "source.fixAll.ruff": null
+    }
+  },
+
+  // Prettier only for web/text formats
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // =========================================================
+  // Python Analysis
+  // =========================================================
+  "python.analysis.autoImportCompletions": true,
+  "python.analysis.typeCheckingMode": "basic",
+
+  // =========================================================
+  // Testing
+  // =========================================================
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.autoTestDiscoverOnSaveEnabled": true,
+
+  // =========================================================
+  // Environment
+  // =========================================================
+  "python.envFile": "${workspaceFolder}\\.env",
+
+  // =========================================================
+  // File Cleanup
+  // =========================================================
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    "**/*.pyo": true,
+    ".venv": true,
+    "**/.git": false,
+  },
+  "explorer.excludeGitIgnore": false,
+  "search.exclude": {
+    "**/.git": true
+  },
+
+  // =========================================================
+  // Import Organization
+  // =========================================================
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+
+    "source.fixAll.ruff": "explicit",
+    "source.organizeImports.ruff": "explicit"
+  },
+
+  // =========================================================
+  // Code Runner
+  // =========================================================
+  "code-runner.executorMap": {
+    "python": "${workspaceFolder}\\.venv\\Scripts\\python.exe"
+  },
+
+  // =========================================================
+  // YAML / MkDocs
+  // =========================================================
+  "yaml.schemas": {
+    "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
+  },
+
+  "yaml.customTags": [
+    "!ENV scalar",
+    "!ENV sequence",
+    "!relativeZ scalar",
+    "tag:yaml.org,2002:python/name:material.extensions.emoji.to_svg",
+    "tag:yaml.org,2002:python/name:material.extensions.emoji.twemoji",
+    "tag:yaml.org,2002:python/name:pymdownx.superfences.fence_code_format"
+  ],
+
+  // =========================================================
+  // UI
+  // =========================================================
+  "workbench.iconTheme": "material-icon-theme",
+
+  // Addition
+  // //"python.linting.enabled": true,
+  // // // "python.linting.flake8Enabled": true,
+  // // "eslint.format.enable": true,
+
+  // Prettier
+  // // "editor.defaultFormatter": "esbenp.prettier-vscode"
+
+  // =========================================================
+  // VsCode Extension - Docker Explorer
+  // =========================================================
+
+  "docker-explorer.showAzureRegistries": false,
+  "docker-explorer.showDockerHubTreeView": false,
+  "docker-explorer.showSuggestedDockerImages": false,
+  "CodeGPT.apiKey": "OpenAI"
+}

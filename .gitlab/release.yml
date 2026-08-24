@@ -1,0 +1,87 @@
+# =========================================================
+# 📦 Release Management
+# =========================================================
+#
+# GitHub Equivalent
+# -----------------
+# .github/workflows/release.yml
+#
+# Purpose
+# -------
+# Build release artifacts and create GitLab Releases.
+#
+# Artifacts
+# ---------
+# - Python Wheel (*.whl)
+# - Source Distribution (*.tar.gz)
+#
+# Trigger
+# -------
+#
+#   git tag v1.0.0
+#   git push origin v1.0.0
+#
+# Output
+# ------
+# - GitLab Release
+# - Downloadable Build Artifacts
+#
+# Notes
+# -----
+# Releases are generated only from version tags.
+#
+# =========================================================
+
+release:build:
+  stage: release
+
+  image: python:3.14
+
+  before_script:
+    - python --version
+    - pip install --upgrade pip
+    - pip install build
+
+  script:
+    - python -m build
+
+  artifacts:
+    name: "$CI_COMMIT_TAG"
+
+    paths:
+      - dist/
+
+    expire_in: 90 days
+
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+
+release:create:
+  stage: release
+
+  image: registry.gitlab.com/gitlab-org/cli:latest
+
+  needs:
+    - release:build
+
+  script:
+    - echo "Creating release $CI_COMMIT_TAG"
+
+  release:
+    tag_name: "$CI_COMMIT_TAG"
+
+    name: "Release $CI_COMMIT_TAG"
+
+    description: |
+      ## Release
+
+      Automated GitLab Release.
+
+      Tag:
+      $CI_COMMIT_TAG
+
+      Commit:
+      $CI_COMMIT_SHA
+
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'

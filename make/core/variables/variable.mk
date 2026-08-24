@@ -1,0 +1,360 @@
+# =========================================================
+#
+# 🔡 VARIABLES
+#
+# =========================================================
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 📦 PROJECT CONFIGURATION
+# ----------------------------------------------------------
+
+APP_NAME := custy
+PROJECT_PACKAGE := app
+LOCAL_RUN = "$(PYTHON)" -m app
+
+TARGET ?= app
+WORKSPACE_DIR := /workspace
+WORKDIR ?= $(WORKSPACE_DIR)
+
+# Source Directories
+SOURCE_APP := app
+SOURCE_TESTS := tests
+
+SOURCE_DIRS := $(SOURCE_APP) $(SOURCE_TESTS)
+
+# Path-Header-Scanner
+PHS_SCAN_TARGETS := app docs tests
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🖥️ PLATFORM DETECTION
+# ----------------------------------------------------------
+
+ifeq ($(OS),Windows_NT)
+	PLATFORM := windows
+
+	PYTHON_SYSTEM := python
+
+	VENV_BIN_DIR := Scripts
+
+	VENV_ACTIVATE := activate.bat
+	VENV_ACTIVATE_PS := Activate.ps1
+
+	PYTHON_EXECUTABLE := python.exe
+	PIP_EXECUTABLE := pip.exe
+
+	NULL_DEVICE := nul
+else
+	PLATFORM := unix
+
+	PYTHON_SYSTEM := python3
+
+	VENV_BIN_DIR := bin
+
+	VENV_ACTIVATE := activate
+
+	PYTHON_EXECUTABLE := python
+	PIP_EXECUTABLE := pip
+
+	NULL_DEVICE := /dev/null
+endif
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🐍 PYTHON VIRTUAL ENVIRONMENT
+# ----------------------------------------------------------
+
+VENV_NAME ?= venv
+VENV_DIR := $(CURDIR)/$(VENV_NAME)
+VENV_BIN := $(VENV_DIR)/$(VENV_BIN_DIR)
+
+PYTHON := $(VENV_BIN)/$(PYTHON_EXECUTABLE)
+PIP := $(VENV_BIN)/$(PIP_EXECUTABLE)
+
+ifeq ($(PLATFORM),windows)
+	ACTIVATE_COMMAND := $(VENV_BIN)/$(VENV_ACTIVATE)
+	ACTIVATE_COMMAND_PS := $(VENV_BIN)/$(VENV_ACTIVATE_PS)
+else
+	ACTIVATE_COMMAND := source $(VENV_BIN)/$(VENV_ACTIVATE)
+endif
+
+# Lines to exclude from requirements.txt (prefix match)
+REQUIREMENTS_EXCLUDE_PREFIXES := -e
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🧰 DEVELOPMENT TOOLS
+# ----------------------------------------------------------
+
+PYTEST := pytest
+RUFF := ruff
+BLACK := black
+MKDOCS := mkdocs
+TWINE := twine
+BUILD := build
+PRE_COMMIT := pre-commit
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🐋 LOCAL APP ARGS
+# ----------------------------------------------------------
+
+LOCAL_CUSTY_GLOBAL_ARGS ?=
+LOCAL_CUSTY_EXTRA_ARGS ?=
+LOCAL_CUSTY_INIT_ARGS ?=
+LOCAL_CUSTY_VALIDATE_ARGS ?=
+LOCAL_CUSTY_VERSION_ARGS ?=
+LOCAL_CUSTY_CHANGELOG_ARGS ?=
+LOCAL_CUSTY_COMMIT_ARGS ?=
+LOCAL_CUSTY_TAG_ARGS ?=
+LOCAL_CUSTY_PUSH_ARGS ?=
+LOCAL_CUSTY_RUN_ARGS ?=
+LOCAL_CUSTY_RUN_SUBCOMMAND ?=
+LOCAL_CUSTY_RUN_SUBCOMMAND_ARGS ?=
+LOCAL_CUSTY_RUN_DEV_ARGS ?=
+LOCAL_CUSTY_RUN_RELEASE_ARGS ?=
+LOCAL_CUSTY_RUN_FULL_ARGS ?=
+LOCAL_CUSTY_BACKUP_ARGS ?=
+LOCAL_CUSTY_BACKUP_COMMIT_ARGS ?=
+LOCAL_CUSTY_BACKUP_TAG_ARGS ?=
+LOCAL_CUSTY_BACKUP_ALL_ARGS ?=
+LOCAL_CUSTY_CLEANUP_ARGS ?=
+LOCAL_CUSTY_CLEANUP_BACKUPS_ARGS ?=
+LOCAL_CUSTY_CLEANUP_BRANCHES_ARGS ?=
+LOCAL_CUSTY_CLEANUP_ALL_ARGS ?=
+LOCAL_CUSTY_WORKFLOW_ARGS ?=
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🐋 DOCKER CONFIGURATION
+# ----------------------------------------------------------
+
+DOCKER := docker
+DOCKER_COMPOSE := $(DOCKER) compose
+
+DOCKER_TAG := latest
+DOCKER_REPOSITORY := $(APP_NAME)
+
+# Docker Images
+DOCKER_IMAGE_BASE := $(APP_NAME)-base:$(DOCKER_TAG)
+DOCKER_IMAGE_DEV := $(APP_NAME)-dev:$(DOCKER_TAG)
+DOCKER_IMAGE_PROD := $(APP_NAME)-prod:$(DOCKER_TAG)
+
+# Dockerfile
+DOCKERFILE_BASE := Dockerfile
+# DOCKERFILE_DEV := Dockerfile.dev
+# DOCKERFILE_PROD := Dockerfile.prod
+
+DOCKER_RUN := $(DOCKER) run --rm
+DOCKER_RUN_INTERACTIVE := $(DOCKER_RUN) -it
+DOCKER_RUN_NO_ENTRYPOINT := $(DOCKER_RUN) --entrypoint ""
+DOCKER_SOCKET ?= /var/run/docker.sock
+DOCKER_SOCKET_MOUNT := -v "$(DOCKER_SOCKET):$(DOCKER_SOCKET)"
+
+# Container Shell
+SHELL_BIN ?= sh
+
+DOCKER_WORKSPACE := \
+	-w $(WORKSPACE_DIR) \
+	-v "$(CURDIR):$(WORKSPACE_DIR)"
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🐋 DOCKER SERVICES
+# ----------------------------------------------------------
+
+# Docker Services name
+SERVICE_APP := app
+SERVICE_TEST := test
+SERVICE_LINT := lint
+SERVICE_LINT_FIX := lint-fix
+SERVICE_FORMAT := format
+SERVICE_FORMAT_CHECK := format-check
+SERVICE_DOCS := docs
+SERVICE_SHELL := shell
+SERVICE_BUILD := build
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🐋 DOCKER APP ARGS
+# ----------------------------------------------------------
+
+DOCKER_CUSTY_GLOBAL_ARGS ?=
+DOCKER_CUSTY_EXTRA_ARGS ?=
+DOCKER_CUSTY_INIT_ARGS ?=
+DOCKER_CUSTY_VALIDATE_ARGS ?=
+DOCKER_CUSTY_VERSION_ARGS ?=
+DOCKER_CUSTY_CHANGELOG_ARGS ?=
+DOCKER_CUSTY_COMMIT_ARGS ?=
+DOCKER_CUSTY_TAG_ARGS ?=
+DOCKER_CUSTY_PUSH_ARGS ?=
+DOCKER_CUSTY_RUN_ARGS ?=
+DOCKER_CUSTY_RUN_SUBCOMMAND ?=
+DOCKER_CUSTY_RUN_SUBCOMMAND_ARGS ?=
+DOCKER_CUSTY_RUN_DEV_ARGS ?=
+DOCKER_CUSTY_RUN_RELEASE_ARGS ?=
+DOCKER_CUSTY_RUN_FULL_ARGS ?=
+DOCKER_CUSTY_BACKUP_ARGS ?=
+DOCKER_CUSTY_BACKUP_COMMIT_ARGS ?=
+DOCKER_CUSTY_BACKUP_TAG_ARGS ?=
+DOCKER_CUSTY_BACKUP_ALL_ARGS ?=
+DOCKER_CUSTY_CLEANUP_ARGS ?=
+DOCKER_CUSTY_CLEANUP_BACKUPS_ARGS ?=
+DOCKER_CUSTY_CLEANUP_BRANCHES_ARGS ?=
+DOCKER_CUSTY_CLEANUP_ALL_ARGS ?=
+DOCKER_CUSTY_WORKFLOW_ARGS ?=
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🐋 DOCKER COMPOSE CONFIGURATION
+# ----------------------------------------------------------
+
+# Docker Compose Files
+COMPOSE_FILE_BASE := docker-compose.yml
+COMPOSE_FILE_DEV := docker-compose.dev.yml
+COMPOSE_FILE_PROD := docker-compose.prod.yml
+
+# Development Compose Stack
+COMPOSE_BASE_FILES := \
+	-f $(COMPOSE_FILE_BASE)
+
+COMPOSE_DEV_FILES := \
+	-f $(COMPOSE_FILE_BASE) \
+	-f $(COMPOSE_FILE_DEV)
+
+# Production Compose Stack
+COMPOSE_PROD_FILES := \
+	-f $(COMPOSE_FILE_BASE) \
+	-f $(COMPOSE_FILE_PROD)
+
+COMPOSE_BASE := $(DOCKER_COMPOSE) $(COMPOSE_BASE_FILES)
+COMPOSE_DEV := $(DOCKER_COMPOSE) $(COMPOSE_DEV_FILES)
+COMPOSE_PROD := $(DOCKER_COMPOSE) $(COMPOSE_PROD_FILES)
+
+COMPOSE_DEV_BUILD := $(COMPOSE_DEV) build
+COMPOSE_DEV_RUN := $(COMPOSE_DEV) run --rm
+COMPOSE_DEV_UP := $(COMPOSE_DEV) up
+COMPOSE_DEV_DOWN := $(COMPOSE_DEV) down
+COMPOSE_DEV_EXEC := $(COMPOSE_DEV) exec
+
+COMPOSE_DEV_RUN_APP := $(COMPOSE_DEV_RUN) $(SERVICE_APP)
+COMPOSE_DEV_RUN_TEST := $(COMPOSE_DEV_RUN) $(SERVICE_TEST)
+COMPOSE_DEV_RUN_LINT := $(COMPOSE_DEV_RUN) $(SERVICE_LINT)
+COMPOSE_DEV_RUN_LINT_FIX := $(COMPOSE_DEV_RUN) $(SERVICE_LINT_FIX)
+COMPOSE_DEV_RUN_FORMAT := $(COMPOSE_DEV_RUN) $(SERVICE_FORMAT)
+COMPOSE_DEV_RUN_FORMAT_CHECK := $(COMPOSE_DEV_RUN) $(SERVICE_FORMAT_CHECK)
+COMPOSE_DEV_UP_DOCS := $(COMPOSE_DEV_UP) $(SERVICE_DOCS)
+COMPOSE_DEV_RUN_SHELL := $(COMPOSE_DEV_RUN) $(SERVICE_SHELL)
+COMPOSE_DEV_RUN_BUILD := $(COMPOSE_DEV_RUN) $(SERVICE_BUILD)
+
+COMPOSE_PROD_BUILD := $(COMPOSE_PROD) build
+COMPOSE_PROD_RUN := $(COMPOSE_PROD) run --rm
+COMPOSE_PROD_UP := $(COMPOSE_PROD) up
+COMPOSE_PROD_DOWN := $(COMPOSE_PROD) down
+
+COMPOSE_PROD_RUN_APP := $(COMPOSE_PROD_RUN) $(SERVICE_APP)
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🐋 DOCKER COMPOSE APP ARGS
+# ----------------------------------------------------------
+
+COMPOSE_CUSTY_GLOBAL_ARGS ?=
+COMPOSE_CUSTY_EXTRA_ARGS ?=
+COMPOSE_CUSTY_INIT_ARGS ?=
+COMPOSE_CUSTY_VALIDATE_ARGS ?=
+COMPOSE_CUSTY_VERSION_ARGS ?=
+COMPOSE_CUSTY_CHANGELOG_ARGS ?=
+COMPOSE_CUSTY_COMMIT_ARGS ?=
+COMPOSE_CUSTY_TAG_ARGS ?=
+COMPOSE_CUSTY_PUSH_ARGS ?=
+COMPOSE_CUSTY_RUN_ARGS ?=
+COMPOSE_CUSTY_RUN_SUBCOMMAND ?=
+COMPOSE_CUSTY_RUN_SUBCOMMAND_ARGS ?=
+COMPOSE_CUSTY_RUN_DEV_ARGS ?=
+COMPOSE_CUSTY_RUN_RELEASE_ARGS ?=
+COMPOSE_CUSTY_RUN_FULL_ARGS ?=
+COMPOSE_CUSTY_BACKUP_ARGS ?=
+COMPOSE_CUSTY_BACKUP_COMMIT_ARGS ?=
+COMPOSE_CUSTY_BACKUP_TAG_ARGS ?=
+COMPOSE_CUSTY_BACKUP_ALL_ARGS ?=
+COMPOSE_CUSTY_CLEANUP_ARGS ?=
+COMPOSE_CUSTY_CLEANUP_BACKUPS_ARGS ?=
+COMPOSE_CUSTY_CLEANUP_BRANCHES_ARGS ?=
+COMPOSE_CUSTY_CLEANUP_ALL_ARGS ?=
+COMPOSE_CUSTY_WORKFLOW_ARGS ?=
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🌐 GITHUB CONTAINER REGISTRY
+# ----------------------------------------------------------
+
+GHCR_REGISTRY ?= ghcr.io
+GHCR_OWNER ?= devalltect00
+
+REMOTE_TAG ?= latest
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🌐 GITHUB REMOTE IMAGE
+# ----------------------------------------------------------
+
+REMOTE_IMAGE_PHS ?= Path-Header-Scanner
+REMOTE_IMAGE_DOC_GEN ?= Doc-Gen
+REMOTE_IMAGE_CUSTY ?= Custy
+REMOTE_IMAGE_REFLOW ?= reflow
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🌐 GITHUB CONTAINER - Workspace
+# ----------------------------------------------------------
+
+REMOTE_WORKSPACE ?= $(CURDIR)
+
+DOCKER_REMOTE_WORKSPACE := \
+	-w /workspace \
+	-v "$(REMOTE_WORKSPACE):/workspace"
+
+# ----------------------------------------------------------
+# 🔡 VARIABLES - 🌐 GITHUB CONTAINER - ARGS
+# ----------------------------------------------------------
+
+# Path Header Scaner
+REMOTE_PHS_GLOBAL_ARGS ?=
+REMOTE_PHS_EXTRA_ARGS ?=
+REMOTE_PHS_INIT_ARGS ?=
+REMOTE_PHS_EXTRA_ARGS ?=
+REMOTE_PHS_SCAN_ARGS ?=
+
+# Doc Gen
+REMOTE_DOC_GEN_GLOBAL_ARGS ?=
+REMOTE_DOC_GEN_EXTRA_ARGS ?=
+REMOTE_DOC_GEN_INIT_ARGS ?=
+REMOTE_DOC_GEN_STRUCTURE_ARGS ?= --smart
+REMOTE_DOC_GEN_GENERATE_ARGS ?=
+REMOTE_DOC_GEN_PRINT_ARGS ?=
+REMOTE_DOC_GEN_ANALYZE_ARGS ?=
+
+# Custy
+REMOTE_CUSTY_GLOBAL_ARGS ?=
+REMOTE_CUSTY_EXTRA_ARGS ?=
+REMOTE_CUSTY_INIT_ARGS ?=
+REMOTE_CUSTY_VALIDATE_ARGS ?=
+REMOTE_CUSTY_VERSION_ARGS ?=
+REMOTE_CUSTY_CHANGELOG_ARGS ?=
+REMOTE_CUSTY_COMMIT_ARGS ?=
+REMOTE_CUSTY_TAG_ARGS ?=
+REMOTE_CUSTY_PUSH_ARGS ?=
+REMOTE_CUSTY_RUN_ARGS ?=
+REMOTE_CUSTY_RUN_SUBCOMMAND ?=
+REMOTE_CUSTY_RUN_SUBCOMMAND_ARGS ?=
+REMOTE_CUSTY_RUN_DEV_ARGS ?=
+REMOTE_CUSTY_RUN_RELEASE_ARGS ?=
+REMOTE_CUSTY_RUN_FULL_ARGS ?=
+REMOTE_CUSTY_BACKUP_ARGS ?=
+REMOTE_CUSTY_BACKUP_COMMIT_ARGS ?=
+REMOTE_CUSTY_BACKUP_TAG_ARGS ?=
+REMOTE_CUSTY_BACKUP_ALL_ARGS ?=
+REMOTE_CUSTY_CLEANUP_ARGS ?=
+REMOTE_CUSTY_CLEANUP_BACKUPS_ARGS ?=
+REMOTE_CUSTY_CLEANUP_BRANCHES_ARGS ?=
+REMOTE_CUSTY_CLEANUP_ALL_ARGS ?=
+REMOTE_CUSTY_WORKFLOW_ARGS ?=
+
+# Reflow
+REMOTE_REFLOW_GLOBAL_ARGS ?=
+REMOTE_REFLOW_EXTRA_ARGS ?=
+REMOTE_REFLOW_INIT_ARGS ?=
+REMOTE_REFLOW_RELEASES_RECOVER_ARGS ?=
+REMOTE_REFLOW_TAGS_CONVERT_ARGS ?=
+REMOTE_REFLOW_DOCKERIZE_ARGS ?=
+
+

@@ -1,0 +1,114 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    // =====================================================
+    // 🚀 PYTHON FILE
+    // =====================================================
+
+    {
+      "name": "Python: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true
+    },
+
+    // =====================================================
+    // 🧪 PYTEST
+    // =====================================================
+
+    {
+      "name": "Pytest: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["${file}", "-vv"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false
+    },
+    {
+      "name": "Pytest: All Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["tests", "-vv", "-s"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false
+    },
+    {
+      "name": "Pytest: Failed Tests Only",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": ["--lf", "-vv"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false
+    },
+
+    // =====================================================
+    // 🚀 CLI APPLICATION
+    // =====================================================
+
+    {
+      "name": "CLI: Main App",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app",
+      "args": ["--help"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true
+    },
+    {
+      "name": "CLI: Initialize",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app",
+      "args": ["init"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true
+    },
+
+    {
+      "name": "CLI: Run development release workflow",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app",
+      "args": ["run", "dev"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true
+    },
+
+    {
+      "name": "CLI: Run release workflow",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app",
+      "args": ["run", "release"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true
+    },
+
+    {
+      "name": "CLI: Run full workflow",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "app",
+      "args": ["run", "full"],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true
+    },
+  ]
+}

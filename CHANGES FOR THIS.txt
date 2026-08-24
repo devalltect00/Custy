@@ -1,0 +1,256 @@
+[v] Changelog workflow changes
+[v] add documentation, user-guide (use friendly and easy to understand language), developer guide
+# add design folder, add system workflow, changelog workflow
+[v] Add diagram (visual flow), add system workflow, changelog workflow, etc. The diagram with formats:
+  - just on md or txt format (but the design part or drawing parts. it is not documentation with full text)
+  - image format
+
+
+break refactor the __main__.py into different parts like cli.py, etc
+refactor code and project
+
+[v] using custy.toml instead of custor.toml
+
+[v] modify custy.toml
+- commit_template_path = "templates/custy/commit-msg.txt"
+- tag_template_path
+- **(see cli.py)** what potential configuration
+
+adding init functions
+- initialize custy.toml
+- templates/custy/backups/commit empty folder
+- templates/custy/backups/tag empty folder
+- templates/custy/changelog/changelog.j2 file (generated)
+- templates/custy/commit-msg.txt empty file
+- templates/custy/tag-msg.txt empty file
+
+(optional)
+- templates/custy/example/commit-msg/ inside it
+ref (should modified as template): 
+- commit-msg_final1.example.txt
+- commit-msg2.example.txt
+- commit-msg_beta1.example.txt
+- commit-msg.template.txt
+- commit-msg1.template.txt
+- **(maybe all files)**
+
+- templates/custy/example/tag-msg/ inside it
+ref:
+- **(maybe all files)**
+
+prioritize SemVer strategy for git tag
+
+make sure all the files have the correct path specified
+make sure it run well
+
+add github workflow
+using project generator
+
+using reflow
+
+
+=================
+
+Make me python script. basically to initialize or generate files. There are folders. fles
+
+folders like
+- template/custy
+- template/custy/backups
+- template/custy/backups/commit
+- template/custy/backups/tag
+- template/custy/changelog
+- template/custy/examples
+
+files like
+- custy.toml
+- app/__version__.py if not exist else ignore
+- custy.toml if not exist else ignore
+- template/custy/commit-message.txt if not exist else ignore
+- template/custy/tag-message.txt if not exist else ignore
+- template/custy/changelog/changelog.j2 if not exist else ignore
+
+Optional
+- .cz.toml
+
+For the files I already know what to populate for all the files. There will  be empty files and filled files
+
+for example I will populate on changelog.j2 with
+```
+# 🧾 CHANGELOG
+{% set label_map = {
+    "feat": "✨ Features",
+    "fix": "🐛 Bug Fixes",
+    "docs": "📝 Documentation",
+    "refactor": "🧠 Refactoring",
+    "perf": "⚡ Performance",
+    "test": "🧪 Tests",
+    "chore": "🔧 Chores",
+    "ci": "⚙️ CI",
+    "build": "🏗️ Build",
+    "release": "🚀 Release",
+    "breaking": "⚠️ Breaking Changes",
+    "other": "📦 Others"
+} -%}
+
+{%- for release in releases %}
+## {{ release.version }} ({{ release.date }})
+
+{%- if release.compare_url %}
+[Compare changes]({{ release.compare_url }})
+{%- endif %}
+
+{%- if release.custom_message %}
+{{ release.custom_message }}
+{%- endif %}
+
+{%- for type, scopes in release.changes.items() if scopes %}
+### {{ label_map.get(type, type | capitalize) }}
+
+{%- for scope, commits in scopes.items() %}
+#### {{ scope }}
+{%- for commit in commits %}
+- {{ commit.subject }}
+{%- endfor %}
+
+{%- endfor %}
+{%- endfor %}
+
+---
+{%- endfor %}
+```
+
+Have args or options so can Force to override files. can force all files or if the file is exist can ask one by one
+
+Every file is different to populate. How to approach this better. We can use any kind of design pattern to make it better and efficiency and long term use.
+
+==================
+
+give full updated code for every files needed just for this things initialize. I put all the templates inside src/templates/ or app/templates/
+
+so the templates I will use are:
+- load from site-packages: templates/changelog/changelog.j2 and initialize and generate on user's project on templates/custy/changelog/changelog.j2
+- load from site-packages: templates/__version__.py and initialize and generate on user's project on app/__version__.py or src/__version__.py
+- load from site-packages: templates/.custy.toml and initialize and generate on user's project on .(root)/settings/.custy.toml
+- load all files and folders from site-packages: templates/examples/ and initialize and generate on user's project on templates/custy/examples/
+
+======
+
+add to .custy.toml
+
+```
+[tool.custy.cli.templates]
+changelog = "templates/custy/changelog/changelog.j2"
+commit_message = "templates/custy/commit-message.txt"
+tag_message = "templates/custy/tag-messageg.txt"
+backups_commit = "templates/custy/backups/commit"
+backups_tag = "templates/custy/backups/tag"
+```
+
+======
+
+every file path should
+
+when init. Also ignore some files
+
+=======
+
+[tool.custy.cli.templates.file]
+(v sync) changelog = "tools/custy/templates/changelog/changelog.j2"
+(v sync) commit_message = "tools/custy/templates/commit-message.txt"
+(v sync) tag_message = "tools/custy/templates/tag-message.txt"
+
+[tool.custy.cli.templates.directory]
+(v sync) backups_commit = "tools/custy/templates/backups/commit"
+(v sync) backups_tag = "tools/custy/templates/backups/tag"
+
+(v sync) .custy.toml
+
+===============
+
+(v sync) fix this part issue circular import
+- from app.cli.context import get_context
+
+
+(v sync) bug fix and changes from previous version:
+- fix if self.bump is auto and strategy is not "commitizen"
+
+===============
+
+[v] fix init commands
+[v] adjust run command for help args
+[v] more flexible using branch
+[~] make good docs and design
+[~] better UI UX
+[v] refactor git_commit_tagger tool
+[v] make sure command(commit, push, tag, changelog, workflow, etc) can run individually
+[v] Make sure the full flow is validation -> stages -> open editor for commit message and save changes -> generate changelog -> add changed changelog.md to staged -> commit -> tag -> backup commit message and tag message -> push and optionally sync backups -> cleanup backups and branches -> Finalize workflow -> done
+[v] modify and GitCommitTagger class
+[v] modify and GitHelper class
+[-] modify and refactor DryRun class
+[] update Makefile
+[] update README.md
+[] add another necessary file like CONTRIBUTOR.md, etc
+[] adjust github workflow
+
+[] make docker build. and it is executable
+[] make github release
+
+[] cleanup and ruff
+
+check if it works
+
+
+========
+
+optional
+
+[-] on CleanupTypeChoices
+adding tracked, selective
+
+[v] --sync-backup
+sync all backup remotes in config
+
+
+GitCommandExecutor
+_run make it accept *args or **kwargs  to be more flexible 
+or create new private method
+
+For best practice
+security parameter check because the parameter is passed to the subprocess run to avoide 
+
+==================
+
+[v] multi-layered validation
+
+===============
+
+init
+clean branch
+dry run
+
+==============
+
+[v] Make sure the steps is ordered and deduplicated
+[v] dry-run, debug, and log-level args set as global args
+
+==============
+
+[v] handle ask and force option for init commands
+[] make better CLI UI UX for help commands. adjust to current changes
+[] make docker build. and it is executable
+[] make sure it run well
+[] Make and run tests
+[~] Make documentation
+[~] Make diagrams
+[] update Makefile
+[] update README.md
+[] add another necessary file like CONTRIBUTOR.md, etc
+[] adjust github workflow
+[] cleanup
+
+==================
+
+[v] Use the tag use SemVer. but for the __version__.py or pyproject.toml or python related project use PEP440. So inside python project, jave combination Semver and PEP440 (Hybrid)
+[v] prioritize the SemVer Strategy
+[v] Optimize and fix bug in the SemVer Strategy, and other files related to Tag Strategy.
+[v] migrate some files like core/changelog, core/branch_workflow, core/git_ops from GitHelper related git execution to new GitService related git execution

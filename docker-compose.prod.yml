@@ -1,0 +1,32 @@
+# docker-compose.yml
+
+x-common-service: &common-service
+  extends:
+    file: docker-compose.yml
+    service: base
+
+x-production-build: &production-build
+  context: .
+  dockerfile: Dockerfile
+  target: production
+
+services:
+  # =========================================================
+  # 🚀 MAIN APPLICATION
+  # =========================================================
+
+  app:
+    image: custy-prod:latest
+
+    <<: *common-service
+
+    build: *production-build
+
+    restart: unless-stopped
+
+    environment:
+      ENVIRONMENT: production
+
+    entrypoint: custy
+
+    command: ["--help"]

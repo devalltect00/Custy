@@ -1,0 +1,21 @@
+flowchart TD
+    A[Git Commits] --> B[Message Providers]
+    T["Template commit-msg.txt"] --> B
+
+    B --> C[Message Aggregator]
+
+    C --> D[Commit Pipeline]
+
+    D --> D1[Skip Merge]
+    D --> D2[Clean Stage]
+    D --> D3[Breaking Detection]
+    D --> D4[Release Transform]
+    D --> D5[Normal Transform]
+
+    D --> E[Structured Commits]
+
+    E --> F[Grouping]
+    F --> G[Deduplication]
+
+    G --> H["Renderer (Jinja2)"]
+    H --> I["CHANGELOG.md"]

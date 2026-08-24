@@ -1,177 +1,173 @@
-# `TODO.md`
+<!-- docs/TODO_tracking_history.md -->
 
-Personal notes, planning, and roadmap for **Custy**
+# TODO
+
+Tracks short-term development tasks, improvements, tasks and ideas .
 
 ---
 
-## ✨ Feature
+## Features
 
 ### ✅ Completed
-
-Earlier
-
-- [x] handle custy Full workflow
-- [x] handle custy "git add ."
-- [x] handle custy generate changelog
-- [x] handle custy as a tool
-- [x] handle custy command and put in makefile
-- [x] Fix issue where added to stage and commit after change version on `.cz.toml` and `app/__version__.py` files
-- [x] Make own feature like/inspired by/like command `cz check`
-- [x] fixing pre-release version format using pep440 for python
-- [x] Use format [Epoch!]MAJOR.MINOR.PATCH[Pre-release][Post-release][Development][+Local] the pep440 for python
-- [x] support Post-release, development, local identifiers, and epoch segment
-- [x] support 'release' on commit type
-
-Since v1.4.0
-
-- [x] if the current version is pre-release or post or dev and so on. If we want to increment. let's say from rc, next version is rc, the major, minor, and patch won't change. same as from alpha to beta. but not beta to alpha because beta 1 higher level than alpha. for example from v.1.2.3rc1 to v.1.2.3rc2 instead of v.1.2.3rc1 to v.1.2.4rc2; another example from v.1.2.3b1 to v.1.2.3b2 instead of v.1.2.3b1 to v.1.2.4b2;
-- [x] generate changelog when on release version. So check if the version is major.minor.patch. So allowed to generate changelog and push the changelog
-- [x] Check if the commit type not [feat, fix, perf, docs, refactor] don't bump or use tagging. Id use types [feat, fix, perf, docs, refactor] we need to use specific parameter if we want to force bump or tagging; or maybe there are better suggestion.
-    - Option 1: keep/still bumping and tagging but give warning;
-    - Option 2: prevent bumping and tagging;
-    - Option 3: must use additional specific parameter if want to use bumping or tagging;
-    - Option 4: must use additional specific CLI parameter if want to use bumping or tagging;
-    - or other better options
-- [x] need to check what type of project before making the versioning. We already have versioning custom format configuration for python. at least we have python and javascript whether for electron js, react js, next js, and so on
-- [x] when tagging. instead of put message on CLI args. it's better to open files as tagging message same like we already have for commit-msg. If we also specify specific parameter that tells use default tagging message. maybe there are a better solutions
-- [x] for release version, check all pre-lease, develop (and so on that needed) version commit message combine the all the commit body, description (etc that needed) into 1 as template for release version when for example from pre-release to release and put to external txt file (commit-msg.txt)
-- [x] from pre-release or dev, etc to release. No need to change the major.minor.patch. for example from v.1.2.3rc1 to v.1.2.3 instead of v.1.2.3rc1 to v.1.2.4
-    - Option 1. level the tag message be like that (no changes)
-    - Option 2. the tag message based on commit message
-    - Option 3. manually every time commit the tag
-    - Option 4. maybe there are some better and best options and solutions
-- [x] Backup just 10 maxiumum. 10 lastest/newest backup or we can set on CLI. by default 10
-- [x] Fix issue where to put backups, templates folders/directory. also with commit-msg.txt if needed
-- [x] handle cleanup backups CLI
-
-Since v1.5.0
-
-- [x] Bug fix and Make commit-msg.txt and tag-msg.txt with some automation if possible. Ref: docs\git\commit_message.md
-- [x] Make sure backup and add all of them to stages before commit and push
-- [x] add feature to force commit even no staged changes detected
-- [x] bug fix error where now on post tag and now bump in the same post tag for example 1.5.0.post1 → 1.5.0.post2
-- [x] Give template commit message git-msg.txt
-
-Since v1.7.1
-
-- [x] fix the file name from pep404_strategy.py to pep440_strategy.py and class name from PEP404Strategy to PEP440Strategy
-- [x] bug fix when switch from release to post-release use the same version as release but use the post-release format so for example: from 1.5.0 → 1.5.0.post1 instead of from 1.5.0 → 1.6.0.post1
-- [x] bug fixed, docs, and refactor the SemverStrategy and PEP440Strategy class
-- [x] Add tests to test SemverStrategy and PEP440Strategy class
-- [x] add new documentation `switching version.md`
-- [x] handle verbose results, the process before generating CHANGELOG.md
-
-Since v1.8.0
-
-- [x] use 2 branch; `main` and `develop`; `main` is stable one and `develop` is more experimental
-- [x] use 2 git remote, gitlab as main, and github as backup
-- [x] use and applied branching workflow checking
-- [x] Fix bug amd refactor WorkflowManager
-
-Since v1.9.0
-
-- [x] Make better CLI
-- [x] Make sure they use valid path, to prevent ambiguity. ["app/__version__.py", ".cz.toml", "template" (and its child), "docs", "tests", "tools/templates/changelog.j2", ".cz_changelog.j2", ".custor.toml", ".editorconfig", ".gitignore", ".projectignore", "CHANGELOG.md", "Makefile", "pyproject.toml"]
-- [x] Add specific args CLI, if true don't debug, or silent run
-- [x] add gitlab pipeline job at least run test on gitlab and github workflow
-- [x] make `how to use` documentation. We can use the formal or friendly language style
-- [x] Make better documentations, Readme.md file
-- [x] bug fixed where need to check the allowed commit type before resolve version
-- [x] bug fixed where unable to create pipeline
-- [x] clean project app
-- [x] Regenerate project structure documentation
-- [x] Format code
-- [x] Make sure it is ready to use, installing and usage
-
-Since v1.10.0
-
-- [x] advancing workflow manager functionality
-- [x] add test for transition_case on workflow_manager and its helper
-- [x] fix bug. Bugs: handling errors when the repository detected is new and no commits yet
-- [x] fix little bugs and typo.
-
----
-
-### 🧩 In Progress
 
 - _(Nothing yet)_
 
 ---
 
-### 🧠 Planning
+### 🧩 In Progress
 
-- using logger instead of print()
+#### General
+
+- [x] add .github workflow file
+  - [x] add ci.yml file
+  - [x] add docker-dev.yml file
+  - [x] add docker-prod.yml file
+  - [x] add release.yml file
+- [x] add .gitlab workflow file
+  - [x] add ci.yml file
+  - [x] add docker-dev.yml file
+  - [x] add docker-prod.yml file
+  - [x] add release.yml file
+- [x] add gitlab-ci.yml
+- [x] add ignore files
+  - [x] add .gitignore
+  - [x] add .dockerignore
+  - [x] add .prettierignore
+- [x] use logs for external logs
+- [x] add .vscode/
+  - [x] add .vscode/launch.json
+  - [x] add .vscode/settings.json
+- [~] add config or meta data
+  - [x] add .pre-commit-config.yaml
+  - [x] add .prettierrc.json
+  - [x] add AGENTS.md
+  - [x] add CONTRIBUTING.md
+  - [x] add LICENSE
+  - [x] add pyproject.toml
+  - [x] add requirements.txt
+  - [x] add SECURITY.md
+  - [x] add TODO.md
+  - [x] add README.md
+  - [~] Add CHANGELOG.md.
+- [x] add docker compose files
+  - [x] add docker-compose.dev.yml files
+  - [x] add docker-compose.prod.yml files
+  - [x] add docker-compose.yml files
+  - [x] add Dockerfile
+- [x] add example_command.txt
+- [x] add Makefile
+- [x] add Testing
+- [-] add mkdocs.yml
+- [-] add documentations (Use devalltect00-docs project or website instead)
+  - [-] Add the docs/badges.md
+  - [-] Add the docs/configuration.md
+  - [-] Add the docs/how-to-use.md
+  - [-] Add the docs/index.md
+  - [-] Add the docs/infrastructure.md
+  - [-] Add the docs/installation.md
+  - [-] Add the docs/usage.md
+  - [-] Add the docs/project_structure.md
+  - [-] Add the diagrams to docs/diagrams/
+- [x] Using .config/ path instead from tools/ path
+- [x] add banner
+- [x] Fix init
+- [x] General project cleanup and consistency pass.
+- [x] Update pyproject.toml description
+- [x] Update CONTRIBUTING.md description
+- [x] Refactor GitHelper
+- [x] Make sure app run well
+- [x] fix `custy --help`
+- [x] Makefile the help message
+- [x] on workflow command. Give message to ignore it for now. still in development. better noy run this command now. or it is a alpha version. give warning
+- [x] Update help message for each command
+- [x] Using ui panel on init command
+- [x] Update Makefile
+- [x] error exception on CLI when command is missing
+- [-] Ignore format tab to 4 with black or ruff
+- [-] Remove app/config/custy_config_loader.py (I will keep it as backups)
+
+#### Features related
+
+- [x] Refactor workflow_engine
+- [x] Refactor `./app/git_commit_tagger.py` file or GitCommitTagger class where on previous version it is a nig class, giant class or maybe we can call it a god class. and on previous version it is hard to extend, read, iimprovement. hard to add new features or mayeb change or remove it/them. With new update it is better under `.\app\core\workflow\workflow_engine.py`
+- [x] Refactor `./app/__main__.py` file, where on the previous version it combined CLI or frontend some is just like service or maybe even backend or whatever. Hard to read and extend. and now with new updates we can seperate between frontend on `.\app\cli\`and backend on `.\app\core\`
+- [x] Refactor directories and some files under `./app/utils/`. On previous version all the core things or backends or the logic get from here. The naming `utils` it quite confusing. after the updates we can seperate the files, features, code, etc. So not all the core things or backends or the logic things should be under `./app/utils/`. Many files moved and refactored here.
+- [x] Move custom configurations from `.\.custor.toml` into `.\.config\custy\config.toml`
+- [x] Logging improvement
+- [x] Adding external log features
+- [x] Update and fixed changelog generator features.
+- [x] Setup docker
+- [x] Setup docker compose
+- [x] Update `.gitignore` file
+- [x] added new and Update github workflow. some files under `.github` added updated
+- [x] Update and improve gitlab workflow. `.gitlab-ci.yml` updated and `.gitlab` added
+- [x] Use pre commit tools and add new file i.e. `.pre-commit-config.yaml` file.
+- [x] Add prettier configuration. `.prettierignore` and `.prettierrc.json` files added.
+- [x] Add Some others meta data, files, or configurations.
+- [x] Added `.vscode/` and allow git to track changes on this directory.
+- [x] Add new and update tests
+- [x] On `./tools/`, `project_structure/` removed and `./tools\generate_diagram` added.
+- [x] Update `Makefile` and `./make/` added
+- [x] `.agents` added
+- [x] Improvement, (add, fixed, removed etc) UI/UX on CLI console. Such as add colors, tables format, CLI help message or commands message, progress visualization, etc.
+- [x] Update and refactor project or code structure.
+- [x] Update some metadata files or anythings, for examples `pyproject.toml` file, etc
+- [x] On `./app/` directory now we have seperated and individual group of files or component or whatever it is. If we seacrh for ui things, it is under `./app/ui`. If we search for theme related we can search under `./app/`. and any other improvement code or project structure
+- [x] With new update, The code or app use some several code design or design patter. Some of the features or files or class or whatever use strategy pattern, some use pipeline design pattern, factory design pattern, etc.
+- [x] The CLI command now improvement. The all possible command if we/user run the custy especially the `custy run` command. All list possible command on `.\app\core\pipeline\profiles.py`. With new improvement it not just help user that use the app but also help developer extend, improve or whatever the features so much easier and more flexible.
+- [x] On current `./.config\custy\config.toml` file, on this version, there's a lot changes on the configuration than old `./.custor.toml` file
+- [x] Adding new cli command such as `custy init` etc. and also add, update, removed some cli command' options.
+
+Notes:
+The `docs/` directory seems old and deprecated. But I will keep it as backups.
+
+Also I still keep some files that deprecated and not used as backups for example `app\__main__.deprecated.py` file, etc.
+
+Last time configuration using `./.custor.toml` file and files under `./templates/`.After updates, all personal preferences or personal configuration stores and you can find on `./.config/` directory.
+
+With this new feature it is not just improve user experience, but also improvement as developer and for developer also. For example like improve code or project structure, improvement on code. So the developer also can easily or more easy to read, extend, add new features, remove features, find bugs, analyze bugs, fix bugs, etc.
+
+==================
+
+refactor Makefile help message
+gitlab pipeline
+fix why app error when run the command
+
+---
+
+### 🧠 Planned
+
+- _(Nothing yet)_
+
+---
+
+### 🔭 Future
+
+- [ ] Adding features convertion between pep440, semver, custom tags
+- [ ] Adding logic to check if "github_image" and "gitlab_image" valid url and valid image name
 
 ---
 
 ### 🗑️ Cancelled / Dropped
 
-- for version use this format major.minor.patch-pre_release.pre_release_number
-- change the pre-release format
-- Update the major, minor, and patch on `main` branch. But on `dev` branch `main`, I just update pre_release and pre_release
-- remote on gitlab push `main` and `dev`. but on github just push `main`
-- on CLI parameters, on --bump, add option `final`. So the bump from v1.4.0rc[n] to -> v1.4.0
-- bug fixes or improvements, if switch to `release/x/y` or `rc` version tag get all message from `dev` branch like `alpha`, `beta`, `rc`, `dev`, etc
+- _(Nothing yet)_
 
 ---
 
-## ⚖️ considerations
+## ⚖️ Considerations
 
-- allow to and stages, commit, and push TODO.md on gitlab but not on github
+- _(Nothing yet)_
 
 ---
 
-## 💡Ideas
+## 💡 Ideas
 
-- Automatically set template commit-msg.txt based on stages which one is added and modified.
-- Automatically create and delete commit-msg.txt when needed if we set argument on CLI or by default like that.
-- Backup before delete the commit-msg.txt
-- optionally, we can just see what would the next version by include additional CLI parameters or another ideas or just use --dry-run
-- Automate the build meta or local
-- Use .git/config (Local/Repo-specific)
-- if post release the commit message header initial commit type is `docs` or maybe `<docs>`
-- If there is a abandoned branch or experiment or deprecated branch version and want to go back to `main` branch. I choose to rename branch use format like archive/{feature}-{date} or experiment/{feature}-{date}. If I just don't care about archiving the branch I can use option to reset `dev` back to `main`
-- if when running custy is failed prevent or handle the backup files that just created
-- Use docker
+- _(Nothing yet)_
 
 ---
 
 ## 🧾 Notes
 
-### Branch Stratgies
+### TODO.md
 
-If I have 2 branch
-**case 1**: abandon current `dev` branch
-solution1: rename and archieving branch. Go back to `main` branch (prefered)
-solution2: Reset back `dev` to `main`
-**case 2**: finalize and release the code on `dev` branch on `main`
-solution1: go back to `main` branch. merge them. tagging and push the `main`. Update the `dev` to start the next experiment cycle. use new version for `dev` and push the `dev`
-**case 3**: Let's say there is a scenario I want to just see if the pipline job in gitlab is working let's say I havemore than 5 stages let's say 7 stages on gilab pipline. of course I will commit and push to gitlab. many commit and pushes with many failed pipline jobs. I try after one of commits and push one is success for 7 stages. It kinda messy you know. What should I do. my CHANGELOG.md will become messy with many commits that unused where many failed pipline jobs.
-✅ **Solutions**:
-
-1. Use a Temporary Pipeline Test Branch
-2. Squash Commits Before Merging into dev or main
-3. Use [skip ci] or [ci skip] in Commit Messages like `git commit -m "ci: testing YAML [skip ci]"` or `git commit -m "docs: update README [ci skip]"`
-4. Cleanup Before Tagging/Changelog
-
-### Usage
-
-if the commit type not [feat, fix, perf, docs, refactor] the version will not bump. 💡Hint: use --dry-run before run the actual to see what the next version would be
-
-===============
-
-bug fix and improvement GitHelper.branch_exists()
-bug fix and improvement GitHelper.get_current_branch()
-bug fix and improvement GitHelper.commit_and_push_changelog()
-new method GitHelper.is_repo_empty()
-new method GitHelper.is_repo_empty()
-bug fix and improvement GitCommitTagger.push_changes()
-bug fix and improvement GitCommitTagger.validate()
-
-fix the bug where the branch does not exists or when get branch but the no commit on git repo. So make sure the repo has a branch and HEAD.
-
-modified and improve README.md
-
-new cli command to handle when the repo branch
-
-branch name can custom name get from configuration file
+Keep this file concise, status-driven, and updated during each milestone.

@@ -1,0 +1,10 @@
+flowchart TD
+    A["commit-msg.txt"] --> B[TemplateMessageProvider]
+
+    B --> C{Unreleased?}
+    C -->|Yes| D[Include]
+    C -->|No| E[Skip]
+
+    D --> F[Aggregator]
+
+    F --> G[Pipeline]

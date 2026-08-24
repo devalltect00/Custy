@@ -1,0 +1,15 @@
+flowchart TD
+    A[Raw Commit Message] --> B["parse_commit()"]
+
+    B --> C{Valid?}
+    C -->|No| X[Skip]
+    C -->|Yes| D[CleanStage]
+
+    D --> E[BreakingChangeStage]
+
+    E --> F{Type == release?}
+    F -->|Yes| G[ReleaseTransformStage]
+    F -->|No| H[NormalTransformStage]
+
+    G --> I[Structured Output]
+    H --> I

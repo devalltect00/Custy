@@ -1,0 +1,25 @@
+# docker-compose.yml
+
+name: custy
+
+services:
+  base:
+    image: custy-base:latest
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: base
+
+    working_dir: /workspace
+
+    volumes:
+      - .:/workspace
+
+    environment:
+      PYTHONUNBUFFERED: "1"
+      PYTHONDONTWRITEBYTECODE: "1"
+      HOST_PWD: ${PWD}
+
+    stdin_open: true
+    tty: true

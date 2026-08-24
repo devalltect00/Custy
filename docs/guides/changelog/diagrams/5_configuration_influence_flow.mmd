@@ -1,0 +1,10 @@
+flowchart TD
+    A["custy.toml"] --> B[Cleaner Config]
+    A --> C[Breaking Config]
+    A --> D[Template Config]
+    A --> E[Scope Map]
+
+    B --> F[CleanStage]
+    C --> G[BreakingStage]
+    D --> H[TemplateProvider]
+    E --> I[Grouping]

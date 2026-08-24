@@ -1,9 +1,9 @@
 [tool.commitizen]
 name = "custy"
 <<<<<<< HEAD
-version = "1.10.12"
+version = "1.10.15"
 =======
-version = "1.10.11"
+version = "1.10.15"
 >>>>>>> d0e738133a102efb3619aed7b3c95821d864f12d
 tag_format = "v$version"
 changelog_file = "CHANGELOG.md"

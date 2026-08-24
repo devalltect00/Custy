@@ -1,0 +1,388 @@
+# =========================================================
+# 🚀 REFLOW CONFIGURATION
+# =========================================================
+#
+# Configuration Priority
+#
+#     CLI Arguments
+#          ↓
+#     Configuration File
+#          ↓
+#     Internal Defaults
+#
+# Example:
+#
+#     reflow --debug tags replay
+#
+# will override:
+#
+#     [tool.reflow.cli.execution]
+#     debug = false
+#
+# =========================================================
+
+
+# =========================================================
+# ⚙️ MAIN CONFIGURATION
+# =========================================================
+
+[tool.reflow]
+
+
+# =========================================================
+# 📁 TARGET REPOSITORY
+# =========================================================
+
+[tool.reflow.repository]
+
+# Choose exactly one target form. Do not configure both path and url.
+#
+# Local checkout mode:
+#     Keep path active and keep url commented out.
+#     Used by local-only commands such as `reflow init` and
+#     `reflow tags convert local`. Remote commands can also use the checkout's
+#     configured Git remote.
+#
+# Local working tree operated on directly by Reflow. Relative paths are
+# resolved from the invocation directory.
+# path = "."
+
+# Remote URL mode:
+#     Comment out path and uncomment url.
+#     Used by operational commands such as `reflow tags convert remote`,
+#     `reflow releases recover`, and `reflow dockerize` through a temporary
+#     managed clone. `reflow init` and `reflow tags convert local` reject URLs.
+#
+# Remote repository cloned into a managed temporary directory for each
+# operational command. Do not embed credentials or tokens in this URL.
+# url = "https://github.com/your-org/your-project.git"
+url = "https://gitlab.com/devalltect00/Custy.git"
+
+[tool.reflow.git]
+
+# Remote used for tag pushes and deletions.
+default_remote = "origin"
+
+
+# =========================================================
+# 🖥️ CLI SETTINGS
+# =========================================================
+#
+# Default values used by CLI commands when
+# corresponding options are not supplied.
+#
+# Example:
+#
+#     reflow releases recover
+#
+# =========================================================
+
+[tool.reflow.cli]
+
+
+# =========================================================
+# 🚀 EXECUTION
+# =========================================================
+#
+# Global execution behaviour.
+#
+# These values affect all commands.
+#
+# =========================================================
+
+[tool.reflow.cli.execution]
+
+# Enable verbose debugging output.
+debug = false
+
+# Preview workflows without persistent local or remote changes.
+# Read-only discovery and temporary workspace setup may still run.
+dry_run = false
+
+
+# =========================================================
+# 📊 PROGRESS DISPLAY
+# =========================================================
+
+[tool.reflow.cli.progress]
+
+# Show Rich spinners and determinate progress bars for long-running work.
+# Used by `reflow init`, both `reflow tags convert` scopes,
+# `reflow releases recover`, `reflow tags replay`, and `reflow dockerize`.
+# Set false for redirected output or automation that requires quiet progress.
+# This changes presentation only; it does not change dry-run or live behavior.
+enabled = true
+
+
+# =========================================================
+# 🏁 INITIALIZATION
+# =========================================================
+#
+# Default values used by:
+#
+#     reflow init
+#
+# =========================================================
+
+[tool.reflow.initialization]
+
+# Overwrite existing files without confirmation.
+force = false
+
+# Prompt before creating or overwriting files.
+ask = false
+
+
+# =========================================================
+# 🏷️ LEGACY TAG REPLAY COMPATIBILITY
+# =========================================================
+#
+# Default values used by:
+#
+#     reflow tags replay (deprecated alias)
+#
+# =========================================================
+
+[tool.reflow.cli.tags]
+
+[tool.reflow.cli.tags.replay]
+
+# Delay between tag replay operations.
+#
+# Unit:
+#     seconds
+#
+delay = 2
+
+# Replay only stable releases.
+#
+# Included:
+#     v1.0.0
+#     v2.5.3
+#
+# Excluded:
+#     alpha
+#     beta
+#     rc
+#     dev
+#
+only_stable = false
+
+# Maximum number of tags to replay.
+#
+# Examples:
+#
+#     10
+#     25
+#     100
+#
+# Use null for unlimited.
+#
+# limit = 25
+
+
+# =========================================================
+# 🔄 TAG CONVERSION
+# =========================================================
+#
+# Default values used by:
+#
+#     reflow tags convert local
+#     reflow tags convert remote
+#
+# =========================================================
+
+[tool.reflow.cli.tags.convert]
+
+# Destination format used by both conversion commands.
+# Supported values: "semver" and "pep440".
+# SemVer is the default.
+target_format = "semver"
+
+# Apply the displayed live replacement plan without an interactive prompt.
+# Used by both `reflow tags convert local` and `... remote`.
+# Keep false for normal interactive use. Dry-run never prompts.
+yes = false
+
+
+# =========================================================
+# 🛟 RELEASE RECOVERY
+# =========================================================
+#
+# Default values used by:
+#
+#     reflow releases recover
+#
+# =========================================================
+
+[tool.reflow.cli.releases]
+
+[tool.reflow.cli.releases.recover]
+
+# Delay between tag re-push operations.
+delay = 2
+
+# Recover stable releases only.
+only_stable = false
+
+# Optional maximum number of tags.
+# limit = 25
+
+
+# =========================================================
+# 🐳 DOCKER
+# =========================================================
+#
+# Default values used by:
+#
+# reflow dockerize
+#
+# =========================================================
+
+[tool.reflow.docker]
+
+# Registry provider.
+#
+# Available:
+# github
+# gitlab
+# both
+#
+provider = "github"
+
+# Keep local Docker images after push.
+#
+# false:
+# Remove non-latest images.
+#
+# true:
+# Keep all images locally.
+#
+keep_local_images = false
+
+# =========================================================
+# 🐙 GITHUB CONTAINER REGISTRY
+# =========================================================
+#
+# Configuration used when:
+#
+# provider = "github"
+#
+# or
+#
+# provider = "both"
+#
+# =========================================================
+
+[tool.reflow.github]
+
+# Target GitHub Container Registry image.
+#
+# Examples:
+#
+# ghcr.io/acme/my-app
+# ghcr.io/company/backend
+#
+image = "ghcr.io/your-org/your-image"
+
+# =========================================================
+# 🦊 GITLAB CONTAINER REGISTRY
+# =========================================================
+#
+# Configuration used when:
+#
+# provider = "gitlab"
+#
+# or
+#
+# provider = "both"
+#
+# =========================================================
+
+[tool.reflow.gitlab]
+
+# Target GitLab Container Registry image.
+#
+# Examples:
+#
+# registry.gitlab.com/acme/my-app
+# registry.gitlab.com/company/backend
+#
+image = "registry.gitlab.com/your-org/your-image"
+
+
+
+# =========================================================
+# 📝 LOGGING
+# =========================================================
+#
+# Logging configuration.
+#
+# =========================================================
+
+[tool.reflow.logging]
+
+# Available:
+#     DEBUG
+#     INFO
+#     WARNING
+#     ERROR
+#     CRITICAL
+#
+level = "INFO"
+
+# Enable Rich markup support.
+markup = true
+
+# Enable Rich tracebacks.
+rich_tracebacks = true
+
+# Display timestamps.
+show_time = false
+
+# Display log level.
+show_level = false
+
+# Console log format.
+console_format = "%(message)s"
+
+
+# =========================================================
+# 📄 FILE LOGGING
+# =========================================================
+#
+# Persistent log file configuration.
+#
+# =========================================================
+
+[tool.reflow.logging.file]
+
+# Available:
+#     DEBUG
+#     INFO
+#     WARNING
+#     ERROR
+#     CRITICAL
+#
+level = "DEBUG"
+
+# Directory where logs are stored.
+log_dir = "logs"
+
+# Log filename.
+log_file = "reflow.log"
+
+# Maximum size before rotation.
+#
+# Examples:
+#     10KB
+#     10MB
+#     1GB
+#
+max_bytes = "10MB"
+
+# Number of rotated log files to keep.
+backup_count = 5
+
+# File log format.
+file_format = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"

@@ -1,0 +1,184 @@
+# =========================================================
+# 📂 PATH HEADER SCANNER CONFIGURATION
+# =========================================================
+#
+# Configuration Priority
+#
+#     CLI Arguments
+#          ↓
+#     Configuration File
+#          ↓
+#     Internal Defaults
+#
+# Example:
+#
+#     path-header-scanner scan --debug
+#
+# will override:
+#
+#     [tool.path-header-scanner.cli.execution]
+#     debug = false
+#
+# =========================================================
+
+
+# =========================================================
+# ⚙️ MAIN CONFIGURATION
+# =========================================================
+
+[tool.path-header-scanner]
+
+
+# =========================================================
+# 🖥️ CLI SETTINGS
+# =========================================================
+#
+# Default values used by CLI commands when
+# corresponding options are not supplied.
+#
+# Example:
+#
+#     path-header-scanner scan
+#
+# =========================================================
+
+[tool.path-header-scanner.cli]
+
+
+# =========================================================
+# 🚀 EXECUTION
+# =========================================================
+#
+# Global execution behaviour.
+#
+# These values affect all commands.
+#
+# =========================================================
+
+[tool.path-header-scanner.cli.execution]
+
+# Simulate mutating commands without changing project files.
+dry_run = false
+
+# Enable verbose debugging output.
+debug = false
+
+
+# =========================================================
+# 🏁 INITIALIZATION
+# =========================================================
+#
+# Default values used by:
+#
+#     path-header-scanner init
+#
+# =========================================================
+
+[tool.path-header-scanner.initialization]
+
+# Overwrite existing files without confirmation.
+force = false
+
+# Prompt before creating or overwriting files.
+ask = false
+
+
+# =========================================================
+# 🔍 SCAN
+# =========================================================
+#
+# Default values used by:
+#
+#     path-header-scanner scan
+#
+# =========================================================
+
+[tool.path-header-scanner.cli.scan]
+
+# Root directory to scan.
+target_directory = "app"
+
+# Working Directory
+# workdir =                      # Ignore this
+
+# Apply generated headers to files.
+apply = false
+
+# Include target directory in generated output.
+include_target_directory = true
+
+
+# =========================================================
+# 📝 LOGGING
+# =========================================================
+#
+# Logging configuration.
+#
+# =========================================================
+
+[tool.path-header-scanner.logging]
+
+# Available:
+#     DEBUG
+#     INFO
+#     WARNING
+#     ERROR
+#     CRITICAL
+#
+level = "INFO"
+
+# Enable Rich markup support.
+markup = true
+
+# Enable Rich tracebacks.
+rich_tracebacks = true
+
+# Display timestamps.
+show_time = false
+
+# Display log level.
+show_level = false
+
+# Console log format.
+console_format = "%(message)s"
+
+
+# =========================================================
+# 📄 FILE LOGGING
+# =========================================================
+#
+# Persistent log file configuration.
+#
+# =========================================================
+
+[tool.path-header-scanner.logging.file]
+
+# Available:
+#     DEBUG
+#     INFO
+#     WARNING
+#     ERROR
+#     CRITICAL
+#
+level = "DEBUG"
+
+# Directory where logs are stored.
+log_dir = "logs"
+
+# Log filename.
+log_file = "path_header_scanner.log"
+
+# Maximum size before rotation.
+#
+# Examples:
+#     10KB
+#     10MB
+#     1GB
+#
+max_bytes = "10MB"
+
+# Number of rotated log files to keep.
+backup_count = 5
+
+# File log format.
+file_format = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"

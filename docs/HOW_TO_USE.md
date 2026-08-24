@@ -1,3 +1,5 @@
+<!-- docs/HOW_TO_USE.md -->
+
 # 📘 HOW TO USE `Custy`
 
 `Custy` is a CLI tool to automate Git commit, tagging, versioning, changelog generation, and enforcing branching workflows. It supports SemVer, PEP 440, and other strategies.

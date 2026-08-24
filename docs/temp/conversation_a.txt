@@ -1,0 +1,500 @@
+I actually think you're now asking the right design questions. At this point we're no longer fixing bugs—we're designing the output format that Custy will probably use for years.
+
+## 1. Indentation (`-` vs `    -`)
+
+Between your two options:
+
+Option A
+
+```md
+    - Why should I care?
+```
+
+Option B
+
+```md
+- Why should I care?
+```
+
+I would choose **Option B**.
+
+Why?
+
+Markdown already defines list indentation.
+
+Every Markdown renderer (GitHub, GitLab, VSCode, Docusaurus, MkDocs, etc.) expects
+
+```md
+- item
+- item
+```
+
+or
+
+```md
+* item
+```
+
+Adding four spaces before every bullet actually means something different in Markdown.
+
+For example
+
+```md
+### Fixed
+
+    - fix bug
+```
+
+can be interpreted as
+
+```
+code block
+
+- fix bug
+```
+
+depending on the renderer.
+
+So I would **never intentionally indent top-level bullets**.
+
+Instead, I'd use blank lines.
+
+Good:
+
+```md
+### 🐛 Fixed
+
+- Prevent unsafe execution.
+- Improve merge validation.
+- Fix branch cleanup.
+```
+
+Bad:
+
+```md
+### 🐛 Fixed
+- Prevent unsafe execution.
+- Improve merge validation.
+```
+
+Notice the blank line.
+
+That blank line makes a surprisingly large difference in readability.
+
+---
+
+## 2. Bullet style
+
+I actually like your idea.
+
+There are two kinds of lists.
+
+### Primary lists
+
+These describe actual changes.
+
+I'd keep Markdown bullets.
+
+```md
+- Added WorkflowManager.
+- Improved cleanup.
+- Fixed bug.
+```
+
+because they render everywhere.
+
+---
+
+### Secondary lists
+
+Things like versions.
+
+Instead of
+
+```md
+- 1.10.6rc1
+- 1.10.6rc2
+- 1.10.6rc3
+```
+
+I'd use
+
+```md
+• 1.10.6rc1
+• 1.10.6rc2
+• 1.10.6rc3
+```
+
+or
+
+```md
+1.10.6rc1 • 1.10.6rc2 • 1.10.6rc3
+```
+
+depending on the situation.
+
+---
+
+## 3. Icons
+
+I wouldn't use many.
+
+One mistake many changelog generators make is emoji overload.
+
+Bad
+
+```md
+🚀 Added
+
+🐛 Fixed
+
+🧠 Refactor
+
+📚 Docs
+
+🧹 Cleanup
+
+✨ Feature
+
+📦 Other
+
+🔧 Chore
+
+⚙ Build
+
+🧪 Test
+
+🎯 UX
+
+🔒 Security
+
+📈 Performance
+
+💥 Breaking
+
+🎉 Release
+```
+
+It's cute.
+
+But after 300 releases...
+
+it becomes visual noise.
+
+I'd only keep icons for major sections.
+
+Example
+
+```md
+## 1.10.6
+
+### ✨ Features
+
+### 🐛 Bug Fixes
+
+### 🧠 Improvements
+
+### 📚 Documentation
+
+### ⚠ Breaking Changes
+```
+
+That's enough.
+
+---
+
+## 4. Spacing
+
+I think this is one of the biggest improvements Custy can make.
+
+Instead of
+
+```md
+## 1.10.6
+Compare...
+
+### Fixed
+- ...
+### Docs
+- ...
+```
+
+I'd always generate
+
+```md
+## 1.10.6 (2025-08-06)
+
+Compare:
+https://...
+
+Summary
+
+Final release...
+
+### 🐛 Bug Fixes
+
+- ...
+- ...
+
+### 📚 Documentation
+
+- ...
+- ...
+```
+
+Notice
+
+* blank line after every heading
+* blank line before every section
+* blank line before metadata
+
+This makes huge files much easier to scan.
+
+---
+
+# The Tags section
+
+This is the part I think deserves redesign.
+
+Currently your commit contains
+
+```text
+🔖 Tags
+
+Type:
+#release
+#bugfix
+#refactor
+
+Workflow:
+#workflow
+
+Docs:
+#docs
+#template
+
+Maintenance:
+#cleanup
+
+Stability:
+#stable
+```
+
+This is fantastic...
+
+for the commit.
+
+But not for CHANGELOG.
+
+---
+
+I think the parser should preserve the structure.
+
+Instead of producing
+
+```md
+- #release
+- #bugfix
+- #stable
+```
+
+I'd build a model like
+
+```python
+TagGroup(
+    name="Type",
+    tags=[
+        "release",
+        "bugfix",
+        "refactor",
+    ],
+)
+
+TagGroup(
+    name="Workflow",
+    tags=[
+        "workflow",
+    ],
+)
+```
+
+Now Jinja can decide how to render it.
+
+---
+
+## Option 1 (my favorite)
+
+Very compact.
+
+```md
+Metadata
+
+Type:
+release • bugfix • refactor
+
+Workflow:
+workflow
+
+Documentation:
+docs • template
+
+Maintenance:
+cleanup
+
+Stability:
+stable
+```
+
+Very readable.
+
+---
+
+## Option 2
+
+Badge style.
+
+```text
+Tags
+
+[release] [bugfix] [refactor]
+
+[workflow]
+
+[docs] [template]
+
+[cleanup]
+
+[stable]
+```
+
+GitHub renders these nicely if styled.
+
+---
+
+## Option 3
+
+Table.
+
+```md
+| Category | Tags |
+|----------|------|
+| Type | release, bugfix, refactor |
+| Docs | docs, template |
+| Workflow | workflow |
+| Stability | stable |
+```
+
+Personally I don't like tables in CHANGELOGs.
+
+They're harder to read on mobile.
+
+---
+
+## Option 4 (my favorite for Custy)
+
+Merge everything into metadata.
+
+```md
+## 1.10.6
+
+Release
+Stable
+
+Scope
+Workflow
+
+Categories
+Release • Bug Fix • Refactor
+
+Tags
+workflow • docs • template • cleanup
+```
+
+Much cleaner.
+
+---
+
+# Even better...
+
+I actually wouldn't call them **Tags** anymore.
+
+They're not Git tags.
+
+They're classifications.
+
+I'd rename them
+
+```text
+Classification
+```
+
+or
+
+```text
+Metadata
+```
+
+Example
+
+```md
+Metadata
+
+Type:
+Release
+
+Scope:
+Workflow
+
+Classification:
+Bug Fix • Refactor
+
+Stability:
+Stable
+```
+
+Notice...
+
+There isn't a single `#`.
+
+The `#` only exists because the commit template needs something easy for humans to edit.
+
+Internally, Custy should strip them.
+
+Instead of displaying
+
+```text
+#bugfix
+```
+
+display
+
+```text
+Bug Fix
+```
+
+Instead of
+
+```text
+#stable
+```
+
+display
+
+```text
+Stable
+```
+
+It looks much more professional.
+
+---
+
+## One idea I especially like for Custy
+
+I would actually split the pipeline into **two responsibilities**:
+
+* **Commit message** → Rich, editable, and designed for the developer. It can contain tags, metadata, internal notes like "Changelog: handled separately", and any context that helps during development.
+* **CHANGELOG** → Clean, reader-focused release notes. It should **extract** only the information that matters to someone reading the project's history.
+
+That means things like `handled separately`, raw `#tags`, and internal template markers never appear in the final changelog. Instead, the parser promotes them into structured metadata (release type, stability, scope, classifications), while the narrative sections ("Summary", "Features", "Bug Fixes", "Documentation") remain easy to scan.
+
+I think that's what will make Custy stand out. Rather than being just another commit-to-changelog converter, it becomes a **structured release note generator** that understands the semantics of the commit template instead of simply copying its text.

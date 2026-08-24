@@ -1,0 +1,57 @@
+# =========================================================
+# 🧪 Validation & Continuous Integration
+# =========================================================
+#
+# GitHub Equivalent
+# -----------------
+# .github/workflows/ci.yml
+#
+# Purpose
+# -------
+# Execute validation and testing jobs.
+#
+# Responsibilities
+# ----------------
+# - Install project dependencies
+# - Execute validation workflow
+# - Verify compatibility across Python versions
+#
+# Trigger Sources
+# ---------------
+# - Pushes
+# - Merge Requests
+# - Manual Pipelines
+#
+# =========================================================
+
+ci:test:
+  stage: test
+
+  image: python:$PYTHON_VERSION
+
+  parallel:
+    matrix:
+      - PYTHON_VERSION:
+          # - "3.11"
+          # - "3.12"
+          # - "3.13"
+          - "3.14"
+
+  before_script:
+    - python --version
+
+    - python -m pip install --upgrade pip
+
+    - pip install -e .[dev]
+
+  script:
+    - make check-ci
+
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+    - if: '$CI_COMMIT_BRANCH == "main"'
+
+    - if: '$CI_COMMIT_BRANCH == "develop"'
+
+    - if: '$CI_COMMIT_BRANCH == "dev"'

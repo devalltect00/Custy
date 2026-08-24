@@ -1,0 +1,154 @@
+# docker-compose.yml
+
+x-common-service: &common-service
+  extends:
+    file: docker-compose.yml
+    service: base
+
+x-development-build: &development-build
+  context: .
+  dockerfile: Dockerfile
+  target: development
+
+# Runtime settings shared by development helper services. Only `app` receives
+# the build definition; every other service reuses the resulting image.
+x-development-service: &development-service
+  <<: *common-service
+  image: custy-dev:latest
+
+  environment:
+    ENVIRONMENT: development
+
+  stdin_open: true
+  tty: true
+
+services:
+  # =========================================================
+  # 🚀 MAIN APPLICATION
+  # =========================================================
+
+  app:
+    <<: *development-service
+
+    build: *development-build
+
+  # =========================================================
+  # 🐚 SHELL
+  # =========================================================
+
+  shell:
+    <<: *development-service
+
+    entrypoint: []
+
+    command: sh
+
+  # =========================================================
+  # 🧶 LINTING
+  # =========================================================
+
+  lint:
+    <<: *development-service
+
+    entrypoint: []
+
+    command: >
+      python -m ruff check app tests
+
+  lint-fix:
+    <<: *development-service
+
+    entrypoint: []
+
+    command: >
+      python -m ruff check --fix app tests
+
+  # =========================================================
+  # 🧶 FORMATTING
+  # =========================================================
+
+  format:
+    <<: *development-service
+
+    entrypoint: []
+
+    command: >
+      python -m black app tests
+
+  format-check:
+    <<: *development-service
+
+    entrypoint: []
+
+    command: >
+      python -m black app tests --check
+
+  # =========================================================
+  # 🧪 TESTING
+  # =========================================================
+
+  test:
+    <<: *development-service
+
+    entrypoint: []
+
+    command: python -m pytest -v
+
+  # =========================================================
+  # 📚 DOCUMENTATION
+  # =========================================================
+
+  docs:
+    image: squidfunk/mkdocs-material:latest
+
+    ports:
+      - "8001:8000" # HostPort:ContainerPort — user 8001 externally
+
+    working_dir: /workspace
+
+    volumes:
+      - .:/workspace # Mount your project so it can be read mkdocs.yml and docs/
+
+    # command: serve -a 0.0.0.0:8000 # Old Syntax
+
+    entrypoint: python -m mkdocs
+
+    command: serve --dev-addr=0.0.0.0:8000
+
+  # =========================================================
+  # 📦 PACKAGE BUILD
+  # =========================================================
+
+  build:
+    <<: *development-service
+
+    entrypoint: []
+
+    command: python -m build
+
+  # =========================================================
+  # ✅ QUALITY ASSURANCE
+  # =========================================================
+
+  check:
+    <<: *development-service
+
+    entrypoint: []
+
+    command: >
+      sh -c "
+      python -m black --check app tests &&
+      python -m ruff check app tests &&
+      python -m pytest -v
+      "
+
+  fix:
+    <<: *development-service
+
+    entrypoint: []
+
+    command: >
+      sh -c "
+      python -m black app tests &&
+      python -m ruff check --fix app tests
+      "

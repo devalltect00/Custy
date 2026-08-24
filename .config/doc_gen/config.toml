@@ -1,0 +1,297 @@
+# =========================================================
+# 📚 DOC-GEN CONFIGURATION
+# =========================================================
+#
+# Configuration Priority
+#
+#     CLI Arguments
+#          ↓
+#     Configuration File
+#          ↓
+#     Internal Defaults
+#
+# Example:
+#
+#     doc-gen structure generate
+#
+# will override:
+#
+#     [tool.doc-gen.cli.structure.generate]
+#
+# =========================================================
+
+
+# =========================================================
+# ⚙️ MAIN CONFIGURATION
+# =========================================================
+
+[tool.doc-gen]
+
+
+# =========================================================
+# 🖥️ CLI SETTINGS
+# =========================================================
+#
+# Default values used by CLI commands when
+# corresponding options are not supplied.
+#
+# Example:
+#
+#     doc-gen structure generate
+#
+# =========================================================
+
+[tool.doc-gen.cli]
+
+
+# =========================================================
+# 🚀 EXECUTION
+# =========================================================
+#
+# Global execution behaviour.
+#
+# These values affect all commands.
+#
+# =========================================================
+
+[tool.doc-gen.cli.execution]
+
+# Simulate mutating commands without changing project files.
+dry_run = false
+
+# Enable verbose debugging output.
+debug = false
+
+
+# =========================================================
+# 🏁 INITIALIZATION
+# =========================================================
+#
+# Default values used by:
+#
+#     doc-gen init
+#
+# =========================================================
+
+[tool.doc-gen.initialization]
+
+# Overwrite existing files without confirmation.
+force = false
+
+# Prompt before creating or overwriting files.
+ask = false
+
+
+# =========================================================
+# 🌳 PROJECT STRUCTURE
+# =========================================================
+#
+# Shared defaults used by:
+#
+#     doc-gen structure generate
+#     doc-gen structure print
+#     doc-gen structure analyze
+#
+# =========================================================
+
+[tool.doc-gen.cli.structure]
+
+# Root directory to scan.
+target_directory = "."
+
+# Available:
+#     minimal
+#     default
+#     detailed
+#     custom
+#
+profile = "custom"
+
+# Enable automatic structure optimization.
+# Enable profile-aware optimization.
+smart_mode = false
+
+# Maximum directory depth.
+max_depth = 5
+
+# Show files in generated output.
+show_files = true
+
+# # collapse =
+# # projectType =   # ignore this
+
+# Override automatic project detection.
+#
+# Examples:
+#     python
+#     django
+#     nodejs
+#     reactjs
+#     nextjs
+#
+# # project_type = ""   # ignore this
+
+# Print additional information.
+verbose = false
+
+# Comma-separated directories to collapse.
+# Directories collapsed into a single node.
+#
+# Example:
+#     node_modules,.venv,dist
+#
+# How to define:
+# 1. with strings seperated with comma.
+#   Examples:
+#     collapse_dirs = "node_modules,venv,.venv"
+#
+# 2. with list of strings.
+#   Examples:
+#     collapse_dirs = [
+#         "node_modules",
+#         "venv",
+#         ".venv",
+#         "venv_3_14",
+#     ]
+collapse_dirs = [
+    ".next",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    "build",
+    "htmlcov",
+    "dist",
+    "logs",
+    "node_modules",
+    "site",
+    "temp",
+    "venv",
+    "venv_3_14",
+]
+
+
+# =========================================================
+# 📝 STRUCTURE GENERATE
+# =========================================================
+#
+# Default values used by:
+#
+#     doc-gen structure generate
+#
+# =========================================================
+
+[tool.doc-gen.cli.structure.generate]
+
+# Output file location.
+output_file = "docs/project_structure.md"
+
+
+# =========================================================
+# 🖨️ STRUCTURE PRINT
+# =========================================================
+#
+# Default values used by:
+#
+#     doc-gen structure print
+#
+# =========================================================
+
+[tool.doc-gen.cli.structure.print]
+
+# Reserved for future print-specific settings.
+
+
+# =========================================================
+# 📊 STRUCTURE ANALYZE
+# =========================================================
+#
+# Default values used by:
+#
+#     doc-gen structure analyze
+#
+# =========================================================
+
+[tool.doc-gen.cli.structure.analyze]
+
+# Reserved for future analyze-specific settings.
+
+
+# =========================================================
+# 📝 LOGGING
+# =========================================================
+#
+# Logging configuration.
+#
+# =========================================================
+
+[tool.doc-gen.logging]
+
+# Available:
+#     DEBUG
+#     INFO
+#     WARNING
+#     ERROR
+#     CRITICAL
+#
+level = "CRITICAL"
+
+# Enable Rich markup support.
+markup = true
+
+# Enable Rich tracebacks.
+rich_tracebacks = true
+
+# Display timestamps.
+show_time = false
+
+# Display log level.
+show_level = false
+
+# Console log format.
+console_format = "%(message)s"
+
+
+# =========================================================
+# 📄 FILE LOGGING
+# =========================================================
+#
+# Persistent log file configuration.
+#
+# =========================================================
+
+[tool.doc-gen.logging.file]
+
+# Available:
+#     DEBUG
+#     INFO
+#     WARNING
+#     ERROR
+#     CRITICAL
+#
+level = "DEBUG"
+
+# Directory where logs are stored.
+log_dir = "logs"
+
+# Log filename.
+#
+# Examples:
+#     app.log
+#     doc_gen.log
+#
+log_file = "doc_gen.log"
+
+# Maximum size before rotation.
+#
+# Examples:
+#     10KB
+#     10MB
+#     1GB
+#
+max_bytes = "10MB"
+
+# Number of rotated log files to keep.
+backup_count = 5
+
+# File log format.
+file_format = "%(asctime)s | %(levelname)s | %(name)s | %(message)s"

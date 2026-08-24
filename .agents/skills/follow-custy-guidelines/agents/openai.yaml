@@ -1,0 +1,4 @@
+interface:
+  display_name: "Custy Project Guidelines"
+  short_description: "Follow Custy project rules and workflow"
+  default_prompt: "Use $follow-custy-guidelines to work safely and consistently in the Custy repository."

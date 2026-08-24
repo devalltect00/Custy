@@ -1,1 +1,3 @@
-__version__ = "1.10.14"
+# app/__version__.py
+
+__version__ = "1.0.0"

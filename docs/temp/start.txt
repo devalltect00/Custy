@@ -1,0 +1,853 @@
+Now it is better, We make progress. It show compare link and commit message.
+
+The output of CHANGELOG.md like
+```
+## 1.10.12 (2026-04-01)
+[Compare changes](https://github.com/devalltect00/Custy/compare/1.10.11...1.10.12)
+### ✨ Features
+#### main
+- and fixes from pre-releases: .
+- All functionality has been fully validated and .
+- 🎉 **Custy 1.10.12 is now stable and ready for production use.**
+- **Tags**:
+- `#feat`
+- `#stable`
+- handled separately
+### 🚀 Release
+#### main
+- and fixes from pre-releases: .
+- All functionality has been fully validated and .
+- fix bug. Bugs: handling errors when the repository detected is new and no commits yet
+- fix little bugs and typo.
+- 🎉 **Custy 1.10.11 is now stable and ready for production use.**
+- **Tags**:
+- `#release`
+- `#stable`
+- handled separately
+---
+
+## 1.10.11 (2025-11-11)
+[Compare changes](https://github.com/devalltect00/Custy/compare/1.10.10...1.10.11)
+### 🚀 Release
+#### main
+- and fixes from pre-releases: .
+- All functionality has been fully validated and .
+- modified `requirements.txt`
+- 🎉 **Custy 1.10.11 is now stable and ready for production use.**
+- **Tags**:
+- `#bugfix`
+- `#stable`
+- handled separately
+### 📦 Others
+#### general
+- Merge pull request #1 from devalltect00/develop
+### 📝 Documentation
+#### changelog
+- update changelog
+---
+
+## 1.10.10 (2025-11-11)
+[Compare changes](https://github.com/devalltect00/Custy/compare/1.10.1...1.10.10)
+### 🚀 Release
+#### main
+- and fixes from pre-releases: .
+- All functionality has been fully validated and .
+- modified `README.md`
+- modified `TODO.md`
+- modified `requirements.txt`
+- 🎉 **Custy 1.10.10 is now stable and ready for production use.**
+- **Tags**:
+- `#bugfix`
+- `#stable`
+- handled separately
+- fix issue on `.github\workflows\test.yml`
+- 🎉 **Custy 1.10.9 is now stable and ready for production use.**
+- `#release`, `#bugfix`
+- Updated `README.md`
+- 🎉 **Custy 1.10.8 is now stable and ready for production use.**
+- `#release`
+- `#docs`
+- 🎉 **Custy 1.10.7 is now stable and ready for production use.**
+- 1.10.6 — improve workflow safety, templates, and user interaction
+- and fixes from pre-releases: 1.10.5rc1, 1.10.5b1.
+- Minor internal logic bugs resolved for better stability
+- 🎉 **Custy 1.10.5 is now stable and ready for production use.**
+- and fixes from pre-releases: 1.10.4rc1, 1.10.4b1.
+- 🎉 **Custy 1.10.4 is now stable and ready for production use.**
+- 🎉 **Custy 1.10.3 is now stable and ready for production use.**
+- and fixes from pre-releases: 1.10.2rc1, 1.10.2b1.
+- 🎉 **Custy 1.10.2 is now stable and ready for production use.**
+### 📝 Documentation
+#### changelog
+- update changelog
+### 🧠 Refactoring
+#### template
+- Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+- Feature-complete and undergoing final validation before stable release.
+- This release candidate consolidates finalized features and bug fixes before the stable release.
+- Refactored and expanded example templates for commit and tag messages
+- _ `1.10.6rc4`_
+- **Tags**:
+- `#refactor`
+- `#rc`
+#### workflow
+- Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+- Feature-complete and undergoing final validation before stable release.
+- This release candidate consolidates finalized features and bug fixes before the stable release:
+- _ `1.10.6rc2`_
+- **Tags**:
+- `#refactor`workflow
+#### core
+- Beta release for **Custy 1.10.4**, introducing mid-stage features and workflow improvements.
+- Partially validated features and improvements. Some issue still remain.
+- This beta includes several bug fixes and enhancements:
+- This release just for testing the app for release
+- _ `1.10.4b1`_
+- **Tags**:
+- `#refactor`
+### 🐛 Bug Fixes
+#### workflow
+- Release candidate for **Custy 1.10.6**, consolidating all pre-release changes and preparing for stable release.
+- Feature-complete and undergoing final validation before stable release.
+- Prevent unintended execution in CASE 3, 6, and 9 if staged files exist
+- Ensures safety during critical merge operations inside `WorkflowManager`
+- Added interactive prompt (`y/n`) when no files are staged during validation
+- Allows user to explicitly confirm whether to proceed or abort
+- These changes make the workflow execution more resilient and user-aware during tagging phases.
+- _ `1.10.6rc3`_
+- **Tags**:
+- `#bugfix`
+- `#workflow`
+- `#safety`
+- `#rc`
+- This release candidate consolidates finalized features and bug fixes before the stable release.
+- Minor internal logic bugs resolved for better stability
+- 📘 update `project structure` documentation
+- _ `1.10.6rc1`_
+- Beta release for **Custy 1.10.6**, introducing mid-stage features and workflow improvements.
+- Partially validated features and improvements. Some issue still remain.
+- This beta includes several bug fixes and enhancements.
+- _ `1.10.6b1`_
+- Release candidate for **Custy 1.10.5**, consolidating all pre-release changes and preparing for stable release.
+- _ `1.10.5rc1`_
+- Beta release for **Custy 1.10.5**, introducing mid-stage features and workflow improvements.
+- This beta includes several bug fixes and enhancements:
+- reapplied clean branch functionality
+- _ `1.10.5b1`_
+- Release candidate for **Custy 1.10.2**, consolidating all pre-release changes and preparing for stable release.
+- This release candidate consolidates finalized features and bug fixes before the stable release:
+- _ `1.10.2rc1`_
+- Beta release for **Custy 1.10.2**, introducing mid-stage features and workflow improvements.
+- 🐛 Fixed a minor internal bug to improve stability
+- _ `1.10.2b1`_
+#### core
+- Release candidate for **Custy 1.10.4**, consolidating all pre-release changes and preparing for stable release.
+- Feature-complete and undergoing final validation before stable release.
+- This release candidate consolidates finalized features and bug fixes before the stable release.
+- Minor internal logic bugs resolved for better stability
+- _ `1.10.4rc1`_
+- **Tags**:
+- `#bugfix`
+---
+```
+
+If I run `git log`, the Output
+```
+commit 477310119ebde16df8e6862cdf84a9f66b8a24d6
+Merge: 8520a08 a84afae
+Author: Rizky Fernandes <rizkyslenovo29@gmail.com>
+Date:   Wed Apr 1 13:03:00 2026 +0000
+
+    Merge branch 'fix/main-clean-v2' into 'main'
+
+    docs(changelog): update changelog
+
+    See merge request devalltects-group/custy!1
+
+commit a84afaeaeae4d5b6b216e54b669b05b028ea90a6
+Merge: cf01b6e 8520a08
+Author: Rizky Fernandes <rizkyslenovo29@gmail.com>
+Date:   Wed Apr 1 13:02:41 2026 +0000
+
+    Merge branch 'main' into 'fix/main-clean-v2'
+
+    # Conflicts:
+    #   CHANGELOG.md
+
+commit 8520a08ff10ec1b7e848f20bcc6e64933fe11829
+Merge: 19bb1a5 d0e7381
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Wed Apr 1 19:39:58 2026 +0700
+
+    fixed
+
+commit cf01b6eed42f7659b66ae2f5c65f0b9fce000375
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Wed Apr 1 19:31:51 2026 +0700
+
+    docs(changelog): update changelog
+
+commit 19bb1a52acaa6ee6d9559b2be6ac8545709a9aba (tag: 1.10.12)
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Wed Apr 1 19:31:09 2026 +0700
+
+    feat(main): 1.10.12
+
+    Final release of **Custy 1.10.12**, promoted from the latest release candidate.
+
+    Includes all feature and fixes from pre-releases: .
+    All functionality has been fully validated and production-ready.
+
+    - *(Nothing yet)* — See tag message for full context.
+
+    ---
+
+    🎉 **Custy 1.10.12 is now stable and ready for production use.**
+
+    🔖 **Tags**:
+    - Type: `#feat`
+    - Stability: `#stable`
+
+    Changelog: handled separately
+
+commit e2ec88917beb86c2daf77cefcd5d3810911dda64
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Wed Apr 1 19:23:46 2026 +0700
+
+    release(main): 1.10.11
+
+    Final release of **Custy 1.10.11**, promoted from the latest release candidate.
+
+    Includes all feature and fixes from pre-releases: .
+    All functionality has been fully validated and production-ready.
+
+    - fix bug. Bugs: handling errors when the repository detected is new and no commits yet
+    - fix little bugs and typo.
+
+    ---
+
+    🎉 **Custy 1.10.11 is now stable and ready for production use.**
+
+    🔖 **Tags**:
+    - Type: `#release`
+    - Stability: `#stable`
+
+    Changelog: handled separately
+
+commit d0e738133a102efb3619aed7b3c95821d864f12d
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Tue Nov 11 00:16:08 2025 +0700
+
+    docs(changelog): update changelog
+
+commit c4db47e72b4f433fecab9c8c58679974fe3907e0 (tag: 1.10.11)
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Tue Nov 11 00:15:33 2025 +0700
+
+    release(main): 1.10.11
+
+    Final release of **Custy 1.10.11**, promoted from the latest release candidate.
+
+    Includes all feature and fixes from pre-releases: .
+    All functionality has been fully validated and production-ready.
+
+    - modified `requirements.txt`
+
+    ---
+
+    🎉 **Custy 1.10.11 is now stable and ready for production use.**
+
+    🔖 **Tags**:
+    - Type: `#bugfix`
+    - Stability: `#stable`
+
+    Changelog: handled separately
+
+commit 945d1f4353b87fa61eb996a0b8b107fc89730f3a
+Merge: 42715b2 6150159
+Author: Rizky Purwanto Fernandes <62181469+devalltect00@users.noreply.github.com>
+Date:   Tue Nov 11 00:11:04 2025 +0700
+
+    Merge pull request #1 from devalltect00/develop
+
+    Develop
+
+commit 615015948ba9117af79df65fbe24a98ff03ddd4d
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Tue Nov 11 00:07:40 2025 +0700
+
+    docs(changelog): update changelog
+
+commit bf78a738ddd6e727040af8dceab11cecb179ee4f (tag: 1.10.10)
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Tue Nov 11 00:07:06 2025 +0700
+
+    release(main): 1.10.10
+
+    Final release of **Custy 1.10.10**, promoted from the latest release candidate.
+
+    Includes all feature and fixes from pre-releases: .
+    All functionality has been fully validated and production-ready.
+
+    - modified `README.md`
+    - modified `TODO.md`
+    - modified `requirements.txt`
+
+    ---
+
+    🎉 **Custy 1.10.10 is now stable and ready for production use.**
+
+    🔖 **Tags**:
+    - Type: `#bugfix`
+    - Stability: `#stable`
+
+    Changelog: handled separately
+
+commit 42715b2d8b7e5d3b9382e05a56e9e6228c66be1c
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Thu Aug 7 01:50:15 2025 +0700
+
+    docs(changelog): update changelog
+
+commit 99895ebc3d3daf2d85066c694f64ddba9d9dcf04 (tag: 1.10.9)
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Thu Aug 7 01:49:36 2025 +0700
+
+    release(main): 1.10.9
+
+    Final release of **Custy 1.10.9**, promoted from the latest release candidate.
+
+    Includes all feature and fixes from pre-releases: .
+    All functionality has been fully validated and production-ready.
+
+    - fix issue on `.github\workflows\test.yml`
+
+    ---
+
+    🎉 **Custy 1.10.9 is now stable and ready for production use.**
+
+    🔖 **Tags**:
+    - Type: `#release`, `#bugfix`
+    - Stability: `#stable`
+
+    Changelog: handled separately
+
+commit 07445edb93c0a2913ceb70ae0c001cec17dc3ac4
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Thu Aug 7 01:38:43 2025 +0700
+
+    docs(changelog): update changelog
+
+commit 3f2d288b07988915b9b2c5a6d52ac6d1feda6c8c (tag: 1.10.8)
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Thu Aug 7 01:38:02 2025 +0700
+
+    release(main): 1.10.8
+
+    Final release of **Custy 1.10.8**, promoted from the latest release candidate.
+
+    Includes all feature and fixes from pre-releases: .
+    All functionality has been fully validated and production-ready.
+
+    - Updated `README.md`
+
+    ---
+
+    🎉 **Custy 1.10.8 is now stable and ready for production use.**
+
+    🔖 **Tags**:
+    - Type: `#release`
+    - Docs: `#docs`
+    - Stability: `#stable`
+
+    Changelog: handled separately
+
+0e0898b9d662e50e001f0cf87
+    Changelog: handled separately
+
+commit 07445edb93c0a2913ceb70ae0c001cec17dc3ac4
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Thu Aug 7 01:38:43 2025 +0700
+
+    docs(changelog): update changelog
+
+commit 3f2d288b07988915b9b2c5a6d52ac6d1feda6c8c (tag: 1.10.8)
+Author: devalltect00 <rizkyslenovo29@gmail.com>
+Date:   Thu Aug 7 01:38:02 2025 +0700
+
+    release(main): 1.10.8
+
+    Final release of **Custy 1.10.8**, promoted from the latest release candidate.
+
+    Includes all feature and fixes from pre-releases: .
+    All functionality has been fully validated and production-ready.
+
+    - Updated `README.md`
+
+    ---
+
+    🎉 **Custy 1.10.8 is now stable and ready for production use.**
+
+    🔖 **Tags**:
+    - Type: `#release`
+    - Docs: `#docs`
+    - Stability: `#stable`
+
+    Changelog: handled separately
+```
+
+
+Can you suggest me how the CHANGELOG should look like. Is there any template we can use?
+
+Some commit is just simple or random message.
+
+But some commit have format something like
+```
+    release(main): 1.10.9
+
+    Final release of **Custy 1.10.9**, promoted from the latest release candidate.
+
+    Includes all feature and fixes from pre-releases: .
+    All functionality has been fully validated and production-ready.
+
+    - fix issue on `.github\workflows\test.yml`
+
+    ---
+
+    🎉 **Custy 1.10.9 is now stable and ready for production use.**
+
+    🔖 **Tags**:
+    - Type: `#release`, `#bugfix`
+    - Stability: `#stable`
+
+    Changelog: handled separately
+```
+
+or
+
+```
+    release(main): 1.10.6 — improve workflow safety, templates, and user interaction
+
+    Final release of **Custy 1.10.6**, promoted from the latest release candidate.
+
+    Includes all feature and fixes from pre-releases: 1.10.6rc4, 1.10.6rc3, 1.10.6rc2, 1.10.6rc1, 1.10.6b1.
+    All functionality has been fully validated and production-ready.
+    It focuses on refining the WorkflowManager, enhancing commit/tag templates, and introducing safety improvements for merge operations.
+
+    ### 🐛 Fixes
+    - Prevented unsafe execution in CASE 3, 6, and 9 if staged files exist
+    - Added interactive prompt when no files are staged to confirm whether to continue
+
+    ### 🧠 UX Improvements
+    - Safer tagging and merging via confirmation-based logic
+    - More resilient and predictable branching flow
+
+    ### 📄 Templates
+    - Refactored and expanded `commit-msg.txt` and `tag-msg.txt` example templates
+
+    ### 📚 Documentation
+    - Updated project structure docs to reflect current implementation
+
+    ---
+
+    🎉 **Custy 1.10.6 is now stable and ready for production use.**
+
+    🔖 **Tags**:
+    - Type: `#release`, `#bugfix`, `#refactor
+    - UX: `#ux`
+    - docs: `#docs`, `#template`
+    - Workflow: `#workflow`
+    - Maintenance: `#cleanup``
+    - Stability: `#stable`
+
+    Changelog: handled separately
+```
+
+Let me explain this template. This template generated with Custy. The template on `.config\custy\templates\commit-message.txt`. First it generate with Custy and then The user will edit it
+
+The template that generate with Custy have some parts
+
+First, Header or title at the top
+```
+    release(main): 1.10.6 — improve workflow safety, templates, and user interaction
+```
+- The "release" is a commit type, It could be "release", "final", "post", "rc", "beta", "alpha", "dev", etc, or whatever
+- "(main)". Currently It could be what changes. If it big changes we use (main). If just 1 file changes related to constant variable or path, we can use (path) or (constant) or (constant_path) or (constant path) or whatever. Basically it just simle word or description that tell what changes on this commit
+- "1.10.6". Is the current version when the commit changes made.
+- "improve workflow safety, templates, and user interaction", Idk maybe it just simple text or title. But this part or section is optionally
+
+Second, description
+```
+    Final release of **Custy 1.10.6**, promoted from the latest release candidate.
+```
+These are generated by Custy. But the user can edit this description part. This description part after the header or title part. I don't know we can call it description or not. It just overall description auto generated by Custy. Maybe it is not the details.
+
+Third, additional information
+```
+    Includes all feature and fixes from pre-releases: .
+    All functionality has been fully validated and production-ready.
+```
+or
+```
+    Includes all feature and fixes from pre-releases: 1.10.6rc4, 1.10.6rc3, 1.10.6rc2, 1.10.6rc1, 1.10.6b1.
+    All functionality has been fully validated and production-ready.
+    It focuses on refining the WorkflowManager, enhancing commit/tag templates, and introducing safety improvements for merge operations.
+```
+These are generated by Custy. But the user can edit this `additional information` part. This `additional information` part after the description part
+
+Fourth, I think we can say this part is a details changes for this commit changes
+```
+    - fix issue on `.github\workflows\test.yml`
+```
+or
+```
+    ### 🐛 Fixes
+    - Prevented unsafe execution in CASE 3, 6, and 9 if staged files exist
+    - Added interactive prompt when no files are staged to confirm whether to continue
+
+    ### 🧠 UX Improvements
+    - Safer tagging and merging via confirmation-based logic
+    - More resilient and predictable branching flow
+
+    ### 📄 Templates
+    - Refactored and expanded `commit-msg.txt` and `tag-msg.txt` example templates
+
+    ### 📚 Documentation
+    - Updated project structure docs to reflect current implementation
+```
+You see in this details changes part you see the bullet point or `###` or `####`. That indicates this is this part or we can say "details changes" part. `###` or `####` are section or subsection. The number of `###` (3 total of '#' Character) or `####` (3 total of '#' Character). The more total. The more it indicates more sub part. You know like .md file or markdown file. Example usage like "    ### 🐛 Fixes" And every part that has "- " before, indicates what details changes from that section or subsection. For example "    - Prevented unsafe execution in CASE 3, 6, and 9 if staged files exist"
+
+Fifth
+```
+🎉 **Custy 1.10.6 is now stable and ready for production use.**
+```
+This part is optionally. It just generate if the commit type is release. It not generated if current commit type are just "final", "post", "rc", "beta", "alpha", "dev", etc, or whatever that not "release" type. It always generated by Custy if the commit type is "release
+
+Sixth, Tagging or tag or tags part.
+```
+    🔖 **Tags**:
+    - Type: `#release`, `#bugfix`
+    - Stability: `#stable`
+```
+or
+```
+    🔖 **Tags**:
+    - Type: `#release`, `#bugfix`, `#refactor
+    - UX: `#ux`
+    - docs: `#docs`, `#template`
+    - Workflow: `#workflow`
+    - Maintenance: `#cleanup``
+    - Stability: `#stable`
+```
+If we see `🔖 **Tags**:` that indicated we are in "tags" part.
+After that we see list of tags start with "- " indicates tags section or tags part or tags groups. For example "- Type: ".
+=====
+`#release`, `#bugfix`, `#refactor`
+=====
+This part indicates the tags. So every section can have multiple tags. and the each tags start with "#"
+
+Seventh part, This is the last part. This is the footer section or part
+```
+    Changelog: handled separately
+```
+Actually This is auto-generated by Custy. It can manually add, edit, or remove by User
+
+What should the CHANGELOG.md based on this commit message template.
+
+
+Because Currently the `CHANGELOG.md output something like
+```
+- and fixes from pre-releases: 1.10.0rc1, 1.10.0b3, 1.10.0b2, 1.10.0b1.
+- Full CASE 1–9 support in `WorkflowManager`:
+- Core flow: `develop → release → main → post-release`
+- Extended handling: `feature/*`, `ci/*`, `archive/*`
+- Automatic workflow execution with `run_initial_workflow()` and `run_final_workflow()`
+- Backup push handling, context setup, and cleanup automation
+- Added `git_workflow_cases.md` for CASE logic
+- Documented `WorkflowManager` classes and transition behavior
+- Updated `README.md`, `TODO.md`, and added usage notes
+- Refactored and expanded example templates for commit and tag messages
+- Introduced test coverage for `WorkflowManager` and CASE transitions
+- Fixed transition bugs and branching issues within `WorkflowManager`
+- Linted and formatted the codebase using `ruff`
+- Cleanup of legacy TODOs and refactoring for clarity
+- 🎉 **Custy 1.10.0 is now stable and ready for production use.**
+- `#release`, `#feature`, `#bugfix`
+- `#docs`, `#template`
+- `#workflow`, `#automation`
+- `#tests`
+```
+
+Hard to read. You see Idk why every section start with "-". Let's say a Users that read this part. I think it hard to understand
+```
+- 🎉 **Custy 1.10.0 is now stable and ready for production use.**
+- `#release`, `#feature`, `#bugfix`
+- `#docs`, `#template`
+- `#workflow`, `#automation`
+- `#tests`
+```
+
+This part `🎉 **Custy 1.10.0 is now stable and ready for production use.**` just indicate release part because it is a relase commit type. Also this part
+```
+- `#release`, `#feature`, `#bugfix`
+- `#docs`, `#template`
+- `#workflow`, `#automation`
+- `#tests`
+```
+It should be tags part. What do you of current `CHANGELOG.md output`. Is it hard to read or not?
+
+I send you my full example output of current `CHANGELOG.md`
+
+Give suggestion what CHANGELOG.md should look like.
+
+Actually I have some CHANGELOG file references should look like. It based on `https://keepachangelog.com/`. You can check that website. Basically CHANGELOG that contains like
+
+```
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [1.0.0] - 2017-06-20
+
+### Added
+
+- New visual identity by [@tylerfortune8].
+- Version navigation.
+- Links to latest released version in previous versions.
+- "Why keep a changelog?" section.
+- "Who needs a changelog?" section.
+- "How do I make a changelog?" section.
+- "Frequently Asked Questions" section.
+- New "Guiding Principles" sub-section to "How do I make a changelog?".
+- Simplified and Traditional Chinese translations from [@tianshuo].
+- German translation from [@mpbzh] & [@Art4].
+- Italian translation from [@azkidenz].
+- Swedish translation from [@magol].
+- Turkish translation from [@emreerkan].
+- French translation from [@zapashcanon].
+- Brazilian Portuguese translation from [@Webysther].
+- Polish translation from [@amielucha] & [@m-aciek].
+- Russian translation from [@aishek].
+- Czech translation from [@h4vry].
+- Slovak translation from [@jkostolansky].
+- Korean translation from [@pierceh89].
+- Croatian translation from [@porx].
+- Persian translation from [@Hameds].
+- Ukrainian translation from [@osadchyi-s].
+
+### Changed
+
+- Start using "changelog" over "change log" since it's the common usage.
+- Start versioning based on the current English version at 0.3.0 to help
+  translation authors keep things up-to-date.
+- Rewrite "What makes unicorns cry?" section.
+- Rewrite "Ignoring Deprecations" sub-section to clarify the ideal
+  scenario.
+- Improve "Commit log diffs" sub-section to further argument against
+  them.
+- Merge "Why can’t people just use a git log diff?" with "Commit log
+  diffs".
+- Fix typos in Simplified Chinese and Traditional Chinese translations.
+- Fix typos in Brazilian Portuguese translation.
+- Fix typos in Turkish translation.
+- Fix typos in Czech translation.
+- Fix typos in Swedish translation.
+- Improve phrasing in French translation.
+- Fix phrasing and spelling in German translation.
+
+### Removed
+
+- Section about "changelog" vs "CHANGELOG".
+
+## [0.3.0] - 2015-12-03
+
+### Added
+
+- RU translation from [@aishek].
+- pt-BR translation from [@tallesl].
+- es-ES translation from [@ZeliosAriex].
+
+## [0.2.0] - 2015-10-06
+
+### Changed
+
+- Remove exclusionary mentions of "open source" since this project can
+  benefit both "open" and "closed" source projects equally.
+
+## [0.1.0] - 2015-10-06
+
+### Added
+
+- Answer "Should you ever rewrite a change log?".
+
+### Changed
+
+- Improve argument against commit logs.
+- Start following [SemVer] properly.
+
+## [0.0.8] - 2015-02-17
+
+### Changed
+
+- Update year to match in every README example.
+- Reluctantly stop making fun of Brits only, since most of the world
+  writes dates in a strange way.
+
+### Fixed
+
+- Fix typos in recent README changes.
+- Update outdated unreleased diff link.
+
+## [0.0.7] - 2015-02-16
+
+### Added
+
+- Link, and make it obvious that date format is ISO 8601.
+
+### Changed
+
+- Clarified the section on "Is there a standard change log format?".
+
+### Fixed
+
+- Fix Markdown links to tag comparison URL with footnote-style links.
+
+## [0.0.6] - 2014-12-12
+
+### Added
+
+- README section on "yanked" releases.
+
+## [0.0.5] - 2014-08-09
+
+### Added
+
+- Markdown links to version tags on release headings.
+- Unreleased section to gather unreleased changes and encourage note
+  keeping prior to releases.
+
+## [0.0.4] - 2014-08-09
+
+### Added
+
+- Better explanation of the difference between the file ("CHANGELOG")
+  and its function "the change log".
+
+### Changed
+
+- Refer to a "change log" instead of a "CHANGELOG" throughout the site
+  to differentiate between the file and the purpose of the file — the
+  logging of changes.
+
+### Removed
+
+- Remove empty sections from CHANGELOG, they occupy too much space and
+  create too much noise in the file. People will have to assume that the
+  missing sections were intentionally left out because they contained no
+  notable changes.
+
+## [0.0.3] - 2014-08-09
+
+### Added
+
+- "Why should I care?" section mentioning The Changelog podcast.
+
+## [0.0.2] - 2014-07-10
+
+### Added
+
+- Explanation of the recommended reverse chronological release ordering.
+
+## [0.0.1] - 2014-05-31
+
+### Added
+
+- This CHANGELOG file to hopefully serve as an evolving example of a
+  standardized open source project CHANGELOG.
+- CNAME file to enable GitHub Pages custom domain.
+- README now contains answers to common questions about CHANGELOGs.
+- Good examples and basic guidelines, including proper date formatting.
+- Counter-examples: "What makes unicorns cry?".
+
+[unreleased]: https://github.com/olivierlacan/keep-a-changelog/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.3.0...v1.0.0
+[0.3.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.8...v0.1.0
+[0.0.8]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.7...v0.0.8
+[0.0.7]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.6...v0.0.7
+[0.0.6]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.5...v0.0.6
+[0.0.5]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.4...v0.0.5
+[0.0.4]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.3...v0.0.4
+[0.0.3]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.2...v0.0.3
+[0.0.2]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.1...v0.0.2
+[0.0.1]: https://github.com/olivierlacan/keep-a-changelog/releases/tag/v0.0.1
+[SemVer]: https://semver.org
+[@tylerfortune8]: https://github.com/tylerfortune8
+[@tianshuo]: https://github.com/tianshuo
+[@mpbzh]: https://github.com/mpbzh
+[@Art4]: https://github.com/Art4
+[@azkidenz]: https://github.com/azkidenz
+[@magol]: https://github.com/magol
+[@emreerkan]: https://github.com/emreerkan
+[@zapashcanon]: https://github.com/zapashcanon
+[@Webysther]: https://github.com/Webysther
+[@amielucha]: https://github.com/amielucha
+[@m-aciek]: https://github.com/m-aciek
+[@aishek]: https://github.com/aishek
+[@h4vry]: https://github.com/h4vry
+[@jkostolansky]: https://github.com/jkostolansky
+[@pierceh89]: https://github.com/pierceh89
+[@porx]: https://github.com/porx
+[@Hameds]: https://github.com/Hameds
+[@osadchyi-s]: https://github.com/osadchyi-s
+[@tallesl]: https://github.com/tallesl
+[@ZeliosAriex]: https://github.com/ZeliosAriex
+```
+
+It is Very clean you know. easy to read
+
+They have header like
+```
+## [0.3.0] - 2015-12-03
+```
+and section, subsection
+```
+### Added
+```
+ad "what changes" part
+```
+- Explanation of the recommended reverse chronological release ordering.
+```
+It has also compare link like
+```
+[0.0.2]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.1...v0.0.2
+```
+Als I think this part is the participation or developer or I don't know
+```
+[@tylerfortune8]: https://github.com/tylerfortune8
+[@tianshuo]: https://github.com/tianshuo
+[@mpbzh]: https://github.com/mpbzh
+[@Art4]: https://github.com/Art4
+[@azkidenz]: https://github.com/azkidenz
+[@magol]: https://github.com/magol
+[@emreerkan]: https://github.com/emreerkan
+[@zapashcanon]: https://github.com/zapashcanon
+[@Webysther]: https://github.com/Webysther
+[@amielucha]: https://github.com/amielucha
+[@m-aciek]: https://github.com/m-aciek
+[@aishek]: https://github.com/aishek
+[@h4vry]: https://github.com/h4vry
+[@jkostolansky]: https://github.com/jkostolansky
+[@pierceh89]: https://github.com/pierceh89
+[@porx]: https://github.com/porx
+[@Hameds]: https://github.com/Hameds
+[@osadchyi-s]: https://github.com/osadchyi-s
+[@tallesl]: https://github.com/tallesl
+[@ZeliosAriex]: https://github.com/ZeliosAriex
+```

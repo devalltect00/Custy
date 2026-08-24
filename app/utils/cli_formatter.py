@@ -1,4 +1,4 @@
-# app\utils\cli_formatter.py
+# app/utils/cli_formatter.py
 """
 Custom argparse formatter that adds color to CLI help output.
 

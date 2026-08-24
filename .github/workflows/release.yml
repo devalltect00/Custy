@@ -1,0 +1,334 @@
+# .github/workflows/release.yml
+
+name: 🚀 Release
+
+run-name: 🚀 Release • ${{ github.ref_name }}
+
+# =========================================================
+# 🚀 GitHub Release Workflow
+# ---------------------------------------------------------
+# Trigger:
+# - Runs when pushing version tags like:
+#     v1.0.0
+#     v1.2.3-alpha.1
+#     v1.2.3-beta.1
+#     v1.2.3-rc.1
+#     v1.2.3-dev.1
+#     v1.2.3-post.1
+#
+# - Can also be triggered manually
+#
+# Purpose:
+# - Validate release tags
+# - Detect release type
+# - Read annotated git tag message
+# - Build package artifacts
+# - Create GitHub Releases
+# - Attach release artifacts
+# - Publish release metadata
+#
+# Recommended:
+# - Use annotated git tags:
+#
+#   git tag -a v1.0.0
+#
+# Example:
+#
+#   🧪 Final Release 1.0.0
+#
+#   Path Header Scanner v1.0.0 is now stable
+#   and production-ready.
+#
+#   ### 🔍 Highlights
+#
+#   - Improved Docker workflows
+#   - Added production image publishing
+#
+#   ✅ This version is stable and suitable
+#   for production use.
+#
+# Docker Integration:
+# - Compatible with docker-prod.yml
+# - Uses production container tags
+#
+# Example Images:
+# - ghcr.io/devalltect00/path-header-scanner:v1.0.0
+# =========================================================
+
+on:
+  push:
+    tags:
+      - "v*"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: read
+
+jobs:
+  release:
+    name: 🚀 Create Release
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # =====================================================
+      # 📥 CHECKOUT
+      # =====================================================
+
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # =====================================================
+      # 🐍 SETUP PYTHON
+      # =====================================================
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      # =====================================================
+      # 📦 INSTALL BUILD DEPENDENCIES
+      # =====================================================
+
+      - name: 📦 Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build
+
+      # =====================================================
+      # 🏷️ VALIDATE TAG
+      # =====================================================
+
+      - name: 🏷️ Validate release tag
+        id: validate
+        shell: bash
+        run: |
+
+          TAG="${GITHUB_REF_NAME}"
+
+          echo "Tag: $TAG"
+
+          # REGEX='^v[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.]+)?(\+[0-9A-Za-z.]+)?$'
+          REGEX='^v[0-9]+\.[0-9]+\.[0-9]+([.-](alpha|beta|rc|dev|post)\.[0-9]+)?(\+[0-9A-Za-z.]+)?$'
+
+          if [[ ! "$TAG" =~ $REGEX ]]; then
+            echo "❌ Invalid tag format: $TAG"
+            echo "✅ Expected formats:"
+            echo "   v1.2.3"
+            echo "   v1.2.3-alpha.1"
+            echo "   v1.2.3-beta.1"
+            echo "   v1.2.3-rc.1"
+            echo "   v1.2.3-dev.1"
+            echo "   v1.2.3-post.1"
+            exit 1
+          fi
+
+          echo "✅ Release tag validated"
+
+      # =====================================================
+      # 🧠 DETECT RELEASE TYPE
+      # =====================================================
+
+      - name: 🧠 Detect release type
+        id: version
+        shell: bash
+        run: |
+
+          TAG="${GITHUB_REF_NAME}"
+
+          VERSION="${TAG#v}"
+
+          TYPE="stable"
+
+          if [[ "$VERSION" == *alpha* ]]; then
+            TYPE="alpha"
+
+          elif [[ "$VERSION" == *beta* ]]; then
+            TYPE="beta"
+
+          elif [[ "$VERSION" == *rc* ]]; then
+            TYPE="rc"
+
+          elif [[ "$VERSION" == *dev* ]]; then
+            TYPE="dev"
+
+          elif [[ "$VERSION" == *post* ]]; then
+            TYPE="post"
+          fi
+
+          PRERELEASE=false
+
+          if [[ "$TYPE" != "stable" && "$TYPE" != "post" ]]; then
+            PRERELEASE=true
+          fi
+
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "type=$TYPE" >> $GITHUB_OUTPUT
+          echo "prerelease=$PRERELEASE" >> $GITHUB_OUTPUT
+
+          echo "Detected release type: $TYPE"
+
+      # =====================================================
+      # 🧠 BUILD RELEASE TITLE
+      # =====================================================
+
+      - name: 🧠 Build release title
+        id: title
+        shell: bash
+        run: |
+
+          TYPE="${{ steps.version.outputs.type }}"
+          TAG="${{ steps.version.outputs.tag }}"
+
+          TITLE="🚀 Release"
+
+          if [[ "$TYPE" == "alpha" ]]; then
+            TITLE="🧪 Alpha Release"
+
+          elif [[ "$TYPE" == "beta" ]]; then
+            TITLE="🔬 Beta Release"
+
+          elif [[ "$TYPE" == "rc" ]]; then
+            TITLE="🚧 Release Candidate"
+
+          elif [[ "$TYPE" == "dev" ]]; then
+            TITLE="🛠️ Development Release"
+
+          elif [[ "$TYPE" == "post" ]]; then
+            TITLE="📦 Post Release"
+          fi
+
+          echo "title=$TITLE $TAG" >> $GITHUB_OUTPUT
+
+      # =====================================================
+      # 📦 Install dependencies (editable mode with dev deps)
+      # =====================================================
+      - name: 📦 Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+
+      # =====================================================
+      # 🧪 RUN VALIDATION
+      # =====================================================
+
+      - name: 🧪 Run validation workflow
+        run: make check-ci
+
+      # =====================================================
+      # 📦 BUILD PACKAGE
+      # =====================================================
+
+      - name: 📦 Build package artifacts
+        run: |
+          python -m build
+
+      # =====================================================
+      # 📝 GENERATE RELEASE NOTES
+      # =====================================================
+
+      - name: 📝 Generate release notes
+        id: notes
+        shell: bash
+        run: |
+
+          TAG="${{ steps.version.outputs.tag }}"
+
+          VERSION="${{ steps.version.outputs.version }}"
+
+          TYPE="${{ steps.version.outputs.type }}"
+
+          # Extract annotated git tag message
+          git tag -l --format='%(contents)' "$TAG" > RELEASE_NOTES.md
+
+          cat <<EOF >> RELEASE_NOTES.md
+
+          ---
+
+          ## 📅 Release Information
+          - Version: \`$VERSION\`
+          - Release Type: \`$TYPE\`
+          - Repository: ${{ github.repository }}
+          - Commit: ${{ github.sha }}
+          - Workflow: ${{ github.workflow }}
+
+          ## 🐋 Docker Image
+
+          \`\`\`bash
+          docker pull ghcr.io/${{ github.repository_owner }}/path-header-scanner:$TAG
+          \`\`\`
+
+          ## 📥 Python Package
+
+          Artifacts are attached to this release.
+
+          EOF
+
+          echo "notes_path=RELEASE_NOTES.md" >> $GITHUB_OUTPUT
+
+      # - name: 📝 Generate release notes
+      #   id: notes
+      #   shell: bash
+      #   run: |
+
+      #     TAG="${{ steps.version.outputs.tag }}"
+      #     VERSION="${{ steps.version.outputs.version }}"
+      #     TYPE="${{ steps.version.outputs.type }}"
+
+      #     cat <<EOF > RELEASE_NOTES.md
+      #     ## 📦 Version
+      #     \`$VERSION\`
+
+      #     ## 🧠 Release Type
+      #     \`$TYPE\`
+
+      #     ## 📅 Release Information
+      #     - Repository: ${{ github.repository }}
+      #     - Commit: ${{ github.sha }}
+      #     - Workflow: ${{ github.workflow }}
+
+      #     ## 🐋 Docker Image
+
+      #     \`\`\`bash
+      #     docker pull ghcr.io/${{ github.repository_owner }}/path-header-scanner:$TAG
+      #     \`\`\`
+
+      #     ## 📥 Python Package
+
+      #     Artifacts are attached to this release.
+
+      #     EOF
+
+      #     echo "notes_path=RELEASE_NOTES.md" >> $GITHUB_OUTPUT
+
+      # =====================================================
+      # 🚀 CREATE GITHUB RELEASE
+      # =====================================================
+
+      - name: 🚀 Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+
+          name: ${{ steps.title.outputs.title }}
+
+          body_path: ${{ steps.notes.outputs.notes_path }}
+
+          prerelease: ${{ steps.version.outputs.prerelease }}
+
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+
+          # Additionally options
+          ## generate_release_notes: true
+          ## append_body: true
+          make_latest: ${{ steps.version.outputs.type == 'stable' }}
+          ## fail_on_unmatched_files: false

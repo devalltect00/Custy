@@ -1,29 +1,9 @@
-# pyproject.toml
-
-[build-system]
-requires = ["setuptools>=41", "setuptools_scm[toml]>=6.3"]
-build-backend = "setuptools.build_meta"
-
 [project]
+
 name = "custy"
-description = "Commit and Tag Automation Script/Tool."
-authors = [
-{ name = "Devalltect" , email = "rizkyslenovo29@gmail.com" },
-{ name = "Rizky Fernandes" , email = "rizkyslenovo29@gmail.com" },
-]
-license = { text = "MIT" }
-readme = "README.md"
-requires-python = ">=3.11"
-dependencies = [
-    "termcolor",
-    "colorama",
-    "jinja2",
-    "toml",
-    "pydantic",
-    "rich",
-    "pyfiglet",
-    ]
+
 dynamic = ["version"]
+# version = "1.0.0"
 # With this the version will be auto-generated from git tags using setuptools_scm
 # When run
 # pip install
@@ -37,64 +17,425 @@ dynamic = ["version"]
 # __version__ = version("currency-conversion-api")
 # ✅ This will always return the version from Git tag if setuptools_scm is used properly.
 
+
+description = "Configuration-driven developer CLI for project initialization, validation, versioning, changelog generation, Git release automation, reusable pipelines, backups, cleanup, and multi-remote synchronization."
+
+readme = "README.md"
+
+requires-python = ">=3.14"
+
+license = { text = "MIT" }
+
+authors = [
+    { name = "Rizky Fernandes (devalltect00)", email = "rizkypffdev37@gmail.com"},
+]
+
+maintainers = [
+    { name = "Rizky Fernandes (devalltect00)", email = "rizkypffdev37@gmail.com"},
+]
+
+keywords = [
+    "git",
+    "git-workflow",
+    "git-automation",
+    "git-tagging",
+    "release-automation",
+    "release-management",
+    "versioning",
+    "version-bump",
+    "conventional-commits",
+    "semantic-versioning",
+    "pep440",
+    "semver",
+    "commitizen",
+    "changelog",
+    "changelog-generator",
+    "project-initialization",
+    "project-validation",
+    "automation",
+    "developer-tools",
+    "devops",
+    "cli",
+    "cli-tool",
+    "typer",
+    "rich",
+    "release-pipeline",
+    "dry-run",
+    "github",
+    "gitlab",
+    "docker",
+    "multi-remote",
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+
+    "License :: OSI Approved :: MIT License",
+
+    "Operating System :: OS Independent",
+
+    "Environment :: Console",
+
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.14",
+
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Version Control",
+    "Topic :: System :: Software Distribution",
+    "Topic :: Utilities",
+]
+
+dependencies = [
+    # CLI Framework
+    "typer>=0.16.0",
+
+    # Terminal UI
+    "rich>=14.1.0",
+    "pyfiglet>=1.0.4",
+    "termcolor>=3.1.0",
+    "colorama>=0.4.6",
+
+    # Templates
+    "jinja2>=3.1.6",
+
+    # Configuration
+    "toml>=0.10.2",
+    "tomlkit>=0.15.0",
+
+    # Data Validation
+    "pydantic>=2.11.7",
+
+    # Version Parsing / PEP 440
+    "packaging>=25.0",
+]
+
 [project.optional-dependencies]
+
 dev = [
-    "ruff",
+    # Test
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+
+    # Formatting
+    "black>=25.0.0",
+
+    # Linting
+    "ruff>=0.12.0",
+
+    # Packaging
+    "build>=1.2.0",
+    "twine>=5.0.0",
+
+    # Git hooks
+    "pre-commit>=3.7.0",
+
+    # related to `AREPL for python` vscode extensions
+    "ipykernel",
+
+    # Commitizen
     "commitizen",
 ]
 
-[project.scripts]
-custy = "app.__main__:main"
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
+]
 
-[tool.mycz]
-show_types = true
-template_path = "templates/changelog/changelog.j2"
+[project.urls]
+
+Homepage = "https://github.com/devalltect00/Custy"
+Repository = "https://github.com/devalltect00/Custy"
+Issues = "https://github.com/devalltect00/Custy/issues"
+Documentation = "https://devalltect00.github.io/devalltect-docs/docs/custy"
+Changelog = "https://github.com/devalltect00/Custy/blob/main/CHANGELOG.md"
+Discussions = "https://github.com/devalltect00/Custy/discussions"
+Releases = "https://github.com/devalltect00/Custy/releases"
+"GitHub Actions" = "https://github.com/devalltect00/Custy/actions"
+"GitLab CI" = "https://gitlab.com/devalltects-group/custy/-/pipelines"
+"Container Images" = "https://github.com/devalltect00/Custy/pkgs/container/custy"
+
+[project.scripts]
+
+custy = "app.cli.main:app"
+
+# =========================================================
+# TYPER
+# =========================================================
+
+[tool.typer]
+
+pretty_exceptions_enable = true
+
+# =========================================================
+# SETUPTOOLS
+# =========================================================
+
+[tool.setuptools.packages.find]
+
+include = [
+    "app*",
+]
+
+exclude = ["venv*"]
+
+#####
+# NOTE:
+# Need this.
+#
+# Without it:
+# - importlib.resources will FAIL ❌
+# - your templates won’t exist after pip install ❌
+# - your tool breaks outside dev ❌
+#####
+# It tells Python’s build system:
+#
+# “When someone installs my package, also include these non-Python files (templates).”
+#####
+[tool.setuptools.package-data]
+
+app = [
+    "templates/**/*",
+    "templates/*.toml",
+    "templates/**/*.toml",
+    "templates/*.py",
+    "templates/**/*.py",
+    "templates/*.txt",
+    "templates/**/*.txt",
+    "templates/*.md",
+    "templates/**/*.md",
+    "templates/changelog/*.j2",
+    "templates/changelog/**/*.j2",
+    "templates/examples/*.md",
+    "templates/examples/**/*.md",
+    # "**/*",
+]
+
+# =========================================================
+# SETUPTOOLS_SCM
+# =========================================================
 
 [tool.setuptools_scm]
 version_scheme = "post-release"
 local_scheme = "no-local-version"
 
-[tool.setuptools]
-packages = ["app"]
+fallback_version = "0.1.0"
 
+# =========================================================
+# PYTEST
+# =========================================================
 
-# -----------------------------
-# 🧼 Ruff (Linter & Formatter)
-# -----------------------------
-[tool.ruff]
+[tool.pytest.ini_options]
+
+testpaths = [
+    "tests",
+]
+
+python_files = [
+    "test_*.py",
+]
+
+python_classes = [
+    "Test*",
+]
+
+python_functions = [
+    "test_*",
+]
+
+addopts = [
+    # -----------------------------------------------------
+    # Summary
+    # -----------------------------------------------------
+
+    "-ra",                          # Show extra test summary info for skipped, failed, xfailed, etc.
+
+    # -----------------------------------------------------
+    # Validation
+    # -----------------------------------------------------
+
+    "--strict-markers",             # Fail on unknown pytest markers.
+    "--strict-config",              # Fail on invalid or unknown pytest configuration.
+
+    # -----------------------------------------------------
+    # Output
+    # -----------------------------------------------------
+
+    "--tb=short",                   # Use shorter traceback output.
+
+    # -----------------------------------------------------
+    # COVERAGE
+    # -----------------------------------------------------
+
+    "--cov=app",                    # Enable coverage. Measure test coverage for the app package.
+    "--cov-report=term-missing",    # Shows missing lines directly in terminal output.
+
+    # -----------------------------------------------------
+    # IMPORTS
+    # -----------------------------------------------------
+
+    "--import-mode=importlib",      # Fixes import conflicts with same-named test files
+]
+
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+# =========================================================
+# BLACK
+# =========================================================
+
+[tool.black]
+
 line-length = 88
-target-version = "py310"
+target-version = ["py311"]
+
+# =========================================================
+# RUFF
+# =========================================================
+
+[tool.ruff]
+
+line-length = 88
+target-version = "py311"
+
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+]
+
+# =========================================================
+# RUFF LINT
+# =========================================================
 
 [tool.ruff.lint]
-# extend-select = ["I", "F", "E", "W"]    # import sort, pyflakes, etc.
-select = ["ALL"]                # Enable all rule categories
+
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle Warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+
+    # -----------------------------------------------------
+    # Documentation
+    # -----------------------------------------------------
+
+    "D",    # pydocstyle (docstring conventions)
+
+    # -----------------------------------------------------
+    # Type Annotations
+    # -----------------------------------------------------
+
+    "ANN",  # flake8-annotations (type hint enforcement)
+
+    # -----------------------------------------------------
+    # Exceptions
+    # -----------------------------------------------------
+
+    "TRY",  # tryceratops (exception handling best practices)
+
+    # -----------------------------------------------------
+    # Formatting
+    # -----------------------------------------------------
+
+    "COM",  # flake8-commas (trailing comma consistency)
+]
+
 ignore = [
-  # Docstring rules
-  "D100",    # Missing docstring in module
-  "D103",    # Missing docstring in function
-  "D104",    # Missing docstring in package (__init__.py)
-  "D101",    # Missing docstring in class
-  "D102",    # Missing docstring in method
-  "D105",    # Missing docstring in magic method
-  "D106",    # Missing docstring in nested class
-  "D107",    # Missing docstring in __init__
-  "D212",  # Conflicts with D213 — ignore both to avoid layout noise
-  "D213",  # Conflicts with D212 — ignore both to avoid layout noise
+    # Docstring rules
+    "D100",    # Missing docstring in module
+    "D103",    # Missing docstring in function
+    "D104",    # Missing docstring in package (__init__.py)
+    "D101",    # Missing docstring in class
+    "D102",    # Missing docstring in method
+    "D105",    # Missing docstring in magic method
+    "D106",    # Missing docstring in nested class
+    "D107",    # Missing docstring in __init__
+    "D212",  # Conflicts with D213 — ignore both to avoid layout noise
+    "D213",  # Conflicts with D212 — ignore both to avoid layout noise
 
-  # Type annotation noise
-  "ANN101",  # Missing type annotation for self
-  "ANN102",  # Missing type annotation for cls
-  "ANN201",  # Missing return type annotation
+    # Type annotation noise
+    "ANN101",  # Missing type annotation for self
+    "ANN102",  # Missing type annotation for cls
+    "ANN201",  # Missing return type annotation
 
-  # Other common noise
-  "E501",    # Line too long
-  "INP001",  # Implicit namespace package
-  "T201",    # print() found
-  "TRY003"   # Too broad except block
+    # Other common noise
+    "E501",    # Line too long
+    "INP001",  # Implicit namespace package
+    "T201",    # print() found
+    "TRY003",  # Avoid specifying long messages outside exception class
+
+    "UP045",    # pyupgrade. Ignore checking for example: 'Optional[str]' -> 'str | None'
+    "COM812",   # flake8-commas. Ignore trailing comma
+    "UP042",     # pyupgrade StrEnum suggestion
 ]
 # Example: Ignore specific docstring rule
 
+[tool.ruff.lint.per-file-ignores]
+
+"app/cli/commands/**/*.py" = ["F403", "F405"]
+
+# =========================================================
+# RUFF FORMAT
+# =========================================================
+#
+# Ruff formatter configuration.
+#
+# This project uses Ruff as the primary formatter and linter.
+# Formatting behavior is intentionally aligned with Black
+# where practical while keeping Ruff as the single tool.
+#
+# =========================================================
+
 [tool.ruff.format]
+
+# Normalize all strings to double quotes
+quote-style = "double"
+
+# Use spaces for indentation
 indent-style = "space"
-quote-style = "double"           # Optional: make all strings use double quotes
-docstring-code-format = true    # Format code blocks inside docstrings
+
+# Automatically detect line endings
+# (LF on Linux/macOS, CRLF on Windows)
+line-ending = "auto"
+
+# Format Python examples embedded inside docstrings
+docstring-code-format = true
+
+# =========================================================
+# BUILD SYSTEM
+# =========================================================
+
+[build-system]
+
+requires = [
+    "setuptools>=80",
+    # "setuptools_scm[toml]>=8",
+    "setuptools-scm>=8",
+    "wheel",
+]
+
+build-backend = "setuptools.build_meta"
+
+# =========================================================
+# COVERAGE
+# =========================================================
+
+[tool.coverage.run]
+
+source = ["app"]
+
+[tool.coverage.report]
+
+show_missing = true
+skip_covered = false

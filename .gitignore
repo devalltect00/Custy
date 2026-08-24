@@ -1,148 +1,240 @@
-# ===========================
-# 🐍 Python
-# ===========================
+# =========================================================
+# PYTHON CACHE / BYTECODE
+# =========================================================
 __pycache__/
 *.py[cod]
 *$py.class
 *.pyo
 *.pyd
+*.py,cover
 
-# Vierual environments
-.env
-.env.*
+# =========================================================
+# C EXTENSIONS
+# =========================================================
+*.so
+
+# =========================================================
+# VIRTUAL ENVIRONMENTS
+# =========================================================
 .venv/
 venv/
+venv_*/
 env/
-venv_3_14
+env_*/
+ENV/
+env.bak/
+venv.bak/
 
+# =========================================================
+# BUILD / DISTRIBUTION / PACKAGING
+# =========================================================
+.Python
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+site/
+pip-wheel-metadata/
+
+*.egg
+*.egg-info/
+.installed.cfg
+MANIFEST
 
 # PyInstaller
 *.manifest
 *.spec
 
-# ===========================
-# 📦 Python package/tools
-# ===========================
-*.egg
-*.egg-info/
-dist/
-build/
-.eggs/
-MANIFEST
+# =========================================================
+# TESTING / COVERAGE
+# =========================================================
+.pytest_cache/
+.pytest-tmp-*/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+nosetests.xml
+*.cover
+cover/
+.tox/
+.nox/
+.hypothesis/
 
-# ===========================
-# 🔧 IDEs & Editors
-# ===========================
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
+pytestdebug.log
 
-# ===========================
-# ⚙️ Type checkers, test, cache, coverage
-# ===========================
-# Mypy & type checking
+# =========================================================
+# TYPE CHECKING / LINT CACHE
+# =========================================================
 .mypy_cache/
 .dmypy.json
 dmypy.json
-# Test & coverage
-.pytest_cache/
-.tox/
-.nox/
-.coverage
-coverage.xml
-*.cover
-htmlcov/
+.pyre/
+.pytype/
+.ruff_cache/
 
-# ===========================
-# 📓 Jupyter
-# ===========================
-# Jupyter
+# =========================================================
+# JUPYTER / IPYTHON
+# =========================================================
 .ipynb_checkpoints/
+profile_default/
+ipython_config.py
 
-# ===========================
-# 💾 Database / State / Logs
-# ===========================
-# SQLite DB
-*.sqlite3
-# Log and socket files
-*.log
-*.pid
-*.sock
+# =========================================================
+# IDE / EDITOR
+# =========================================================
+# Uncomment if desired
+# .vscode/
 
-# ===========================
-# 🖥️ OS-specific
-# ===========================
+.idea/
+.spyderproject
+.spyproject
+.ropeproject
+
+# =========================================================
+# OPERATING SYSTEM
+# =========================================================
 .DS_Store
 Thumbs.db
 
-# ===========================
-# 🐳 Docker
-# ===========================
-# Docker
-docker-compose.override.yml
-
-# ===========================
-# ⚙️ Config & Instances
-# ===========================
-instance/
-config/settings_local.py
-
-# ===========================
-# Node / Frontend / React
-# ===========================
-node_modules/
-.cache/
-dist/
-build/
-.npm/
-.pnp.*
-*.tsbuildinfo
-
-# Lof files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Lock files (keep only 1 if using yarn or npm
-package-lock.json
-yarn.lock
-
-# Personal files
-#
-
-# Project specific ignores (python)
-# ===========================
-# ⚙️ Byte-compiled / optimized / DLL files
-# ===========================
-__pycache__/
-*.py[cod]
-*$py.class
-
-# Virtual environment
-env/
-venv/
-
-# Distribution / packaging
-build/
-dist/
-*.egg-info/
-
-# Logs and local files
+# =========================================================
+# LOGS
+# =========================================================
 *.log
-*.sqlite3
+logs/
+pip-log.txt
+pip-delete-this-directory.txt
 
-# VSCode
-.vscode/
-
-# IDEs
-.idea/
-
-# Others
+# =========================================================
+# ENVIRONMENT FILES
+# =========================================================
 .env
+.env.*
+.env/
+.env_*/
+
+# =========================================================
+# LOCAL CACHE / TEMP FILES
+# =========================================================
+.cache/
+*.tmp
+*.temp
+
+# =========================================================
+# DOCUMENTATION
+# =========================================================
+docs/_build/
+
+# MkDocs
+/site
+
+# =========================================================
+# DATABASES
+# =========================================================
+db.sqlite3
+db.sqlite3-journal
+
+# =========================================================
+# FRAMEWORKS
+# =========================================================
+
+# Flask
+instance/
+.webassets-cache
+
+# Scrapy
+.scrapy
+
+# PyBuilder
+.pybuilder/
+target/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# =========================================================
+# PRE-COMMIT
+# =========================================================
+.pre-commit-cache/
+
+# =========================================================
+# PACKAGE MANAGERS
+# =========================================================
+
+# Poetry
+poetry.toml
+# poetry.lock
+
+# Pipenv
+# Pipfile.lock
+
+# PDM
+.pdm.toml
+# pdm.lock
+
+# UV
+.uv/
+
+# Hatch
+.hatch/
+
+# PEP 582
+__pypackages__/
+
+# =========================================================
+# TRANSLATIONS
+# =========================================================
+*.mo
+*.pot
+
+# =========================================================
+# CYTHON / SAGEMATH
+# =========================================================
+cython_debug/
+*.sage.py
+
+# =========================================================
+# CONFIGURATION
+# =========================================================
+local_settings.py
+pyrightconfig.json
+
+# =========================================================
+# DOCKER
+# =========================================================
+docker-data/
+*.tar
+
+# =========================================================
+# PROJECT-SPECIFIC (NON-SOURCE / ARCHIVAL)
+# =========================================================
+TODO.md
+backups/
+scripts/docker/
+# .config/
+# .config/path_header_scanner/
+# .config/doc_gen/
+# .config/reflow/
+# .config/custy/
+
+#########################
 
 # Custom .projectignore
 templates/commit-msg.txt
 templates/tag-msg.txt
+templates/commit-message.txt
+templates/tag-message.txt
 tools/git-commit/backups/
 temp.txt
+
+tools

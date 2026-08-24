@@ -1,3 +1,5 @@
+<!-- docs/cli_commands_custy.md -->
+
 # 🛠️ CLI Reference: Custy
 
 `custy` is a Git + Commitizen-inspired CLI tool that automates your commit, versioning, tagging, and changelog flow — with full customizability.
