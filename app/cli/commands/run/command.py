@@ -1,52 +1,51 @@
 # app/cli/commands/run/command.py
 
-import typer
 from types import SimpleNamespace
 
-from app.config.config_loader import get_config
-from app.cli.constants.args import CliArgs
-from app.cli.context.app_context import get_context, AppContext
+import typer
 
-from app.core.pipeline.command_resolver import CommandResolver
+from app.cli.commands.run.options import (
+    AllRemoteOption,
+    AutoStageOption,
+    BumpOption,
+    CheckCzOption,
+    CommitMessageBackupDirOption,
+    CommitMessageFileOption,
+    DevReleaseOption,
+    EpochOption,
+    ForceCommitOption,
+    ForceTagOption,
+    MetaOption,
+    PostReleaseOption,
+    PreReleaseOption,
+    RemoteOption,
+    SkipChecksOption,
+    SkipTagOption,
+    StageModeOption,
+    StepsArgument,
+    StrategyOption,
+    SyncBackupOption,
+    TagMessageBackupDirOption,
+    TagMessageFileOption,
+    TagMessageOption,
+    TagOption,
+    VersionFileOption,
+)
+from app.cli.commands.run.resolver import resolve_run_args
+from app.cli.constants.args import CliArgs
+from app.cli.context.app_context import get_context
+from app.config.config_loader import get_config
 from app.core.pipeline.builder import PipelineBuilder
+from app.core.pipeline.command_resolver import CommandResolver
 from app.core.pipeline.context import GitContext
 from app.core.pipeline.step_registry import register_all_steps
 from app.core.workflow.workflow_builder import WorkflowEngineBuilder
 
-from app.cli.commands.run.options import (
-    StepsArgument,
-    CheckCzOption,
-    AutoStageOption,
-    StageModeOption,
-    CommitMessageFileOption,
-    ForceCommitOption,
-    CommitMessageBackupDirOption,
-    TagMessageFileOption,
-    VersionFileOption,
-    StrategyOption,
-    BumpOption,
-    TagOption,
-    TagMessageOption,
-    PreReleaseOption,
-    PostReleaseOption,
-    DevReleaseOption,
-    MetaOption,
-    EpochOption,
-    ForceTagOption,
-    SkipChecksOption,
-    TagMessageBackupDirOption,
-    AllRemoteOption,
-    RemoteOption,
-    SkipTagOption,
-    SyncBackupOption,
-)
-from app.cli.commands.run.resolver import resolve_run_args
 
 def run(
     ctx: typer.Context,
     # steps: list[str] = typer.Argument(..., help="Pipeline steps or preset"),
     steps: StepsArgument = None,
-
     # shared options (pipeline-safe)
     # Commit
     ## Commit • Validation
@@ -60,7 +59,6 @@ def run(
     force_commit: ForceCommitOption = None,
     ## Commit • Backup
     commit_message_backup_dir: CommitMessageBackupDirOption = None,
-
     # Tag
     ## Tag • Files
     tag_message_file: TagMessageFileOption = None,
@@ -80,7 +78,6 @@ def run(
     skip_check: SkipChecksOption = None,
     ## Tag • Backup
     tag_message_backup_dir: TagMessageBackupDirOption = None,
-
     # Push
     ## Push • Execution
     all_remote: AllRemoteOption = None,
@@ -88,136 +85,134 @@ def run(
     ## Push • Behavior
     skip_tag: SkipTagOption = None,
     sync_backup: SyncBackupOption = None,
-
 ):
     """
-Execute workflow pipelines
+    Execute workflow pipelines
 
-🚀 [bold cyan]Execute workflow pipelines[/bold cyan]
+    🚀 [bold cyan]Execute workflow pipelines[/bold cyan]
 
-Run one or more Custy workflow steps in sequence.
+    Run one or more Custy workflow steps in sequence.
 
-This command is the primary entry point for automation and combines validation, versioning, changelog generation, Git operations, backups, cleanup tasks, and workflow transitions into reusable pipelines.
+    This command is the primary entry point for automation and combines validation, versioning, changelog generation, Git operations, backups, cleanup tasks, and workflow transitions into reusable pipelines.
 
-[dim]Most users should use pipeline profiles instead of running individual commands manually.[/dim]
+    [dim]Most users should use pipeline profiles instead of running individual commands manually.[/dim]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-📦 [bold]Workflow Profiles:[/bold]
+    📦 [bold]Workflow Profiles:[/bold]
 
-  [green]dev[/green]
+      [green]dev[/green]
 
-    Daily development workflow.
+        Daily development workflow.
 
-    commit → push
+        commit → push
 
-  [green]release[/green]
+      [green]release[/green]
 
-    Standard release workflow.
+        Standard release workflow.
 
-    commit → tag → push
+        commit → tag → push
 
-  [green]full[/green]
+      [green]full[/green]
 
-    Complete release lifecycle.
+        Complete release lifecycle.
 
-    release + changelog + backups + cleanup + workflow actions
+        release + changelog + backups + cleanup + workflow actions
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧩 [bold]Available Steps:[/bold]
+    🧩 [bold]Available Steps:[/bold]
 
-Core
+    Core
 
-  • [green]validate[/green]           Check repository state and required files
-  • [green]commit[/green]             Create a commit using message template
-  • [green]tag[/green]                Create or bump version tag
-  • [green]push[/green]               Push commits and tags to remote
-  • [green]changelog[/green]          Generate or update changelog
+      • [green]validate[/green]           Check repository state and required files
+      • [green]commit[/green]             Create a commit using message template
+      • [green]tag[/green]                Create or bump version tag
+      • [green]push[/green]               Push commits and tags to remote
+      • [green]changelog[/green]          Generate or update changelog
 
-Backup
+    Backup
 
-  • [yellow]backup-commit[/yellow]      Backup commit message file
-  • [yellow]backup-tag[/yellow]         Backup tag message file
+      • [yellow]backup-commit[/yellow]      Backup commit message file
+      • [yellow]backup-tag[/yellow]         Backup tag message file
 
-Cleanup
+    Cleanup
 
-  • [magenta]cleanup-backups[/magenta]    Remove old backup files
-  • [magenta]cleanup-branches[/magenta]   Clean up merged or stale branches
+      • [magenta]cleanup-backups[/magenta]    Remove old backup files
+      • [magenta]cleanup-branches[/magenta]   Clean up merged or stale branches
 
-Workflow
+    Workflow
 
-  • [color(208)]workflow[/color(208)]           Finalize workflow (post-release actions)
+      • [color(208)]workflow[/color(208)]           Finalize workflow (post-release actions)
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧪 [bold]Examples:[/bold]
+    🧪 [bold]Examples:[/bold]
 
-Run a profile:
+    Run a profile:
 
-  [yellow]custy run dev[/yellow]
+      [yellow]custy run dev[/yellow]
 
-  [yellow]custy run release[/yellow]
+      [yellow]custy run release[/yellow]
 
-  [yellow]custy run full[/yellow]
+      [yellow]custy run full[/yellow]
 
-Run custom steps:
+    Run custom steps:
 
-  [yellow]custy run commit tag[/yellow]
+      [yellow]custy run commit tag[/yellow]
 
-  [yellow]custy run commit tag push[/yellow]
+      [yellow]custy run commit tag push[/yellow]
 
-  [yellow]custy run validate commit tag push changelog[/yellow]
+      [yellow]custy run validate commit tag push changelog[/yellow]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options:[/bold]
+    🌐 [bold]Global Options:[/bold]
 
-Global options are specified before the command.
+    Global options are specified before the command.
 
-  [yellow]custy --dry-run run release[/yellow]
-    Preview the resolved profile and its planned operations. Read-only
-    discovery runs, while file, Git, workflow, and remote mutations are
-    simulated.
+      [yellow]custy --dry-run run release[/yellow]
+        Preview the resolved profile and its planned operations. Read-only
+        discovery runs, while file, Git, workflow, and remote mutations are
+        simulated.
 
-  [yellow]custy --debug run full[/yellow]
+      [yellow]custy --debug run full[/yellow]
 
-  [yellow]custy --log-level debug run release[/yellow]
+      [yellow]custy --log-level debug run release[/yellow]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Recommended Usage:[/bold]
+    💡 [bold]Recommended Usage:[/bold]
 
-Daily development:
+    Daily development:
 
-  [yellow]custy run dev[/yellow]
+      [yellow]custy run dev[/yellow]
 
-Production release:
+    Production release:
 
-  [yellow]custy run release[/yellow]
+      [yellow]custy run release[/yellow]
 
-Complete maintenance workflow:
+    Complete maintenance workflow:
 
-  [yellow]custy run full[/yellow]
+      [yellow]custy run full[/yellow]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy commit[/cyan]
+      [cyan]custy commit[/cyan]
 
-  [cyan]custy tag[/cyan]
+      [cyan]custy tag[/cyan]
 
-  [cyan]custy push[/cyan]
+      [cyan]custy push[/cyan]
 
-  [cyan]custy workflow[/cyan]
-"""
+      [cyan]custy workflow[/cyan]
+    """
     config = get_config()
 
     # REQUIRED defaults
     cli_args = CliArgs(
         steps=steps,
-
         # Commit
         check_cz=check_cz,
         auto_stage=auto_stage,
@@ -225,7 +220,6 @@ Complete maintenance workflow:
         commit_message_file=commit_message_file,
         force_commit=force_commit,
         commit_message_backup_dir=commit_message_backup_dir,
-
         # Tag
         tag_message_file=tag_message_file,
         version_file=version_file,
@@ -241,7 +235,6 @@ Complete maintenance workflow:
         force_tag=force_tag,
         skip_check=skip_check,
         tag_message_backup_dir=tag_message_backup_dir,
-
         # Push
         all_remote=all_remote,
         remote=remote,
@@ -278,8 +271,8 @@ Complete maintenance workflow:
     engine = (
         WorkflowEngineBuilder()
         # .from_cli_args(app_ctx)
-        .from_cli_args(combined_args)
-        .build())
+        .from_cli_args(combined_args).build()
+    )
 
     # ✅ 4. Create context
     ctx_obj = GitContext(engine)

@@ -1,13 +1,12 @@
 # app/cli/commands/changelog/options.py
 
+from pathlib import Path
+from typing import Annotated, Optional
+
 import typer
 
-from typing import Annotated, Optional
-from pathlib import Path
-
 from app.cli.constants import (
-  LogLevelChoices,
-  completion_commit_message_file,
+    completion_commit_message_file,
 )
 
 # =========================================================
@@ -17,7 +16,8 @@ CommitMessageFileOption = Annotated[
     Optional[Path],
     # typer.Argument(
     typer.Option(
-        "--commit-msg-file", "-cmsg",
+        "--commit-msg-file",
+        "-cmsg",
         help="""
         [bold]Commit message template[/bold]
 
@@ -47,7 +47,8 @@ CommitMessageFileOption = Annotated[
 ForceOption = Annotated[
     bool,
     typer.Option(
-        "--force/--no-force", "-f/-F",
+        "--force/--no-force",
+        "-f/-F",
         help="""
         [bold red]Force regeneration[/bold red]
 
@@ -77,7 +78,8 @@ ForceOption = Annotated[
 DryRunOption = Annotated[
     bool,
     typer.Option(
-        "--dry-run/--no-dry-run", "-dr/-Dr",
+        "--dry-run/--no-dry-run",
+        "-dr/-Dr",
         help="""
         [bold yellow]Dry run mode[/bold yellow]
 

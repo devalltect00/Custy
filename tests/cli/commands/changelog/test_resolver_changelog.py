@@ -24,7 +24,6 @@ class DummyCliArgs:
 
 
 class TestChangelogResolver:
-
     def test_returns_changelog_args(self):
         args = resolver.resolve_changelog_args(
             DummyConfig(),

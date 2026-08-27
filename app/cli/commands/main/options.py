@@ -1,9 +1,8 @@
 # app/cli/commands/main/options.py
 
-import typer
+from typing import Annotated
 
-from typing import Annotated, Optional, List
-from pathlib import Path
+import typer
 
 from app.cli.constants import LogLevelChoices
 from app.cli.utils import version_callback
@@ -33,14 +32,16 @@ NoBannerOption = Annotated[
 HelpOption = Annotated[
     bool,
     typer.Option(
-        "--help", "-h",
+        "--help",
+        "-h",
         help="Show help",
     ),
 ]
 VersionOption = Annotated[
     bool | None,
     typer.Option(
-        "--version", "-v",
+        "--version",
+        "-v",
         help="Display the installed Custy version and exit.",
         callback=version_callback,
     ),
@@ -53,7 +54,8 @@ VersionOption = Annotated[
 DryRunOption = Annotated[
     bool,
     typer.Option(
-        "--dry-run/--no-dry-run", "-dr/-Dr",
+        "--dry-run/--no-dry-run",
+        "-dr/-Dr",
         help="""
         [bold yellow]Dry run mode[/bold yellow]
 
@@ -84,7 +86,8 @@ DryRunOption = Annotated[
 DebugOption = Annotated[
     bool,
     typer.Option(
-        "--debug/--no-debug", "-dbg/-Dbg",
+        "--debug/--no-debug",
+        "-dbg/-Dbg",
         help="""
         [bold yellow]Debug mode[/bold yellow]
 
@@ -103,7 +106,8 @@ DebugOption = Annotated[
 LogLevelOption = Annotated[
     LogLevelChoices,
     typer.Option(
-        "--log-level", "-ll",
+        "--log-level",
+        "-ll",
         help="""
         [bold]Logging level[/bold]
 

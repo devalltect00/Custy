@@ -18,7 +18,6 @@ from app.core.changelog.models.commit import (
     Commit,
 )
 
-
 _VERSION_PATTERN = re.compile(
     r"""
     ^
@@ -65,11 +64,9 @@ class CommitExpander:
         expanded: list[Commit] = []
 
         for commit in commits:
-
             if self._should_expand(
                 commit,
             ):
-
                 expanded.extend(
                     self._expand_commit(
                         commit,
@@ -77,7 +74,6 @@ class CommitExpander:
                 )
 
             else:
-
                 expanded.append(
                     commit,
                 )
@@ -136,7 +132,6 @@ class CommitExpander:
         entries: list[str] = []
 
         for line in body.splitlines():
-
             line = line.strip()
 
             if not line:

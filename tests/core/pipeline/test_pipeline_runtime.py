@@ -30,7 +30,6 @@ class FailingStep:
 
 
 class TestPipelineRuntime:
-
     def test_pipeline_runs_all_steps(self):
         steps = [DummyStep("one"), DummyStep("two")]
         ctx = MagicMock()

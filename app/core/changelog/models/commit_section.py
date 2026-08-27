@@ -9,8 +9,7 @@ from a structured commit message.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from dataclasses import field
+from dataclasses import dataclass, field
 
 from app.core.changelog.models.commit_subsection import (
     CommitSubsection,
@@ -74,8 +73,6 @@ class CommitSection:
     #
     # Child subsections.
     #
-    subsections: list[
-        CommitSubsection
-    ] = field(
+    subsections: list[CommitSubsection] = field(
         default_factory=list,
     )

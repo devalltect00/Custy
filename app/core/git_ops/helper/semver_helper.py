@@ -19,9 +19,9 @@ Tier precedence:
 """
 
 import re
-from .version_helper_base import VersionHelperBase
+from typing import Optional
 
-from typing import Dict, Optional
+from .version_helper_base import VersionHelperBase
 
 
 class SemverVersionHelper(VersionHelperBase):
@@ -158,22 +158,22 @@ class SemverVersionHelper(VersionHelperBase):
 
     def normalize(self) -> str:
         """
-        Return a normalized version string.
+            Return a normalized version string.
 
-    Normalization removes only the optional ``v`` prefix
-    while preserving lifecycle identifiers and build
-    metadata.
+        Normalization removes only the optional ``v`` prefix
+        while preserving lifecycle identifiers and build
+        metadata.
 
-        Examples
-        --------
-        v1.2.3
-            -> 1.2.3
+            Examples
+            --------
+            v1.2.3
+                -> 1.2.3
 
-        v1.2.3+linux
-            -> 1.2.3+linux
+            v1.2.3+linux
+                -> 1.2.3+linux
 
-        Returns:
-            Normalized version.
+            Returns:
+                Normalized version.
         """
         return self.version.strip()
 
@@ -257,9 +257,7 @@ class SemverVersionHelper(VersionHelperBase):
 
         # Prevent invalid regression
         if self._tier_value(target_tier) < self._tier_value(current_tier):
-            raise ValueError(
-                f"Invalid tier regression: {current_tier} → {target_tier}"
-            )
+            raise ValueError(f"Invalid tier regression: {current_tier} → {target_tier}")
 
         # Determine bump necessity
         needs_bump = current_tier is None
@@ -288,11 +286,7 @@ class SemverVersionHelper(VersionHelperBase):
 
         # pre
         elif target_pre:
-            num = (
-                self.current_pre_num + 1
-                if target_pre == self.current_pre
-                else 1
-            )
+            num = self.current_pre_num + 1 if target_pre == self.current_pre else 1
             version += f"-{target_pre}.{num}"
 
         # post
@@ -336,7 +330,7 @@ class SemverVersionHelper(VersionHelperBase):
             return "dev"
         return "release"
 
-    def tier_order(self) -> Dict[str, int]:
+    def tier_order(self) -> dict[str, int]:
         return self.TIER_ORDER
 
     # =========================================================
@@ -402,7 +396,7 @@ class SemverVersionHelper(VersionHelperBase):
 
     def compare(
         self,
-        other: "SemverVersionHelper | str",
+        other: SemverVersionHelper | str,
     ) -> int:
         """
         Compare this version against another version.

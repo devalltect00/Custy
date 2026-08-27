@@ -1,11 +1,10 @@
 # app/config/custy_config_loader.py
 
+import tomllib
 from functools import lru_cache
 from pathlib import Path
 
 from app.constants.path import CUSTY_SETTINGS
-
-import tomllib
 
 
 @lru_cache

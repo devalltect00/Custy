@@ -71,7 +71,7 @@ class CommandResult:
         return not self.success
 
     @classmethod
-    def from_completed_process(cls, result) -> "CommandResult":
+    def from_completed_process(cls, result) -> CommandResult:
         """
         Create a CommandResult from a subprocess result.
 
@@ -90,7 +90,7 @@ class CommandResult:
         )
 
     @classmethod
-    def dry_run(cls) -> "CommandResult":
+    def dry_run(cls) -> CommandResult:
         """
         Create a dry-run result.
 

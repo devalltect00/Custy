@@ -29,9 +29,7 @@ class CommitTypeGrouper:
         Initialize the commit type grouper.
         """
 
-        self.scope_grouper = (
-            CommitScopeGrouper()
-        )
+        self.scope_grouper = CommitScopeGrouper()
 
     def group(
         self,
@@ -54,7 +52,6 @@ class CommitTypeGrouper:
         ] = OrderedDict()
 
         for commit in commits:
-
             grouped.setdefault(
                 commit.commit_type,
                 [],
@@ -63,9 +60,7 @@ class CommitTypeGrouper:
         return [
             CommitGroup(
                 commit_type=commit_type,
-                scopes=self.scope_grouper.group(
-                    grouped_commits
-                ),
+                scopes=self.scope_grouper.group(grouped_commits),
             )
             for commit_type, grouped_commits in grouped.items()
         ]

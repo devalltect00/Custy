@@ -18,6 +18,7 @@ import pytest
 
 from app.cli.constants import StageModeChoices
 from app.core.exceptions.validation_error import ValidationError
+from app.core.workflow.workflow_engine import WorkflowEngine
 
 # ==========================================================
 # Staging Validation
@@ -87,6 +88,7 @@ class TestEnsureStagedChanges:
             workflow_engine.ensure_staged_changes()
 
         assert exc.value.code == "NO_STAGED_CHANGES"
+
 
 # ==========================================================
 # Auto Stage
@@ -164,6 +166,7 @@ class TestAutoStage:
 
     #     assert exc.value.code == "AUTO_STAGE_FAILED"
 
+
 # ==========================================================
 # User Confirmation
 # ==========================================================
@@ -238,6 +241,7 @@ class TestUserConfirmation:
 
         workflow_engine.ensure_staged_changes()
 
+
 ##### Part 2
 
 # ==========================================================
@@ -300,6 +304,7 @@ class TestStagedFileReporting:
 
         workflow_engine.gitService.list_staged_files.assert_called_once()
 
+
 # ==========================================================
 # Dry Run Auto Stage
 # ==========================================================
@@ -328,6 +333,7 @@ class TestAutoStageDryRun:
         workflow_engine.gitService.auto_stage_all.assert_called_once()
 
         workflow_engine.gitService.list_staged_files.assert_not_called()
+
 
 # ==========================================================
 # Force Commit After Auto Stage

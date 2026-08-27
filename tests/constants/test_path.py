@@ -12,7 +12,6 @@ from app.constants import path
 
 
 class TestPathConstants:
-
     def test_project_source(self):
         assert path.THIS_PROJECT_SOURCE == "app"
 

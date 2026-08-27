@@ -12,7 +12,6 @@ from app.utils.logging import SeparatorFormatter
 
 
 class TestSeparatorFormatter:
-
     def test_empty_message_becomes_separator(self):
         formatter = SeparatorFormatter("%(message)s")
 

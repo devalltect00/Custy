@@ -31,12 +31,12 @@ from datetime import datetime, timedelta
 
 from app.cli.constants.enums import MergeStatusChoices
 
-
 DEFAULT_PROTECTED_BRANCHES = (
     "main",
     "master",
     "develop",
 )
+
 
 @dataclass(slots=True)
 class BranchInfo:

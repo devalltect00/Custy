@@ -17,12 +17,12 @@ from unittest.mock import MagicMock
 import pytest
 
 from app.cli.constants.enums import InitMode
+from app.core.initialize import main
 from app.core.initialize.main import InitMain
+from app.core.initialize.models.init_spec import InitSpec
 from app.core.initialize.models.initialization_result import (
     InitializationResult,
 )
-from app.core.initialize.models.init_spec import InitSpec
-from app.core.initialize import main
 
 
 class DummyProgress:
@@ -233,10 +233,7 @@ class TestInitMain:
 
         InitMain().execute(args)
 
-        output = "".join(
-            str(call)
-            for call in printed.call_args_list
-        )
+        output = "".join(str(call) for call in printed.call_args_list)
 
         assert "Message One" in output
         assert "Message Two" in output
@@ -391,12 +388,12 @@ class TestInitMain:
             ValueError("invalid"),
         ],
     )
-    def test_execute_reports_errors(
+    def test_execute_propagates_errors_to_cli_boundary(
         self,
         monkeypatch,
         exception,
     ):
-        """Reports initialization failures before re-raising them."""
+        """Propagates initialization failures for centralized presentation."""
 
         monkeypatch.setattr(
             main,
@@ -412,20 +409,10 @@ class TestInitMain:
             ),
         )
 
-        show_error = MagicMock()
-
-        monkeypatch.setattr(
-            main,
-            "show_error",
-            show_error,
-        )
-
         with pytest.raises(type(exception)):
             InitMain().execute(
                 self._build_args(),
             )
-
-        show_error.assert_called_once()
 
     def test_execute_passes_elapsed_time_to_summary_panel(
         self,

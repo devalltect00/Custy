@@ -9,11 +9,10 @@ This module verifies:
 - _resolve_backup_remotes()
 """
 
-
 import pytest
 
-from app.core.workflow.workflow_engine import WorkflowEngine
 from app.core.exceptions.validation_error import ValidationError
+from app.core.workflow.workflow_engine import WorkflowEngine
 
 
 class TestResolveMainRemotes:

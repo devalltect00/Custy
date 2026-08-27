@@ -14,10 +14,10 @@ import re
 from app.core.changelog.config.models import (
     ChangelogConfig,
 )
+from app.core.changelog.models.commit import Commit
 from app.core.changelog.models.commit_group import (
     CommitGroup,
 )
-from app.core.changelog.models.commit import Commit
 from app.core.changelog.models.commit_section import CommitSection
 from app.core.changelog.models.commit_subsection import CommitSubsection
 from app.core.changelog.processing.cleaner import (
@@ -43,7 +43,10 @@ class ChangelogProcessingPipeline:
     SECTION_TYPE_ALIASES: tuple[tuple[tuple[str, ...], str], ...] = (
         (("breaking change", "breaking changes"), "breaking"),
         (("bug fix", "bug fixes", "bugfix", "fix", "fixes"), "fix"),
-        (("template improvement", "template improvements", "template", "templates"), "template"),
+        (
+            ("template improvement", "template improvements", "template", "templates"),
+            "template",
+        ),
         (("documentation", "docs", "document"), "docs"),
         (("feature", "features"), "feat"),
         (
@@ -111,13 +114,9 @@ class ChangelogProcessingPipeline:
 
         self.parser = CommitParser()
 
-        self.deduplicator = (
-            CommitDeduplicator()
-        )
+        self.deduplicator = CommitDeduplicator()
 
-        self.commit_type_grouper = (
-            CommitTypeGrouper()
-        )
+        self.commit_type_grouper = CommitTypeGrouper()
 
         self._mapped_section_types = {
             self._normalize_heading(title): commit_type
@@ -125,8 +124,7 @@ class ChangelogProcessingPipeline:
         }
 
         self._generic_scopes = {
-            scope.casefold()
-            for scope in config.rendering.generic_scopes
+            scope.casefold() for scope in config.rendering.generic_scopes
         }
 
     def parse_messages(
@@ -208,10 +206,8 @@ class ChangelogProcessingPipeline:
                 filtered_commits,
             )
 
-        groups = (
-            self.commit_type_grouper.group(
-                unique_commits,
-            )
+        groups = self.commit_type_grouper.group(
+            unique_commits,
         )
 
         return groups
@@ -340,8 +336,7 @@ class ChangelogProcessingPipeline:
 
         content = f"{commit.subject}\n{commit.body}".casefold()
         has_keyword = any(
-            keyword.casefold() in content
-            for keyword in self.config.breaking.keywords
+            keyword.casefold() in content for keyword in self.config.breaking.keywords
         )
 
         if commit.breaking or has_keyword:
@@ -372,11 +367,15 @@ class ChangelogProcessingPipeline:
         if self.SHELL_TRANSCRIPT_PATTERN.search(commit.subject):
             return True
 
-        normalized_subject = re.sub(
-            r"\s+",
-            " ",
-            commit.subject,
-        ).strip().casefold()
+        normalized_subject = (
+            re.sub(
+                r"\s+",
+                " ",
+                commit.subject,
+            )
+            .strip()
+            .casefold()
+        )
 
         if (
             commit.commit_type.casefold() == "other"
@@ -392,8 +391,7 @@ class ChangelogProcessingPipeline:
             return True
 
         ignored_types = {
-            commit_type.casefold()
-            for commit_type in self.config.core.ignore_types
+            commit_type.casefold() for commit_type in self.config.core.ignore_types
         }
 
         if commit.commit_type.casefold() in ignored_types:
@@ -402,11 +400,7 @@ class ChangelogProcessingPipeline:
         is_release_announcement = (
             commit.commit_type.casefold() == "release"
             or (commit.scope or "").casefold() == "release"
-            or bool(
-                self.VERSION_SUBJECT_PATTERN.fullmatch(
-                    commit.subject.strip()
-                )
-            )
+            or bool(self.VERSION_SUBJECT_PATTERN.fullmatch(commit.subject.strip()))
         )
 
         return is_release_announcement and not self._commit_has_items(commit)
@@ -441,8 +435,7 @@ class ChangelogProcessingPipeline:
         """
 
         return bool(
-            section.items
-            or any(subsection.items for subsection in section.subsections)
+            section.items or any(subsection.items for subsection in section.subsections)
         )
 
     @staticmethod

@@ -46,11 +46,7 @@ class CommitScopeGrouper:
         ] = OrderedDict()
 
         for commit in commits:
-
-            scope = (
-                commit.scope
-                or self.DEFAULT_SCOPE
-            )
+            scope = commit.scope or self.DEFAULT_SCOPE
 
             grouped.setdefault(
                 scope,

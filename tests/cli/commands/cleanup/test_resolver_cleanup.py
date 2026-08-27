@@ -32,7 +32,6 @@ class DummyCliArgs:
 
 
 class TestCleanupResolvers:
-
     def test_resolve_cleanup_backup_args_defaults(self):
         args = resolver.resolve_cleanup_backup_args(
             DummyConfig(),

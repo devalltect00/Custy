@@ -80,9 +80,7 @@ Release narrative.
     assert groups[0].scopes[0].commits[0].sections[0].items == [
         "Added workflow validation."
     ]
-    assert groups[1].scopes[0].commits[0].sections[0].subsections[
-        0
-    ].title == "Workflow"
+    assert groups[1].scopes[0].commits[0].sections[0].subsections[0].title == "Workflow"
 
 
 def test_filters_merge_and_ignored_commit_types() -> None:

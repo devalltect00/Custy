@@ -11,8 +11,8 @@ existing Git service.
 
 from __future__ import annotations
 
-from pathlib import Path
 import re
+from pathlib import Path
 
 from rich.markup import escape
 
@@ -32,6 +32,7 @@ from app.core.changelog.processing.pipeline import ChangelogProcessingPipeline
 from app.core.changelog.processing.tag_behavior import ReleaseBehaviorProcessor
 from app.core.changelog.providers.factory import MessageProviderFactory
 from app.core.changelog.rendering.jinja_renderer import JinjaRenderer
+from app.core.changelog.rendering.template_loader import load_changelog_template
 from app.core.changelog.sorting.release_sorter import DefaultReleaseSorter
 from app.core.dry_run import DryRunSupport
 from app.core.git_ops.git.factory import create_git_service
@@ -154,11 +155,10 @@ class ChangelogGenerator(DryRunSupport):
         )
         self.release_sorter = DefaultReleaseSorter()
 
-        with template_path.open(encoding="utf-8") as file:
-            self.renderer = JinjaRenderer(
-                template=file.read(),
-                config=self.config,
-            )
+        self.renderer = JinjaRenderer(
+            template=load_changelog_template(template_path),
+            config=self.config,
+        )
 
         self.pending_commit_path = pending_commit_path
 
@@ -365,8 +365,7 @@ class ChangelogGenerator(DryRunSupport):
             tag
             for tag in tags[current_index + 1 : stop]
             if (
-                self._base_version(tag) == base
-                and self._release_stage(tag) != "stable"
+                self._base_version(tag) == base and self._release_stage(tag) != "stable"
             )
         ]
 
@@ -509,9 +508,7 @@ class ChangelogGenerator(DryRunSupport):
         groups = self.processing_pipeline.process_messages(messages)
 
         explicit_promotions = (
-            self._extract_promoted_from(release_commit.body)
-            if release_commit
-            else []
+            self._extract_promoted_from(release_commit.body) if release_commit else []
         )
 
         promotions = self._valid_promotions(
@@ -525,9 +522,7 @@ class ChangelogGenerator(DryRunSupport):
             compare_url=compare_url,
             status=status,
             summary=(
-                self._extract_summary(release_commit.body)
-                if release_commit
-                else None
+                self._extract_summary(release_commit.body) if release_commit else None
             ),
             promoted_from=promotions,
             metadata=self._extract_release_metadata(
@@ -653,10 +648,7 @@ class ChangelogGenerator(DryRunSupport):
                 or normalized.startswith("_tag:")
                 or normalized.startswith("changelog:")
                 or normalized.startswith("promoted from:")
-                or (
-                    "pre-release" in normalized
-                    and "from" in normalized
-                )
+                or ("pre-release" in normalized and "from" in normalized)
             ):
                 continue
 
@@ -688,9 +680,8 @@ class ChangelogGenerator(DryRunSupport):
             stripped = line.strip()
             normalized = stripped.casefold()
 
-            if (
-                "promoted from" in normalized
-                or ("pre-release" in normalized and "from" in normalized)
+            if "promoted from" in normalized or (
+                "pre-release" in normalized and "from" in normalized
             ):
                 collecting = True
                 versions.extend(self.VERSION_TOKEN_PATTERN.findall(stripped))
@@ -740,11 +731,15 @@ class ChangelogGenerator(DryRunSupport):
                     break
                 continue
 
-            category = re.sub(
-                r"[^\w/ -]",
-                "",
-                match.group(1),
-            ).strip().casefold()
+            category = (
+                re.sub(
+                    r"[^\w/ -]",
+                    "",
+                    match.group(1),
+                )
+                .strip()
+                .casefold()
+            )
             grouped_values = tags.setdefault(category, [])
 
             for value in re.split(r"[,•]", match.group(2)):
@@ -754,8 +749,7 @@ class ChangelogGenerator(DryRunSupport):
                     grouped_values.append(tag)
 
         return {
-            category: self._ordered_unique(values)
-            for category, values in tags.items()
+            category: self._ordered_unique(values) for category, values in tags.items()
         }
 
     def _extract_release_metadata(
@@ -786,11 +780,7 @@ class ChangelogGenerator(DryRunSupport):
             Structured release metadata.
         """
 
-        raw_tags = (
-            self._extract_tags(release_commit.body)
-            if release_commit
-            else {}
-        )
+        raw_tags = self._extract_tags(release_commit.body) if release_commit else {}
         tags: list[str] = []
 
         if version.casefold() != "unreleased":
@@ -808,25 +798,15 @@ class ChangelogGenerator(DryRunSupport):
         ]
 
         for category, values in raw_tags.items():
-            if any(
-                name in category
-                for name in ("workflow", "scope", "component")
-            ):
+            if any(name in category for name in ("workflow", "scope", "component")):
                 tags.extend(values)
 
         tags.extend(active_group_tags)
 
-        active_tag_keys = {
-            tag.casefold()
-            for tag in active_group_tags
-        }
+        active_tag_keys = {tag.casefold() for tag in active_group_tags}
 
         for values in raw_tags.values():
-            tags.extend(
-                tag
-                for tag in values
-                if tag.casefold() in active_tag_keys
-            )
+            tags.extend(tag for tag in values if tag.casefold() in active_tag_keys)
 
         stage = self._release_stage(version)
         stage_tags = {
@@ -842,14 +822,8 @@ class ChangelogGenerator(DryRunSupport):
             tags.append(stage_tags[stage])
 
         tags = self._ordered_unique(tags)
-        priority = {
-            tag: index
-            for index, tag in enumerate(self.TAG_PRIORITY)
-        }
-        source_order = {
-            tag: index
-            for index, tag in enumerate(tags)
-        }
+        priority = {tag: index for index, tag in enumerate(self.TAG_PRIORITY)}
+        source_order = {tag: index for index, tag in enumerate(tags)}
         tags.sort(
             key=lambda tag: (
                 priority.get(tag.casefold(), len(priority)),
@@ -894,7 +868,7 @@ class ChangelogGenerator(DryRunSupport):
             Lowercase tag without Markdown or hash markers.
         """
 
-        tag = value.strip().strip("`*_\"")
+        tag = value.strip().strip('`*_"')
         tag = tag.lstrip("#").strip()
         tag = re.sub(r"\s+", "-", tag)
 

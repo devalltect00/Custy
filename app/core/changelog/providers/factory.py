@@ -21,9 +21,7 @@ from app.core.changelog.providers.git_provider import (
 from app.core.changelog.providers.pending_commit_provider import (
     PendingCommitProvider,
 )
-from app.core.git_ops.git.service import (
-    GitService
-)
+from app.core.git_ops.git.service import GitService
 
 
 class MessageProviderFactory:
@@ -43,9 +41,7 @@ class MessageProviderFactory:
         Build the configured message providers.
         """
 
-        providers: list[MessageProvider] = [
-            GitProvider(git_service)
-        ]
+        providers: list[MessageProvider] = [GitProvider(git_service)]
 
         if config.pending_commit.enabled:
             providers.append(

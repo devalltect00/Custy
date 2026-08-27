@@ -11,7 +11,8 @@ Supports:
 - plugin-based step creation
 """
 
-from typing import List, Dict, Any
+from typing import Any
+
 from .pipeline import Pipeline, SimplePipeline
 from .registry import StepRegistry
 
@@ -27,11 +28,11 @@ class PipelineBuilder:
             {"name": "commit"},
         ])
     """
-    
+
     def __init__(self, isVisible: bool = True):
         self.isVisible = isVisible
 
-    def build(self, config: List[Dict[str, Any]]) -> Pipeline:
+    def build(self, config: list[dict[str, Any]]) -> Pipeline:
         """
         Build pipeline from config list.
 
@@ -55,7 +56,7 @@ class PipelineBuilder:
             steps.append(step)
 
         return Pipeline(steps, self.isVisible)
-    
+
 
 class SimplePipelineBuilder:
     """
@@ -68,11 +69,11 @@ class SimplePipelineBuilder:
             {"name": "commit"},
         ])
     """
-    
+
     def __init__(self, useCompletedMessage: bool = True):
         self.useCompletedMessage = useCompletedMessage
 
-    def build(self, config: List[Dict[str, Any]]) -> Pipeline:
+    def build(self, config: list[dict[str, Any]]) -> Pipeline:
         """
         Build pipeline from config list.
 

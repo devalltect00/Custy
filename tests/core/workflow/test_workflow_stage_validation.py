@@ -16,13 +16,10 @@ Covered behaviors include:
 - Validation failure
 """
 
-from typing import List
-
 import pytest
 
 from app.core.exceptions.validation_error import ValidationError
 from app.core.workflow.workflow_engine import WorkflowEngine
-
 
 # ==========================================================
 # Successful Validation

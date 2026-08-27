@@ -8,8 +8,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from app.core.git_ops.git.service import GitService
 from app.core.git_ops.git.result import CommandResult
+from app.core.git_ops.git.service import GitService
+
 
 @pytest.fixture
 def service():

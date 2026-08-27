@@ -1,7 +1,9 @@
 # app/core/pipeline/progress.py
 
 from contextlib import contextmanager
+
 from rich.progress import Progress, SpinnerColumn, TextColumn
+
 
 @contextmanager
 def step_progress(description: str):
@@ -12,7 +14,7 @@ def step_progress(description: str):
     with Progress(
         SpinnerColumn(),
         TextColumn("[cyan]{task.description}"),
-        transient=True,   # 👈 key
+        transient=True,  # 👈 key
     ) as progress:
         task = progress.add_task(description, total=None)
         yield progress

@@ -1,6 +1,5 @@
 # tests/cli/commands/run/test_options_run.py
 
-
 """
 tests/cli/commands/run/test_options.py
 

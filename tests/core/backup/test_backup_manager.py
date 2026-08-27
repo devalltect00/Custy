@@ -10,8 +10,6 @@ Covers:
 
 from pathlib import Path
 
-import pytest
-
 from app.core.backup.backup_manager import BackupManager
 
 

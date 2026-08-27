@@ -1,40 +1,40 @@
 # app/core/workflow/workflow_engine.py
 
-from pathlib import Path
-from typing import Optional, List
-
-import re
 import logging
+import re
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
+
 from colorama import Fore, Style
 
-from app.constants.path import (
-    CUSTY_TAG_MESSAGE_TEMPLATE,
-    CUSTY_BACKUP_COMMIT_DIR,
-    CUSTY_BACKUP_TAG_DIR,
-    CHANGELOG_PATH,
-)
+from app.cli.constants.enums import BumpChoices, StageModeChoices, StrategyChoices
 from app.constants.git_workflow_rules import (
     ALLOWED_COMMIT_TYPES,
     NON_CRITICAL_BRANCHES,
 )
-
-from app.cli.constants.enums import (
-    StrategyChoices, StageModeChoices, BumpChoices
+from app.constants.path import (
+    CHANGELOG_PATH,
+    CUSTY_BACKUP_COMMIT_DIR,
+    CUSTY_BACKUP_TAG_DIR,
+    CUSTY_TAG_MESSAGE_TEMPLATE,
 )
-
+from app.core.backup import BackupManager
+from app.core.branch_workflow import BranchWorkflowManager
+from app.core.changelog.generator import ChangelogGenerator
+from app.core.cleanup.backups.handle_cleanup_backups import HandleCleanupBackups
+from app.core.exceptions.validation_error import ValidationError  # adjust if needed
+from app.core.files.update_files import (
+    update_version_target,
+    update_version_universal,
+)
+from app.core.git_ops.commit.validator import validate_commit_message_format
+from app.core.git_ops.git.factory import create_git_service
+from app.core.git_ops.git.service import GitService
 from app.core.git_ops.helper import (
     CommitizenHelper,
     get_sorted_tags,
     maybe_assert_is_final,
-    detect_project_strategy,
-)
-from app.core.git_ops.versioning import (
-    ReleaseInfo,
-    ReleaseNoteBuilder,
-    VersionType,
-    VersionBridge,
 )
 from app.core.git_ops.tag_strategy import (
     CommitizenStrategy,
@@ -43,15 +43,13 @@ from app.core.git_ops.tag_strategy import (
     PEP440Strategy,
     SemverStrategy,
 )
-from app.core.git_ops.git.factory import create_git_service
-from app.core.git_ops.git.service import GitService
-from app.core.git_ops.commit.validator import validate_commit_message_format
-from app.core.branch_workflow import BranchWorkflowManager
-from app.core.changelog.generator import ChangelogGenerator
-from app.core.backup import BackupManager
-from app.core.exceptions.validation_error import ValidationError  # adjust if needed
-from app.core.files.update_files import update_version_universal
-from app.core.cleanup.backups.handle_cleanup_backups import HandleCleanupBackups
+from app.core.git_ops.versioning import (
+    ReleaseInfo,
+    ReleaseNoteBuilder,
+    VersionBridge,
+    VersionType,
+)
+from app.core.project import detect_project_layout
 from app.core.workflow.workflow_config import WorkflowConfig
 
 logger = logging.getLogger(__name__)
@@ -74,10 +72,7 @@ class WorkflowEngine:
     - Does NOT know about CLI or Pipeline
     """
 
-    def __init__(
-        self,
-        config: WorkflowConfig
-    ) -> None:
+    def __init__(self, config: WorkflowConfig) -> None:
         # =========================================================
         # 📦 Configuration (immutable input)
         # =========================================================
@@ -120,7 +115,7 @@ class WorkflowEngine:
         # ===== Runtime =====
         self.tag: str = ""
         self.tag_message: str = ""
-        self.changes_to_staged: List[str] = []
+        self.changes_to_staged: list[str] = []
 
         # =========================================================
         # 🔧 Core Services
@@ -190,7 +185,6 @@ class WorkflowEngine:
         self.ensure_commit_message_file_exists()
         self.ensure_tag_message_file_exists()
 
-
     # =========================================================
     # Validation Steps
     # =========================================================
@@ -203,7 +197,7 @@ class WorkflowEngine:
             raise ValidationError(
                 message="Git repository not found.",
                 hint="Run `git init`",
-                code="NOT_GIT_REPO"
+                code="NOT_GIT_REPO",
             )
 
     def ensure_remote_exists(self, remote: str = "origin"):
@@ -226,21 +220,31 @@ class WorkflowEngine:
                 message=f"Git remote '{remote}' not found or unreachable.",
                 hint=f"Add remote using: git remote add {remote} <url>",
                 code="REMOTE_NOT_FOUND",
-                context={"remote": remote}
+                context={"remote": remote},
             )
 
     def ensure_version_file(self):
         """
-        Ensure version file exists.
+        Validate an explicit or automatically detected version target.
+
+        Repositories without supported version metadata are valid. They use
+        Git tags as the version source and skip project-file synchronization.
         """
 
-        # print("self.version_file", self.version_file)
-
-        if not self.version_file or not self.version_file.exists():
+        if self.version_file and not self.version_file.exists():
             raise ValidationError(
                 message=f"Version file '{self.version_file}' not found.",
-                hint="Run `custy init config`",
-                code="VERSION_FILE_NOT_FOUND"
+                hint=(
+                    "Set tool.custy.cli.paths.version_file to 'auto' or "
+                    "configure an existing version target."
+                ),
+                code="VERSION_FILE_NOT_FOUND",
+            )
+
+        if not self.version_file:
+            logger.info(
+                "No supported project version file detected; "
+                "using Git-tag-only versioning."
             )
 
     def ensure_commit_message_file(self):
@@ -251,7 +255,7 @@ class WorkflowEngine:
             raise ValidationError(
                 message=f"Commit message file '{self.commit_message_file}' not found.",
                 hint="Run `custy init config`",
-                code="COMMIT_MSG_FILE_NOT_FOUND"
+                code="COMMIT_MSG_FILE_NOT_FOUND",
             )
 
     def ensure_tag_message_file(self):
@@ -262,7 +266,7 @@ class WorkflowEngine:
             raise ValidationError(
                 message=f"Tag message file '{self.tag_message_file}' not found.",
                 hint="Run `custy init config`",
-                code="TAG_MSG_FILE_NOT_FOUND"
+                code="TAG_MSG_FILE_NOT_FOUND",
             )
 
     def ensure_staged_changes(self):
@@ -278,7 +282,7 @@ class WorkflowEngine:
         if self.gitService.has_staged_files():
             return
 
-        print("self.auto_stage===========",self.auto_stage)
+        print("self.auto_stage===========", self.auto_stage)
 
         # ===== Auto-stage =====
         if self.auto_stage:
@@ -299,18 +303,24 @@ class WorkflowEngine:
 
             if not self.dry_run:
                 if not self.gitService.has_staged_files():
-                    logger.debug("⚠️ Still no staged files after auto-staging. but proceeding due to --force-commit.")
+                    logger.debug(
+                        "⚠️ Still no staged files after auto-staging. but proceeding due to --force-commit."
+                    )
                     if self.force_commit:
                         logger.warning("⚠️ Proceeding due to --force-commit")
                         return
 
-                    logger.debug("⚠️ [yellow]Warning[/yellow]: Still no staged changes after `git add .`")
-                    confirm = input("No staged files. Continue? (y/n): ").strip().lower()
+                    logger.debug(
+                        "⚠️ [yellow]Warning[/yellow]: Still no staged changes after `git add .`"
+                    )
+                    confirm = (
+                        input("No staged files. Continue? (y/n): ").strip().lower()
+                    )
                     if confirm not in ["y", "yes"]:
                         raise ValidationError(
                             message="Aborted due to empty staging.",
                             hint="Stage files using `git add`",
-                            code="EMPTY_STAGING_ABORTED"
+                            code="EMPTY_STAGING_ABORTED",
                         )
                     logger.debug("⚠️ Continuing despite no staged. files.")
 
@@ -329,7 +339,7 @@ class WorkflowEngine:
                 raise ValidationError(
                     message="No files staged after auto-stage.",
                     hint="Check your working directory",
-                    code="AUTO_STAGE_FAILED"
+                    code="AUTO_STAGE_FAILED",
                 )
 
         elif self.force_commit:
@@ -347,7 +357,7 @@ class WorkflowEngine:
             raise ValidationError(
                 message="No staged changes to commit.",
                 hint="Use `git add .`",
-                code="NO_STAGED_CHANGES"
+                code="NO_STAGED_CHANGES",
             )
 
     def ensure_commitizen_convention(self):
@@ -358,7 +368,7 @@ class WorkflowEngine:
             raise ValidationError(
                 message=f"Checking commitizen convention '{self.commit_message_file}' not found.",
                 hint="Use cz check --commit-msg-file (path)]",
-                code="COMMITIZEN_CONVENTION_FAILED"
+                code="COMMITIZEN_CONVENTION_FAILED",
             )
 
     def ensure_commit_message_file_exists(self) -> None:
@@ -478,7 +488,9 @@ class WorkflowEngine:
 
         if self.skip_checks:
             if not self.dry_run:
-                input(f"\n{Style.DIM}{Fore.LIGHTWHITE_EX}Press Enter to continue...\n{Style.RESET_ALL}\n")
+                input(
+                    f"\n{Style.DIM}{Fore.LIGHTWHITE_EX}Press Enter to continue...\n{Style.RESET_ALL}\n"
+                )
             return
 
         self.branchWorkflowManager = BranchWorkflowManager(
@@ -492,7 +504,9 @@ class WorkflowEngine:
         )
 
         if not self.dry_run:
-            input(f"\n{Style.DIM}{Fore.LIGHTWHITE_EX}Press Enter to continue...\n{Style.RESET_ALL}\n")
+            input(
+                f"\n{Style.DIM}{Fore.LIGHTWHITE_EX}Press Enter to continue...\n{Style.RESET_ALL}\n"
+            )
 
         self.branchWorkflowManager.run_initial_workflow(
             case=self.workflow_case,
@@ -562,9 +576,9 @@ class WorkflowEngine:
 
         # Find prerelease tags
         prereleases = [
-            t for t in sorted_tags
-            if t.startswith(version_prefix)
-            and re.search(r"(a|b|rc|dev)", t)
+            t
+            for t in sorted_tags
+            if t.startswith(version_prefix) and re.search(r"(a|b|rc|dev)", t)
         ]
         prereleases = list(reversed(prereleases))
         latest_pre = prereleases[0] if prereleases else None
@@ -572,10 +586,7 @@ class WorkflowEngine:
         # Detect changes since RC
         has_changes = True
         if version_type == VersionType.FINAL and latest_pre:
-            rc_tags = [
-                tag for tag in prereleases
-                if re.search(r"rc\d+", tag.lower())
-            ]
+            rc_tags = [tag for tag in prereleases if re.search(r"rc\d+", tag.lower())]
             has_changes = len(rc_tags) > 1
 
         info = ReleaseInfo(
@@ -671,14 +682,16 @@ class WorkflowEngine:
         )
 
         editors = [
-            ["code", "--wait"],   # VSCode
-            ["notepad"],          # Windows fallback
+            ["code", "--wait"],  # VSCode
+            ["notepad"],  # Windows fallback
         ]
 
         for editor_cmd in editors:
             try:
                 if self.dry_run:
-                    logger.info(f"(dry-run) Would open editor: {' '.join(editor_cmd)} {path}")
+                    logger.info(
+                        f"(dry-run) Would open editor: {' '.join(editor_cmd)} {path}"
+                    )
                     return
 
                 result = self.gitService.executor.runner.run(
@@ -744,9 +757,7 @@ class WorkflowEngine:
             # 👇 replace _maybe_use_latest_tag
             self.tag = self.gitService.get_latest_tag()
 
-            logger.warning(
-                f"Using latest tag instead: {self.tag}"
-            )
+            logger.warning(f"Using latest tag instead: {self.tag}")
 
     def apply_version_updates(self) -> None:
         """
@@ -776,65 +787,86 @@ class WorkflowEngine:
 
         logger.info("🔧 Applying version updates...")
 
-        # =========================================================
-        # Detect project type
-        # =========================================================
-        project_strategy = detect_project_strategy(
-            cli_value=None,
-            no_debug=self.no_debug,
-        )
+        layout = detect_project_layout()
+        version_to_use = self.tag
 
-        logger.debug(f"Detected project strategy: {project_strategy}")
-
-        # =========================================================
-        # CASE 1: Python Project (PEP440 enforced here)
-        # =========================================================
-        if project_strategy == StrategyChoices.PEP440:
-            logger.info("🐍 Python project detected → using PEP440 for version updates")
-
-            version_to_use = self.tag
-
-            # Convert if current tag is SemVer-like
+        if layout.is_python and self.strategy_input == StrategyChoices.PEP440:
             if "-" in self.tag:
                 converted = VersionBridge.semver_to_pep440(self.tag)
                 if converted:
-                    logger.debug(f"Converted SemVer → PEP440: {self.tag} → {converted}")
+                    logger.debug(
+                        "Converted SemVer to PEP 440 for Python metadata: %s -> %s",
+                        self.tag,
+                        converted,
+                    )
                     version_to_use = converted
 
-            # ---- Python version file ----
-            self.update_python_version_file(version_override=version_to_use)
+            self.commitizenHelper.update_cz_toml_version(new_version=version_to_use)
 
-            # ---- cz.toml ----
-            self.commitizenHelper.update_cz_toml_version(
-                new_version=version_to_use
+        if self.dry_run:
+            targets = []
+            if self.version_file:
+                targets.append(str(self.version_file))
+            if layout.is_python:
+                targets.append("pyproject.toml")
+            if layout.is_node:
+                targets.append("package.json")
+
+            if targets:
+                logger.info(
+                    "(dry-run) Would update project version metadata: %s",
+                    ", ".join(dict.fromkeys(targets)),
+                )
+            else:
+                logger.info(
+                    "(dry-run) No project version metadata detected; "
+                    "Git tags would remain the version source."
+                )
+            return
+
+        updated = False
+
+        if self.version_file and self.version_file.suffix.lower() == ".py":
+            updated |= update_version_target(
+                self.version_file,
+                version_to_use,
             )
 
-            # ---- Project files (ONLY python) ----
-            self.update_project_versions(
-                version_override=version_to_use,
-                project_type="python",
+        project_type = None
+        if layout.is_python and not layout.is_node:
+            project_type = "python"
+        elif layout.is_node and not layout.is_python:
+            project_type = "node"
+
+        updated |= update_version_universal(
+            root=layout.root,
+            new_version=version_to_use,
+            project_type=project_type,
+        )
+
+        standard_targets = {
+            (layout.root / "pyproject.toml").resolve(),
+            (layout.root / "package.json").resolve(),
+        }
+        if (
+            self.version_file
+            and self.version_file.suffix.lower() != ".py"
+            and self.version_file.resolve() not in standard_targets
+        ):
+            updated |= update_version_target(
+                self.version_file,
+                version_to_use,
             )
 
-        # =========================================================
-        # CASE 2: Non-Python (SemVer / JS / etc.)
-        # =========================================================
-        else:
-            logger.info("🌐 Non-Python project → skipping Python-specific updates")
-
-            # Only update project files (Node / etc.)
-            self.update_project_versions(
-                version_override=self.tag,
-                project_type="node",
+        if not updated:
+            logger.info(
+                "No supported project version metadata was changed; "
+                "using Git-tag-only versioning."
             )
 
-        # # If project type == python
-        # self.update_python_version_file()
-        # self.commitizenHelper.update_cz_toml_version(new_version=self.tag)
-
-        # self.update_project_versions()
-        # # self.generate_changelog_if_needed()
-
-    def update_python_version_file(self, version_override: Optional[str] = None) -> None:
+    def update_python_version_file(
+        self, version_override: Optional[str] = None
+    ) -> None:
         """
         Update Python version file (e.g. __version__.py).
 
@@ -860,13 +892,11 @@ class WorkflowEngine:
 
         version = version_override or self.tag
 
-        content = f'# {self.version_file.name}\n\n__version__ = "{version}"\n'
-
         if self.dry_run:
             logger.info(f"(dry-run) Would update {self.version_file} → {version}")
             return
 
-        self.version_file.write_text(content, encoding="utf-8")
+        update_version_target(self.version_file, version)
 
         logger.info(
             f"✅ [dim]{self.version_file}[/dim] [green]updated[/green] → {version}"
@@ -876,7 +906,7 @@ class WorkflowEngine:
         self,
         version_override: Optional[str] = None,
         project_type: Optional[str] = None,
-        ) -> None:
+    ) -> None:
         """
         Update project-level version files.
 
@@ -935,9 +965,7 @@ class WorkflowEngine:
 
         logger.info("[blue]📜 Generating changelog...[/blue]")
 
-        rendered = (
-            self.changelogGenerator.generate()
-        )
+        rendered = self.changelogGenerator.generate()
 
         # print("rendered ", rendered)
 
@@ -1084,7 +1112,6 @@ class WorkflowEngine:
             label="commit message",
         )
 
-
     def backup_tag_message_file(self) -> None:
         """
         Resolve and backup tag message file.
@@ -1113,10 +1140,9 @@ class WorkflowEngine:
 
         self._backup_file(
             source=self.tag_message_file,
-            backup_dir=CUSTY_BACKUP_TAG_DIR,
+            backup_dir=backup_dir,
             label="tag message",
         )
-
 
     def backup_release_files(self) -> None:
         """
@@ -1220,9 +1246,7 @@ class WorkflowEngine:
                 logger.debug(f"Pruned old backups: {old_files}")
 
         except Exception as e:
-            logger.error(
-                f"[red]⚠️ Failed to backup {label}: {e}[/red]"
-            )
+            logger.error(f"[red]⚠️ Failed to backup {label}: {e}[/red]")
 
     def execute_commit_phase(self) -> None:
         """
@@ -1244,7 +1268,9 @@ class WorkflowEngine:
             logger.info("[cyan]→ Using Commitizen workflow[/cyan]")
 
             if self.dry_run:
-                logger.info("[cyan](dry-run)[/cyan] Would run Commitizen commit + check")
+                logger.info(
+                    "[cyan](dry-run)[/cyan] Would run Commitizen commit + check"
+                )
                 return
 
             try:
@@ -1260,7 +1286,7 @@ class WorkflowEngine:
                     hint="Check Commitizen configuration and commit rules.",
                     code="COMMITIZEN_FAILED",
                     context={"error": str(e)},
-                )
+                ) from e
 
             return
 
@@ -1302,7 +1328,9 @@ class WorkflowEngine:
 
         elif self.commit_message_file:
             message_file = str(self.commit_message_file)
-            logger.info(f"[dim]Using commit message file: {self.commit_message_file}[/dim]")
+            logger.info(
+                f"[dim]Using commit message file: {self.commit_message_file}[/dim]"
+            )
 
         else:
             raise ValidationError(
@@ -1352,10 +1380,13 @@ class WorkflowEngine:
                 hint="Check your commit message and repository state.",
                 code="COMMIT_FAILED",
                 context={"error": str(e)},
-            )
+            ) from e
 
     def is_commitizen_auto(self) -> bool:
-        return self.strategy_input == StrategyChoices.COMMITIZEN and self.bump_level == BumpChoices.AUTO
+        return (
+            self.strategy_input == StrategyChoices.COMMITIZEN
+            and self.bump_level == BumpChoices.AUTO
+        )
 
     def create_tag(self) -> None:
         """
@@ -1417,8 +1448,7 @@ class WorkflowEngine:
         # =========================================================
         if self.dry_run:
             logger.info(
-                "[cyan](dry-run)[/cyan] Would create tag "
-                f"[bold]{self.tag}[/bold]"
+                f"[cyan](dry-run)[/cyan] Would create tag [bold]{self.tag}[/bold]"
             )
             return
 
@@ -1442,7 +1472,7 @@ class WorkflowEngine:
                 hint="Check tag format and repository state.",
                 code="TAG_CREATION_FAILED",
                 context={"error": str(e), "tag": self.tag},
-            )
+            ) from e
 
     def cleanup_backups(self) -> None:
         """
@@ -1524,9 +1554,9 @@ class WorkflowEngine:
 
         # fallback to origin
         if self.gitService.check_remote("origin"):
-            confirm = input(
-                "No main remote provided. Use 'origin'? (y/n): "
-            ).strip().lower()
+            confirm = (
+                input("No main remote provided. Use 'origin'? (y/n): ").strip().lower()
+            )
 
             if confirm in ("y", "yes"):
                 logger.info("[dim]Using default remote: origin[/dim]")
@@ -1551,9 +1581,11 @@ class WorkflowEngine:
             return self.backup_remotes
 
         if self.gitService.check_remote("backup"):
-            confirm = input(
-                "No backup remote provided. Use 'backup'? (y/n): "
-            ).strip().lower()
+            confirm = (
+                input("No backup remote provided. Use 'backup'? (y/n): ")
+                .strip()
+                .lower()
+            )
 
             if confirm in ("y", "yes"):
                 logger.info("[dim]Using default remote: backup[/dim]")
@@ -1599,7 +1631,7 @@ class WorkflowEngine:
                     hint="Check remote or network connection.",
                     code="PUSH_FAILED",
                     context={"remote": remote, "error": str(e)},
-                )
+                ) from e
 
             # =========================
             # Push tag (if allowed)
@@ -1618,7 +1650,7 @@ class WorkflowEngine:
                     hint="Ensure tag exists and remote is accessible.",
                     code="PUSH_TAG_FAILED",
                     context={"remote": remote, "tag": self.tag, "error": str(e)},
-                )
+                ) from e
 
     def execute_post_workflow(self) -> None:
         """
@@ -1645,9 +1677,8 @@ class WorkflowEngine:
             return
 
         # if not hasattr(self, "workflow_manager") or not hasattr(self, "workflow_case"):
-        if (
-            not hasattr(self, "branchWorkflowManager")
-            or not hasattr(self, "workflow_case")
+        if not hasattr(self, "branchWorkflowManager") or not hasattr(
+            self, "workflow_case"
         ):
             logger.debug("[dim]No workflow context → skipping post-workflow[/dim]")
             return
@@ -1674,7 +1705,9 @@ class WorkflowEngine:
                 # )
 
                 if not self.dry_run:
-                    input(f"\n{Style.DIM}{Fore.LIGHTWHITE_EX}Press Enter to continue...\n{Style.RESET_ALL}\n")
+                    input(
+                        f"\n{Style.DIM}{Fore.LIGHTWHITE_EX}Press Enter to continue...\n{Style.RESET_ALL}\n"
+                    )
             else:
                 logger.debug("[dim]No post-workflow actions executed[/dim]")
 
@@ -1684,7 +1717,7 @@ class WorkflowEngine:
                 hint="Check branch state and workflow rules.",
                 code="POST_WORKFLOW_FAILED",
                 context={"error": str(e)},
-            )
+            ) from e
 
     def run(self) -> None:
         """
@@ -1747,4 +1780,6 @@ class WorkflowEngine:
         self.push_changes()
         self.execute_post_workflow()
 
-        logger.info("[bold green]🎉 Release workflow completed successfully.[/bold green]")
+        logger.info(
+            "[bold green]🎉 Release workflow completed successfully.[/bold green]"
+        )

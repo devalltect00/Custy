@@ -111,9 +111,7 @@ class TestSeparatorFormatter:
             self._record(message),
         )
 
-        assert result == (
-            SeparatorFormatter.COMMON_SEPARATOR
-        )
+        assert result == (SeparatorFormatter.COMMON_SEPARATOR)
 
     # ==========================================================
     # CLI Command Header
@@ -130,16 +128,10 @@ class TestSeparatorFormatter:
             ),
         )
 
-        assert (
-            SeparatorFormatter.TITLE_SEPARATOR
-            in result
-        )
+        assert SeparatorFormatter.TITLE_SEPARATOR in result
 
         assert "CLI COMMAND" in result
 
         assert result.startswith("\n")
 
-        assert result.endswith(
-            SeparatorFormatter.TITLE_SEPARATOR
-            + "\n"
-        )
+        assert result.endswith(SeparatorFormatter.TITLE_SEPARATOR + "\n")

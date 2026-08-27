@@ -3,6 +3,7 @@
 
 from app.core.cleanup import BranchCleaner
 
+
 class HandleCleanupBranches:
     def __init__(self, args):
         self.args = args
@@ -14,6 +15,7 @@ class HandleCleanupBranches:
 
     def clean(self):
         self.branchCleaner.clean()
+
 
 def handleCleanupBranches(args) -> HandleCleanupBranches:
     return HandleCleanupBranches(args=args)

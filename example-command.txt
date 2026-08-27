@@ -1,0 +1,9 @@
+docker run -it --rm -v "%cd%:/workspace" -w /workspace path-header-scanner-prod:latest init --force
+docker run -it --rm -v "%cd%:/workspace" -w /workspace doc-gen-prod:latest init --force
+docker run -it --rm -v "%cd%:/workspace" -w /workspace reflow-prod:latest init
+docker run -it --rm -v "%cd%:/workspace" -w /workspace custy-prod:latest init
+
+docker run -it --rm -v "%cd%:/workspace" -w /workspace path-header-scanner-prod:latest scan app --apply
+docker run -it --rm -v "%cd%:/workspace" -w /workspace path-header-scanner-prod:latest scan tests --apply
+
+docker run -it --rm -v "%cd%:/workspace" -w /workspace doc-gen-prod:latest structure generate

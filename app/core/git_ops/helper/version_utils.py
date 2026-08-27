@@ -2,17 +2,13 @@
 
 import logging
 import re
-from typing import List
 
 from app.constants.git_workflow_rules import ALLOWED_COMMIT_TYPES
 
 logger = logging.getLogger(__name__)
 
 
-def assert_is_final_version(
-    version: str,
-    context: str = "changelog"
-) -> bool:
+def assert_is_final_version(version: str, context: str = "changelog") -> bool:
     """
     Ensures the given version is a final release (not pre-release).
     Exists if version is a pre-release like a1, b1, rc1, or dev1.
@@ -43,7 +39,9 @@ def assert_is_final_version(
     # validate final version version if used in release context
     # if re.search(r"(a|b|rc|dev)\d+", version):
     if re.search(pattern, version):
-        logger.warning(f"⚠️ Skipping {context} generation for pre-release versions: {version}")
+        logger.warning(
+            f"⚠️ Skipping {context} generation for pre-release versions: {version}"
+        )
         logger.info("ℹ️ Only final versions like v1.2.3 are allowed.")
         return False
 
@@ -71,7 +69,7 @@ def maybe_assert_is_final(
             f"⚠️  Skipping final version check for {context} due to --force-changelog flag.",
         )
         return True
-    
+
     return assert_is_final_version(version, context)
 
 
@@ -79,7 +77,8 @@ def maybe_assert_is_final(
 # ===================== COMMIT ANALYSIS ====================
 # =========================================================
 
-def contains_allowed_commit_type(commits: List[str]) -> bool:
+
+def contains_allowed_commit_type(commits: list[str]) -> bool:
     """
     Check if any commit in the list matches an allowed semantic type.
 
@@ -99,7 +98,7 @@ def contains_allowed_commit_type(commits: List[str]) -> bool:
         True
     """
     pattern = re.compile(r"(\w+)(\(.*\))?!?:")
-    
+
     for msg in commits:
         first_line = msg.strip().splitlines()[0] if msg else ""
 
@@ -109,7 +108,7 @@ def contains_allowed_commit_type(commits: List[str]) -> bool:
 
             if commit_type in ALLOWED_COMMIT_TYPES:
                 return True
-            
+
         return False
 
 
@@ -135,6 +134,7 @@ def classify_commit_type(first_line: str) -> str | None:
 # =========================================================
 # ===================== TAG NORMALIZATION ==================
 # =========================================================
+
 
 def normalize_version_tag(tag: str) -> str:
     """
@@ -174,4 +174,6 @@ def is_pep440(tag: str) -> bool:
         bool
     """
     tag = tag.lstrip("v")
-    return bool(re.match(r"\d+\.\d+\.\d+([a-z]+\d+)?(\.post\d+)?(\.dev\d+)?(\+.*)?", tag))
+    return bool(
+        re.match(r"\d+\.\d+\.\d+([a-z]+\d+)?(\.post\d+)?(\.dev\d+)?(\+.*)?", tag)
+    )

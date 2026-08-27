@@ -191,6 +191,7 @@ def test_sort_dev_versions(
         "1.2.3.dev1",
     ]
 
+
 def test_sort_alpha_versions(
     sorter: PEP440Sorter,
 ):
@@ -205,6 +206,7 @@ def test_sort_alpha_versions(
         "1.2.3a2",
         "1.2.3a1",
     ]
+
 
 def test_sort_beta_versions(
     sorter: PEP440Sorter,
@@ -221,6 +223,7 @@ def test_sort_beta_versions(
         "1.2.3b1",
     ]
 
+
 def test_sort_rc_versions(
     sorter: PEP440Sorter,
 ):
@@ -236,6 +239,7 @@ def test_sort_rc_versions(
         "1.2.3rc1",
     ]
 
+
 def test_sort_post_versions(
     sorter: PEP440Sorter,
 ):
@@ -250,6 +254,7 @@ def test_sort_post_versions(
         "1.2.3.post2",
         "1.2.3.post1",
     ]
+
 
 def test_sort_pep440_precedence(
     sorter: PEP440Sorter,
@@ -276,6 +281,7 @@ def test_sort_pep440_precedence(
         "1.2.3.dev1",
     ]
 
+
 def test_sort_epoch_versions(
     sorter: PEP440Sorter,
 ):
@@ -290,6 +296,7 @@ def test_sort_epoch_versions(
         "2!1.0.0",
         "1!1.0.0",
     ]
+
 
 def test_sort_local_versions(
     sorter: PEP440Sorter,
@@ -307,6 +314,7 @@ def test_sort_local_versions(
         "1.2.3+linux",
         "1.2.3+windows",
     }
+
 
 def test_sort_mixed_pep440_versions(
     sorter: PEP440Sorter,
@@ -330,6 +338,7 @@ def test_sort_mixed_pep440_versions(
         "1!2.0.0a1",
         "1!2.0.0.dev3",
     ]
+
 
 def test_invalid_version_raises(
     sorter: PEP440Sorter,

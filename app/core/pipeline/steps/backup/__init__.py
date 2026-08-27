@@ -2,3 +2,8 @@
 
 from .backup_commit_message_step import BackupCommitMessageStep
 from .backup_tag_message_step import BackupTagMessageStep
+
+__all__ = [
+    "BackupCommitMessageStep",
+    "BackupTagMessageStep",
+]

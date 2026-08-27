@@ -72,4 +72,3 @@ d-build-all: docker-check
 	@echo ==============================================================
 	@echo.
 	$(DOCKER) build -f $(DOCKERFILE_BASE) --target production -t $(DOCKER_IMAGE_PROD) .
-

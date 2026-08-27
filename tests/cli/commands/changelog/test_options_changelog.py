@@ -1,6 +1,5 @@
 # tests/cli/commands/changelog/test_options_changelog.py
 
-
 """
 tests/cli/commands/changelog/test_options.py
 

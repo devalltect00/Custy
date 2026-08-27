@@ -6,11 +6,11 @@ tests/cli/commands/version/test_resolver.py
 Unit tests for resolve_version_args().
 """
 
-import pytest
+from pathlib import Path
 
-from app.cli.commands.version.models import VersionArgs
 from app.cli.commands.version import resolver
-from app.cli.constants import StrategyChoices, BumpChoices
+from app.cli.commands.version.models import VersionArgs
+from app.cli.constants import BumpChoices, StrategyChoices
 
 
 class DummyConfig:
@@ -33,7 +33,6 @@ class DummyCliArgs:
 
 
 class TestResolveVersionArgs:
-
     def test_returns_version_args(self, monkeypatch):
         monkeypatch.setattr(
             resolver,
@@ -60,22 +59,25 @@ class TestResolveVersionArgs:
             DummyCliArgs(),
         )
 
-        assert args.version_file == "app/__version__.py"
+        assert args.version_file == Path("app/__version__.py").resolve()
         assert args.strategy == StrategyChoices.SEMVER
         assert args.bump is None
 
-    def test_explicit_values_are_preserved(self):
+    def test_explicit_values_are_preserved(self, tmp_path):
+        version_file = tmp_path / "__version__.py"
+        version_file.write_text('__version__ = "1.0.0"\n', encoding="utf-8")
+
         args = resolver.resolve_version_args(
             DummyConfig(),
             DummyCliArgs(
-                version_file="src/__version__.py",
+                version_file=version_file,
                 tag="v2.0.0",
                 strategy=StrategyChoices.PEP440,
                 bump=BumpChoices.MINOR,
             ),
         )
 
-        assert args.version_file == "src/__version__.py"
+        assert args.version_file == version_file.resolve()
         assert args.tag == "v2.0.0"
         assert args.strategy == StrategyChoices.PEP440
         assert args.bump == BumpChoices.MINOR

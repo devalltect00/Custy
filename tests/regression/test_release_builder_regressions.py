@@ -28,9 +28,7 @@ class TestReleaseNoteBuilderRegressions:
         )
 
     def test_builder_can_be_created(self):
-        builder = ReleaseNoteBuilder(
-            self._release_info()
-        )
+        builder = ReleaseNoteBuilder(self._release_info())
 
         assert builder is not None
 
@@ -42,9 +40,7 @@ class TestReleaseNoteBuilderRegressions:
         assert builder.info is info
 
     def test_build_commit_msg_returns_string(self):
-        builder = ReleaseNoteBuilder(
-            self._release_info()
-        )
+        builder = ReleaseNoteBuilder(self._release_info())
 
         msg = builder.build_commit_msg()
 
@@ -52,9 +48,7 @@ class TestReleaseNoteBuilderRegressions:
         assert msg.strip()
 
     def test_build_tag_msg_returns_string(self):
-        builder = ReleaseNoteBuilder(
-            self._release_info()
-        )
+        builder = ReleaseNoteBuilder(self._release_info())
 
         msg = builder.build_tag_msg()
 
@@ -62,18 +56,14 @@ class TestReleaseNoteBuilderRegressions:
         assert msg.strip()
 
     def test_commit_message_contains_version(self):
-        builder = ReleaseNoteBuilder(
-            self._release_info()
-        )
+        builder = ReleaseNoteBuilder(self._release_info())
 
         msg = builder.build_commit_msg()
 
         assert "1.2.3" in msg
 
     def test_tag_message_contains_version(self):
-        builder = ReleaseNoteBuilder(
-            self._release_info()
-        )
+        builder = ReleaseNoteBuilder(self._release_info())
 
         msg = builder.build_tag_msg()
 
@@ -103,27 +93,15 @@ class TestReleaseNoteBuilderRegressions:
         assert "candidate" in msg.lower()
 
     def test_builder_is_deterministic(self):
-        builder = ReleaseNoteBuilder(
-            self._release_info()
-        )
+        builder = ReleaseNoteBuilder(self._release_info())
 
-        assert (
-            builder.build_commit_msg()
-            == builder.build_commit_msg()
-        )
+        assert builder.build_commit_msg() == builder.build_commit_msg()
 
-        assert (
-            builder.build_tag_msg()
-            == builder.build_tag_msg()
-        )
+        assert builder.build_tag_msg() == builder.build_tag_msg()
 
     def test_multiple_builders_are_independent(self):
-        first = ReleaseNoteBuilder(
-            self._release_info()
-        )
+        first = ReleaseNoteBuilder(self._release_info())
 
-        second = ReleaseNoteBuilder(
-            self._release_info()
-        )
+        second = ReleaseNoteBuilder(self._release_info())
 
         assert first is not second

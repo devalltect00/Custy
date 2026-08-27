@@ -2,14 +2,12 @@
 
 import re
 from pathlib import Path
-from typing import Optional
 
 from app.constants.git_workflow_rules import ALLOWED_COMMIT_TYPES
 from app.core.exceptions.validation_error import ValidationError
 
-HEADER_REGEX = re.compile(
-    r"(?P<type>\w+)(\((?P<scope>[^\)]+)\))?!?: (?P<summary>.+)$"
-)
+HEADER_REGEX = re.compile(r"(?P<type>\w+)(\((?P<scope>[^\)]+)\))?!?: (?P<summary>.+)$")
+
 
 def validate_commit_message_format(file_path: Path) -> str:
     """
@@ -56,14 +54,14 @@ def validate_commit_message_format(file_path: Path) -> str:
             hint=f"Allowed: {sorted(ALLOWED_COMMIT_TYPES)}",
             code="INVALID_COMMIT_TYPE",
         )
-    
+
     summary = match.group("summary").strip()
     if not summary:
         raise ValidationError(
-            message=f"❌ Summary is empty.",
+            message="❌ Summary is empty.",
             code="SUMMARY IS EMPTY",
         )
-    
+
     import logging
 
     logger = logging.getLogger(__name__)

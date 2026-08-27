@@ -11,9 +11,9 @@ attributes that do not exist on domain objects.
 
 from __future__ import annotations
 
+import re
 from collections import OrderedDict
 from dataclasses import dataclass, field
-import re
 
 from app.core.changelog.config.models import ChangelogConfig
 from app.core.changelog.models.changelog import Changelog
@@ -88,11 +88,7 @@ class ChangelogRenderContext:
             Visible releases in their existing order.
         """
 
-        return [
-            release
-            for release in self.changelog.releases
-            if not release.hidden
-        ]
+        return [release for release in self.changelog.releases if not release.hidden]
 
     def groups_for(self, release: Release) -> list[RenderedGroup]:
         """
@@ -268,18 +264,15 @@ class ChangelogRenderContext:
         """
 
         scope_title = self._scope_title(scope)
-        scoped = (
-            self.config.rendering.group_by_scope
-            and not self._is_generic_scope(scope.scope, scope_title)
+        scoped = self.config.rendering.group_by_scope and not self._is_generic_scope(
+            scope.scope, scope_title
         )
 
         for commit in scope.commits:
             items, nested = self._commit_content(commit)
 
             target = (
-                subsection_items.setdefault(scope_title, [])
-                if scoped
-                else direct_items
+                subsection_items.setdefault(scope_title, []) if scoped else direct_items
             )
 
             for item in items:
@@ -383,10 +376,7 @@ class ChangelogRenderContext:
         if not self.config.rendering.collapse_generic_scopes:
             return False
 
-        generic = {
-            scope.casefold()
-            for scope in self.config.rendering.generic_scopes
-        }
+        generic = {scope.casefold() for scope in self.config.rendering.generic_scopes}
 
         return (
             raw_scope.strip().casefold() in generic
@@ -423,10 +413,7 @@ class ChangelogRenderContext:
             if key in seen:
                 return
 
-            if any(
-                self._items_are_similar(key, existing)
-                for existing in seen
-            ):
+            if any(self._items_are_similar(key, existing) for existing in seen):
                 return
 
         seen.add(key)
@@ -522,7 +509,7 @@ class ChangelogRenderContext:
             Clean display tag.
         """
 
-        tag = value.strip().strip("`*_\"")
+        tag = value.strip().strip('`*_"')
         tag = tag.lstrip("#").strip()
         tag = re.sub(r"\s+", "-", tag)
 

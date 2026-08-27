@@ -2,6 +2,7 @@
 
 from enum import Enum
 
+
 class StrategyChoices(str, Enum):
     SEMVER = "semver"
     PEP440 = "pep440"
@@ -10,6 +11,7 @@ class StrategyChoices(str, Enum):
     COMMITIZEN = "commitizen"
     NONE = None
 
+
 class BumpChoices(str, Enum):
     PATCH = "patch"
     MINOR = "minor"
@@ -17,11 +19,13 @@ class BumpChoices(str, Enum):
     AUTO = "auto"
     NONE = None
 
+
 class StageModeChoices(str, Enum):
-    ALL = "all"              # git add .
-    UPDATE = "update"        # git add --update
-    NONE = "none"            # do not stage anything
-    MANUAL = "manual"        # require user to stage manually
+    ALL = "all"  # git add .
+    UPDATE = "update"  # git add --update
+    NONE = "none"  # do not stage anything
+    MANUAL = "manual"  # require user to stage manually
+
 
 class LogLevelChoices(str, Enum):
     CRITICAL = "CRITICAL"
@@ -38,11 +42,13 @@ class LogLevelChoices(str, Enum):
                 if member.value == value:
                     return member
 
+
 class CleanupTypeChoices(str, Enum):
     ALL = "all"
     COMMIT = "commit"
     TAG = "tag"
     BRANCH = "branch"
+
 
 class InitMode(str, Enum):
     ALL = "all"
@@ -51,6 +57,7 @@ class InitMode(str, Enum):
     TEMPLATES = "templates"
     EXAMPLES = "examples"
 
+
 class StepChoices(str, Enum):
     COMMIT = "commit"
     TAG = "tag"
@@ -58,6 +65,7 @@ class StepChoices(str, Enum):
     DEV = "dev"
     RELEASE = "release"
     FULL = "full"
+
 
 class MergeStatusChoices(str, Enum):
     """

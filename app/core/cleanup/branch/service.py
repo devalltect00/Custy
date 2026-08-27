@@ -19,8 +19,6 @@ is delegated to ``BranchCleanupDisplay``.
 
 from __future__ import annotations
 
-from datetime import datetime
-
 from app.cli.constants.enums import MergeStatusChoices
 from app.core.cleanup.branch.models import (
     BranchCleanupRequest,
@@ -91,7 +89,6 @@ class BranchCleanupService:
         result.scanned = len(branches)
 
         for branch in branches:
-
             if not self._should_delete(
                 branch,
                 request,
@@ -141,28 +138,23 @@ class BranchCleanupService:
             return False
 
         if not any(
-            branch.name.startswith(prefix)
-            for prefix in request.include_prefixes
+            branch.name.startswith(prefix) for prefix in request.include_prefixes
         ):
             return False
 
         if request.merge_status is MergeStatusChoices.MERGED:
-
             if not branch.merged:
                 return False
 
         elif request.merge_status is MergeStatusChoices.UNMERGED:
-
             if branch.merged:
                 return False
 
         if request.max_age is not None:
-
             if branch.age < request.max_age:
                 return False
 
         if request.before is not None:
-
             if branch.last_commit >= request.before:
                 return False
 

@@ -1,7 +1,7 @@
 # app/core/pipeline/steps/backup/backup_tag_message_step.py
 
-from app.core.pipeline.steps.base_step import BaseStep
 from app.core.pipeline.decorators.log_step import log_step
+from app.core.pipeline.steps.base_step import BaseStep
 
 
 class BackupTagMessageStep(BaseStep):

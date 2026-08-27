@@ -23,7 +23,6 @@ import pytest
 from app.core.exceptions.validation_error import ValidationError
 from app.core.workflow.workflow_engine import WorkflowEngine
 
-
 # ==========================================================
 # Commit Message Validation
 # ==========================================================

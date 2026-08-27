@@ -14,8 +14,6 @@ Design Principles:
     - composite profiles (dev, release)
 """
 
-from typing import List, Dict
-
 
 class CommandResolver:
     """
@@ -24,10 +22,11 @@ class CommandResolver:
 
     def __init__(self):
         from .profiles import PIPELINE_PROFILES, STEP_ORDER
+
         self.profiles = PIPELINE_PROFILES
         self.step_order = STEP_ORDER
 
-    def _expand_profile(self, profile_steps: List[Dict], visited=None) -> List[Dict]:
+    def _expand_profile(self, profile_steps: list[dict], visited=None) -> list[dict]:
         if visited is None:
             visited = set()
 
@@ -38,7 +37,9 @@ class CommandResolver:
 
             # 🚨 Detect circular reference
             if name in visited:
-                raise ValueError(f"Circular profile detected: {' -> '.join(visited)} -> {name}")
+                raise ValueError(
+                    f"Circular profile detected: {' -> '.join(visited)} -> {name}"
+                )
 
             # If step is actually a profile → expand it
             if name in self.profiles:
@@ -50,7 +51,7 @@ class CommandResolver:
 
         return expanded
 
-    def resolve(self, commands: List[str]) -> List[Dict]:
+    def resolve(self, commands: list[str]) -> list[dict]:
         """
         Convert commands into pipeline config.
 
@@ -85,7 +86,7 @@ class CommandResolver:
         # print("profile_steps",self._merge_profiles(commands))
         return self._merge_profiles(commands)
 
-    def _merge_profiles(self, commands: List[str]) -> List[Dict]:
+    def _merge_profiles(self, commands: list[str]) -> list[dict]:
         """
         Merge multiple profiles into one pipeline.
 
@@ -111,7 +112,7 @@ class CommandResolver:
         # return self._deduplicate(result)
         return self._order_and_deduplicate(result)
 
-    def _deduplicate(self, steps: List[Dict]) -> List[Dict]:
+    def _deduplicate(self, steps: list[dict]) -> list[dict]:
         """
         Remove duplicate steps while preserving order.
 
@@ -130,47 +131,47 @@ class CommandResolver:
 
         return result
 
-    def _order_and_deduplicate(self, steps: List[Dict]) -> List[Dict]:
+    def _order_and_deduplicate(self, steps: list[dict]) -> list[dict]:
         """
-    Normalize pipeline steps by removing duplicates and enforcing execution order.
+        Normalize pipeline steps by removing duplicates and enforcing execution order.
 
-    This method ensures that when multiple workflow profiles are merged
-    (e.g. `commit + tag + push`), the resulting pipeline:
+        This method ensures that when multiple workflow profiles are merged
+        (e.g. `commit + tag + push`), the resulting pipeline:
 
-    • contains no duplicate steps
-    • follows a consistent, logical execution order
+        • contains no duplicate steps
+        • follows a consistent, logical execution order
 
-    Ordering is determined by a predefined priority mapping (`STEP_ORDER`),
-    which represents the global pipeline flow (validation → preparation →
-    generation → execution → finalize).
+        Ordering is determined by a predefined priority mapping (`STEP_ORDER`),
+        which represents the global pipeline flow (validation → preparation →
+        generation → execution → finalize).
 
-    Args:
-        steps (List[Dict]):
-            A list of step definitions, where each step is a dictionary
-            containing at least a `"name"` key.
+        Args:
+            steps (List[Dict]):
+                A list of step definitions, where each step is a dictionary
+                containing at least a `"name"` key.
 
-    Returns:
-        List[Dict]:
-            A deduplicated and ordered list of steps ready for execution.
+        Returns:
+            List[Dict]:
+                A deduplicated and ordered list of steps ready for execution.
 
-    Notes:
-        • First occurrence of a step is preserved (stable deduplication)
-        • Unknown steps are placed at the end of the pipeline
-        • This method converts multiple profile pipelines into a single,
-          coherent execution flow
+        Notes:
+            • First occurrence of a step is preserved (stable deduplication)
+            • Unknown steps are placed at the end of the pipeline
+            • This method converts multiple profile pipelines into a single,
+              coherent execution flow
 
-    Example:
-        Input:
-            commit + tag + push profiles
+        Example:
+            Input:
+                commit + tag + push profiles
 
-        Output:
-            [
-                {"name": "ensure_git_repo_step"},
-                {"name": "prepare_version_step"},
-                {"name": "commit_step"},
-                {"name": "tag_step"},
-                {"name": "push_step"},
-            ]
+            Output:
+                [
+                    {"name": "ensure_git_repo_step"},
+                    {"name": "prepare_version_step"},
+                    {"name": "commit_step"},
+                    {"name": "tag_step"},
+                    {"name": "push_step"},
+                ]
         """
         seen = set()
         unique_steps = []

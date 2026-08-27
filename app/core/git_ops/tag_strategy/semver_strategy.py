@@ -46,7 +46,7 @@ class SemverStrategy:
         self.build_meta = build_meta
         self.dev = dev
         self.post = post
-        
+
         self.git = create_git_service(dry_run=dry_run, no_debug=no_debug)
 
     def get_next_tag(self) -> str:

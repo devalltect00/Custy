@@ -115,4 +115,3 @@ semantics.
 Remote Git pushes, release recovery, and registry publication require the
 corresponding credentials inside the container. Do not store tokens in the
 Makefile or container image; provide credentials securely at runtime.
-

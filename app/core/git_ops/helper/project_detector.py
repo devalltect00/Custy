@@ -1,114 +1,63 @@
 # app/core/git_ops/helper/project_detector.py
-""" """
 
-import os
-import toml
+"""Resolve version strategies from configuration and project markers."""
 
-from app.constants.path import CUSTY_SETTINGS
+from __future__ import annotations
+
+import logging
+
+from app.config.config_loader import get_config
+from app.core.project import ProjectEcosystem, detect_project_layout
+
+logger = logging.getLogger(__name__)
+
 
 def detect_project_strategy(
     cli_value: str | None = None,
     no_debug: bool | None = False,
 ) -> str:
-    """
-    Detects the appropriate versioning strategy for the project.
+    """Detect the version-generation strategy for the target project.
 
-    Order of resolution
-    1. CLI override
-    2. Config file: .custy.toml
-    3. Auto-detect via file presence
-    4. Default fallback: 'semver
+    Resolution order:
+        1. Explicit CLI value.
+        2. tool.custy.cli.versioning.strategy.
+        3. Python marker -> PEP 440.
+        4. Node.js, PHP, mixed, or generic marker -> SemVer.
     """
-    # Step 1: Use CLI override if provided
+
     if cli_value:
         return cli_value
 
-    # Step 2: Try reading from config file
-    config_files = [CUSTY_SETTINGS, ".custy.toml", "custy.toml"]
-    for path in config_files:
-        if os.path.exists(path):
-            try:
-                config = toml.load(path)
-                strategy = config.get("versioning", {}).get("strategy")
-                if strategy:
-                    if not no_debug:
-                        print(f"⚙️  Detected strategy from config: {strategy}")
-                    return strategy
-            except Exception as e:
-                print(f"⚠️ Failed to parse config '{path}': {e}")
+    config_value = get_config().get("cli", "versioning", "strategy")
+    if config_value:
+        if not no_debug:
+            logger.info("Detected configured version strategy: %s", config_value)
+        return str(config_value)
 
-    # Step 3: Auto-detect by common project markers
-    if (
-        os.path.exists("pyproject.toml")
-        or os.path.exists("setup.py")
-        or os.path.exists("requirements.txt")
-    ):
-        if not no_debug:
-            print("🧠 Detected Python project → strategy: pep440")
-        return "pep440"
-    if os.path.exists("package.json"):
-        if not no_debug:
-            print("🧠 Detected Javascript project → strategy: semver")
-        return "semver"
-    if os.path.exists("composer.json"):
-        if not no_debug:
-            print("🧠 Detected PHP project → strategy: semver")
+    layout = detect_project_layout()
+    if ProjectEcosystem.PYTHON in layout.ecosystems:
+        strategy = "pep440"
+    else:
+        strategy = "semver"
 
-    # step 4: Default fallback
     if not no_debug:
-        print("⚠️ No strategy detected, using default: semver")
-    return "semver"
+        logger.info("Detected project version strategy: %s", strategy)
 
-#############
-# Additional
-#############
+    return strategy
+
 
 def detect_tag_sorting_strategy(
     no_debug: bool | None = False,
 ) -> str:
-    """
-    Detect the version format used for sorting Git tags.
+    """Detect a supported Git-tag sorting grammar from project markers."""
 
-    Unlike ``detect_project_strategy()``, this function does not read the
-    configured generation strategy. Strategies such as ``commitizen``
-    describe how versions are generated, but they are not tag formats that
-    TagSorterFactory can sort.
-
-    Resolution:
-        1. Python project markers -> PEP 440
-        2. JavaScript/PHP project markers -> SemVer
-        3. Default fallback -> SemVer
-    """
-
-    if (
-        os.path.exists("pyproject.toml")
-        or os.path.exists("setup.py")
-        or os.path.exists("requirements.txt")
-    ):
-        if not no_debug:
-            print(
-                "🧠 Detected Python project "
-                "→ tag sorting strategy: pep440"
-            )
-
-        return "pep440"
-
-    if (
-        os.path.exists("package.json")
-        or os.path.exists("composer.json")
-    ):
-        if not no_debug:
-            print(
-                "🧠 Detected SemVer project "
-                "→ tag sorting strategy: semver"
-            )
-
-        return "semver"
+    layout = detect_project_layout()
+    if ProjectEcosystem.PYTHON in layout.ecosystems:
+        strategy = "pep440"
+    else:
+        strategy = "semver"
 
     if not no_debug:
-        print(
-            "⚠️ No tag format detected, "
-            "using sorting strategy: semver"
-        )
+        logger.info("Detected tag sorting strategy: %s", strategy)
 
-    return "semver"
+    return strategy

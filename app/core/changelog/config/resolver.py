@@ -17,7 +17,6 @@ from enum import Enum
 from typing import TypeVar
 
 from app.config.config_loader import ConfigLoader
-
 from app.core.changelog.config.models import (
     AdvancedConfig,
     BreakingConfig,

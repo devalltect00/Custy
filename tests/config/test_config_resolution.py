@@ -11,7 +11,6 @@ import pytest
 from app.config.config_loader import ConfigLoader
 from app.core.shared import ConfigurationError
 
-
 CONFIG = """
 [tool.custy.cli.execution]
 dry_run = true
@@ -25,7 +24,6 @@ auto_push = false
 
 
 class TestResolvePriority:
-
     @pytest.fixture
     def loader(self, tmp_path):
         path = tmp_path / "config.toml"
@@ -45,11 +43,14 @@ class TestResolvePriority:
         assert loader.resolve(False, ["git", "auto_push"], True) is False
 
     def test_false_can_fallback_to_config(self, loader):
-        assert loader.resolve(
-            False,
-            ["cli", "execution", "dry_run"],
-            treat_false_as_none=True,
-        ) is True
+        assert (
+            loader.resolve(
+                False,
+                ["cli", "execution", "dry_run"],
+                treat_false_as_none=True,
+            )
+            is True
+        )
 
     def test_required_missing(self, loader):
         with pytest.raises(ConfigurationError):

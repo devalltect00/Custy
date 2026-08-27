@@ -21,7 +21,6 @@ from app.core.changelog.models.commit import (
 from app.core.changelog.models.commit_section import (
     CommitSection,
 )
-
 from app.core.changelog.models.commit_subsection import (
     CommitSubsection,
 )
@@ -44,17 +43,11 @@ class CommitParser:
 
     BREAKING_KEYWORD = "BREAKING CHANGE"
 
-    SECTION_PATTERN = re.compile(
-        r"^###\s+(.+)$"
-    )
+    SECTION_PATTERN = re.compile(r"^###\s+(.+)$")
 
-    SUBSECTION_PATTERN = re.compile(
-        r"^####\s+(.+)$"
-    )
+    SUBSECTION_PATTERN = re.compile(r"^####\s+(.+)$")
 
-    BULLET_PATTERN = re.compile(
-        r"^(?:[-*+]|\u2022)\s+(.+)$"
-    )
+    BULLET_PATTERN = re.compile(r"^(?:[-*+]|\u2022)\s+(.+)$")
 
     TAG_FOOTER_PATTERN = re.compile(
         r"^(?:\U0001f516\s*)?(?:\*\*)?tags(?:\*\*)?:?$",
@@ -93,44 +86,27 @@ class CommitParser:
         lines = message.strip().splitlines()
 
         if not lines:
-            raise ValueError(
-                "Commit message cannot be empty."
-            )
+            raise ValueError("Commit message cannot be empty.")
 
         header = lines[0].strip()
 
-        body = "\n".join(
-            lines[1:]
-        ).strip()
+        body = "\n".join(lines[1:]).strip()
 
         commit_type = "other"
         scope = None
         subject = header
         breaking = False
 
-        match = self.HEADER_PATTERN.fullmatch(
-            header
-        )
+        match = self.HEADER_PATTERN.fullmatch(header)
 
         if match:
+            commit_type = match.group("type")
 
-            commit_type = match.group(
-                "type"
-            )
+            scope = match.group("scope")
 
-            scope = match.group(
-                "scope"
-            )
+            subject = match.group("subject").strip()
 
-            subject = match.group(
-                "subject"
-            ).strip()
-
-            breaking = bool(
-                match.group(
-                    "breaking"
-                )
-            )
+            breaking = bool(match.group("breaking"))
 
         if self.BREAKING_KEYWORD in body:
             breaking = True
@@ -163,10 +139,7 @@ class CommitParser:
             Parsed commit models.
         """
 
-        return [
-            self.parse(message)
-            for message in messages
-        ]
+        return [self.parse(message) for message in messages]
 
     def _parse_sections(
         self,
@@ -180,26 +153,23 @@ class CommitParser:
 
             ### Section
 
-            - Item
+            -Item
 
             #### Subsection
 
-            - Item
+            -Item
 
         Any heading deeper than level 4 is flattened
         into the current subsection.
         """
 
-        sections: list[
-            CommitSection
-        ] = []
+        sections: list[CommitSection] = []
 
         current_section: CommitSection | None = None
 
         current_subsection: CommitSubsection | None = None
 
         for line in body.splitlines():
-
             stripped = line.strip()
 
             if not stripped:
@@ -222,7 +192,6 @@ class CommitParser:
             )
 
             if match:
-
                 current_section = CommitSection(
                     title=match.group(
                         1,
@@ -247,19 +216,16 @@ class CommitParser:
             )
 
             if match:
-
                 if current_section is None:
                     current_section = CommitSection(
                         title="",
                     )
                     sections.append(current_section)
 
-                current_subsection = (
-                    CommitSubsection(
-                        title=match.group(
-                            1,
-                        ).strip(),
-                    )
+                current_subsection = CommitSubsection(
+                    title=match.group(
+                        1,
+                    ).strip(),
                 )
 
                 current_section.subsections.append(
@@ -276,13 +242,8 @@ class CommitParser:
             # -------------------------------------------------
             #
             if stripped.startswith("#####"):
-
                 if current_subsection:
-
-                    current_subsection.title += (
-                        " > "
-                        + stripped.lstrip("#").strip()
-                    )
+                    current_subsection.title += " > " + stripped.lstrip("#").strip()
 
                 continue
 
@@ -296,7 +257,6 @@ class CommitParser:
             )
 
             if match:
-
                 if current_section is None:
                     current_section = CommitSection(
                         title="",
@@ -308,13 +268,11 @@ class CommitParser:
                 ).strip()
 
                 if current_subsection:
-
                     current_subsection.items.append(
                         item,
                     )
 
                 else:
-
                     current_section.items.append(
                         item,
                     )

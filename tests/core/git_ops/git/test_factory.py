@@ -44,7 +44,7 @@ class TestCreateGitService:
 
         # service_cls.assert_called_once_with(executor)
 
-        # assert result is service
+        assert result is service
 
         service_cls.assert_called_once()
 
@@ -83,7 +83,7 @@ class TestCreateGitService:
 
         # service_cls.assert_called_once_with(executor)
 
-        # assert result is service
+        assert result is service
 
         service_cls.assert_called_once()
 

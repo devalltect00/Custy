@@ -1,6 +1,5 @@
 # tests/cli/commands/workflow/test_command_workflow.py
 
-
 """
 tests/cli/commands/workflow/test_command.py
 
@@ -25,7 +24,6 @@ class DummyAppContext:
 
 
 class TestWorkflowCommand:
-
     def test_branch_executes_pipeline(self, monkeypatch):
         cfg = MagicMock()
         app_ctx = DummyAppContext()

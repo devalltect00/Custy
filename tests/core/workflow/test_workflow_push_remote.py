@@ -7,11 +7,10 @@ This module verifies pushing commits and tags to Git remotes,
 including dry-run and failure handling.
 """
 
-
 import pytest
 
-from app.core.workflow.workflow_engine import WorkflowEngine
 from app.core.exceptions.validation_error import ValidationError
+from app.core.workflow.workflow_engine import WorkflowEngine
 
 
 class TestPushDryRun:
@@ -110,9 +109,7 @@ class TestPushFailures:
     ):
         workflow_engine.tag = "v1.0.0"
 
-        workflow_engine.gitService.push_tag.side_effect = RuntimeError(
-            "network"
-        )
+        workflow_engine.gitService.push_tag.side_effect = RuntimeError("network")
 
         with pytest.raises(ValidationError) as exc:
             workflow_engine._push_to_remotes(

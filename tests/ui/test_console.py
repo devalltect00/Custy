@@ -11,7 +11,6 @@ configured with the application's custom theme.
 
 from rich.console import Console
 
-from app.theme.theme import theme
 from app.ui.console import console
 
 

@@ -1,18 +1,16 @@
 # app/cli/commands/validate/options.py
 
+from pathlib import Path
+from typing import Annotated, Optional
+
 import typer
 
-from typing import Annotated, Optional
-from pathlib import Path
-
 from app.cli.constants import (
-    LogLevelChoices,
     StageModeChoices,
     completion_commit_message_file,
     completion_tag_message_file,
     completion_version_file,
 )
-
 
 # =========================================================
 # 🟢 COMMIT OPTIONS
@@ -20,7 +18,8 @@ from app.cli.constants import (
 CheckCzOption = Annotated[
     bool,
     typer.Option(
-        "--check-cz", "-cz",
+        "--check-cz",
+        "-cz",
         help="""
         [bold]Commitizen Validation[/bold]
 
@@ -45,7 +44,8 @@ CheckCzOption = Annotated[
 AutoStageOption = Annotated[
     bool,
     typer.Option(
-        "--auto-stage", "-as",
+        "--auto-stage",
+        "-as",
         help="""
         [bold]Auto Stage[/bold]
 
@@ -67,7 +67,8 @@ AutoStageOption = Annotated[
 StageModeOption = Annotated[
     Optional[StageModeChoices],
     typer.Option(
-        "--stage-mode", "-sm",
+        "--stage-mode",
+        "-sm",
         help="""
         [bold]Stage Mode[/bold]
 
@@ -93,7 +94,8 @@ CommitMessageFileOption = Annotated[
     Optional[Path],
     # typer.Argument(
     typer.Option(
-        "--commit-msg-file", "-cmsg",
+        "--commit-msg-file",
+        "-cmsg",
         help="""
         [bold]Commit message file[/bold]
 
@@ -120,7 +122,8 @@ CommitMessageFileOption = Annotated[
 TagMessageFileOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--tag-msg-file", "-tmsg",
+        "--tag-msg-file",
+        "-tmsg",
         help="""
         [bold]Tag message file[/bold]
 
@@ -143,7 +146,8 @@ TagMessageFileOption = Annotated[
 VersionFileOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--version-file", "-vf",
+        "--version-file",
+        "-vf",
         help="""
         [bold]Version file[/bold]
 

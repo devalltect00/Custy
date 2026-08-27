@@ -8,8 +8,6 @@ Unit tests for PipelineBuilder and SimplePipelineBuilder.
 
 from unittest.mock import MagicMock
 
-import pytest
-
 from app.core.pipeline.builder import (
     PipelineBuilder,
     SimplePipelineBuilder,
@@ -22,7 +20,6 @@ from app.core.pipeline.registry import StepRegistry
 
 
 class TestPipelineBuilder:
-
     def test_default_visibility(self):
         builder = PipelineBuilder()
 
@@ -42,10 +39,12 @@ class TestPipelineBuilder:
             lambda name, **kwargs: step,
         )
 
-        pipeline = PipelineBuilder().build([
-            {"name": "validate"},
-            {"name": "commit"},
-        ])
+        pipeline = PipelineBuilder().build(
+            [
+                {"name": "validate"},
+                {"name": "commit"},
+            ]
+        )
 
         assert isinstance(pipeline, Pipeline)
         assert len(pipeline.steps) == 2
@@ -66,14 +65,16 @@ class TestPipelineBuilder:
             fake_create,
         )
 
-        PipelineBuilder().build([
-            {
-                "name": "cleanup",
-                "args": {
-                    "cleanup_backups": True,
-                },
-            }
-        ])
+        PipelineBuilder().build(
+            [
+                {
+                    "name": "cleanup",
+                    "args": {
+                        "cleanup_backups": True,
+                    },
+                }
+            ]
+        )
 
         assert received["name"] == "cleanup"
         assert received["kwargs"] == {
@@ -82,7 +83,6 @@ class TestPipelineBuilder:
 
 
 class TestSimplePipelineBuilder:
-
     def test_default_completed_message(self):
         builder = SimplePipelineBuilder()
 
@@ -100,10 +100,12 @@ class TestSimplePipelineBuilder:
             lambda *args, **kwargs: MagicMock(),
         )
 
-        pipeline = SimplePipelineBuilder().build([
-            {"name": "validate"},
-            {"name": "commit"},
-        ])
+        pipeline = SimplePipelineBuilder().build(
+            [
+                {"name": "validate"},
+                {"name": "commit"},
+            ]
+        )
 
         assert isinstance(pipeline, SimplePipeline)
         assert len(pipeline.steps) == 2

@@ -7,24 +7,22 @@ Unit tests for WorkflowEngineBuilder.
 """
 
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
-from unittest.mock import patch
-
+from app.cli.constants.enums import (
+    BumpChoices,
+    CleanupTypeChoices,
+    LogLevelChoices,
+    StageModeChoices,
+    StrategyChoices,
+)
 from app.core.workflow.workflow_builder import WorkflowEngineBuilder
 from app.core.workflow.workflow_engine import WorkflowEngine
-from app.cli.constants.enums import (
-    StrategyChoices,
-    BumpChoices,
-    StageModeChoices,
-    LogLevelChoices,
-    CleanupTypeChoices,
-)
 
 
 class TestWorkflowBuilder:
-
     def test_default_builder(self):
         builder = WorkflowEngineBuilder()
 
@@ -122,6 +120,7 @@ class TestWorkflowBuilder:
 
 
 ##### Additional
+
 
 class TestFromCliArgs:
     """Tests for WorkflowEngineBuilder.from_cli_args()."""

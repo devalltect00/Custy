@@ -8,7 +8,6 @@ Constant-level tests for completion helper exports.
 
 from app.cli.constants import completions
 
-
 EXPECTED = {
     "completion_initialization_mode",
     "completion_commit_message_file",
@@ -25,7 +24,6 @@ EXPECTED = {
 
 
 class TestCompletionExports:
-
     def test_expected_functions_exist(self):
         for name in EXPECTED:
             assert hasattr(completions, name)

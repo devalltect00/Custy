@@ -48,11 +48,7 @@ class BranchCleanupDisplay:
         Display the cleanup start message.
         """
 
-        console.print(
-            info_panel(
-                "Scanning Git branches..."
-            )
-        )
+        console.print(info_panel("Scanning Git branches..."))
 
     def show_no_branches(self) -> None:
         """
@@ -60,12 +56,7 @@ class BranchCleanupDisplay:
         """
 
         console.print(
-            warning_panel(
-                (
-                    "No branches matched the supplied cleanup "
-                    "criteria."
-                )
-            )
+            warning_panel("No branches matched the supplied cleanup criteria.")
         )
 
     def show_no_prefixes(self) -> None:
@@ -78,14 +69,12 @@ class BranchCleanupDisplay:
 
         console.print(
             warning_panel(
-                (
-                    "No branch prefixes were configured.\n\n"
-                    "Branch cleanup was skipped to prevent accidental "
-                    "deletion.\n\n"
-                    "Configure one or more prefixes using:\n"
-                    "• config.toml\n"
-                    "• --prefix"
-                )
+                "No branch prefixes were configured.\n\n"
+                "Branch cleanup was skipped to prevent accidental "
+                "deletion.\n\n"
+                "Configure one or more prefixes using:\n"
+                "• config.toml\n"
+                "• --prefix"
             )
         )
 
@@ -102,9 +91,7 @@ class BranchCleanupDisplay:
             Completed cleanup result.
         """
 
-        console.print(
-            branch_cleanup_table(result)
-        )
+        console.print(branch_cleanup_table(result))
 
         deletion_label = "Would delete" if result.dry_run else "Deleted"
 
@@ -118,10 +105,7 @@ class BranchCleanupDisplay:
 
         if result.dry_run:
             message += (
-                "\n\nDry-run mode enabled. No local or remote branches "
-                "were deleted."
+                "\n\nDry-run mode enabled. No local or remote branches were deleted."
             )
 
-        console.print(
-            success_panel(message)
-        )
+        console.print(success_panel(message))

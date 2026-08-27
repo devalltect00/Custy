@@ -44,10 +44,7 @@ class TestGetCommitMessage:
             stdout="feat: add login\n\nbody\n",
         )
 
-        assert (
-            service.get_commit_message("abc123")
-            == "feat: add login\n\nbody"
-        )
+        assert service.get_commit_message("abc123") == "feat: add login\n\nbody"
 
         service.executor.show_commit.assert_called_once_with("abc123")
 
@@ -68,11 +65,7 @@ class TestGetCommitHashes:
     def test_multiple_hashes(self, service):
         service.executor.log_between.return_value = CommandResult(
             returncode=0,
-            stdout=(
-                "aaa111\n"
-                "bbb222\n"
-                "ccc333\n"
-            ),
+            stdout=("aaa111\nbbb222\nccc333\n"),
         )
 
         assert service.get_commit_hashes("v1.0.0..HEAD") == [

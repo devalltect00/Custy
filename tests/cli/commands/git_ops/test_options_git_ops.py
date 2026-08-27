@@ -1,6 +1,5 @@
 # tests/cli/commands/git_ops/test_options_git_ops.py
 
-
 """
 tests/cli/commands/git_ops/test_options.py
 

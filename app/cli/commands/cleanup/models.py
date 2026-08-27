@@ -1,25 +1,26 @@
 # app/cli/commands/cleanup/models.py
 
 from dataclasses import dataclass, field
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
 
 from app.cli.constants import (
-  CleanupTypeChoices,
-  MergeStatusChoices,
+    CleanupTypeChoices,
+    MergeStatusChoices,
 )
+
 
 @dataclass(slots=True)
 class CleanupBackupArgs:
-  """
-  Resolved arguments for backup cleanup.
-  """
+    """
+    Resolved arguments for backup cleanup.
+    """
 
-  type: CleanupTypeChoices
-  keep: int | None
-  commit_message_backup_dir: Path | None
-  tag_message_backup_dir: Path | None
+    type: CleanupTypeChoices
+    keep: int | None
+    commit_message_backup_dir: Path | None
+    tag_message_backup_dir: Path | None
+
 
 @dataclass(slots=True)
 class CleanupBranchesArgs:
@@ -34,6 +35,7 @@ class CleanupBranchesArgs:
     merge_status: MergeStatusChoices = MergeStatusChoices.MERGED
     max_age: timedelta | None = None
     before: datetime | None = None
+
 
 @dataclass(slots=True)
 class CleanupAllArgs:

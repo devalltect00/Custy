@@ -9,21 +9,20 @@ Integration tests for the development workflow.
 from unittest.mock import MagicMock
 
 from app.core.pipeline.pipeline import Pipeline
-
+from app.core.pipeline.steps.commit_step import (
+    CommitStep,
+)
 from app.core.pipeline.steps.prepare_version_step import (
     PrepareVersionStep,
 )
-from app.core.pipeline.steps.workflow_init_step import (
-    WorkflowInitStep,
+from app.core.pipeline.steps.push_step import (
+    PushStep,
 )
 from app.core.pipeline.steps.stage_step import (
     StageStep,
 )
-from app.core.pipeline.steps.commit_step import (
-    CommitStep,
-)
-from app.core.pipeline.steps.push_step import (
-    PushStep,
+from app.core.pipeline.steps.workflow_init_step import (
+    WorkflowInitStep,
 )
 
 

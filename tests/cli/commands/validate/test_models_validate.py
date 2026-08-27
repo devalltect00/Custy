@@ -12,7 +12,6 @@ from app.cli.commands.validate.models import ValidateArgs
 
 
 class TestValidateArgs:
-
     def test_construct_with_explicit_values(self):
         args = ValidateArgs(
             commit_message_file=Path("commit.txt"),
@@ -31,12 +30,12 @@ class TestValidateArgs:
         assert args.check_cz is True
 
     def test_dataclass_equality(self):
-        left = ValidateArgs(None,None,None,False,None,False)
-        right = ValidateArgs(None,None,None,False,None,False)
+        left = ValidateArgs(None, None, None, False, None, False)
+        right = ValidateArgs(None, None, None, False, None, False)
         assert left == right
 
     def test_repr_contains_field_names(self):
-        args = ValidateArgs(None,None,None,False,None,False)
+        args = ValidateArgs(None, None, None, False, None, False)
         text = repr(args)
         assert "auto_stage" in text
         assert "check_cz" in text

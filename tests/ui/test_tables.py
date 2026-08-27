@@ -83,10 +83,7 @@ class TestConfigurationTable:
 
         assert len(table.rows) == 7
 
-        columns = [
-            list(column.cells)
-            for column in table.columns
-        ]
+        columns = [list(column.cells) for column in table.columns]
 
         assert columns[0] == [
             "Target Directory",

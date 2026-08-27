@@ -14,7 +14,6 @@ from app.cli.constants import CleanupTypeChoices, MergeStatusChoices
 
 
 class TestCleanupModels:
-
     def test_backup_args(self):
         args = CleanupBackupArgs(
             type=CleanupTypeChoices.ALL,

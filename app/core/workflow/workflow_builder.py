@@ -29,17 +29,17 @@ Or from CLI args:
 """
 
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional
 
+from app.cli.constants.enums import (
+    BumpChoices,
+    CleanupTypeChoices,
+    LogLevelChoices,
+    StageModeChoices,
+    StrategyChoices,
+)
 from app.core.workflow.workflow_config import WorkflowConfig
 from app.core.workflow.workflow_engine import WorkflowEngine
-from app.cli.constants.enums import (
-    StrategyChoices,
-    BumpChoices,
-    StageModeChoices,
-    LogLevelChoices,
-    CleanupTypeChoices,
-)
 
 
 class WorkflowEngineBuilder:
@@ -147,11 +147,11 @@ class WorkflowEngineBuilder:
         self.config.sync_backup = value
         return self
 
-    def with_main_remotes(self, remotes: List[str]):
+    def with_main_remotes(self, remotes: list[str]):
         self.config.main_remotes = remotes
         return self
 
-    def with_backup_remotes(self, remotes: List[str]):
+    def with_backup_remotes(self, remotes: list[str]):
         self.config.backup_remotes = remotes
         return self
 

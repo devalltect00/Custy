@@ -1,16 +1,15 @@
 # app/cli/commands/backup/options.py
 
+from pathlib import Path
+from typing import Annotated, Optional
+
 import typer
 
-from typing import Annotated, Optional
-from pathlib import Path
-
 from app.cli.constants import (
-    LogLevelChoices,
-    completion_commit_message_file,
-    completion_tag_message_file,
     completion_commit_message_backup_dir,
+    completion_commit_message_file,
     completion_tag_message_backup_dir,
+    completion_tag_message_file,
 )
 
 # =========================================================
@@ -20,7 +19,8 @@ CommitMessageFileOption = Annotated[
     Optional[Path],
     # typer.Argument(
     typer.Option(
-        "--commit-msg-file", "-cmsg",
+        "--commit-msg-file",
+        "-cmsg",
         help="""
         [bold]Commit message template[/bold]
 
@@ -45,7 +45,8 @@ CommitMessageFileOption = Annotated[
 CommitMessageBackupDirOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--backup-commit-dir", "-bcd",
+        "--backup-commit-dir",
+        "-bcd",
         help="""
         [bold]Commit backup directory[/bold]
 
@@ -79,7 +80,8 @@ CommitMessageBackupDirOption = Annotated[
 TagMessageFileOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--tag-msg-file", "-tmsg",
+        "--tag-msg-file",
+        "-tmsg",
         help="""
         [bold]Tag message template[/bold]
 
@@ -104,7 +106,8 @@ TagMessageFileOption = Annotated[
 TagMessageBackupDirOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--backup-tag-dir", "-btd",
+        "--backup-tag-dir",
+        "-btd",
         help="""
         [bold]Tag backup directory[/bold]
 
@@ -138,7 +141,8 @@ TagMessageBackupDirOption = Annotated[
 DryRunOption = Annotated[
     bool,
     typer.Option(
-        "--dry-run/--no-dry-run", "-dr/-Dr",
+        "--dry-run/--no-dry-run",
+        "-dr/-Dr",
         help="""
         [bold yellow]Dry run mode[/bold yellow]
 

@@ -1,11 +1,10 @@
 # app/core/pipeline/steps/initialization/init_step.py
 
-from rich import print as rprint
-
-from app.core.pipeline.steps.base_step import BaseStep
-from app.core.pipeline.decorators.log_step import log_step
 
 from app.core.initialize.main import InitMain
+from app.core.pipeline.decorators.log_step import log_step
+from app.core.pipeline.steps.base_step import BaseStep
+
 
 class InitStep(BaseStep):
     """

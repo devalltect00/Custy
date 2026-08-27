@@ -97,10 +97,13 @@ class TestGetCommitsBetween:
             stdout="",
         )
 
-        assert service.get_commits_between(
-            "v1",
-            "v2",
-        ) == []
+        assert (
+            service.get_commits_between(
+                "v1",
+                "v2",
+            )
+            == []
+        )
 
     def test_skip_empty_commit_output(self, service):
         service.executor.log_between.return_value = CommandResult(
@@ -140,14 +143,7 @@ class TestGetCommitsBetweenTags:
     def test_single_commit(self, service):
         service.executor.get_commits_between_tags.return_value = CommandResult(
             returncode=0,
-            stdout=(
-                "abc123\n"
-                "feat: login\n"
-                "Alice\n"
-                "2026-06-27\n"
-                "Body line\n"
-                "---END---"
-            ),
+            stdout=("abc123\nfeat: login\nAlice\n2026-06-27\nBody line\n---END---"),
         )
 
         result = service.get_commits_between_tags(
@@ -199,23 +195,19 @@ class TestGetCommitsBetweenTags:
             stdout="",
         )
 
-        assert service.get_commits_between_tags(
-            "v1",
-            "v2",
-        ) == []
+        assert (
+            service.get_commits_between_tags(
+                "v1",
+                "v2",
+            )
+            == []
+        )
 
     def test_skip_invalid_chunk(self, service):
         service.executor.get_commits_between_tags.return_value = CommandResult(
             returncode=0,
             stdout=(
-                "invalid\n"
-                "---END---"
-                "abc\n"
-                "feat: login\n"
-                "Alice\n"
-                "2026-06-27\n"
-                "Body\n"
-                "---END---"
+                "invalid\n---END---abc\nfeat: login\nAlice\n2026-06-27\nBody\n---END---"
             ),
         )
 
@@ -231,14 +223,7 @@ class TestGetCommitsBetweenTags:
         service.executor.get_commits_between_tags.return_value = CommandResult(
             returncode=0,
             stdout=(
-                "abc\n"
-                "feat: login\n"
-                "Alice\n"
-                "2026-06-27\n"
-                "line1\n"
-                "line2\n"
-                "line3\n"
-                "---END---"
+                "abc\nfeat: login\nAlice\n2026-06-27\nline1\nline2\nline3\n---END---"
             ),
         )
 

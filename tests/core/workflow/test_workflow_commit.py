@@ -7,15 +7,10 @@ This module verifies commit creation, commit message handling,
 and interactions with GitService during the commit stage.
 """
 
-
-from pathlib import Path
-from unittest.mock import MagicMock
-
 import pytest
 
 from app.core.exceptions.validation_error import ValidationError
 from app.core.workflow.workflow_engine import WorkflowEngine
-
 
 # ==========================================================
 # Commit Creation

@@ -9,19 +9,18 @@ Unit tests for the theme module.
 from rich.theme import Theme as RichTheme
 
 from app.theme.theme import (
-    Theme,
-    load_theme,
     HelpTheme,
-    helpTitle,
-    helpText,
+    Theme,
+    helpExample,
     helpHint,
     helpOption,
-    helpExample,
+    helpText,
+    helpTitle,
+    load_theme,
 )
 
 
 class TestTheme:
-
     def test_load_theme(self):
         theme = load_theme()
         assert isinstance(theme, Theme)

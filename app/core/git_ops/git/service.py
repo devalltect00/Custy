@@ -4,29 +4,28 @@
 
 ##### Domain Logic
 
-import re
 import logging
-from pathlib import Path
-from typing import List
+import re
 from datetime import datetime
+from pathlib import Path
 
-from app.config.config_loader import get_config, ConfigLoader
-from app.core.git_ops.git.protocol import IGitCommandExecutor
-from app.core.decorators.log_decorators import log_execution
-from app.core.cleanup.branch.models import (
-    BranchInfo,
-)
-from app.core.git_ops.helper import (
-    detect_tag_sorting_strategy,
-)
 from app.cli.constants.enums import (
     StrategyChoices,
 )
-from app.core.git_ops.tag_sorter.factory import (
-    TagSorterFactory,
+from app.config.config_loader import ConfigLoader, get_config
+from app.core.cleanup.branch.models import (
+    BranchInfo,
+)
+from app.core.decorators.log_decorators import log_execution
+from app.core.git_ops.git.protocol import IGitCommandExecutor
+from app.core.git_ops.helper import (
+    detect_tag_sorting_strategy,
 )
 from app.core.git_ops.tag_sorter.base import (
     TagSorter,
+)
+from app.core.git_ops.tag_sorter.factory import (
+    TagSorterFactory,
 )
 
 logger = logging.getLogger(__name__)
@@ -365,7 +364,7 @@ class GitService:
             raise RuntimeError("Failed to stage files with `git add --update`")
 
     @log_execution
-    def stage_files(self, files: List[Path]) -> None:
+    def stage_files(self, files: list[Path]) -> None:
         """
         Stage specific files.
 
@@ -398,7 +397,7 @@ class GitService:
             raise RuntimeError(f"Failed to stage files: {valid_files}")
 
     @log_execution
-    def list_staged_files(self) -> List[str]:
+    def list_staged_files(self) -> list[str]:
         """
         Get list of staged files.
 
@@ -479,15 +478,12 @@ class GitService:
         merged_result = self.executor.list_merged_branches()
 
         merged = {
-            name.strip()
-            for name in merged_result.stdout.splitlines()
-            if name.strip()
+            name.strip() for name in merged_result.stdout.splitlines() if name.strip()
         }
 
         branches: list[BranchInfo] = []
 
         for line in metadata_result.stdout.splitlines():
-
             line = line.strip()
 
             if not line:
@@ -498,9 +494,7 @@ class GitService:
             branches.append(
                 BranchInfo(
                     name=name,
-                    last_commit=datetime.fromtimestamp(
-                        int(timestamp)
-                    ),
+                    last_commit=datetime.fromtimestamp(int(timestamp)),
                     merged=name in merged,
                     remote_exists=self.remote_branch_exists(name),
                 )
@@ -543,9 +537,7 @@ class GitService:
         )
 
         if not result.success:
-            raise RuntimeError(
-                f"Failed to delete local branch '{branch}'."
-            )
+            raise RuntimeError(f"Failed to delete local branch '{branch}'.")
 
     @log_execution
     def delete_remote_branch(
@@ -566,10 +558,7 @@ class GitService:
 
         if not result.success:
             raise RuntimeError(
-                (
-                    f"Failed to delete remote branch "
-                    f"'{branch}' from '{remote}'."
-                )
+                f"Failed to delete remote branch '{branch}' from '{remote}'."
             )
 
     # =========================================================
@@ -624,7 +613,7 @@ class GitService:
     # =========================================================
 
     @log_execution
-    def get_modified_files(self) -> List[str]:
+    def get_modified_files(self) -> list[str]:
         """
         Get list of modified (unstaged) files.
 
@@ -724,7 +713,7 @@ class GitService:
         ref_range: str,
         pretty_format: str = "%H",
         reverse: bool = False,
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Execute raw git log command.
 
@@ -829,7 +818,7 @@ class GitService:
         return result.stdout.strip() if result.stdout else "v0.0.0"
 
     @log_execution
-    def get_tags(self) -> List[str]:
+    def get_tags(self) -> list[str]:
         """
         Get all version tags sorted from newest to oldest.
 
@@ -900,7 +889,7 @@ class GitService:
         return self._get_tag_sorter().oldest(tags)
 
     @log_execution
-    def get_all_tags(self) -> List[str]:
+    def get_all_tags(self) -> list[str]:
         """
         Get all tags sorted by creation date.
 
@@ -1015,7 +1004,7 @@ class GitService:
     # =========================================================
 
     @log_execution
-    def get_commits_between(self, ref_start: str, ref_end: str) -> List[str]:
+    def get_commits_between(self, ref_start: str, ref_end: str) -> list[str]:
         """
         Get commit messages between two refs.
 
@@ -1082,13 +1071,15 @@ class GitService:
             sha, header, author, date = lines[:4]
             body = "\n".join(lines[4:]).strip()
 
-            commits.append({
-                "sha": sha,
-                "header": header,
-                "author": author,
-                "date": date,
-                "body": body,
-            })
+            commits.append(
+                {
+                    "sha": sha,
+                    "header": header,
+                    "author": author,
+                    "date": date,
+                    "body": body,
+                }
+            )
 
         return commits
 

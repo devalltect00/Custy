@@ -22,7 +22,6 @@ from app.core.branch_workflow.branch_workflow_manager import (
     BranchWorkflowManager,
 )
 
-
 # ============================================================
 # Fixtures
 # ============================================================
@@ -60,15 +59,9 @@ class TestInitialization:
     Tests constructor behaviour.
     """
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.PEP440VersionHelper"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.PEP440VersionHelper")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_uses_pep440_helper(
         self,
         create_git,
@@ -87,15 +80,9 @@ class TestInitialization:
 
         pep_cls.assert_called_once_with("v1.2.3.dev1")
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.SemverVersionHelper"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.SemverVersionHelper")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_uses_semver_helper(
         self,
         create_git,
@@ -110,12 +97,8 @@ class TestInitialization:
 
         semver_cls.assert_called_once_with("v1.2.3.dev1")
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_git_service_created(
         self,
         create_git,
@@ -154,7 +137,6 @@ class TestInitialization:
 
     #     mgr.runner.set_silent.assert_called_once_with(True)
 
-
     # @patch(
     #     "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
     # )
@@ -190,15 +172,9 @@ class TestSuggestTag:
     Tests tag suggestion delegation.
     """
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.PEP440VersionHelper"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.PEP440VersionHelper")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_calls_helper(
         self,
         create_git,
@@ -217,9 +193,7 @@ class TestSuggestTag:
 
         assert result == "v1.2.3.dev2"
 
-        pep_helper.suggest_tag.assert_called_once_with(
-            "develop"
-        )
+        pep_helper.suggest_tag.assert_called_once_with("develop")
 
 
 # ============================================================
@@ -232,12 +206,8 @@ class TestCheckPep440Pre:
     Tests pre-release detection.
     """
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_valid_pre_release(
         self,
         create_git,
@@ -262,12 +232,8 @@ class TestCheckPep440Pre:
 
         assert "matches allowed pre-release tiers" in out
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_invalid_pre_release(
         self,
         create_git,
@@ -299,12 +265,8 @@ class TestCheckFinalRelease:
     Tests stable release detection.
     """
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_valid_release(
         self,
         create_git,
@@ -325,12 +287,8 @@ class TestCheckFinalRelease:
 
         assert "valid stable release" in out
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_invalid_release(
         self,
         create_git,
@@ -362,12 +320,8 @@ class TestCheckPostRelease:
     Tests post-release validation.
     """
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_valid_post_release(
         self,
         create_git,
@@ -388,12 +342,8 @@ class TestCheckPostRelease:
 
         assert "includes '.post'" in out
 
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_invalid_post_release(
         self,
         create_git,
@@ -436,12 +386,8 @@ class TestEnforceConsistency:
             ("hotfix/1.2.1", "_check_post_release"),
         ],
     )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_dispatches_to_validation_methods(
         self,
         create_git,
@@ -479,7 +425,6 @@ class TestEnforceConsistency:
                 pre.assert_not_called()
                 final.assert_not_called()
 
-
     @pytest.mark.parametrize(
         "branch",
         [
@@ -489,12 +434,8 @@ class TestEnforceConsistency:
             "unknown",
         ],
     )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.detect_project_strategy"
-    )
-    @patch(
-        "app.core.branch_workflow.branch_workflow_manager.create_git_service"
-    )
+    @patch("app.core.branch_workflow.branch_workflow_manager.detect_project_strategy")
+    @patch("app.core.branch_workflow.branch_workflow_manager.create_git_service")
     def test_non_validating_branches(
         self,
         create_git,
@@ -524,11 +465,13 @@ class TestEnforceConsistency:
             final.assert_not_called()
             post.assert_not_called()
 
+
 ##### Part 3
 
 # ============================================================
 # check_transition
 # ============================================================
+
 
 @pytest.fixture
 def manager():
@@ -577,7 +520,6 @@ def manager():
 
 
 class TestCheckTransition:
-
     def test_returns_matching_case(
         self,
         manager,
@@ -698,7 +640,6 @@ class TestRunInitialWorkflow:
 
             yield mgr
 
-
     def test_case1(self, manager):
         manager.run_initial_workflow("CASE 1", "v1.2.0")
 
@@ -712,7 +653,6 @@ class TestRunInitialWorkflow:
             check=True,
         )
 
-
     def test_case2(self, manager):
         manager.run_initial_workflow("CASE 2", "v1.2.0rc1")
 
@@ -720,7 +660,6 @@ class TestRunInitialWorkflow:
             ["git", "checkout", "-b", "release/1.2"],
             check=True,
         )
-
 
     def test_case3(self, manager):
         manager.run_initial_workflow("CASE 3", "v1.2.0")
@@ -737,7 +676,6 @@ class TestRunInitialWorkflow:
             check=True,
         )
 
-
     def test_case4(self, manager):
         manager.run_initial_workflow("CASE 4", "v1.2.0")
 
@@ -745,7 +683,6 @@ class TestRunInitialWorkflow:
             ["git", "checkout", "develop"],
             check=True,
         )
-
 
     def test_case5(self, manager):
         manager.run_initial_workflow("CASE 5", "v1.2.1.post1")
@@ -755,14 +692,12 @@ class TestRunInitialWorkflow:
             check=True,
         )
 
-
     def test_case6(self, manager):
         manager.runner.run.reset_mock()
 
         manager.run_initial_workflow("CASE 6", "v1.2.1")
 
         manager.runner.run.assert_not_called()
-
 
     def test_case7(self, manager):
         manager.branch = "feature/login"
@@ -774,14 +709,12 @@ class TestRunInitialWorkflow:
             check=True,
         )
 
-
     def test_case8(self, manager):
         manager.runner.run.reset_mock()
 
         manager.run_initial_workflow("CASE 8", "v1.2.0")
 
         manager.runner.run.assert_not_called()
-
 
     def test_case9(self, manager):
         manager.branch = "ci/actions"
@@ -839,7 +772,6 @@ class TestRunFinalWorkflow:
 
             yield mgr
 
-
     @pytest.mark.parametrize(
         "case",
         [
@@ -858,7 +790,6 @@ class TestRunFinalWorkflow:
     ):
         assert manager.run_final_workflow(case, "v1.2.0") is False
 
-
     def test_case3(self, manager):
         manager.git.branch_exists.return_value = True
 
@@ -866,12 +797,10 @@ class TestRunFinalWorkflow:
 
         manager.cleanup_release_branch.assert_called_once()
 
-
     def test_case6(self, manager):
         assert manager.run_final_workflow("CASE 6", "v1.2.1") is True
 
         manager._ensure_no_staged_changes.assert_called_once()
-
 
     def test_case9(self, manager):
         manager.branch = "ci/actions"

@@ -178,9 +178,7 @@ class TestEnsureRemoteExists:
 
         workflow_engine.ensure_remote_exists("origin")
 
-        workflow_engine.gitService.check_remote.assert_called_once_with(
-            "origin"
-        )
+        workflow_engine.gitService.check_remote.assert_called_once_with("origin")
 
     def test_skip_checks_bypasses_validation(
         self,
@@ -228,21 +226,23 @@ class TestEnsureVersionFile:
 
         workflow_engine.ensure_version_file()
 
-    @pytest.mark.parametrize(
-        "path",
-        [
-            None,
-            Path("missing.py"),
-        ],
-    )
+    def test_accepts_git_tag_only_project(
+        self,
+        workflow_engine,
+    ):
+        """Allows repositories without supported project version metadata."""
+
+        workflow_engine.version_file = None
+
+        workflow_engine.ensure_version_file()
+
     def test_raises_when_version_file_missing(
         self,
         workflow_engine,
-        path,
     ):
-        """Raises ValidationError for a missing version file."""
+        """Raises ValidationError for an explicitly configured missing file."""
 
-        workflow_engine.version_file = path
+        workflow_engine.version_file = Path("missing.py")
 
         with pytest.raises(ValidationError) as exc:
             workflow_engine.ensure_version_file()

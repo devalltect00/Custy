@@ -14,9 +14,9 @@ operations such as:
 - docker image publishing
 """
 
+from collections.abc import Iterator
 from contextlib import contextmanager
 from dataclasses import dataclass
-from typing import Iterator
 
 from rich.progress import (
     BarColumn,

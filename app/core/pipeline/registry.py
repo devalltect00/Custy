@@ -13,7 +13,6 @@ Supports:
 This enables plugin-like behavior.
 """
 
-from typing import Dict, Type
 from .steps.base_step import BaseStep
 
 
@@ -26,10 +25,10 @@ class StepRegistry:
         step_cls = StepRegistry.get("validate")
     """
 
-    _registry: Dict[str, Type[BaseStep]] = {}
+    _registry: dict[str, type[BaseStep]] = {}
 
     @classmethod
-    def register(cls, name: str, step_cls: Type[BaseStep]) -> None:
+    def register(cls, name: str, step_cls: type[BaseStep]) -> None:
         """
         Register a step.
 
@@ -46,7 +45,7 @@ class StepRegistry:
         cls._registry[name] = step_cls
 
     @classmethod
-    def get(cls, name: str) -> Type[BaseStep]:
+    def get(cls, name: str) -> type[BaseStep]:
         """
         Retrieve step class by name.
 

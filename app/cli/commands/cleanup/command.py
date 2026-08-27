@@ -1,42 +1,42 @@
 # app/cli/commands/cleanup/command.py
 
-import typer
-from types import SimpleNamespace
 from dataclasses import asdict
+from types import SimpleNamespace
 
-from app.config.config_loader import get_config
+import typer
+
+from app.cli.commands.cleanup.options import (
+    BeforeOption,
+    CommitMessageBackupDirOption,
+    IncludePrefixesOption,
+    KeepOption,
+    MaxAgeOption,
+    MergeStatusOption,
+    TagMessageBackupDirOption,
+    TypeOption,
+)
+from app.cli.commands.cleanup.resolver import (
+    resolve_cleanup_all_args,
+    resolve_cleanup_backup_args,
+    resolve_cleanup_branches_args,
+)
 from app.cli.constants.args import CliArgs
 from app.cli.context.app_context import get_context
+from app.config.config_loader import get_config
 
-from app.core.pipeline.command_resolver import CommandResolver
-from app.core.pipeline.builder import PipelineBuilder
-from app.core.pipeline.context import GitContext
-from app.core.pipeline.step_registry import register_all_steps
-from app.core.workflow.workflow_builder import WorkflowEngineBuilder
 # from app.core.cleanup.handle_cleanup_branches import handleCleanupBranches
 from app.core.cleanup.branch.handler import (
     BranchCleanupHandler,
 )
-
 from app.core.cleanup.branch.models import (
     BranchCleanupRequest,
 )
+from app.core.pipeline.builder import PipelineBuilder
+from app.core.pipeline.command_resolver import CommandResolver
+from app.core.pipeline.context import GitContext
+from app.core.pipeline.step_registry import register_all_steps
+from app.core.workflow.workflow_builder import WorkflowEngineBuilder
 
-from app.cli.commands.cleanup.resolver import (
-    resolve_cleanup_backup_args,
-    resolve_cleanup_branches_args,
-    resolve_cleanup_all_args,
-)
-from app.cli.commands.cleanup.options import (
-    TypeOption,
-    KeepOption,
-    CommitMessageBackupDirOption,
-    TagMessageBackupDirOption,
-    IncludePrefixesOption,
-    MergeStatusOption,
-    MaxAgeOption,
-    BeforeOption,
-)
 
 def _run_cleanup_backup_pipeline(args, commands: list[str]):
     """
@@ -56,6 +56,7 @@ def _run_cleanup_backup_pipeline(args, commands: list[str]):
 
     pipeline = PipelineBuilder().build(config)
     pipeline.run(ctx_obj)
+
 
 def _run_cleanup_branch_pipeline(args, commands: list[str]):
     """
@@ -98,104 +99,106 @@ def _run_cleanup_branch_pipeline(args, commands: list[str]):
     ctx_obj = GitContext(engine)
     ctx_obj.args = args
 
-
     pipeline = PipelineBuilder().build(config)
     pipeline.run(ctx_obj)
 
+
 app = typer.Typer()
+
 
 @app.callback()
 def callback():
     """
-Cleanup project resources
+    Cleanup project resources
 
-🧹 [bold cyan]Cleanup project resources[/bold cyan]
+    🧹 [bold cyan]Cleanup project resources[/bold cyan]
 
-Remove obsolete backups and Git branches to keep your repository clean, organized, and easier to maintain.
+    Remove obsolete backups and Git branches to keep your repository clean, organized, and easier to maintain.
 
-Cleanup operations help reduce clutter from previous workflows, backups, and temporary development branches.
+    Cleanup operations help reduce clutter from previous workflows, backups, and temporary development branches.
 
-Cleanup operations support configurable retention policies and
-branch filtering, making them suitable for routine repository
-maintenance.
+    Cleanup operations support configurable retention policies and
+    branch filtering, making them suitable for routine repository
+    maintenance.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-📦 [bold]Available Commands:[/bold]
+    📦 [bold]Available Commands:[/bold]
 
-    [green]backups[/green]
-  Remove old template backup files.
+        [green]backups[/green]
+      Remove old template backup files.
 
-    [green]branches[/green]
-  Cleanup Git branches using configurable filters.
+        [green]branches[/green]
+      Cleanup Git branches using configurable filters.
 
-    [green]all[/green]
-  Run backup and branch cleanup together.
+        [green]all[/green]
+      Run backup and branch cleanup together.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧩 [bold]Cleanup Targets:[/bold]
+    🧩 [bold]Cleanup Targets:[/bold]
 
-  • Commit template backups
+      • Commit template backups
 
-  • Tag template backups
+      • Tag template backups
 
-  • Merged branches
+      • Merged branches
 
-  • Unmerged branches
+      • Unmerged branches
 
-  • Branches older than a specified duration
+      • Branches older than a specified duration
 
-  • Branches before a specific date
+      • Branches before a specific date
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧪 [bold]Examples:[/bold]
+    🧪 [bold]Examples:[/bold]
 
-  [yellow]custy cleanup backups[/yellow]
-    Remove old backup files.
+      [yellow]custy cleanup backups[/yellow]
+        Remove old backup files.
 
-  [yellow]custy cleanup branches[/yellow]
-    Cleanup branches using configured defaults.
+      [yellow]custy cleanup branches[/yellow]
+        Cleanup branches using configured defaults.
 
-  [yellow]custy cleanup branches --merge-status merged[/yellow]
-    Cleanup merged branches.
+      [yellow]custy cleanup branches --merge-status merged[/yellow]
+        Cleanup merged branches.
 
-  [yellow]custy cleanup all[/yellow]
-    Run all cleanup operations.
+      [yellow]custy cleanup all[/yellow]
+        Run all cleanup operations.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options:[/bold]
+    🌐 [bold]Global Options:[/bold]
 
-  [yellow]custy --dry-run cleanup all[/yellow]
-    Scan backup files and Git branches, report matching candidates,
-    and simulate all local and remote deletions.
+      [yellow]custy --dry-run cleanup all[/yellow]
+        Scan backup files and Git branches, report matching candidates,
+        and simulate all local and remote deletions.
 
-  [yellow]custy --debug cleanup branches[/yellow]
-    Show detailed execution logs.
+      [yellow]custy --debug cleanup branches[/yellow]
+        Show detailed execution logs.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-⚠️ [bold yellow]Warning:[/bold yellow]
+    ⚠️ [bold yellow]Warning:[/bold yellow]
 
-Cleanup operations may permanently remove files or branches.
+    Cleanup operations may permanently remove files or branches.
 
-Always review the affected resources before running cleanup operations.
+    Always review the affected resources before running cleanup operations.
 
-Review your filters carefully and consider using
-[bold]--dry-run[/bold] before performing destructive operations.
+    Review your filters carefully and consider using
+    [bold]--dry-run[/bold] before performing destructive operations.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy backup[/cyan]
-    Create template backups.
+      [cyan]custy backup[/cyan]
+        Create template backups.
 
-  [cyan]custy run[/cyan]
-    Execute workflow pipelines.
-"""
+      [cyan]custy run[/cyan]
+        Execute workflow pipelines.
+    """
+
 
 @app.command("backups")
 def backups(
@@ -206,72 +209,72 @@ def backups(
     tag_message_backup_dir: TagMessageBackupDirOption = None,
 ):
     """
-Cleanup template backups
+    Cleanup template backups
 
-🧹 [bold cyan]Cleanup template backups[/bold cyan]
+    🧹 [bold cyan]Cleanup template backups[/bold cyan]
 
-Remove old commit and tag template backups according to a retention policy.
+    Remove old commit and tag template backups according to a retention policy.
 
-Useful when backup directories grow over time.
+    Useful when backup directories grow over time.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-📦 [bold]Supported Backup Types:[/bold]
+    📦 [bold]Supported Backup Types:[/bold]
 
-  • commit
+      • commit
 
-  • tag
+      • tag
 
-  • all
+      • all
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧪 [bold]Examples:[/bold]
+    🧪 [bold]Examples:[/bold]
 
-  [yellow]custy cleanup backups[/yellow]
-    Cleanup backups using configured defaults.
+      [yellow]custy cleanup backups[/yellow]
+        Cleanup backups using configured defaults.
 
-  [yellow]custy cleanup backups --keep 10[/yellow]
-    Keep the 10 most recent backups.
+      [yellow]custy cleanup backups --keep 10[/yellow]
+        Keep the 10 most recent backups.
 
-  [yellow]custy cleanup backups --type commit[/yellow]
-    Cleanup commit template backups only.
+      [yellow]custy cleanup backups --type commit[/yellow]
+        Cleanup commit template backups only.
 
-  [yellow]custy cleanup backups --type tag[/yellow]
-    Cleanup tag template backups only.
+      [yellow]custy cleanup backups --type tag[/yellow]
+        Cleanup tag template backups only.
 
-  [yellow]custy cleanup backups --type all[/yellow]
-    Cleanup all backup types.
+      [yellow]custy cleanup backups --type all[/yellow]
+        Cleanup all backup types.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options:[/bold]
+    🌐 [bold]Global Options:[/bold]
 
-  [yellow]custy --dry-run cleanup backups[/yellow]
-    List backup files outside the retention limit without deleting
-    them.
+      [yellow]custy --dry-run cleanup backups[/yellow]
+        List backup files outside the retention limit without deleting
+        them.
 
-  [yellow]custy --debug cleanup backups[/yellow]
-    Show detailed execution logs.
+      [yellow]custy --debug cleanup backups[/yellow]
+        Show detailed execution logs.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Recommended Usage:[/bold]
+    💡 [bold]Recommended Usage:[/bold]
 
-Run periodically if:
+    Run periodically if:
 
-  • Frequent backups are created
-  • Templates are edited regularly
-  • Storage cleanup is required
+      • Frequent backups are created
+      • Templates are edited regularly
+      • Storage cleanup is required
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy backup[/cyan]
+      [cyan]custy backup[/cyan]
 
-  [cyan]custy cleanup all[/cyan]
-"""
+      [cyan]custy cleanup all[/cyan]
+    """
     config = get_config()
 
     # REQUIRED defaults
@@ -300,6 +303,7 @@ Run periodically if:
 
     _run_cleanup_backup_pipeline(combined_args, ["cleanup_backups"])
 
+
 @app.command("branches")
 def branches(
     ctx: typer.Context,
@@ -309,123 +313,123 @@ def branches(
     before: BeforeOption = None,
 ):
     """
-Cleanup Git branches
+    Cleanup Git branches
 
-🌿 [bold cyan]Cleanup Git branches[/bold cyan]
+    🌿 [bold cyan]Cleanup Git branches[/bold cyan]
 
-Remove Git branches using configurable filtering rules.
+    Remove Git branches using configurable filtering rules.
 
-Branches can be filtered by prefix, merge status, relative age,
-or an absolute cutoff date before deletion.
+    Branches can be filtered by prefix, merge status, relative age,
+    or an absolute cutoff date before deletion.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧩 [bold]Available Filters:[/bold]
+    🧩 [bold]Available Filters:[/bold]
 
-  [cyan]--prefix[/cyan]
+      [cyan]--prefix[/cyan]
 
-    Only cleanup branches beginning with one or more prefixes.
+        Only cleanup branches beginning with one or more prefixes.
 
-    Examples:
+        Examples:
 
-      feature/
-      fix/
-      hotfix/
-      release/
+          feature/
+          fix/
+          hotfix/
+          release/
 
-    This option may be specified multiple times.
+        This option may be specified multiple times.
 
-  [cyan]--merge-status[/cyan]
+      [cyan]--merge-status[/cyan]
 
-    Filter branches by merge state.
+        Filter branches by merge state.
 
-    Supported values:
+        Supported values:
 
-      merged
-      unmerged
-      all
+          merged
+          unmerged
+          all
 
-  [cyan]--max-age[/cyan]
+      [cyan]--max-age[/cyan]
 
-    Cleanup branches whose latest commit is older than
-    the supplied duration.
+        Cleanup branches whose latest commit is older than
+        the supplied duration.
 
-    Examples:
+        Examples:
 
-      7d
-      30d
-      2w
-      6mo
-      1y
+          7d
+          30d
+          2w
+          6mo
+          1y
 
-  [cyan]--before[/cyan]
+      [cyan]--before[/cyan]
 
-    Cleanup branches whose latest commit occurred before
-    a specific date.
+        Cleanup branches whose latest commit occurred before
+        a specific date.
 
-    Format:
+        Format:
 
-      YYYY-MM-DD
+          YYYY-MM-DD
 
-    Example:
+        Example:
 
-      2026-07-01
+          2026-07-01
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧪 [bold]Examples:[/bold]
+    🧪 [bold]Examples:[/bold]
 
-  [yellow]custy cleanup branches[/yellow]
-    Cleanup branches using configured defaults.
+      [yellow]custy cleanup branches[/yellow]
+        Cleanup branches using configured defaults.
 
-  [yellow]custy cleanup branches --merge-status merged[/yellow]
-    Cleanup merged branches.
+      [yellow]custy cleanup branches --merge-status merged[/yellow]
+        Cleanup merged branches.
 
-  [yellow]custy cleanup branches --merge-status unmerged[/yellow]
-    Cleanup unmerged branches.
+      [yellow]custy cleanup branches --merge-status unmerged[/yellow]
+        Cleanup unmerged branches.
 
-  [yellow]custy cleanup branches --prefix feature/ --prefix release/[/yellow]
-    Cleanup feature and release branches.
+      [yellow]custy cleanup branches --prefix feature/ --prefix release/[/yellow]
+        Cleanup feature and release branches.
 
-  [yellow]custy cleanup branches --max-age 30d[/yellow]
-    Cleanup branches older than 30 days.
+      [yellow]custy cleanup branches --max-age 30d[/yellow]
+        Cleanup branches older than 30 days.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options:[/bold]
+    🌐 [bold]Global Options:[/bold]
 
-  [yellow]custy --dry-run cleanup branches[/yellow]
-    Inspect local and remote branch state and list matching branches
-    without deleting them.
+      [yellow]custy --dry-run cleanup branches[/yellow]
+        Inspect local and remote branch state and list matching branches
+        without deleting them.
 
-  [yellow]custy --debug cleanup branches[/yellow]
-    Show detailed execution logs.
+      [yellow]custy --debug cleanup branches[/yellow]
+        Show detailed execution logs.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-⚠️ [bold yellow]Warning:[/bold yellow]
+    ⚠️ [bold yellow]Warning:[/bold yellow]
 
-Branch deletion is permanent.
+    Branch deletion is permanent.
 
-Protected branches are skipped automatically.
+    Protected branches are skipped automatically.
 
-Deleted branches may be difficult to recover.
+    Deleted branches may be difficult to recover.
 
-Review branch filters carefully before execution.
+    Review branch filters carefully before execution.
 
-Use [bold]--dry-run[/bold] to review affected branches before
-executing the cleanup.
+    Use [bold]--dry-run[/bold] to review affected branches before
+    executing the cleanup.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy workflow[/cyan]
+      [cyan]custy workflow[/cyan]
 
-  [cyan]custy cleanup backups[/cyan]
+      [cyan]custy cleanup backups[/cyan]
 
-  [cyan]custy cleanup all[/cyan]
-"""
+      [cyan]custy cleanup all[/cyan]
+    """
     config = get_config()
 
     # REQUIRED defaults
@@ -455,6 +459,7 @@ executing the cleanup.
     # _run_cleanup_backup_pipeline(combined_args, ["cleanup_branches"])
     _run_cleanup_branch_pipeline(combined_args, ["cleanup_branches"])
 
+
 @app.command("all")
 def all(
     ctx: typer.Context,
@@ -468,104 +473,104 @@ def all(
     tag_message_backup_dir: TagMessageBackupDirOption = None,
 ):
     """
-Run full cleanup
+    Run full cleanup
 
-🧹 [bold cyan]Run full cleanup[/bold cyan]
+    🧹 [bold cyan]Run full cleanup[/bold cyan]
 
-Execute all available cleanup operations.
+    Execute all available cleanup operations.
 
-This includes backup retention cleanup and Git branch cleanup.
+    This includes backup retention cleanup and Git branch cleanup.
 
-Recommended as periodic repository maintenance.
+    Recommended as periodic repository maintenance.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-📦 [bold]Operations Included:[/bold]
+    📦 [bold]Operations Included:[/bold]
 
-  • Cleanup commit template backups
+      • Cleanup commit template backups
 
-  • Cleanup tag template backups
+      • Cleanup tag template backups
 
-  • Cleanup Git branches
+      • Cleanup Git branches
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧩 [bold]Supported Branch Filters:[/bold]
+    🧩 [bold]Supported Branch Filters:[/bold]
 
-  • Multiple branch prefixes
+      • Multiple branch prefixes
 
-  • Merge status
+      • Merge status
 
-  • Maximum branch age
+      • Maximum branch age
 
-  • Absolute cutoff date
+      • Absolute cutoff date
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧪 [bold]Examples:[/bold]
+    🧪 [bold]Examples:[/bold]
 
-  [yellow]custy cleanup all[/yellow]
-    Run every cleanup operation.
+      [yellow]custy cleanup all[/yellow]
+        Run every cleanup operation.
 
-  [yellow]custy cleanup all --keep 10[/yellow]
-    Keep the 10 newest backups.
+      [yellow]custy cleanup all --keep 10[/yellow]
+        Keep the 10 newest backups.
 
-  [yellow]custy cleanup all --merge-status merged[/yellow]
-    Cleanup merged branches.
+      [yellow]custy cleanup all --merge-status merged[/yellow]
+        Cleanup merged branches.
 
-  [yellow]custy cleanup all --prefix feature/ --prefix release/[/yellow]
-    Cleanup feature and release branches.
+      [yellow]custy cleanup all --prefix feature/ --prefix release/[/yellow]
+        Cleanup feature and release branches.
 
-  [yellow]custy cleanup all --max-age 90d[/yellow]
-    Cleanup branches older than 90 days.
+      [yellow]custy cleanup all --max-age 90d[/yellow]
+        Cleanup branches older than 90 days.
 
-  [yellow]custy cleanup all --before 2026-01-01[/yellow]
-    Cleanup branches last updated before January 1st, 2026.
+      [yellow]custy cleanup all --before 2026-01-01[/yellow]
+        Cleanup branches last updated before January 1st, 2026.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options:[/bold]
+    🌐 [bold]Global Options:[/bold]
 
-  [yellow]custy --dry-run cleanup all[/yellow]
-    Inspect every cleanup target and report planned deletions without
-    changing backup files or branches.
+      [yellow]custy --dry-run cleanup all[/yellow]
+        Inspect every cleanup target and report planned deletions without
+        changing backup files or branches.
 
-  [yellow]custy --debug cleanup all[/yellow]
-    Show detailed execution logs.
+      [yellow]custy --debug cleanup all[/yellow]
+        Show detailed execution logs.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-⚠️ [bold yellow]Warning:[/bold yellow]
+    ⚠️ [bold yellow]Warning:[/bold yellow]
 
-This command may permanently remove both backup files and
-Git branches.
+    This command may permanently remove both backup files and
+    Git branches.
 
-Multiple resources may be removed during execution.
+    Multiple resources may be removed during execution.
 
-Review your filters carefully and retention settings carefully. Consider using
-[bold]--dry-run[/bold] before running a full cleanup.
+    Review your filters carefully and retention settings carefully. Consider using
+    [bold]--dry-run[/bold] before running a full cleanup.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Recommended Usage:[/bold]
+    💡 [bold]Recommended Usage:[/bold]
 
-Useful before:
+    Useful before:
 
-  • Major releases
-  • Repository maintenance
-  • Storage cleanup
-  • Archiving long-running feature branches
+      • Major releases
+      • Repository maintenance
+      • Storage cleanup
+      • Archiving long-running feature branches
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy backup[/cyan]
+      [cyan]custy backup[/cyan]
 
-  [cyan]custy cleanup branches[/cyan]
+      [cyan]custy cleanup branches[/cyan]
 
-  [cyan]custy cleanup backups[/cyan]
-"""
+      [cyan]custy cleanup backups[/cyan]
+    """
     config = get_config()
 
     # REQUIRED defaults

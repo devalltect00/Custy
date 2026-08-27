@@ -10,9 +10,9 @@ from pathlib import Path
 
 from app.cli.commands.backup import resolver
 from app.cli.commands.backup.models import (
+    BackupAllArgs,
     BackupCommitArgs,
     BackupTagArgs,
-    BackupAllArgs,
 )
 
 
@@ -30,7 +30,6 @@ class DummyCliArgs:
 
 
 class TestBackupResolvers:
-
     def test_resolve_backup_commit_args_defaults(self):
         args = resolver.resolve_backup_commit_args(
             DummyConfig(),

@@ -1,6 +1,5 @@
 # tests/cli/commands/run/test_models_run.py
 
-
 """
 tests/cli/commands/run/test_models.py
 
@@ -10,11 +9,10 @@ Unit tests for RunArgs.
 from pathlib import Path
 
 from app.cli.commands.run.models import RunArgs
-from app.cli.constants import StrategyChoices, StageModeChoices
+from app.cli.constants import StageModeChoices, StrategyChoices
 
 
 class TestRunArgs:
-
     def test_construct(self):
         args = RunArgs(
             steps=["commit", "tag"],

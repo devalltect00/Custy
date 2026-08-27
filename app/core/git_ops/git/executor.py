@@ -5,8 +5,7 @@
 ##### Infrastructure
 
 import subprocess
-from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from app.core.dry_run import DryRunSupport
 from app.core.git_ops.git.result import CommandResult
@@ -58,7 +57,7 @@ class GitCommandExecutor(DryRunSupport):
 
     def _run(
         self,
-        args: List[str],
+        args: list[str],
         check: bool = False,
         *,
         read_only: bool = False,
@@ -142,7 +141,7 @@ class GitCommandExecutor(DryRunSupport):
         """
         return self._run(["add", "--update"], check=True)
 
-    def add_files(self, files: List[str]) -> CommandResult:
+    def add_files(self, files: list[str]) -> CommandResult:
         """
         Stage specific files.
 
@@ -519,7 +518,6 @@ class GitCommandExecutor(DryRunSupport):
             read_only=True,
         )
 
-
     # ======================
     # Advanced helpers
     # ======================
@@ -687,11 +685,7 @@ class GitCommandExecutor(DryRunSupport):
 
         return self._run(cmd, check=True)
 
-    def push_tag(
-        self,
-        remote: str,
-        tag: str
-    ) -> CommandResult:
+    def push_tag(self, remote: str, tag: str) -> CommandResult:
         """
         Push specific tag.
         """

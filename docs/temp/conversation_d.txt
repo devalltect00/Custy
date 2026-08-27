@@ -1,0 +1,369 @@
+This is actually a very good question, and it gets to the purpose of a changelog.
+
+My answer is:
+
+> **No, not by default.** But **yes, optionally**.
+
+I think Custy should support both, with the default being **off**.
+
+---
+
+# Why Keep a Changelog has contributors
+
+In the example you showed, entries like:
+
+```md
+- New visual identity by @tylerfortune8.
+- German translation from @mpbzh & @Art4.
+```
+
+aren't there because every changelog should list authors.
+
+They're there because:
+
+1. It's a community-driven open source project.
+2. Different people contributed different features.
+3. Giving credit is valuable.
+
+Imagine a project with 300 contributors.
+
+It's nice to acknowledge:
+
+```md
+### Added
+
+- German translation by @Art4.
+- Japanese translation by @someone.
+- ARM64 support by @another.
+```
+
+That's recognition.
+
+---
+
+# But Custy is different
+
+Your generator already knows:
+
+* commit type
+* scope
+* release
+* metadata
+* sections
+* tags
+
+The author is **secondary information**.
+
+If every entry becomes
+
+```md
+- Fixed workflow validation. (Rizky Fernandes)
+- Updated README. (Rizky Fernandes)
+- Added parser. (Rizky Fernandes)
+```
+
+it's repetitive.
+
+Especially if you're the only developer.
+
+---
+
+# My recommendation
+
+I wouldn't put authors beside every bullet.
+
+Instead, I'd have an optional **Contributors** section.
+
+Example
+
+```md
+## 1.10.6
+
+Contributors
+
+- Rizky Fernandes
+
+### 🐛 Bug Fixes
+
+- Prevented unsafe execution.
+- Added confirmation prompt.
+
+### 📚 Documentation
+
+- Updated project structure.
+```
+
+If there are multiple developers
+
+```md
+Contributors
+
+- Rizky Fernandes
+- Alice
+- Bob
+```
+
+Very clean.
+
+---
+
+# Even better
+
+Suppose Custy analyzes Git.
+
+It already knows
+
+```text
+commit A
+Author: Rizky
+
+commit B
+Author: Alice
+
+commit C
+Author: Bob
+
+commit D
+Author: Alice
+```
+
+The release could automatically produce
+
+```md
+Contributors
+
+- Alice (2 commits)
+- Bob (1 commit)
+- Rizky Fernandes (1 commit)
+```
+
+That gives recognition without cluttering every bullet.
+
+---
+
+# What if someone wants per-entry attribution?
+
+Then I'd make it configurable.
+
+For example
+
+```toml
+[tool.custy.changelog.contributors]
+
+enabled = true
+
+mode = "release"
+```
+
+Options
+
+```toml
+mode = "none"
+```
+
+↓
+
+No contributors.
+
+---
+
+```toml
+mode = "release"
+```
+
+↓
+
+```md
+Contributors
+
+- Alice
+- Bob
+```
+
+---
+
+```toml
+mode = "entry"
+```
+
+↓
+
+```md
+### 🐛 Bug Fixes
+
+- Prevent unsafe execution. (Alice)
+
+- Improve parser. (Bob)
+```
+
+---
+
+```toml
+mode = "section"
+```
+
+↓
+
+```md
+### 🐛 Bug Fixes
+
+Contributor:
+Alice
+
+- Prevent unsafe execution.
+- Improve merge validation.
+```
+
+---
+
+# I actually prefer release-level
+
+Because
+
+```md
+Contributors
+
+- Alice
+- Bob
+- Charlie
+```
+
+is enough for 95% of projects.
+
+---
+
+# Even more interesting...
+
+I think Custy can go beyond Keep a Changelog.
+
+Imagine
+
+```md
+## 1.10.6
+
+Released
+
+2025-08-06
+
+Contributors
+
+- Rizky Fernandes
+- Alice
+
+Statistics
+
+Commits: 43
+
+Files Changed: 81
+
+Insertions: +1,245
+
+Deletions: -312
+
+Compare
+
+https://...
+```
+
+Then
+
+```md
+Summary
+
+...
+
+### Features
+
+...
+
+### Bug Fixes
+
+...
+```
+
+That starts looking like a professional release page.
+
+---
+
+# I would make these optional
+
+I'd design it like this:
+
+```toml
+[changelog.release]
+
+show_summary = true
+show_compare_link = true
+show_contributors = true
+show_statistics = false
+show_metadata = true
+show_tags = true
+```
+
+Then every project can decide.
+
+---
+
+# One thing I would NOT do
+
+I would not put this at the bottom of the changelog:
+
+```md
+[@alice]: ...
+[@bob]: ...
+```
+
+Keep a Changelog uses that because it's a hand-written Markdown document with reference-style links.
+
+Custy already has structured data.
+
+Instead, I'd render contributors directly if enabled.
+
+For example:
+
+```md
+Contributors
+
+- [Rizky Fernandes](https://github.com/devalltect00)
+- [Alice](https://github.com/alice)
+```
+
+or simply
+
+```md
+Contributors
+
+- Rizky Fernandes
+- Alice
+```
+
+No need for dozens of reference definitions at the bottom.
+
+---
+
+# What I would choose as Custy's default
+
+If I were designing Custy from scratch, the default would be:
+
+```text
+✓ Version
+✓ Release date
+✓ Compare link
+✓ Release status
+✓ Summary
+✓ Change sections
+✓ Metadata
+✓ Tags (cleaned, not raw #tags)
+
+Optional
+──────────────
+• Contributors
+• Release statistics
+• Commit count
+• File count
+• Insertions/deletions
+• Author links
+• GitHub/GitLab release URL
+```
+
+That keeps the default output focused on **what changed**, while still allowing teams to enable richer release information when they need it. I think that strikes the right balance between readability and flexibility.

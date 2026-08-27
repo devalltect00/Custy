@@ -11,7 +11,6 @@ import pytest
 from app.config.config_loader import ConfigLoader, get_config
 from app.core.shared import ConfigurationError
 
-
 VALID_TOML = """
 [tool.custy.git]
 auto_push = true
@@ -30,7 +29,6 @@ broken = true
 
 
 class TestConfigLoader:
-
     def test_load_valid_toml(self, tmp_path):
         path = tmp_path / "config.toml"
         path.write_text(VALID_TOML)
@@ -103,11 +101,14 @@ class TestConfigLoader:
 
         loader = ConfigLoader(path)
 
-        assert loader.resolve(
-            False,
-            ["git", "auto_push"],
-            treat_false_as_none=True,
-        ) is True
+        assert (
+            loader.resolve(
+                False,
+                ["git", "auto_push"],
+                treat_false_as_none=True,
+            )
+            is True
+        )
 
     def test_singleton(self):
         assert get_config() is get_config()

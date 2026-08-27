@@ -8,15 +8,10 @@ release-file backup orchestration, and low-level backup handling.
 """
 
 from datetime import datetime
-from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest
 
-from app.constants.path import (
-    CUSTY_BACKUP_COMMIT_DIR,
-    CUSTY_BACKUP_TAG_DIR,
-)
 from app.core.workflow.workflow_engine import WorkflowEngine
 
 
@@ -64,8 +59,6 @@ class TestBackupCommitMessageFile:
 
         workflow_engine.commit_message_file = source
         workflow_engine.commit_message_backup_dir = backup_dir
-
-        backup_file = MagicMock()
 
         monkeypatch = pytest.MonkeyPatch()
         monkeypatch.setattr(
@@ -165,7 +158,7 @@ class TestBackupTagMessageFile:
 
         workflow_engine._backup_file.assert_called_once_with(
             source=tag_file,
-            backup_dir=CUSTY_BACKUP_TAG_DIR,
+            backup_dir=tmp_path / "tag-backups",
             label="tag message",
         )
 
@@ -249,9 +242,7 @@ class TestBackupFile:
             FixedDatetime,
         )
 
-        workflow_engine.backupManager._prune_old_backups = MagicMock(
-            return_value=[]
-        )
+        workflow_engine.backupManager._prune_old_backups = MagicMock(return_value=[])
 
         workflow_engine._backup_file(
             source=source,

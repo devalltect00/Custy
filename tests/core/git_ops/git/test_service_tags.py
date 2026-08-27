@@ -58,8 +58,7 @@ class TestResolveTagSortingStrategy:
         )
 
         with patch(
-            "app.core.git_ops.git.service."
-            "detect_tag_sorting_strategy"
+            "app.core.git_ops.git.service.detect_tag_sorting_strategy"
         ) as detector:
             result = service._resolve_tag_sorting_strategy()
 
@@ -92,8 +91,7 @@ class TestResolveTagSortingStrategy:
         )
 
         with patch(
-            "app.core.git_ops.git.service."
-            "detect_tag_sorting_strategy",
+            "app.core.git_ops.git.service.detect_tag_sorting_strategy",
             return_value="pep440",
         ) as detector:
             result = service._resolve_tag_sorting_strategy()
@@ -118,10 +116,7 @@ class TestGetTagSorter:
     Tests for GitService._get_tag_sorter().
     """
 
-    @patch(
-        "app.core.git_ops.git.service."
-        "TagSorterFactory.create"
-    )
+    @patch("app.core.git_ops.git.service.TagSorterFactory.create")
     def test_creates_sorter_for_explicit_strategy(
         self,
         create_sorter,
@@ -140,10 +135,7 @@ class TestGetTagSorter:
             strategy=StrategyChoices.SEMVER,
         )
 
-    @patch(
-        "app.core.git_ops.git.service."
-        "TagSorterFactory.create"
-    )
+    @patch("app.core.git_ops.git.service.TagSorterFactory.create")
     def test_forwards_date_format(
         self,
         create_sorter,
@@ -171,10 +163,7 @@ class TestGetTagSorter:
             date_format="%Y-%m-%d",
         )
 
-    @patch(
-        "app.core.git_ops.git.service."
-        "TagSorterFactory.create"
-    )
+    @patch("app.core.git_ops.git.service.TagSorterFactory.create")
     def test_caches_sorter_instance(
         self,
         create_sorter,
@@ -199,10 +188,7 @@ class TestGetTags:
     Tests for GitService.get_tags().
     """
 
-    @patch(
-        "app.core.git_ops.git.service."
-        "TagSorterFactory.create"
-    )
+    @patch("app.core.git_ops.git.service.TagSorterFactory.create")
     def test_returns_empty_list_without_creating_sorter(
         self,
         create_sorter,

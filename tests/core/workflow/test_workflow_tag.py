@@ -17,14 +17,12 @@ Covered behaviors include:
 - Git service failures
 """
 
-
 from pathlib import Path
 
 import pytest
 
 from app.core.exceptions.validation_error import ValidationError
 from app.core.workflow.workflow_engine import WorkflowEngine
-
 
 # ==========================================================
 # Skip Tag

@@ -62,6 +62,9 @@ class InitBuilder:
     # =========================================================
 
     def _build_from_mode(self, mode: InitMode) -> InitSpec:
+        version_templates = FileRegistry.get_version()
+        version_messages = ["✔ Python version file added"] if version_templates else []
+
         if mode == InitMode.CONFIG:
             return InitSpec(
                 name="configuration",
@@ -93,7 +96,7 @@ class InitBuilder:
                 templates=(
                     FileRegistry.get_config()
                     + FileRegistry.get_templates()
-                    + FileRegistry.get_version()
+                    + version_templates
                 ),
                 dirs=(
                     DirRegistry.get_config_directories()
@@ -101,8 +104,8 @@ class InitBuilder:
                 ),
                 messages=[
                     "✔ Configuration files created",
-                    "✔ Version file added",
                     "✔ Templates generated",
+                    *version_messages,
                 ],
             )
 
@@ -112,7 +115,7 @@ class InitBuilder:
                 templates=(
                     FileRegistry.get_config()
                     + FileRegistry.get_templates()
-                    + FileRegistry.get_version()
+                    + version_templates
                 ),
                 dirs=(
                     DirRegistry.get_config_directories()
@@ -122,9 +125,9 @@ class InitBuilder:
                 template_dirs=FileRegistry.get_examples(),
                 messages=[
                     "✔ Configuration files created",
-                    "✔ Version file added",
                     "✔ Templates generated",
                     "✔ Example resources added",
+                    *version_messages,
                 ],
             )
 

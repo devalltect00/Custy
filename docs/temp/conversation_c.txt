@@ -1,0 +1,518 @@
+This is actually one of the biggest questions we've needed to answer, and I think it affects the entire architecture.
+
+My answer is:
+
+> **Yes, absolutely preserve subsections (`####`)—but don't preserve them as raw Markdown. Preserve them semantically.**
+
+I would not think of `###` and `####` as "Markdown headings". I would think of them as **hierarchical change categories**.
+
+---
+
+# Current commit
+
+Example:
+
+```md
+### 🐛 Bug Fixes
+
+#### main
+
+- Fix branching alignment and repository history consistency after recovery.
+- Ensures main, develop, and backup branches are synchronized.
+
+### 📦 Others
+
+#### general
+
+- Merge pull request #1 from devalltect00/develop
+
+### 📝 Documentation
+
+#### changelog
+
+- update changelog
+```
+
+Today we simply copy it.
+
+I don't think that's the best approach.
+
+---
+
+# What I think the parser should understand
+
+Instead of reading Markdown...
+
+The parser should understand this hierarchy:
+
+```text
+Section
+│
+├── Bug Fixes
+│     │
+│     ├── main
+│     │      ├── item
+│     │      ├── item
+│     │      └── item
+│
+├── Documentation
+│     │
+│     └── changelog
+│            └── item
+│
+└── Others
+       │
+       └── general
+              └── item
+```
+
+Notice...
+
+The parser doesn't care whether it came from
+
+```md
+###
+####
+```
+
+or
+
+```md
+##
+###
+```
+
+It only cares about
+
+```text
+Section
+Subsection
+Items
+```
+
+That makes the renderer completely independent from Markdown.
+
+---
+
+# Internally
+
+I'd even create another model.
+
+For example
+
+```python
+@dataclass(slots=True)
+class ChangeSection:
+
+    title: str
+
+    icon: str | None
+
+    subsections: list["ChangeSubsection"]
+```
+
+then
+
+```python
+@dataclass(slots=True)
+class ChangeSubsection:
+
+    title: str
+
+    items: list[str]
+```
+
+Then Release becomes
+
+```python
+Release
+
+↓
+
+sections
+
+↓
+
+ChangeSection
+
+↓
+
+ChangeSubsection
+
+↓
+
+Items
+```
+
+---
+
+# Rendering
+
+Now Jinja becomes trivial.
+
+```md
+### 🐛 Bug Fixes
+
+#### Main
+
+- Fix branching alignment.
+- Synchronize branches.
+
+#### Workflow
+
+- Prevent invalid merge.
+```
+
+Notice
+
+It doesn't know anything about parsing.
+
+It only loops over objects.
+
+---
+
+# Even better
+
+Sometimes
+
+```md
+#### main
+```
+
+contains only one bullet.
+
+For example
+
+```md
+### Documentation
+
+#### changelog
+
+- Update changelog.
+```
+
+I actually would NOT render
+
+```md
+### 📚 Documentation
+
+#### Changelog
+
+- Update changelog.
+```
+
+I'd render
+
+```md
+### 📚 Documentation
+
+- Update changelog.
+```
+
+Why?
+
+Because the subsection adds no information.
+
+---
+
+# Smart rendering
+
+Suppose
+
+```text
+Documentation
+
+↓
+
+changelog
+
+↓
+
+1 item
+```
+
+Render
+
+```md
+### 📚 Documentation
+
+- Update changelog.
+```
+
+---
+
+Suppose
+
+```text
+Documentation
+
+↓
+
+API
+
+↓
+
+4 items
+
+CLI
+
+↓
+
+3 items
+
+Examples
+
+↓
+
+5 items
+```
+
+Render
+
+```md
+### 📚 Documentation
+
+#### API
+
+- ...
+- ...
+
+#### CLI
+
+- ...
+
+#### Examples
+
+- ...
+```
+
+This is much easier to read.
+
+---
+
+# Same for Bug Fixes
+
+If
+
+```text
+Bug Fixes
+
+↓
+
+workflow
+
+↓
+
+8 fixes
+
+core
+
+↓
+
+4 fixes
+
+git
+
+↓
+
+2 fixes
+```
+
+Render
+
+```md
+### 🐛 Bug Fixes
+
+#### Workflow
+
+- ...
+
+#### Core
+
+- ...
+
+#### Git
+
+- ...
+```
+
+Perfect.
+
+---
+
+# Merge commits
+
+You also showed
+
+```md
+### 📦 Others
+
+#### general
+
+- Merge pull request...
+```
+
+Personally...
+
+I would never render that.
+
+Unless the user explicitly enables
+
+```toml
+[changelog.merge]
+
+include_merge_commits = true
+```
+
+Default
+
+```toml
+false
+```
+
+Because
+
+```text
+Merge pull request...
+```
+
+isn't really a user-facing change.
+
+It's repository history.
+
+---
+
+# My renderer algorithm
+
+I think the renderer should decide like this:
+
+```
+for each section
+
+    if section empty
+        skip
+
+    print section
+
+    if section has ONE subsection
+        and subsection title is
+            general
+            main
+            default
+            root
+
+        omit subsection
+
+    else
+
+        render subsection
+
+            render items
+```
+
+That gives you very clean output.
+
+---
+
+# Example
+
+Input
+
+```md
+### 🐛 Bug Fixes
+
+#### main
+
+- Fix A
+- Fix B
+
+### 📚 Documentation
+
+#### changelog
+
+- Update CHANGELOG
+```
+
+Output
+
+```md
+### 🐛 Bug Fixes
+
+- Fix A
+- Fix B
+
+### 📚 Documentation
+
+- Update CHANGELOG
+```
+
+---
+
+Input
+
+```md
+### 🐛 Bug Fixes
+
+#### workflow
+
+- Fix A
+
+#### git
+
+- Fix B
+
+#### parser
+
+- Fix C
+```
+
+Output
+
+```md
+### 🐛 Bug Fixes
+
+#### Workflow
+
+- Fix A
+
+#### Git
+
+- Fix B
+
+#### Parser
+
+- Fix C
+```
+
+---
+
+# I think this is the final architecture
+
+I would actually stop using the names `CommitGroup` and `CommitScope`.
+
+Instead, I'd model the changelog exactly as it is rendered:
+
+```text
+Release
+│
+├── Header
+│
+├── Summary
+│
+├── Sections
+│     │
+│     ├── Bug Fixes
+│     │      │
+│     │      ├── Workflow
+│     │      ├── Git
+│     │      └── Parser
+│     │
+│     ├── Features
+│     ├── Documentation
+│     ├── Templates
+│     └── ...
+│
+└── Metadata
+```
+
+Notice how this mirrors the final Markdown almost one-to-one. The parser's job is to build this semantic tree from the commit message, and the renderer's job is simply to decide **when** a subsection is worth showing. Generic subsection names like `main`, `general`, or `default` can be collapsed automatically, while meaningful ones like `workflow`, `parser`, `cli`, or `git` are preserved. That gives you a changelog that's both faithful to the commit structure and much easier to read. I think this is the cleanest long-term direction for Custy.

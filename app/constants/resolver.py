@@ -1,177 +1,110 @@
 # app/constants/resolver.py
 
+"""Runtime configuration and target-project path resolvers.
+
+This module intentionally performs no filesystem validation at import time.
+Commands call these helpers after the current working directory and Custy
+configuration are known.
 """
-Configuration value resolvers.
 
-Responsibilities
-----------------
-
-- Resolve configuration values from ConfigLoader
-- Normalize filesystem paths
-- Validate required directories
-- Provide application-wide resolved constants
-
-This module centralizes configuration resolution logic
-so the rest of the application can consume validated
-values without worrying about configuration details.
-
-Examples
---------
-
-Config:
-
-    [tool.custy.project]
-    project_source = "app"
-
-Result:
-
-    TARGET_PROJECT_SOURCE
-    -> Path("/my-project/app")
-
-Relative paths are resolved from the current working
-directory. Absolute paths are preserved.
-"""
+from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
-from app.config.config_loader import (
-    get_config,
-)
-
+from app.config.config_loader import ConfigLoader, get_config
+from app.core.project import AUTO_VALUE, ProjectLayout, detect_project_layout
 from app.core.shared import ConfigurationError
-
-config = get_config()
 
 
 def resolve_directory(
-    value: str,
+    value: str | Path,
     *,
     name: str,
     must_exist: bool = True,
+    root: str | Path | None = None,
 ) -> Path:
-    """
-    Resolve a directory path.
+    """Resolve a directory path relative to a target-project root.
 
-    Parameters
-    ----------
-    value:
-        Directory path from configuration.
+    Args:
+        value: Relative or absolute directory path.
+        name: Human-readable name used in error messages.
+        must_exist: Validate existence and directory type when true.
+        root: Resolution root. Defaults to the current working directory.
 
-        May be:
+    Returns:
+        Absolute normalized directory path.
 
-        - Relative path
-        - Absolute path
-
-    name:
-        Human-readable configuration name used
-        in validation error messages.
-
-    must_exist:
-        If True, validate that the directory exists.
-
-    Returns
-    -------
-    Path
-        Fully resolved directory path.
-
-    Raises
-    ------
-    ConfigurationError
-        If the directory does not exist.
-
-    ConfigurationError
-        If the path exists but is not a directory.
+    Raises:
+        ConfigurationError: If required directory validation fails.
     """
 
-    path = Path(value)
-
+    path = Path(value).expanduser()
     if not path.is_absolute():
-        path = Path.cwd() / path
-
+        path = Path(root or Path.cwd()) / path
     path = path.resolve()
 
     if must_exist and not path.exists():
-        raise ConfigurationError(
-            f"{name} directory does not exist: {path}"
-        )
-
+        raise ConfigurationError(f"{name} directory does not exist: {path}")
     if must_exist and not path.is_dir():
-        raise ConfigurationError(
-            f"{name} is not a directory: {path}"
-        )
+        raise ConfigurationError(f"{name} is not a directory: {path}")
 
     return path
 
 
-def resolve_project_source() -> Path:
-    """
-    Resolve the project source directory.
+def resolve_project_layout(
+    *,
+    config: ConfigLoader | None = None,
+    project_source: str | Path | None = None,
+    version_file: str | Path | None = None,
+    root: str | Path | None = None,
+) -> ProjectLayout:
+    """Resolve configured values and detect the target-project layout."""
 
-    Configuration
-    -------------
-
-        [tool.custy.project]
-        project_source = "app"
-
-    Returns
-    -------
-    Path
-        Validated source directory path.
-
-    Examples
-    --------
-
-    Config:
-
-        project_source = "app"
-
-    Result:
-
-        Path("/project/app")
-
-    Config:
-
-        project_source = "src"
-
-    Result:
-
-        Path("/project/src")
-    """
-
-    value = config.resolve(
-        cli_value=None,
-        config_keys=[
-            "project",
-            "project_source",
-        ],
-        default="app",
+    loader = config or get_config()
+    source_value: Any = loader.resolve(
+        project_source,
+        ["project", "project_source"],
+        AUTO_VALUE,
+    )
+    version_value: Any = loader.resolve(
+        version_file,
+        ["cli", "paths", "version_file"],
+        AUTO_VALUE,
     )
 
-    return resolve_directory(
-        value=value,
-        name="Project source",
-        must_exist=True,
+    return detect_project_layout(
+        root=root,
+        project_source=source_value,
+        version_file=version_value,
     )
 
 
-# =========================================================
-# Resolved Constants
-# =========================================================
+def resolve_project_source(
+    *,
+    config: ConfigLoader | None = None,
+    value: str | Path | None = None,
+    root: str | Path | None = None,
+) -> Path:
+    """Resolve an explicit or automatically detected project source."""
 
-TARGET_PROJECT_SOURCE = resolve_project_source()
-"""
-Validated project source directory.
+    return resolve_project_layout(
+        config=config,
+        project_source=value,
+        root=root,
+    ).source_dir
 
-Examples
---------
 
-app/
-src/
-backend/
+def resolve_version_file(
+    *,
+    config: ConfigLoader | None = None,
+    value: str | Path | None = None,
+    root: str | Path | None = None,
+) -> Path | None:
+    """Resolve an explicit or automatically detected version target."""
 
-This value is guaranteed to:
-
-- Exist
-- Be a directory
-- Be an absolute Path
-"""
+    return resolve_project_layout(
+        config=config,
+        version_file=value,
+        root=root,
+    ).version_target

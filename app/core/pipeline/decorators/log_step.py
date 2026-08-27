@@ -41,8 +41,9 @@ On Error:
 """
 
 import logging
+from collections.abc import Callable
 from functools import wraps
-from typing import Callable, Optional
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -104,15 +105,19 @@ def log_step(func: Optional[Callable] = None, *, label: Optional[str] = None):
 
                 # ===== SUCCESS =====
                 if debug:
-                    logger.info(f"[green]✅ STEP END[/green] | [bold]{step_name}[/bold]")
+                    logger.info(
+                        f"[green]✅ STEP END[/green] | [bold]{step_name}[/bold]"
+                    )
 
                 return result
 
             except Exception as e:
                 # ===== ERROR =====
-                logger.exception(
-                    f"[red]❌ STEP ERROR[/red] | [bold]{step_name}[/bold] → {e}"
-                )
+                message = f"[red]❌ STEP ERROR[/red] | [bold]{step_name}[/bold] → {e}"
+                if debug:
+                    logger.exception(message)
+                else:
+                    logger.error(message)
                 raise
 
         return wrapper

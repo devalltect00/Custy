@@ -29,12 +29,9 @@ from app.core.initialize.services.scaffold_generator import (
     ScaffoldGenerator,
 )
 from app.ui.console import console
-from app.ui.exceptions import show_error
 from app.ui.panels import success_summary_panel
 from app.ui.progress import progress_spinner
-from app.cli.constants import (
-  InitMode,
-)
+
 
 class InitMain:
     """
@@ -149,7 +146,7 @@ class InitMain:
             else:
                 console.print("  [cyan]custy commit[/cyan]")
 
-        except Exception as exc:
-            show_error(f"Initialization failed.\n\n{exc}")
-
+        except Exception:
+            # The protected CLI entry point owns final error presentation.
+            # Re-raising here preserves context without printing twice.
             raise

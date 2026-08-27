@@ -41,7 +41,6 @@ class CommitDeduplicator:
         unique: list[Commit] = []
 
         for commit in commits:
-
             key = cls._fingerprint(commit)
 
             if key in seen:
@@ -79,10 +78,7 @@ class CommitDeduplicator:
                 tuple(
                     (
                         cls._normalize(subsection.title),
-                        tuple(
-                            cls._normalize(item)
-                            for item in subsection.items
-                        ),
+                        tuple(cls._normalize(item) for item in subsection.items),
                     )
                     for subsection in section.subsections
                 ),

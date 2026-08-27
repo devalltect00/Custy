@@ -13,7 +13,6 @@ from app.constants.git_workflow_rules import (
 
 
 class TestGitWorkflowRules:
-
     def test_allowed_commit_types_contains_expected_values(self):
         expected = {
             "feat",

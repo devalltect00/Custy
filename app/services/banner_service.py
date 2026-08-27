@@ -3,8 +3,8 @@
 import pathlib
 from importlib.metadata import PackageNotFoundError, version
 
-from rich import print
 from pyfiglet import Figlet
+from rich import print
 
 from app.theme import theme
 
@@ -64,4 +64,6 @@ class BannerService:
         # print(f"{BOLD_WHITE}{version.center(57)}{RESET}\n")
 
         print(f"\n[bold {theme.primary}]{banner}[/bold {theme.primary}]")
-        print(f"[{theme.secondary}]{version.center(theme.center)}[/{theme.secondary}]\n")
+        print(
+            f"[{theme.secondary}]{version.center(theme.center)}[/{theme.secondary}]\n"
+        )

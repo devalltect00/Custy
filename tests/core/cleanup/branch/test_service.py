@@ -79,9 +79,7 @@ class TestCleanup:
 
         result = cleanup_service.cleanup(request)
 
-        git_service.delete_local_branch.assert_called_once_with(
-            "feature/complete"
-        )
+        git_service.delete_local_branch.assert_called_once_with("feature/complete")
         git_service.delete_remote_branch.assert_called_once_with(
             "feature/complete",
             remote="origin",
@@ -247,7 +245,4 @@ class TestFiltering:
     ):
         """Every configured filter participates in the decision."""
 
-        assert (
-            cleanup_service._should_delete(branch, cleanup_request)
-            is expected
-        )
+        assert cleanup_service._should_delete(branch, cleanup_request) is expected

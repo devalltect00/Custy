@@ -11,6 +11,7 @@ class CommandResult:
 
     Used by GitCommandExecutor to wrap subprocess results safely.
     """
+
     returncode: int
     stdout: str = ""
     stderr: str = ""
@@ -35,7 +36,7 @@ class CommandResult:
         return self.returncode != 0
 
     @classmethod
-    def from_completed(cls, result) -> "CommandResult":
+    def from_completed(cls, result) -> CommandResult:
         """Create from subprocess.CompletedProcess."""
         return cls(
             returncode=result.returncode,
@@ -44,7 +45,7 @@ class CommandResult:
         )
 
     @classmethod
-    def dry_run(cls) -> "CommandResult":
+    def dry_run(cls) -> CommandResult:
         """Return a result representing a simulated mutation."""
         return cls(returncode=0, skipped=True)
 
@@ -53,6 +54,7 @@ class CommandResult:
 # High-level workflow result
 # ================================
 
+
 @dataclass
 class OperationResult:
     """
@@ -60,14 +62,15 @@ class OperationResult:
 
     Used by WorkflowManager and services.
     """
+
     success: bool
     message: str = ""
     data: Optional[Any] = None
 
     @classmethod
-    def ok(cls, message: str = "", data: Any = None) -> "OperationResult":
+    def ok(cls, message: str = "", data: Any = None) -> OperationResult:
         return cls(True, message, data)
 
     @classmethod
-    def fail(cls, message: str = "", data: Any = None) -> "OperationResult":
+    def fail(cls, message: str = "", data: Any = None) -> OperationResult:
         return cls(False, message, data)

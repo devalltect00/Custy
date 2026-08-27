@@ -114,6 +114,7 @@ def configuration_table(
 
     return table
 
+
 def branch_cleanup_table(
     result: BranchCleanupResult,
 ) -> Table:
@@ -133,9 +134,7 @@ def branch_cleanup_table(
 
     table = Table(
         title=(
-            "Branch Cleanup Preview"
-            if result.dry_run
-            else "Branch Cleanup Summary"
+            "Branch Cleanup Preview" if result.dry_run else "Branch Cleanup Summary"
         ),
     )
 

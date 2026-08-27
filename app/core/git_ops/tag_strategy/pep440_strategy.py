@@ -31,7 +31,7 @@ class PEP440Strategy:
         dry_run (bool)
         no_debug (bool)
     """
-    
+
     def __init__(
         self,
         bump: Optional[str],
@@ -64,8 +64,8 @@ class PEP440Strategy:
 
         helper = PEP440VersionHelper(latest_tag)
 
-        level = None if self.bump=="auto" else self.bump
-        
+        level = None if self.bump == "auto" else self.bump
+
         next_version = helper.get_bump_version(
             # level=self.bump,
             level=level,
@@ -75,6 +75,6 @@ class PEP440Strategy:
             local=self.local,
             epoch=self.epoch,
         )
-    
+
         logger.info(f"Next PEP440 version: {next_version}")
         return next_version

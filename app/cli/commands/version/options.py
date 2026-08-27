@@ -1,19 +1,17 @@
 # app/cli/commands/version/options.py
 
+from pathlib import Path
+from typing import Annotated, Optional
+
 import typer
 
-from typing import Annotated, Optional
-from pathlib import Path
-
 from app.cli.constants import (
-  StrategyChoices,
-  BumpChoices,
-  LogLevelChoices,
-  completion_tag,
-  completion_version_file,
+    BumpChoices,
+    StrategyChoices,
+    completion_tag,
+    completion_version_file,
 )
-
-from app.cli.utils import(
+from app.cli.utils import (
     validate_tag,
 )
 
@@ -23,7 +21,8 @@ from app.cli.utils import(
 VersionFileOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--version-file", "-vf",
+        "--version-file",
+        "-vf",
         help="""
         [bold]Version file[/bold]
 
@@ -125,7 +124,8 @@ TagOption = Annotated[
 DryRunOption = Annotated[
     bool,
     typer.Option(
-        "--dry-run/--no-dry-run", "-dr/-Dr",
+        "--dry-run/--no-dry-run",
+        "-dr/-Dr",
         help="""
         [bold yellow]Dry run mode[/bold yellow]
 

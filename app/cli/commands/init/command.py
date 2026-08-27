@@ -1,36 +1,36 @@
 # app/cli/commands/init/command.py
 
-import typer
 from types import SimpleNamespace
 
-from app.config.config_loader import get_config
+import typer
+
+from app.cli.commands.init.options import (
+    AskOption,
+    ForceOption,
+    ModeOption,
+)
+
+# from app.core.initialize.generate import ScaffoldGenerator
+from app.cli.commands.init.resolver import resolve_init_args
 from app.cli.constants.args import CliArgs
 from app.cli.context.app_context import get_context
+from app.config.config_loader import get_config
+from app.core.pipeline.builder import SimplePipelineBuilder
 
 # from app.services import InitService
 from app.core.pipeline.command_resolver import CommandResolver
-from app.core.pipeline.builder import SimplePipelineBuilder
-from app.core.pipeline.context import GitContext
 from app.core.pipeline.step_registry import register_all_steps
-# from app.core.initialize.generate import ScaffoldGenerator
-
-from app.cli.commands.init.resolver import resolve_init_args
-from app.cli.commands.init.options import (
-    ModeOption,
-    ForceOption,
-    AskOption,
-)
 
 app = typer.Typer()
+
 
 class InitContext:
     def __init__(self, args):
         self.args = args
 
         # minimal engine compatibility
-        self.engine = SimpleNamespace(
-            no_debug=not getattr(args, "debug", False)
-        )
+        self.engine = SimpleNamespace(no_debug=not getattr(args, "debug", False))
+
 
 def _run_init_pipeline(args, commands: list[str]):
     """
@@ -49,9 +49,10 @@ def _run_init_pipeline(args, commands: list[str]):
     pipeline = SimplePipelineBuilder(useCompletedMessage=False).build(pipeline_config)
     pipeline.run(ctx_obj)
 
+
 @app.callback(
     rich_help_panel="Initialization",
-    )
+)
 
 # @app.command("init")
 def init(
@@ -61,120 +62,120 @@ def init(
     ask: AskOption = None,
 ):
     """
-Initialize a project for Custy
+    Initialize a project for Custy
 
-🚀 [bold cyan]Initialize your project[/bold cyan]
+    🚀 [bold cyan]Initialize your project[/bold cyan]
 
-Create the files and folders required to start using Custy.
+    Create the files and folders required to start using Custy.
 
-This command generates configuration files, templates, and optional example resources used throughout the Custy workflow.
+    This command generates configuration files, templates, and optional example resources used throughout the Custy workflow.
 
-[dim]Safe to run multiple times. Existing files are preserved unless force mode is enabled.[/dim]
+    [dim]Safe to run multiple times. Existing files are preserved unless force mode is enabled.[/dim]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-📦 [bold]What gets initialized:[/bold]
+    📦 [bold]What gets initialized:[/bold]
 
-  • [green]Configuration files[/green]
-    Create Custy configuration files.
+      • [green]Configuration files[/green]
+        Create Custy configuration files.
 
-  • [green]Templates[/green]
-    Create commit and tag message templates.
+      • [green]Templates[/green]
+        Create commit and tag message templates.
 
-  • [green]Examples[/green]
-    Create example resources and sample files.
+      • [green]Examples[/green]
+        Create example resources and sample files.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-⚙️ [bold]Initialization Modes:[/bold]
+    ⚙️ [bold]Initialization Modes:[/bold]
 
-  [cyan]all[/cyan]
-    Initialize configuration, templates, and examples.
+      [cyan]all[/cyan]
+        Initialize configuration, templates, and examples.
 
-  [cyan]all_no_examples[/cyan]
-    Initialize everything except examples.
+      [cyan]all_no_examples[/cyan]
+        Initialize everything except examples.
 
-  [cyan]config[/cyan]
-    Initialize configuration files only.
+      [cyan]config[/cyan]
+        Initialize configuration files only.
 
-  [cyan]templates[/cyan]
-    Initialize commit and tag templates only.
+      [cyan]templates[/cyan]
+        Initialize commit and tag templates only.
 
-  [cyan]examples[/cyan]
-    Initialize example resources only.
+      [cyan]examples[/cyan]
+        Initialize example resources only.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧪 [bold]Examples:[/bold]
+    🧪 [bold]Examples:[/bold]
 
-  [yellow]custy init[/yellow]
-    Initialize configuration, templates, and examples.
+      [yellow]custy init[/yellow]
+        Initialize configuration, templates, and examples.
 
-  [yellow]custy init --mode all_no_examples[/yellow]
-    Initialize configuration and templates only.
+      [yellow]custy init --mode all_no_examples[/yellow]
+        Initialize configuration and templates only.
 
-  [yellow]custy init --mode config[/yellow]
-    Generate configuration files only.
+      [yellow]custy init --mode config[/yellow]
+        Generate configuration files only.
 
-  [yellow]custy init --mode templates[/yellow]
-    Generate commit and tag templates only.
+      [yellow]custy init --mode templates[/yellow]
+        Generate commit and tag templates only.
 
-  [yellow]custy init --mode examples[/yellow]
-    Generate example resources only.
+      [yellow]custy init --mode examples[/yellow]
+        Generate example resources only.
 
-  [yellow]custy init --force[/yellow]
-    Overwrite existing files without prompting.
+      [yellow]custy init --force[/yellow]
+        Overwrite existing files without prompting.
 
-  [yellow]custy init --ask[/yellow]
-    Prompt before overwriting existing files.
+      [yellow]custy init --ask[/yellow]
+        Prompt before overwriting existing files.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options:[/bold]
+    🌐 [bold]Global Options:[/bold]
 
-Global options are specified before the command.
+    Global options are specified before the command.
 
-  [yellow]custy --dry-run init[/yellow]
-    Build and display the initialization plan without creating,
-    copying, or overwriting project files and directories.
+      [yellow]custy --dry-run init[/yellow]
+        Build and display the initialization plan without creating,
+        copying, or overwriting project files and directories.
 
-  [yellow]custy --debug init[/yellow]
-    Show detailed execution logs.
+      [yellow]custy --debug init[/yellow]
+        Show detailed execution logs.
 
-  [yellow]custy --log-level debug init[/yellow]
-    Enable verbose logging output.
+      [yellow]custy --log-level debug init[/yellow]
+        Enable verbose logging output.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Recommended Workflow:[/bold]
+    💡 [bold]Recommended Workflow:[/bold]
 
-  1. Run [cyan]custy init[/cyan]
-  2. Review generated configuration files
-  3. Adjust templates if needed
-  4. Validate your project setup
-  5. Start using Custy workflows
+      1. Run [cyan]custy init[/cyan]
+      2. Review generated configuration files
+      3. Adjust templates if needed
+      4. Validate your project setup
+      5. Start using Custy workflows
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy validate[/cyan]
-    Validate project readiness.
+      [cyan]custy validate[/cyan]
+        Validate project readiness.
 
-  [cyan]custy run[/cyan]
-    Execute workflow pipelines.
+      [cyan]custy run[/cyan]
+        Execute workflow pipelines.
 
-  [cyan]custy version[/cyan]
-    Manage project versions.
+      [cyan]custy version[/cyan]
+        Manage project versions.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Tips:[/bold]
+    💡 [bold]Tips:[/bold]
 
-  • Safe to run multiple times
-  • Use [yellow]custy --dry-run[/yellow] before applying changes
-  • Use [yellow]custy init --mode[/yellow] to initialize specific parts only
-"""
+      • Safe to run multiple times
+      • Use [yellow]custy --dry-run[/yellow] before applying changes
+      • Use [yellow]custy init --mode[/yellow] to initialize specific parts only
+    """
     config = get_config()
 
     # REQUIRED defaults

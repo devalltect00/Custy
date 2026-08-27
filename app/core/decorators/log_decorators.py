@@ -5,6 +5,7 @@ from functools import wraps
 
 logger = logging.getLogger(__name__)
 
+
 def log_execution(func):
     """
     Decorator for logging function execution lifecycle.
@@ -20,7 +21,7 @@ def log_execution(func):
     Returns:
         Callable: Wrapped function.
     """
-    
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         func_name = func.__name__
@@ -35,8 +36,8 @@ def log_execution(func):
             return result
         except Exception as e:
             logger.exception(
-                f"[red]✖ COMMAND ERROR[/red] | [dim]{func_name}[/dim]\n"
-                f"[red]{e}[/red]"
+                f"[red]✖ COMMAND ERROR[/red] | [dim]{func_name}[/dim]\n[red]{e}[/red]"
             )
             raise
+
     return wrapper

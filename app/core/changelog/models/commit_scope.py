@@ -30,6 +30,4 @@ class CommitScope:
 
     scope: str
 
-    commits: list[Commit] = field(
-        default_factory=list
-    )
+    commits: list[Commit] = field(default_factory=list)

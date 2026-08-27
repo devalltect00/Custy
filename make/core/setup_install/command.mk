@@ -11,19 +11,10 @@ include $(ROOT_DIR)/make/core/helpers/registry.mk
 # -------------------------------------------------------------------------
 
 SETUP_INSTALL_COMMANDS_LIST := \
-	venv \
-	activate \
-	install \
-	install-dev \
-	install-docs \
-	install-all \
-	upgrade-pip \
-	requirements \
-	pre-commit-install \
-	pre-commit-run \
-	pre-commit-update \
-	setup \
-	check-python
+	venv activate install install-dev install-docs install-all upgrade-pip \
+	requirements pre-commit-install pre-commit-install-hooks pre-commit-run \
+	pre-commit-run-staged pre-commit-update pre-commit-clean pre-commit-gc \
+	pre-commit-uninstall pre-commit-validate pre-commit-refresh setup check-python
 
 $(foreach cmd,$(SETUP_INSTALL_COMMANDS_LIST),\
 	$(eval $(call REGISTER_COMMAND,\
@@ -138,20 +129,50 @@ p.write_text(cleaned + '\n')"
 # ⚙️ SETUP & INSTALLATION - Pre-Commit
 # -------------------------------------------------------------------------
 
-.PHONY: pre-commit-install
-pre-commit-install:
-	@echo install hooks
-	$(PRE_COMMIT) install
+.PHONY: \
+	pre-commit-install \
+	pre-commit-install-hooks \
+	pre-commit-run \
+	pre-commit-run-staged \
+	pre-commit-update \
+	pre-commit-clean \
+	pre-commit-gc \
+	pre-commit-uninstall \
+	pre-commit-validate \
+	pre-commit-refresh
 
-.PHONY: pre-commit-run
-pre-commit-run:
-	@echo run hooks manually
-	$(PRE_COMMIT) run --all-files
+pre-commit-install: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) install
 
-.PHONY: pre-commit-update
-pre-commit-update:
-	@echo update hook versions
-	$(PRE_COMMIT) autoupdate
+pre-commit-install-hooks: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) install --install-hooks
+
+pre-commit-run: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) run --all-files
+
+pre-commit-run-staged: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) run
+
+pre-commit-update: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) autoupdate
+
+pre-commit-clean: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) clean
+
+pre-commit-gc: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) gc
+
+pre-commit-uninstall: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) uninstall
+
+pre-commit-validate: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) validate-config .pre-commit-config.yaml
+
+pre-commit-refresh: check-venv
+	"$(PYTHON)" -m $(PRE_COMMIT) autoupdate
+	"$(PYTHON)" -m $(PRE_COMMIT) clean
+	"$(PYTHON)" -m $(PRE_COMMIT) install --install-hooks
+	"$(PYTHON)" -m $(PRE_COMMIT) run --all-files
 
 
 # -------------------------------------------------------------------------
@@ -174,4 +195,3 @@ setup: venv upgrade-pip install-all pre-commit-install
 .PHONY: check-python
 check-python:
 	"$(PYTHON_SYSTEM)" --version
-

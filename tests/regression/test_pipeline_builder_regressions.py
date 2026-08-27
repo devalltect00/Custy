@@ -68,10 +68,7 @@ class TestPipelineBuilderRegressions:
             ]
         )
 
-        names = [
-            step.__class__.__name__
-            for step in pipeline.steps
-        ]
+        names = [step.__class__.__name__ for step in pipeline.steps]
 
         assert names == [
             "EnsureGitRepoStep",
@@ -96,10 +93,7 @@ class TestPipelineBuilderRegressions:
             ]
         )
 
-        names = [
-            step.__class__.__name__
-            for step in pipeline.steps
-        ]
+        names = [step.__class__.__name__ for step in pipeline.steps]
 
         assert names == [
             "StageStep",

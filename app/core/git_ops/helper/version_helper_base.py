@@ -26,7 +26,7 @@ Used by:
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Optional
+from typing import Optional
 
 
 class VersionHelperBase(ABC):
@@ -68,7 +68,7 @@ class VersionHelperBase(ABC):
     # =========================================================
     # ===================== PARSING ============================
     # =========================================================
-    
+
     @abstractmethod
     def _parse_base_version(self):
         """
@@ -105,7 +105,7 @@ class VersionHelperBase(ABC):
     # =========================================================
     # ===================== CLASSIFICATION =====================
     # =========================================================
-    
+
     @abstractmethod
     def classify(self, tag: str) -> str:
         """
@@ -125,7 +125,7 @@ class VersionHelperBase(ABC):
         ...
 
     @abstractmethod
-    def tier_order(self) -> Dict[str, int]:
+    def tier_order(self) -> dict[str, int]:
         """
         Returns a mapping of tier names to precedence values.
 
@@ -138,7 +138,7 @@ class VersionHelperBase(ABC):
     # =========================================================
     # ===================== VERSION LOGIC ======================
     # =========================================================
-    
+
     @abstractmethod
     def get_bump_version(self, **kwargs) -> str:
         """
@@ -150,7 +150,6 @@ class VersionHelperBase(ABC):
             str: new version string
         """
         ...
-
 
     @abstractmethod
     def suggest_tag(self, branch: str) -> str:

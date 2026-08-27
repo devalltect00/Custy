@@ -77,12 +77,6 @@ class TestVersionBridgeRegressions:
         Conversion helpers should remain stateless.
         """
         for _ in range(10):
-            assert (
-                VersionBridge.pep440_to_semver("1.0.0")
-                == "v1.0.0"
-            )
+            assert VersionBridge.pep440_to_semver("1.0.0") == "v1.0.0"
 
-            assert (
-                VersionBridge.semver_to_pep440("1.0.0")
-                == "1.0.0"
-            )
+            assert VersionBridge.semver_to_pep440("1.0.0") == "1.0.0"

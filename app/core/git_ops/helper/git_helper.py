@@ -11,8 +11,8 @@ import sys
 from collections.abc import Callable
 from pathlib import Path
 
-from app.errors.validation import ValidationError
 from app.core.dry_run import DryRunSupport
+from app.errors.validation import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -113,7 +113,7 @@ class GitHelper(DryRunSupport):
                 print("⚠️ No staged changes found.")
 
             return has_changes
-        
+
         except Exception as e:
             print(f"❌ Failed to check staged files: {e}")
             return False
@@ -252,7 +252,7 @@ class GitHelper(DryRunSupport):
         """
         """git remote get-url origin"""
         try:
-            result = self.runner.run(
+            self.runner.run(
                 ["git", "remote", "get-url", "origin"],
                 check=True,
                 stdout=subprocess.DEVNULL,
@@ -309,14 +309,14 @@ class GitHelper(DryRunSupport):
         try:
             # Case 1: repository has no commits yet
             if not self.has_commit():
-                print(f"🆕 New repository detected (no commits yet).")
+                print("🆕 New repository detected (no commits yet).")
 
                 result = self.runner.run(
-                        ["git", "symbolic-ref", "--short", "HEAD"],
-                        capture_output=True,
-                        text=True,
-                        check=True,
-                    )
+                    ["git", "symbolic-ref", "--short", "HEAD"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
 
                 if result and result.stdout:
                     return result.stdout.strip()
@@ -336,7 +336,7 @@ class GitHelper(DryRunSupport):
                 branch = result.stdout.strip()
 
                 if branch == "HEAD":
-                    print(f"⚠️ Detached HEAD state detected.")
+                    print("⚠️ Detached HEAD state detected.")
 
                 return branch
 
@@ -345,7 +345,7 @@ class GitHelper(DryRunSupport):
 
         return "unknown"
 
-    def commit_and_push_changelog(self, remotes: list = []) -> None:
+    def commit_and_push_changelog(self, remotes: list[str] | None = None) -> None:
         if not self.has_changelog_changed():
             print("⚠️ No changes in CHANGELOG.md. Skipping commit.")
             return
@@ -359,7 +359,7 @@ class GitHelper(DryRunSupport):
             )
             branch = self.get_current_branch()
             print("00000000000000000000000")
-            for remote in remotes:
+            for remote in remotes or []:
                 self._push(remote=remote, branch=branch)
 
             print("✅ Changelog committed and pushed successfully.")
@@ -618,7 +618,7 @@ class GitHelper(DryRunSupport):
             check=False,
             capture_output=True,
         )
-        return result.returncode==0
+        return result.returncode == 0
 
 
 def parse_pep440_or_semver(tag: str) -> tuple:

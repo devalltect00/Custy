@@ -9,7 +9,6 @@ Integration tests for the cleanup workflow.
 from unittest.mock import MagicMock
 
 from app.core.pipeline.pipeline import Pipeline
-
 from app.core.pipeline.steps.cleanup_backups_step import (
     CleanupBackupsStep,
 )
@@ -44,13 +43,9 @@ class TestCleanupFlow:
 
         order = []
 
-        ctx.engine.cleanup_backups.side_effect = (
-            lambda: order.append("cleanup_backups")
-        )
+        ctx.engine.cleanup_backups.side_effect = lambda: order.append("cleanup_backups")
 
-        ctx.engine.clean.side_effect = (
-            lambda: order.append("cleanup_branches")
-        )
+        ctx.engine.clean.side_effect = lambda: order.append("cleanup_branches")
 
         Pipeline(
             [

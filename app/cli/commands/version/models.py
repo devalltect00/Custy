@@ -5,13 +5,14 @@ from pathlib import Path
 from typing import Optional
 
 from app.cli.constants import (
-  StrategyChoices,
-  BumpChoices,
+    BumpChoices,
+    StrategyChoices,
 )
+
 
 @dataclass
 class VersionArgs:
-  version_file: Optional[Path]
-  tag: Optional[str]
-  strategy: Optional[StrategyChoices]
-  bump: Optional[BumpChoices]
+    version_file: Optional[Path]
+    tag: Optional[str]
+    strategy: Optional[StrategyChoices]
+    bump: Optional[BumpChoices]

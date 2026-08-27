@@ -73,10 +73,7 @@ class PendingCommitIntegrator:
         if pending_release is None:
             return changelog
 
-        if (
-            self.generation
-            is PendingCommitGeneration.APPEND
-        ):
+        if self.generation is PendingCommitGeneration.APPEND:
             return self._append(
                 changelog,
                 pending_release,
@@ -96,14 +93,9 @@ class PendingCommitIntegrator:
         Append the pending release.
         """
 
-        releases = list(
-            changelog.releases
-        )
+        releases = list(changelog.releases)
 
-        if (
-            self.placement
-            is PendingCommitPlacement.BEFORE
-        ):
+        if self.placement is PendingCommitPlacement.BEFORE:
             releases.insert(
                 0,
                 pending_release,

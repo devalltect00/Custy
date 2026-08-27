@@ -89,7 +89,7 @@ BLACK := black
 MKDOCS := mkdocs
 TWINE := twine
 BUILD := build
-PRE_COMMIT := pre-commit
+PRE_COMMIT := pre_commit
 
 # ----------------------------------------------------------
 # 🔡 VARIABLES - 🐋 LOCAL APP ARGS
@@ -356,5 +356,3 @@ REMOTE_REFLOW_INIT_ARGS ?=
 REMOTE_REFLOW_RELEASES_RECOVER_ARGS ?=
 REMOTE_REFLOW_TAGS_CONVERT_ARGS ?=
 REMOTE_REFLOW_DOCKERIZE_ARGS ?=
-
-

@@ -1,6 +1,5 @@
 # tests/cli/commands/workflow/test_options_workflow.py
 
-
 """
 tests/cli/commands/workflow/test_options.py
 

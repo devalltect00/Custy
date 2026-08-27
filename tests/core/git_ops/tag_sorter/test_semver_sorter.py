@@ -261,6 +261,7 @@ def test_sort_prerelease_order(
         "1.2.3-dev.1",
     ]
 
+
 def test_sort_dev_versions(
     sorter: SemverSorter,
 ):
@@ -280,6 +281,7 @@ def test_sort_dev_versions(
         "1.2.3-dev.1",
     ]
 
+
 def test_sort_alpha_versions(
     sorter: SemverSorter,
 ):
@@ -298,6 +300,7 @@ def test_sort_alpha_versions(
         "1.2.3-alpha.1",
     ]
 
+
 def test_sort_beta_versions(
     sorter: SemverSorter,
 ):
@@ -312,6 +315,7 @@ def test_sort_beta_versions(
         "1.2.3-beta.2",
         "1.2.3-beta.1",
     ]
+
 
 def test_sort_rc_versions(
     sorter: SemverSorter,
@@ -328,6 +332,7 @@ def test_sort_rc_versions(
         "1.2.3-rc.1",
     ]
 
+
 def test_sort_post_versions(
     sorter: SemverSorter,
 ):
@@ -342,6 +347,7 @@ def test_sort_post_versions(
         "1.2.3-post.2",
         "1.2.3-post.1",
     ]
+
 
 def test_sort_build_metadata(
     sorter: SemverSorter,
@@ -362,6 +368,7 @@ def test_sort_build_metadata(
         "1.2.3+linux",
         "1.2.3+windows",
     }
+
 
 def test_sort_mixed_semver_versions(
     sorter: SemverSorter,

@@ -20,6 +20,7 @@ class DateStrategy:
     Args:
         use_prefix_v (bool): whether to prefix with 'v'
     """
+
     def __init__(
         self,
         use_prefix_v: bool = True,

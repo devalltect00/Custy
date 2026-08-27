@@ -40,11 +40,7 @@ class TestHasChangelogChanged:
         """
         service.executor.diff_name_only.return_value = CommandResult(
             returncode=0,
-            stdout=(
-                "README.md\n"
-                "CHANGELOG.md\n"
-                "app/main.py\n"
-            ),
+            stdout=("README.md\nCHANGELOG.md\napp/main.py\n"),
         )
 
         assert service.has_changelog_changed() is True
@@ -57,10 +53,7 @@ class TestHasChangelogChanged:
         """
         service.executor.diff_name_only.return_value = CommandResult(
             returncode=0,
-            stdout=(
-                "README.md\n"
-                "app/main.py\n"
-            ),
+            stdout=("README.md\napp/main.py\n"),
         )
 
         assert service.has_changelog_changed() is False

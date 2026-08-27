@@ -67,8 +67,8 @@ class TestParseSize:
     @pytest.mark.parametrize(
         ("value", "expected"),
         [
-            ("1MB", 1024 ** 2),
-            ("2MB", 2 * 1024 ** 2),
+            ("1MB", 1024**2),
+            ("2MB", 2 * 1024**2),
             ("0.5MB", 524288),
         ],
     )
@@ -88,9 +88,9 @@ class TestParseSize:
     @pytest.mark.parametrize(
         ("value", "expected"),
         [
-            ("1GB", 1024 ** 3),
-            ("2GB", 2 * 1024 ** 3),
-            ("1.25GB", int(1.25 * 1024 ** 3)),
+            ("1GB", 1024**3),
+            ("2GB", 2 * 1024**3),
+            ("1.25GB", int(1.25 * 1024**3)),
         ],
     )
     def test_parses_gigabytes(
@@ -110,8 +110,8 @@ class TestParseSize:
         ("value", "expected"),
         [
             (" 1kb ", 1024),
-            ("10mb", 10 * 1024 ** 2),
-            ("3Gb", 3 * 1024 ** 3),
+            ("10mb", 10 * 1024**2),
+            ("3Gb", 3 * 1024**3),
         ],
     )
     def test_ignores_case_and_surrounding_whitespace(

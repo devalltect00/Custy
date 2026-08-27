@@ -13,20 +13,17 @@ Business workflow methods will be covered in later phases.
 from pathlib import Path
 from unittest.mock import MagicMock
 
-import pytest
-
-from app.core.workflow.workflow_engine import WorkflowEngine
-from app.core.workflow.workflow_config import WorkflowConfig
 from app.cli.constants.enums import (
-    StrategyChoices,
     BumpChoices,
-    StageModeChoices,
     LogLevelChoices,
+    StageModeChoices,
+    StrategyChoices,
 )
+from app.core.workflow.workflow_config import WorkflowConfig
+from app.core.workflow.workflow_engine import WorkflowEngine
 
 
 class TestWorkflowEngineInitialization:
-
     def test_default_initialization(self):
         config = WorkflowConfig()
 
@@ -76,7 +73,6 @@ class TestWorkflowEngineInitialization:
 
 
 class TestWorkflowHelpers:
-
     def test_commitizen_auto_true(self):
         config = WorkflowConfig(
             strategy=StrategyChoices.COMMITIZEN,
@@ -99,7 +95,6 @@ class TestWorkflowHelpers:
 
 
 class TestSilentMode:
-
     def test_set_silent_mode(self):
         engine = WorkflowEngine(WorkflowConfig())
 
@@ -115,7 +110,6 @@ class TestSilentMode:
 
 
 class TestValidationEntry:
-
     def test_validate_calls_all_steps(self):
         engine = WorkflowEngine(WorkflowConfig())
 

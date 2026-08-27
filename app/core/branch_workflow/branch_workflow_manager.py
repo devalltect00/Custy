@@ -17,7 +17,6 @@ Responsibilities:
 import re
 
 from app.core.dry_run import DryRunSupport
-from app.core.git_ops.git.service import GitService
 from app.core.git_ops.git.factory import create_git_service
 from app.core.git_ops.helper.pep440_helper import PEP440VersionHelper
 from app.core.git_ops.helper.project_detector import detect_project_strategy
@@ -320,7 +319,9 @@ class BranchWorkflowManager(DryRunSupport):
 
             # CASE 4: No final merge needed
             case "CASE 4":
-                print("ℹ️ CASE 4: No final merge needed. Continue working in 'develop'.")
+                print(
+                    "ℹ️ CASE 4: No final merge needed. Continue working in 'develop'."
+                )
 
             # CASE 5: No-op
             case "CASE 5":
@@ -365,14 +366,24 @@ class BranchWorkflowManager(DryRunSupport):
     def cleanup_release_branch(self):
         release_branch = f"release/{self.helper.major}.{self.helper.minor}"
         self.runner.run(["git", "branch", "-d", release_branch], check=True)
-        self.runner.run(["git", "push", "origin", "--delete", release_branch], check=True)
-        if self.sync_backup: self.runner.run(["git", "push", "backup", "--delete", release_branch], check=True)
+        self.runner.run(
+            ["git", "push", "origin", "--delete", release_branch], check=True
+        )
+        if self.sync_backup:
+            self.runner.run(
+                ["git", "push", "backup", "--delete", release_branch], check=True
+            )
 
     def cleanup_hotfix_branch(self):
-        hotfix_branch = f"hotfix/{self.helper.major}.{self.helper.minor}.{self.helper.patch}"
+        hotfix_branch = (
+            f"hotfix/{self.helper.major}.{self.helper.minor}.{self.helper.patch}"
+        )
         self.runner.run(["git", "branch", "-d", hotfix_branch], check=True)
-        self.runner.run(["git", "push" "origin", "--delete", hotfix_branch], check=True)
-        if self.sync_backup: self.runner.run(["git", "push", "backup", "--delete", hotfix_branch], check=True)
+        self.runner.run(["git", "pushorigin", "--delete", hotfix_branch], check=True)
+        if self.sync_backup:
+            self.runner.run(
+                ["git", "push", "backup", "--delete", hotfix_branch], check=True
+            )
 
     def _ensure_no_staged_changes(self, context: str = "merge") -> None:
         """Prevent mutating branch operations when the index is not clean.
@@ -390,7 +401,9 @@ class BranchWorkflowManager(DryRunSupport):
                 If staged changes exist during a real workflow.
         """
         if self.git.has_staged_files():
-            print(f"❌ ERROR: You have staged changes. Cannot perform `{context}` safely.")
+            print(
+                f"❌ ERROR: You have staged changes. Cannot perform `{context}` safely."
+            )
             print("💡 Please commit or stash your changes before continuing")
 
             if self.runner.get_is_dry_run():
@@ -401,4 +414,5 @@ class BranchWorkflowManager(DryRunSupport):
                 return
 
             import sys
+
             sys.exit(1)

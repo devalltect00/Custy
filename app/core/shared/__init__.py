@@ -6,8 +6,8 @@ Shared core models and utilities.
 
 from .exceptions import (
     ConfigurationError,
-    GitOperationError,
     CustyError,
+    GitOperationError,
     ValidationError,
 )
 from .result import CommandResult

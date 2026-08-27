@@ -9,12 +9,11 @@ Unit tests for AppContext and get_context().
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-from app.cli.context.app_context import AppContext, get_context
 from app.cli.constants.enums import LogLevelChoices
+from app.cli.context.app_context import AppContext, get_context
 
 
 class TestAppContext:
-
     def test_defaults(self):
         ctx = AppContext()
 

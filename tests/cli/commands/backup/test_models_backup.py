@@ -9,14 +9,13 @@ Unit tests for backup argument models.
 from pathlib import Path
 
 from app.cli.commands.backup.models import (
+    BackupAllArgs,
     BackupCommitArgs,
     BackupTagArgs,
-    BackupAllArgs,
 )
 
 
 class TestBackupModels:
-
     def test_backup_commit_args(self):
         args = BackupCommitArgs(
             commit_message_file=Path("commit.txt"),
@@ -48,4 +47,6 @@ class TestBackupModels:
     def test_dataclass_equality(self):
         assert BackupCommitArgs(None, None) == BackupCommitArgs(None, None)
         assert BackupTagArgs(None, None) == BackupTagArgs(None, None)
-        assert BackupAllArgs(None, None, None, None) == BackupAllArgs(None, None, None, None)
+        assert BackupAllArgs(None, None, None, None) == BackupAllArgs(
+            None, None, None, None
+        )

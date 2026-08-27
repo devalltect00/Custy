@@ -132,18 +132,18 @@ class TestInitBuilderBuildFromMode:
             (
                 InitMode.ALL_NO_EXAMPLES,
                 "all (no examples)",
-                5,
+                4,
                 6,
                 0,
-                3,
+                2,
             ),
             (
                 InitMode.ALL,
                 "all",
-                5,
+                4,
                 9,
                 1,
-                4,
+                3,
             ),
         ],
     )

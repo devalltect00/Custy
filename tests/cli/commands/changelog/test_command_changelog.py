@@ -1,6 +1,5 @@
 # tests/cli/commands/changelog/test_command_changelog.py
 
-
 """
 tests/cli/commands/changelog/test_command.py
 
@@ -21,10 +20,11 @@ class DummyAppContext:
 
 
 class TestChangelogCommand:
-
     def test_generate_executes_pipeline(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
-        monkeypatch.setattr(command, "get_context", MagicMock(return_value=DummyAppContext()))
+        monkeypatch.setattr(
+            command, "get_context", MagicMock(return_value=DummyAppContext())
+        )
         monkeypatch.setattr(
             command,
             "resolve_changelog_args",
@@ -36,7 +36,9 @@ class TestChangelogCommand:
 
         resolver = MagicMock()
         resolver.resolve.return_value = ["changelog"]
-        monkeypatch.setattr(command, "CommandResolver", MagicMock(return_value=resolver))
+        monkeypatch.setattr(
+            command, "CommandResolver", MagicMock(return_value=resolver)
+        )
 
         engine = MagicMock()
         engine.from_cli_args.return_value = engine
@@ -82,7 +84,9 @@ class TestChangelogCommand:
 
         resolver = MagicMock()
         resolver.resolve.return_value = []
-        monkeypatch.setattr(command, "CommandResolver", MagicMock(return_value=resolver))
+        monkeypatch.setattr(
+            command, "CommandResolver", MagicMock(return_value=resolver)
+        )
 
         engine = MagicMock()
         engine.from_cli_args.return_value = engine

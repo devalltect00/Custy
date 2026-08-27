@@ -7,13 +7,12 @@ Unit tests for BannerService.
 """
 
 from importlib.metadata import PackageNotFoundError
-from unittest.mock import MagicMock, mock_open
+from unittest.mock import MagicMock
 
 from app.services.banner_service import BannerService
 
 
 class TestBannerService:
-
     def test_render_version(self, monkeypatch):
         svc = BannerService("custy")
         monkeypatch.setattr(svc, "get_version", lambda: "1.2.3")

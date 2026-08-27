@@ -20,13 +20,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from app.core.changelog.integration.placement import (
-    PendingCommitPlacement,
-)
 from app.core.changelog.integration.generation import (
     PendingCommitGeneration,
 )
-
+from app.core.changelog.integration.placement import (
+    PendingCommitPlacement,
+)
 
 # ==========================================================
 # Core
@@ -78,13 +77,9 @@ class PendingCommitConfig:
 
     enabled: bool = False
 
-    generation: PendingCommitGeneration = (
-        PendingCommitGeneration.APPEND
-    )
+    generation: PendingCommitGeneration = PendingCommitGeneration.APPEND
 
-    placement: PendingCommitPlacement = (
-        PendingCommitPlacement.BEFORE
-    )
+    placement: PendingCommitPlacement = PendingCommitPlacement.BEFORE
 
 
 # ==========================================================
@@ -98,9 +93,7 @@ class CleaningConfig:
     Commit cleaning configuration.
     """
 
-    remove_separators: list[str] = field(
-        default_factory=lambda: ["---"]
-    )
+    remove_separators: list[str] = field(default_factory=lambda: ["---"])
 
     remove_headers: bool = False
 
@@ -110,9 +103,7 @@ class CleaningConfig:
 
     remove_metadata: bool = False
 
-    remove_keywords: list[str] = field(
-        default_factory=list
-    )
+    remove_keywords: list[str] = field(default_factory=list)
 
 
 # ==========================================================
@@ -161,9 +152,7 @@ class ReleaseBehaviorConfig:
     behavior: dict[
         str,
         ReleaseBehavior,
-    ] = field(
-        default_factory=dict
-    )
+    ] = field(default_factory=dict)
 
 
 # ==========================================================
@@ -304,9 +293,7 @@ class BreakingConfig:
 
     enabled: bool = False
 
-    keywords: list[str] = field(
-        default_factory=list
-    )
+    keywords: list[str] = field(default_factory=list)
 
     label: str = "Breaking Changes"
 
@@ -325,9 +312,7 @@ class ScopeMappingConfig:
     during changelog rendering.
     """
 
-    mapping: dict[str, str] = field(
-        default_factory=dict
-    )
+    mapping: dict[str, str] = field(default_factory=dict)
 
 
 # ==========================================================

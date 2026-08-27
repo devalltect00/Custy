@@ -140,9 +140,7 @@ class TestListBranches:
             returncode=0,
             stdout="feature/one\n",
         )
-        service.remote_branch_exists = MagicMock(
-            side_effect=[True, False]
-        )
+        service.remote_branch_exists = MagicMock(side_effect=[True, False])
 
         branches = service.list_branches()
 
@@ -156,8 +154,7 @@ class TestListBranches:
         assert branches[1].remote_exists is False
         assert branches[0].last_commit == datetime.fromtimestamp(1700000000)
         assert [
-            entry.args[0]
-            for entry in service.remote_branch_exists.call_args_list
+            entry.args[0] for entry in service.remote_branch_exists.call_args_list
         ] == ["feature/one", "feature/two"]
 
     def test_ignores_empty_metadata_lines(self, service):
@@ -207,9 +204,7 @@ class TestDeleteBranch:
     def test_delete_local_branch(self, service):
         """Successful local deletion delegates force behavior."""
 
-        service.executor.delete_local_branch.return_value = CommandResult(
-            returncode=0
-        )
+        service.executor.delete_local_branch.return_value = CommandResult(returncode=0)
 
         service.delete_local_branch("feature/test", force=True)
 
@@ -221,9 +216,7 @@ class TestDeleteBranch:
     def test_delete_local_branch_failure_raises(self, service):
         """A failed local deletion becomes a service-level error."""
 
-        service.executor.delete_local_branch.return_value = CommandResult(
-            returncode=1
-        )
+        service.executor.delete_local_branch.return_value = CommandResult(returncode=1)
 
         with pytest.raises(RuntimeError, match="feature/test"):
             service.delete_local_branch("feature/test")
@@ -232,9 +225,7 @@ class TestDeleteBranch:
         """Successful remote deletion resolves and delegates the remote."""
 
         service.resolve_default_remote = MagicMock(return_value="backup")
-        service.executor.delete_remote_branch.return_value = CommandResult(
-            returncode=0
-        )
+        service.executor.delete_remote_branch.return_value = CommandResult(returncode=0)
 
         service.delete_remote_branch("feature/test")
 
@@ -247,9 +238,7 @@ class TestDeleteBranch:
         """A failed remote deletion becomes a service-level error."""
 
         service.resolve_default_remote = MagicMock(return_value="origin")
-        service.executor.delete_remote_branch.return_value = CommandResult(
-            returncode=1
-        )
+        service.executor.delete_remote_branch.return_value = CommandResult(returncode=1)
 
         with pytest.raises(RuntimeError, match="origin"):
             service.delete_remote_branch("feature/test")

@@ -1,18 +1,32 @@
+## Keep inactive migration and personal reference files untouched by every hook.
+## Pre-commit passes tracked paths explicitly, so this repository-level filter
+## complements the Ruff and Black exclusions in pyproject.toml.
+exclude: |
+  (?x)(
+      (^|/)old/
+    | (^|/)example_before/
+    | \.deprecated\.py$
+    | \.old[^/]*\.py$
+    | \.dev\.py$
+    | [ _]copy\.py$
+    | _temp\.py$
+    | _temp_before\.py$
+  )
+
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.0
+    rev: v0.16.4
     hooks:
       - id: ruff
         args: [--fix]
-      - id: ruff-format
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
   - repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 26.5.1
     hooks:
       - id: black

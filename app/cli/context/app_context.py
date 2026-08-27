@@ -1,26 +1,25 @@
 # app/cli/context/app_context.py
 
+import logging
+from dataclasses import dataclass, field
+from typing import Any, Optional
+
 import typer
 
-from typing import Optional
-from dataclasses import dataclass, field
-from typing import Optional, Any
-import logging
-
-##### Avoid import this, because the error appear. Errors might be looks like: 
-#####   (ImportError: cannot import name 'DryRunSupport' from partially initialized module 
+##### Avoid import this, because the error appear. Errors might be looks like:
+#####   (ImportError: cannot import name 'DryRunSupport' from partially initialized module
 #####   'app.core.helper.dry_run' (most likely due to a circular import)).
 ##### or something like that
 # from app.core.helper.git_ops.helper.project_detector import detect_project_strategy
-
 from app.cli.constants.enums import (
-    StrategyChoices,
     BumpChoices,
-    StageModeChoices,
-    LogLevelChoices,
     CleanupTypeChoices,
     InitMode,
+    LogLevelChoices,
+    StageModeChoices,
+    StrategyChoices,
 )
+
 
 @dataclass
 class AppContext:
@@ -96,7 +95,7 @@ class AppContext:
     # =========================
     typer_ctx: Any = None
     args: Any = None
-    
+
     # =========================
     # Runtime state
     # =========================
@@ -114,7 +113,6 @@ class AppContext:
     #         "stage_mode": "stage_mode",
     #     }
 
-
     #     for ctx_field, arg_field in field_map.items():
     #         if hasattr(args, arg_field):
     #             setattr(self, ctx_field, getattr(args, arg_field))
@@ -131,9 +129,7 @@ class AppContext:
             "commit_message_file": "commit_message_file",
             "tag_message_file": "tag_message_file",
             "version_file": "version_file",
-            
         }
-
 
         for ctx_field, arg_field in field_map.items():
             value = getattr(args, arg_field, None)
@@ -205,9 +201,10 @@ class AppContext:
         if no_debug is not None:
             self.debug = not no_debug if debug_flag else no_debug
 
+
 def get_context(ctx: typer.Context) -> AppContext:
     if ctx.obj is None:
         ctx.obj = AppContext()
-    
+
     ctx.obj.typer_ctx = ctx
     return ctx.obj

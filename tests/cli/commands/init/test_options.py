@@ -39,10 +39,6 @@ class TestInitOptions:
 
             metadata = get_args(opt)
 
-            option_info = next(
-                item
-                for item in metadata
-                if hasattr(item, "help")
-            )
+            option_info = next(item for item in metadata if hasattr(item, "help"))
 
             assert option_info.help

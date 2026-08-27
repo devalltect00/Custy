@@ -19,8 +19,7 @@ parse_duration()
 from __future__ import annotations
 
 import re
-
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 
 DATE_FORMAT = "%Y-%m-%d"
 
@@ -61,8 +60,8 @@ def parse_size(size: str) -> int:
 
     units = {
         "KB": 1024,
-        "MB": 1024 ** 2,
-        "GB": 1024 ** 3,
+        "MB": 1024**2,
+        "GB": 1024**3,
     }
 
     for unit, multiplier in units.items():
@@ -131,11 +130,9 @@ def parse_duration(value: str) -> timedelta:
 
     if match is None:
         raise ValueError(
-            (
-                "Invalid duration format. "
-                "Supported examples: "
-                "'30m', '12h', '30d', '2w', '6mo', '1y'."
-            )
+            "Invalid duration format. "
+            "Supported examples: "
+            "'30m', '12h', '30d', '2w', '6mo', '1y'."
         )
 
     amount = int(match.group(1))
@@ -201,9 +198,4 @@ def parse_date(value: str) -> datetime:
             DATE_FORMAT,
         )
     except ValueError as exc:
-        raise ValueError(
-            (
-                "Invalid date format. "
-                "Expected 'YYYY-MM-DD'."
-            )
-        ) from exc
+        raise ValueError("Invalid date format. Expected 'YYYY-MM-DD'.") from exc

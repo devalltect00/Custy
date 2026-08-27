@@ -21,9 +21,16 @@ help-setup-installation:
 	@echo   make upgrade-pip                    ^|    Upgrade pip inside virtual environment
 	@echo   make requirements                   ^|    Generate requirements.txt from installed packages
 	@echo.
-	@echo   make pre-commit-install             ^|    Install pre-commit Git hooks
-	@echo   make pre-commit-run                 ^|    Run pre-commit hooks manually
-	@echo   make pre-commit-update              ^|    Update pre-commit hook versions
+	@echo   make pre-commit-install             ^|    Install the pre-commit Git hook
+	@echo   make pre-commit-install-hooks       ^|    Install the Git hook and hook environments
+	@echo   make pre-commit-run                 ^|    Run all hooks against all repository files
+	@echo   make pre-commit-run-staged          ^|    Run hooks against currently staged files
+	@echo   make pre-commit-update              ^|    Update hook revisions in the pre-commit config
+	@echo   make pre-commit-clean               ^|    Remove cached pre-commit hook environments
+	@echo   make pre-commit-gc                  ^|    Remove unused pre-commit cached repositories
+	@echo   make pre-commit-uninstall           ^|    Remove the pre-commit Git hook
+	@echo   make pre-commit-validate            ^|    Validate .pre-commit-config.yaml
+	@echo   make pre-commit-refresh             ^|    Update, clean, reinstall, and run all pre-commit hooks
 	@echo.
 	@echo   make setup                          ^|    Run complete project setup workflow
 	@echo   make check-python                   ^|    Show system Python version

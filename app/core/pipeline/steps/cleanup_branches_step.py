@@ -10,10 +10,13 @@ The step intentionally contains no cleanup business logic. All cleanup
 behavior is delegated to the engine attached to the pipeline context.
 """
 
-from .base_step import BaseStep
 from app.core.pipeline.context import GitContext
 from app.core.pipeline.decorators.log_step import log_step
+
+from .base_step import BaseStep
+
 # from app.core.cleanup.handle_cleanup_branches import handleCleanupBranches
+
 
 class CleanupBranchesStep(BaseStep):
     """

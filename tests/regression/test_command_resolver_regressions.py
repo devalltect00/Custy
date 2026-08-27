@@ -88,25 +88,15 @@ class TestCommandResolverRegressions:
 
         names = [step["name"] for step in steps]
 
-        assert names.index("ensure_git_repo_step") < names.index(
-            "prepare_version_step"
-        )
+        assert names.index("ensure_git_repo_step") < names.index("prepare_version_step")
 
-        assert names.index("prepare_version_step") < names.index(
-            "workflow_init_step"
-        )
+        assert names.index("prepare_version_step") < names.index("workflow_init_step")
 
-        assert names.index("workflow_init_step") < names.index(
-            "commit_step"
-        )
+        assert names.index("workflow_init_step") < names.index("commit_step")
 
-        assert names.index("commit_step") < names.index(
-            "tag_step"
-        )
+        assert names.index("commit_step") < names.index("tag_step")
 
-        assert names.index("tag_step") < names.index(
-            "push_step"
-        )
+        assert names.index("tag_step") < names.index("push_step")
 
     def test_unknown_profile_raises_error(self):
         """

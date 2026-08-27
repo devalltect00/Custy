@@ -22,14 +22,17 @@ class DummyAppContext:
 
 
 class TestVersionUpdateCommand:
-
     def test_update_executes_pipeline(self, monkeypatch):
         cfg = MagicMock()
         resolved_args = MagicMock()
 
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=cfg))
-        monkeypatch.setattr(command, "get_context", MagicMock(return_value=DummyAppContext()))
-        monkeypatch.setattr(command, "resolve_version_args", MagicMock(return_value=resolved_args))
+        monkeypatch.setattr(
+            command, "get_context", MagicMock(return_value=DummyAppContext())
+        )
+        monkeypatch.setattr(
+            command, "resolve_version_args", MagicMock(return_value=resolved_args)
+        )
         monkeypatch.setattr(command, "register_all_steps", MagicMock())
 
         resolver_instance = MagicMock()
@@ -85,16 +88,22 @@ class TestVersionUpdateCommand:
 
         resolver = MagicMock()
         resolver.resolve.return_value = []
-        monkeypatch.setattr(command, "CommandResolver", MagicMock(return_value=resolver))
+        monkeypatch.setattr(
+            command, "CommandResolver", MagicMock(return_value=resolver)
+        )
 
         wb = MagicMock()
         wb.from_cli_args.return_value = wb
         wb.build.return_value = MagicMock()
-        monkeypatch.setattr(command, "WorkflowEngineBuilder", MagicMock(return_value=wb))
+        monkeypatch.setattr(
+            command, "WorkflowEngineBuilder", MagicMock(return_value=wb)
+        )
 
         pb = MagicMock()
         pb.build.return_value = MagicMock(run=MagicMock())
-        monkeypatch.setattr(command, "SimplePipelineBuilder", MagicMock(return_value=pb))
+        monkeypatch.setattr(
+            command, "SimplePipelineBuilder", MagicMock(return_value=pb)
+        )
 
         command.update(ctx=MagicMock())
 

@@ -9,11 +9,10 @@ Unit tests for VersionArgs.
 from pathlib import Path
 
 from app.cli.commands.version.models import VersionArgs
-from app.cli.constants import StrategyChoices, BumpChoices
+from app.cli.constants import BumpChoices, StrategyChoices
 
 
 class TestVersionArgs:
-
     def test_construct_with_explicit_values(self):
         args = VersionArgs(
             version_file=Path("app/__version__.py"),

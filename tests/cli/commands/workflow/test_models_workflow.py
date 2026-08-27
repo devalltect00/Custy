@@ -1,6 +1,5 @@
 # tests/cli/commands/workflow/test_models_workflow.py
 
-
 """
 tests/cli/commands/workflow/test_models.py
 
@@ -12,7 +11,6 @@ from app.cli.constants import LogLevelChoices
 
 
 class TestBranchWorkflowArgs:
-
     def test_construct(self):
         args = BranchWorkflowArgs(
             enforce=True,
@@ -38,12 +36,28 @@ class TestBranchWorkflowArgs:
 
     def test_dataclass_equality(self):
         left = BranchWorkflowArgs(
-            False, False, None, None, None, None,
-            False, False, False, LogLevelChoices.INFO
+            False,
+            False,
+            None,
+            None,
+            None,
+            None,
+            False,
+            False,
+            False,
+            LogLevelChoices.INFO,
         )
         right = BranchWorkflowArgs(
-            False, False, None, None, None, None,
-            False, False, False, LogLevelChoices.INFO
+            False,
+            False,
+            None,
+            None,
+            None,
+            None,
+            False,
+            False,
+            False,
+            LogLevelChoices.INFO,
         )
 
         assert left == right

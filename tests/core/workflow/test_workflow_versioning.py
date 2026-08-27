@@ -14,20 +14,19 @@ These tests intentionally isolate WorkflowEngine from external Git
 operations by mocking all strategy implementations.
 """
 
-import pytest
+from pathlib import Path
 from unittest.mock import MagicMock
 
-from pathlib import Path
+import pytest
 
-from app.constants.git_workflow_rules import ALLOWED_COMMIT_TYPES
 from app.cli.constants.enums import (
     BumpChoices,
     StrategyChoices,
 )
+from app.constants.git_workflow_rules import ALLOWED_COMMIT_TYPES
 from app.core.exceptions.validation_error import ValidationError
 from app.core.git_ops.helper.commitizen import CommitizenHelper
 from app.core.workflow.workflow_engine import WorkflowEngine
-
 
 # ==========================================================
 # Commitizen Auto
@@ -246,6 +245,7 @@ class TestPrepareVersionTag:
 
         assert exc.value.code == "INVALID_VERSION_INPUT"
 
+
 ##### Part 2
 
 # ==========================================================
@@ -326,12 +326,7 @@ class TestPrepareTagMessage:
         Parent directories are created automatically.
         """
 
-        nested = (
-            tmp_path
-            / "templates"
-            / "messages"
-            / "tag.txt"
-        )
+        nested = tmp_path / "templates" / "messages" / "tag.txt"
 
         workflow_engine.tag = "v5.0.0"
         workflow_engine.tag_message_file = nested
@@ -498,6 +493,7 @@ class TestEvaluateTaggingEligibility:
 
         workflow_engine.gitService.get_latest_tag.assert_not_called()
 
+
 ##### Part 3
 
 # ==========================================================
@@ -556,7 +552,7 @@ class TestUpdatePythonVersionFile:
 
         content = version_file.read_text(encoding="utf-8")
 
-        assert '__version__ = "v2.5.0"' in content
+        assert '__version__ = "2.5.0"' in content
 
     def test_uses_version_override(
         self,
@@ -784,9 +780,7 @@ class TestCommitizenHelper:
 
         CommitizenHelper().update_cz_toml_version("v2.0.0")
 
-        assert config_file.read_text(encoding="utf-8") == (
-            'version = "2.0.0"\n'
-        )
+        assert config_file.read_text(encoding="utf-8") == ('version = "2.0.0"\n')
 
     def test_missing_cz_toml_is_ignored(
         self,

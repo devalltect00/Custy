@@ -54,3 +54,24 @@ class TestExceptions:
         console_print.assert_called_once_with(
             panel,
         )
+
+    def test_show_structured_error_prints_rendered_content(
+        self,
+        monkeypatch,
+    ):
+        """Displays a structured error through the shared console."""
+
+        rendered = object()
+        error = MagicMock()
+        error.render.return_value = rendered
+        console_print = MagicMock()
+        monkeypatch.setattr(
+            exceptions.console,
+            "print",
+            console_print,
+        )
+
+        exceptions.show_structured_error(error)
+
+        error.render.assert_called_once_with()
+        console_print.assert_called_once_with(rendered)

@@ -12,7 +12,6 @@ from app.core.pipeline.command_resolver import CommandResolver
 
 
 class TestCommandResolver:
-
     def test_no_command_raises(self):
         resolver = CommandResolver()
 
@@ -96,18 +95,14 @@ class TestCommandResolver:
     def test_expand_profile(self):
         resolver = CommandResolver()
 
-        expanded = resolver._expand_profile(
-            resolver.profiles["validate"]
-        )
+        expanded = resolver._expand_profile(resolver.profiles["validate"])
 
         assert len(expanded) > 0
 
     def test_expand_nested_profile(self):
         resolver = CommandResolver()
 
-        expanded = resolver._expand_profile(
-            resolver.profiles["release"]
-        )
+        expanded = resolver._expand_profile(resolver.profiles["release"])
 
         names = [s["name"] for s in expanded]
 

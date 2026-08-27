@@ -1,12 +1,12 @@
 # app/core/git_ops/git/factory.py
 
-from app.core.dry_run.dry_run import Runner
-from app.core.git_ops.git.executor import GitCommandExecutor
-from app.core.git_ops.git.service import GitService
-from app.config.config_loader import get_config
 from app.cli.constants.enums import (
     StrategyChoices,
 )
+from app.config.config_loader import get_config
+from app.core.git_ops.git.executor import GitCommandExecutor
+from app.core.git_ops.git.service import GitService
+
 
 def create_git_service(
     dry_run: bool = False,

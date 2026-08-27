@@ -219,4 +219,3 @@ Before completing implementation work, verify and report:
 3. Tests and commands run, including results
 4. Documentation changes or remaining documentation work
 5. Known limitations, missing context, and the next recommended step
-

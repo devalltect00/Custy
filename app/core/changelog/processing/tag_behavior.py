@@ -54,7 +54,6 @@ class ReleaseBehaviorProcessor:
         """
 
         for release in changelog.releases:
-
             behavior = self.config.behavior.get(
                 release.version,
             )
@@ -64,12 +63,8 @@ class ReleaseBehaviorProcessor:
 
             release.hidden = behavior.hidden
 
-            release.title_only = (
-                behavior.title_only
-            )
+            release.title_only = behavior.title_only
 
-            release.custom_message = (
-                behavior.custom_message
-            )
+            release.custom_message = behavior.custom_message
 
         return changelog

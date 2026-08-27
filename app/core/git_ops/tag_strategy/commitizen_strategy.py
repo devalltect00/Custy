@@ -3,10 +3,10 @@
 Strategy that uses Commitizen to determine bump level.
 """
 
-import re
-import subprocess
 # import sys
 import logging
+import re
+import subprocess
 from typing import Optional
 
 from .semver_strategy import SemverStrategy
@@ -76,7 +76,9 @@ class CommitizenStrategy:
 
         if not match:
             logger.error("❌ No eligible commits found to bump.")
-            logger.info("💡 Make sure your commits use conventional commit messages like:")
+            logger.info(
+                "💡 Make sure your commits use conventional commit messages like:"
+            )
             logger.info("   - feat: add feature")
             logger.info("   - fix: resolve bug")
             # sys.exit(1)

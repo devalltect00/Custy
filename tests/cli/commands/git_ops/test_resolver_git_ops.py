@@ -9,8 +9,8 @@ Unit tests for git operation resolvers.
 from pathlib import Path
 
 from app.cli.commands.git_ops import resolver
-from app.cli.commands.git_ops.models import CommitArgs, TagArgs, PushArgs
-from app.cli.constants import StrategyChoices, StageModeChoices
+from app.cli.commands.git_ops.models import CommitArgs, PushArgs, TagArgs
+from app.cli.constants import StageModeChoices, StrategyChoices
 
 
 class DummyConfig:
@@ -21,6 +21,7 @@ class DummyConfig:
 # class DummyCliArgs:
 #     def __init__(self, **kwargs):
 #         self.__dict__.update(kwargs)
+
 
 class DummyCliArgs:
     def __init__(self, **kwargs):
@@ -34,7 +35,6 @@ class DummyCliArgs:
             "version_file": None,
             "check_cz": None,
             "commit_message_backup_dir": None,
-
             # tag
             "tag_message_file": None,
             "bump": None,
@@ -48,7 +48,6 @@ class DummyCliArgs:
             "skip_check": None,
             "force_tag": None,
             "tag_message_backup_dir": None,
-
             # push
             "all_remote": None,
             "remote": None,
@@ -63,7 +62,6 @@ class DummyCliArgs:
 
 
 class TestGitOpsResolvers:
-
     def test_resolve_commit_args_defaults(self, monkeypatch):
         monkeypatch.setattr(
             resolver,

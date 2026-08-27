@@ -1,115 +1,117 @@
 # app/cli/commands/git_ops/command.py
 
-import typer
 from types import SimpleNamespace
 
-from app.config.config_loader import get_config
-from app.cli.constants.args import CliArgs
-from app.cli.context.app_context import get_context
+import typer
 
-from app.core.pipeline.command_resolver import CommandResolver
-from app.core.pipeline.builder import PipelineBuilder
-from app.core.pipeline.context import GitContext
-from app.core.pipeline.step_registry import register_all_steps
-from app.core.workflow.workflow_builder import WorkflowEngineBuilder
+from app.cli.commands.git_ops.options import (
+    AllRemoteOption,
+    AutoStageOption,
+    BumpOption,
+    CheckCzAdditionalOption,
+    CommitMessageBackupDirOption,
+    CommitMessageFileOption,
+    DevReleaseOption,
+    EpochOption,
+    ForceCommitOption,
+    ForceTagOption,
+    MetaOption,
+    PostReleaseOption,
+    PreReleaseOption,
+    RemoteOption,
+    SkipChecksOption,
+    SkipTagOption,
+    StageModeOption,
+    StrategyOption,
+    SyncBackupOption,
+    TagMessageBackupDirOption,
+    TagMessageFileOption,
+    TagMessageOption,
+    TagOption,
+    VersionFileAdditionalOption,
+    VersionFileOption,
+)
 
 # from app.services import git_ops_service
 from app.cli.commands.git_ops.resolver import (
     resolve_commit_args,
-    resolve_tag_args,
     resolve_push_args,
+    resolve_tag_args,
 )
-from app.cli.commands.git_ops.options import (
-    CommitMessageFileOption,
-    AutoStageOption,
-    StageModeOption,
-    ForceCommitOption,
-    StrategyOption,
-    CommitMessageBackupDirOption,
-    VersionFileAdditionalOption,
-    CheckCzAdditionalOption,
-    TagMessageFileOption,
-    VersionFileOption,
-    BumpOption,
-    TagOption,
-    TagMessageOption,
-    PreReleaseOption,
-    PostReleaseOption,
-    DevReleaseOption,
-    MetaOption,
-    EpochOption,
-    SkipChecksOption,
-    ForceTagOption,
-    TagMessageBackupDirOption,
-    AllRemoteOption,
-    RemoteOption,
-    SkipTagOption,
-    SyncBackupOption,
-)
+from app.cli.constants.args import CliArgs
+from app.cli.context.app_context import get_context
+from app.config.config_loader import get_config
+from app.core.pipeline.builder import PipelineBuilder
+from app.core.pipeline.command_resolver import CommandResolver
+from app.core.pipeline.context import GitContext
+from app.core.pipeline.step_registry import register_all_steps
+from app.core.workflow.workflow_builder import WorkflowEngineBuilder
 
 app = typer.Typer()
+
 
 @app.callback()
 def callback():
     """
-Git operations
+    Git operations
 
-🔧 [bold cyan]Git operations[/bold cyan]
+    🔧 [bold cyan]Git operations[/bold cyan]
 
-Perform the core Git workflow operations used by Custy.
+    Perform the core Git workflow operations used by Custy.
 
-These commands can be executed individually or combined through workflow pipelines.
+    These commands can be executed individually or combined through workflow pipelines.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-📦 [bold]Available Commands:[/bold]
+    📦 [bold]Available Commands:[/bold]
 
-  [green]commit[/green]
-    Create a structured commit.
+      [green]commit[/green]
+        Create a structured commit.
 
-  [green]tag[/green]
-    Create a version tag.
+      [green]tag[/green]
+        Create a version tag.
 
-  [green]push[/green]
-    Push commits and tags to remote repositories.
+      [green]push[/green]
+        Push commits and tags to remote repositories.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔁 [bold]Workflow Relationship:[/bold]
+    🔁 [bold]Workflow Relationship:[/bold]
 
-Individual commands:
+    Individual commands:
 
-  custy commit
-  custy tag
-  custy push
+      custy commit
+      custy tag
+      custy push
 
-Pipeline workflows:
+    Pipeline workflows:
 
-  custy run commit
-  custy run release
-  custy run full
+      custy run commit
+      custy run release
+      custy run full
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Recommended Usage:[/bold]
+    💡 [bold]Recommended Usage:[/bold]
 
-Most users should prefer workflow pipelines:
+    Most users should prefer workflow pipelines:
 
-  custy run release
+      custy run release
 
-Individual commands remain useful for troubleshooting,
-manual releases, and advanced workflows.
+    Individual commands remain useful for troubleshooting,
+    manual releases, and advanced workflows.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy validate[/cyan]
+      [cyan]custy validate[/cyan]
 
-  [cyan]custy run[/cyan]
+      [cyan]custy run[/cyan]
 
-  [cyan]custy workflow[/cyan]
-"""
+      [cyan]custy workflow[/cyan]
+    """
+
 
 # def _run_pipeline(app_ctx, commands: list[str]):
 def _run_pipeline(args, commands: list[str]):
@@ -128,9 +130,10 @@ def _run_pipeline(args, commands: list[str]):
 
     ctx_obj = GitContext(engine)
 
-    isVisible=False
+    isVisible = False
     pipeline = PipelineBuilder(isVisible=isVisible).build(config)
     pipeline.run(ctx_obj)
+
 
 def commit(
     ctx: typer.Context,
@@ -138,92 +141,89 @@ def commit(
     auto_stage: AutoStageOption = None,
     stage_mode: StageModeOption = None,
     force_commit: ForceCommitOption = None,
-
     # Additional args for Generating release artifacts
     strategy: StrategyOption = None,
-
     # Backup Dir Path
     commit_message_backup_dir: CommitMessageBackupDirOption = None,
-
     # Additional args for validation
     version_file: VersionFileAdditionalOption = None,
     check_cz: CheckCzAdditionalOption = None,
 ):
     """
-Create a commit
+    Create a commit
 
-📝 [bold cyan]Create a structured commit[/bold cyan]
+    📝 [bold cyan]Create a structured commit[/bold cyan]
 
-Create a Git commit using Custy's commit workflow and configured commit message template.
+    Create a Git commit using Custy's commit workflow and configured commit message template.
 
-Supports automatic staging, Commitizen validation, backup integration, and project-aware versioning workflows.
+    Supports automatic staging, Commitizen validation, backup integration, and project-aware versioning workflows.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧩 [bold]What this command does:[/bold]
+    🧩 [bold]What this command does:[/bold]
 
-  • Load commit template
+      • Load commit template
 
-  • Optionally stage files
+      • Optionally stage files
 
-  • Validate commit content
+      • Validate commit content
 
-  • Create Git commit
+      • Create Git commit
 
-  • Integrate with Custy workflows
+      • Integrate with Custy workflows
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧪 [bold]Examples:[/bold]
+    🧪 [bold]Examples:[/bold]
 
-  [yellow]custy commit[/yellow]
-    Create a commit using the configured template.
+      [yellow]custy commit[/yellow]
+        Create a commit using the configured template.
 
-  [yellow]custy commit --auto-stage[/yellow]
-    Stage files automatically before committing.
+      [yellow]custy commit --auto-stage[/yellow]
+        Stage files automatically before committing.
 
-  [yellow]custy commit --stage-mode update[/yellow]
-    Stage modified files only.
+      [yellow]custy commit --stage-mode update[/yellow]
+        Stage modified files only.
 
-  [yellow]custy commit --allow-empty-commit[/yellow]
-    Create an empty commit when necessary.
+      [yellow]custy commit --allow-empty-commit[/yellow]
+        Create an empty commit when necessary.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options:[/bold]
+    🌐 [bold]Global Options:[/bold]
 
-  [yellow]custy --dry-run commit[/yellow]
-    Inspect prerequisites and preview generated files, staging, and
-    commit creation without modifying the project or Git repository.
+      [yellow]custy --dry-run commit[/yellow]
+        Inspect prerequisites and preview generated files, staging, and
+        commit creation without modifying the project or Git repository.
 
-  [yellow]custy --debug commit[/yellow]
+      [yellow]custy --debug commit[/yellow]
 
-  [yellow]custy --log-level debug commit[/yellow]
+      [yellow]custy --log-level debug commit[/yellow]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Recommended Usage:[/bold]
+    💡 [bold]Recommended Usage:[/bold]
 
-Use this command when:
+    Use this command when:
 
-  • Creating individual commits
-  • Testing commit templates
-  • Building custom workflows
+      • Creating individual commits
+      • Testing commit templates
+      • Building custom workflows
 
-For complete workflows:
+    For complete workflows:
 
-  custy run release
+      custy run release
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy tag[/cyan]
+      [cyan]custy tag[/cyan]
 
-  [cyan]custy run commit[/cyan]
+      [cyan]custy run commit[/cyan]
 
-  [cyan]custy run release[/cyan]
-"""
+      [cyan]custy run release[/cyan]
+    """
     config = get_config()
 
     # REQUIRED defaults
@@ -232,14 +232,11 @@ For complete workflows:
         force_commit=force_commit,
         auto_stage=auto_stage,
         stage_mode=stage_mode,
-
         # Additional args for Generating release artifacts
         strategy=strategy,
-
         # Additional args for validation
         version_file=version_file,
         check_cz=check_cz,
-
         # Backup Dir Path
         commit_message_backup_dir=commit_message_backup_dir,
     )
@@ -261,6 +258,7 @@ For complete workflows:
     # _run_pipeline(app_ctx, ["commit"])
     _run_pipeline(combined_args, ["commit"])
 
+
 def tag(
     ctx: typer.Context,
     tag_message_file: TagMessageFileOption = None,
@@ -276,101 +274,100 @@ def tag(
     epoch: EpochOption = None,
     skip_check: SkipChecksOption = None,
     force_tag: ForceTagOption = None,
-
     # Backup Dir Path
     tag_message_backup_dir: TagMessageBackupDirOption = None,
 ):
     """
-Create a version tag
+    Create a version tag
 
-🏷️ [bold cyan]Create a version tag[/bold cyan]
+    🏷️ [bold cyan]Create a version tag[/bold cyan]
 
-Generate and create version tags using Custy's versioning engine.
+    Generate and create version tags using Custy's versioning engine.
 
-Supports automatic strategy detection, SemVer, PEP 440, Commitizen, date-based versions, Git-count versions, and release modifiers.
+    Supports automatic strategy detection, SemVer, PEP 440, Commitizen, date-based versions, Git-count versions, and release modifiers.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧩 [bold]Supported Strategies:[/bold]
+    🧩 [bold]Supported Strategies:[/bold]
 
-  • semver
+      • semver
 
-  • pep440
+      • pep440
 
-  • commitizen
+      • commitizen
 
-  • date
+      • date
 
-  • gitcount
+      • gitcount
 
-[dim]Project strategy is automatically detected when possible.[/dim]
+    [dim]Project strategy is automatically detected when possible.[/dim]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧩 [bold]What this command does:[/bold]
+    🧩 [bold]What this command does:[/bold]
 
-  • Determine next version
+      • Determine next version
 
-  • Update version files
+      • Update version files
 
-  • Generate tag messages
+      • Generate tag messages
 
-  • Create Git tags
+      • Create Git tags
 
-  • Integrate with release workflows
+      • Integrate with release workflows
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧪 [bold]Examples:[/bold]
+    🧪 [bold]Examples:[/bold]
 
-  [yellow]custy tag[/yellow]
-    Generate the next version automatically.
+      [yellow]custy tag[/yellow]
+        Generate the next version automatically.
 
-  [yellow]custy tag --bump patch[/yellow]
-    Create the next patch release.
+      [yellow]custy tag --bump patch[/yellow]
+        Create the next patch release.
 
-  [yellow]custy tag --bump minor[/yellow]
-    Create the next minor release.
+      [yellow]custy tag --bump minor[/yellow]
+        Create the next minor release.
 
-  [yellow]custy tag --tag v1.2.3[/yellow]
-    Use a specific version.
+      [yellow]custy tag --tag v1.2.3[/yellow]
+        Use a specific version.
 
-  [yellow]custy tag --pre beta[/yellow]
-    Create a beta release.
+      [yellow]custy tag --pre beta[/yellow]
+        Create a beta release.
 
-  [yellow]custy tag --strategy pep440[/yellow]
-    Use PEP 440 versioning.
+      [yellow]custy tag --strategy pep440[/yellow]
+        Use PEP 440 versioning.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options:[/bold]
+    🌐 [bold]Global Options:[/bold]
 
-  [yellow]custy --dry-run tag[/yellow]
-    Resolve the intended version and preview related file updates and
-    tag creation without applying them.
+      [yellow]custy --dry-run tag[/yellow]
+        Resolve the intended version and preview related file updates and
+        tag creation without applying them.
 
-  [yellow]custy --debug tag[/yellow]
+      [yellow]custy --debug tag[/yellow]
 
-  [yellow]custy --log-level debug tag[/yellow]
+      [yellow]custy --log-level debug tag[/yellow]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Recommended Usage:[/bold]
+    💡 [bold]Recommended Usage:[/bold]
 
-Most projects should rely on automatic strategy detection.
+    Most projects should rely on automatic strategy detection.
 
-Override strategy only when required.
+    Override strategy only when required.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy version update[/cyan]
+      [cyan]custy version update[/cyan]
 
-  [cyan]custy changelog generate[/cyan]
+      [cyan]custy changelog generate[/cyan]
 
-  [cyan]custy run release[/cyan]
-"""
+      [cyan]custy run release[/cyan]
+    """
     config = get_config()
 
     # REQUIRED defaults
@@ -388,7 +385,6 @@ Override strategy only when required.
         epoch=epoch,
         skip_check=skip_check,
         force_tag=force_tag,
-
         # Backup Dir Path
         tag_message_backup_dir=tag_message_backup_dir,
     )
@@ -420,78 +416,78 @@ def push(
     sync_backup: SyncBackupOption = None,
 ):
     """
-Push changes to remote repositories
+    Push changes to remote repositories
 
-🚀 [bold cyan]Push commits and tags[/bold cyan]
+    🚀 [bold cyan]Push commits and tags[/bold cyan]
 
-Push commits, tags, and release artifacts to one or more Git remotes.
+    Push commits, tags, and release artifacts to one or more Git remotes.
 
-Supports multi-remote workflows, backup remotes, and release synchronization.
+    Supports multi-remote workflows, backup remotes, and release synchronization.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧩 [bold]What this command does:[/bold]
+    🧩 [bold]What this command does:[/bold]
 
-  • Push commits
+      • Push commits
 
-  • Push tags
+      • Push tags
 
-  • Push to selected remotes
+      • Push to selected remotes
 
-  • Synchronize backup remotes
+      • Synchronize backup remotes
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧪 [bold]Examples:[/bold]
+    🧪 [bold]Examples:[/bold]
 
-  [yellow]custy push[/yellow]
-    Push to the default remote.
+      [yellow]custy push[/yellow]
+        Push to the default remote.
 
-  [yellow]custy push --remote origin[/yellow]
-    Push to a specific remote.
+      [yellow]custy push --remote origin[/yellow]
+        Push to a specific remote.
 
-  [yellow]custy push --all-remote[/yellow]
-    Push to all configured remotes.
+      [yellow]custy push --all-remote[/yellow]
+        Push to all configured remotes.
 
-  [yellow]custy push --sync-backup[/yellow]
-    Synchronize backup remotes.
+      [yellow]custy push --sync-backup[/yellow]
+        Synchronize backup remotes.
 
-  [yellow]custy push --skip-tag[/yellow]
-    Skip tag-related push operations.
+      [yellow]custy push --skip-tag[/yellow]
+        Skip tag-related push operations.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options:[/bold]
+    🌐 [bold]Global Options:[/bold]
 
-  [yellow]custy --dry-run push[/yellow]
-    Inspect the current branch and configured remotes, then simulate
-    commit and tag pushes.
+      [yellow]custy --dry-run push[/yellow]
+        Inspect the current branch and configured remotes, then simulate
+        commit and tag pushes.
 
-  [yellow]custy --debug push[/yellow]
+      [yellow]custy --debug push[/yellow]
 
-  [yellow]custy --log-level debug push[/yellow]
+      [yellow]custy --log-level debug push[/yellow]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Recommended Usage:[/bold]
+    💡 [bold]Recommended Usage:[/bold]
 
-Push is normally executed automatically by:
+    Push is normally executed automatically by:
 
-  custy run release
-  custy run full
+      custy run release
+      custy run full
 
-Manual execution is useful for advanced workflows.
+    Manual execution is useful for advanced workflows.
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🔗 [bold]Related Commands:[/bold]
+    🔗 [bold]Related Commands:[/bold]
 
-  [cyan]custy tag[/cyan]
+      [cyan]custy tag[/cyan]
 
-  [cyan]custy run release[/cyan]
+      [cyan]custy run release[/cyan]
 
-  [cyan]custy run full[/cyan]
-"""
+      [cyan]custy run full[/cyan]
+    """
     config = get_config()
 
     # REQUIRED defaults

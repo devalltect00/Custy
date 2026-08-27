@@ -10,7 +10,6 @@ Typer application and that the module-level main() function acts as the
 single CLI entrypoint.
 """
 
-import runpy
 from unittest.mock import MagicMock
 
 from app import __main__
@@ -23,23 +22,23 @@ class TestMain:
     # main()
     # ==========================================================
 
-    def test_main_invokes_typer_application(
+    def test_main_invokes_protected_error_boundary(
         self,
         monkeypatch,
     ):
-        """Invokes the shared Typer application."""
+        """Runs the lazy CLI callback through centralized error handling."""
 
-        app = MagicMock()
+        handler = MagicMock()
 
         monkeypatch.setattr(
             __main__,
-            "app",
-            app,
+            "handle_cli_errors",
+            handler,
         )
 
         __main__.main()
 
-        app.assert_called_once_with()
+        handler.assert_called_once_with(__main__._load_and_run_cli)
 
     # ==========================================================
     # __main__

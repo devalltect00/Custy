@@ -4,7 +4,6 @@
 Tests for staging-related GitService methods.
 """
 
-from pathlib import Path
 from unittest.mock import MagicMock
 
 import pytest

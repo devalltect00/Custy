@@ -10,7 +10,6 @@ from app.cli.constants import completions
 
 
 class TestCompletions:
-
     def test_initialization_modes(self):
         values = completions.completion_initialization_mode()
         assert "all" in values
@@ -20,7 +19,7 @@ class TestCompletions:
         values = completions.completion_commit_message_file()
         assert values == ["templates/custy/commit-message.txt"]
 
-    def test_tag_message_completion(self):
+    def test_tag_message_file_completion(self):
         values = completions.completion_tag_message_file()
         assert values == ["templates/custy/tag-message.txt"]
 
@@ -52,4 +51,4 @@ class TestCompletions:
 
     def test_steps_completion(self):
         values = completions.completion_steps()
-        assert {"commit","tag","push"}.issubset(set(values))
+        assert {"commit", "tag", "push"}.issubset(set(values))

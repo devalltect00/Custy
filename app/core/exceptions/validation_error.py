@@ -25,12 +25,11 @@ Usage:
 """
 
 from dataclasses import dataclass
-from typing import Optional, Dict, Any
+from typing import Any, Optional
 
 from rich.console import Console
 from rich.panel import Panel
 from rich.text import Text
-
 
 console = Console()
 
@@ -69,7 +68,7 @@ class ValidationError(Exception):
     hint: Optional[str] = None
     code: Optional[str] = None
     exit_code: int = 1
-    context: Optional[Dict[str, Any]] = None
+    context: Optional[dict[str, Any]] = None
 
     # =========================================================
     # Core Behavior
@@ -158,7 +157,7 @@ class ValidationError(Exception):
     # =========================================================
     # Serialization
     # =========================================================
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """
         Convert the error into a structured dictionary.
 

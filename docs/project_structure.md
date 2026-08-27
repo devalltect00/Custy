@@ -544,6 +544,7 @@ Common directories include:
 │   │   │   ├── validators.py
 │   │   │   └── versions.py
 │   │   ├── __init__.py
+│   │   ├── error_handler.py
 │   │   └── main.py
 │   ├── config
 │   │   ├── __init__.py
@@ -607,7 +608,8 @@ Common directories include:
 │   │   │   ├── rendering
 │   │   │   │   ├── context.py
 │   │   │   │   ├── jinja_renderer.py
-│   │   │   │   └── renderer.py
+│   │   │   │   ├── renderer.py
+│   │   │   │   └── template_loader.py
 │   │   │   ├── sorting
 │   │   │   │   ├── base.py
 │   │   │   │   └── release_sorter.py
@@ -736,6 +738,8 @@ Common directories include:
 │   │   │   ├── registry.py
 │   │   │   └── step_registry.py
 │   │   ├── project
+│   │   │   ├── __init__.py
+│   │   │   └── detector.py
 │   │   ├── shared
 │   │   │   ├── __init__.py
 │   │   │   ├── exceptions.py
@@ -870,13 +874,17 @@ Common directories include:
 │   │   │   ├── diagrams.md
 │   │   │   └── workflow_engine.md
 │   │   └── make_workflows.md
+│   ├── temp/ ... (collapsed)
 │   ├── badges.md
 │   ├── cli_commands_custy.md
 │   ├── HOW_TO_USE.md
 │   ├── project_structure.md
 │   ├── references.md
 │   ├── TODO.md
-│   └── TODO_tracking_history.md
+│   ├── TODO_tracking_history.md
+│   ├── TODO_tracking_history_v2.0.0-rc.1.md
+│   ├── TODO_tracking_history_v2.0.0.md
+│   └── TODO_tracking_history_v2.1.0.md
 ├── logs/ ... (collapsed)
 ├── make
 │   ├── backups
@@ -1006,6 +1014,7 @@ Common directories include:
 │   │   ├── utils
 │   │   │   ├── test_completion.py
 │   │   │   └── test_validators.py
+│   │   ├── test_error_handler.py
 │   │   └── test_main.py
 │   ├── config
 │   │   ├── test_config_loader.py
@@ -1023,7 +1032,8 @@ Common directories include:
 │   │   │   ├── test_generator.py
 │   │   │   ├── test_processing.py
 │   │   │   ├── test_release_sorter.py
-│   │   │   └── test_rendering.py
+│   │   │   ├── test_rendering.py
+│   │   │   └── test_template_loader.py
 │   │   ├── cleanup
 │   │   │   ├── backups
 │   │   │   └── branch
@@ -1033,6 +1043,7 @@ Common directories include:
 │   │   │       └── test_service.py
 │   │   ├── editor
 │   │   ├── files
+│   │   │   └── test_cross_project_version_updates.py
 │   │   ├── git_ops
 │   │   │   ├── commit
 │   │   │   ├── credentials
@@ -1106,6 +1117,7 @@ Common directories include:
 │   │   │   ├── test_pipeline_runtime.py
 │   │   │   └── test_profiles.py
 │   │   ├── project
+│   │   │   └── test_detector.py
 │   │   └── workflow
 │   │       ├── conftest.py
 │   │       ├── test_workflow_backup.py
@@ -1162,6 +1174,7 @@ Common directories include:
 │   ├── integration
 │   │   ├── test_backup_flow.py
 │   │   ├── test_cleanup_flow.py
+│   │   ├── test_cross_project_startup.py
 │   │   ├── test_dev_flow.py
 │   │   ├── test_init_flow.py
 │   │   ├── test_release_flow.py
@@ -1226,17 +1239,24 @@ Common directories include:
 ├── .projectignore
 ├── AGENTS.md
 ├── CHANGELOG.md
+├── CHANGES FOR THIS ANOTHER.txt
+├── CHANGES FOR THIS.txt
 ├── CONTRIBUTING.md
 ├── docker-compose.dev.yml
 ├── docker-compose.prod.yml
 ├── docker-compose.yml
 ├── Dockerfile
+├── example-command.txt
 ├── LICENSE
 ├── Makefile
+├── NOTES_WHILE_DEVELOPMENT.md
 ├── pyproject.toml
 ├── README.md
 ├── requirements.txt
-└── SECURITY.md
+├── SECURITY.md
+├── temp_todo.md
+├── TODO.md
+└── WHAT_TO_DO.md
 ```
 
 ---
@@ -1250,6 +1270,7 @@ Common directories include:
 | `LICENSE` | Project license information. |
 | `CONTRIBUTING.md` | Guidelines for contributing to the project. |
 | `SECURITY.md` | Security policy and vulnerability reporting instructions. |
+| `TODO.md` | Pending tasks and future improvements. |
 | `AGENTS.md` | Instructions and guidance for AI agents and automation tools. |
 | `pyproject.toml` | Main Python project configuration file. |
 | `requirements.txt` | Python package dependencies. |

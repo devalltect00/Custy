@@ -20,7 +20,6 @@ class DummyAppContext:
 
 
 class TestBackupCommand:
-
     def test_run_backup_pipeline_executes(self, monkeypatch):
         register = MagicMock()
         resolver_inst = MagicMock()
@@ -55,7 +54,11 @@ class TestBackupCommand:
 
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
         monkeypatch.setattr(command, "get_context", MagicMock(return_value=app_ctx))
-        monkeypatch.setattr(command, "resolve_backup_commit_args", MagicMock(return_value=SimpleNamespace()))
+        monkeypatch.setattr(
+            command,
+            "resolve_backup_commit_args",
+            MagicMock(return_value=SimpleNamespace()),
+        )
         run = MagicMock()
         monkeypatch.setattr(command, "_run_backup_pipeline", run)
 
@@ -72,7 +75,11 @@ class TestBackupCommand:
 
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
         monkeypatch.setattr(command, "get_context", MagicMock(return_value=app_ctx))
-        monkeypatch.setattr(command, "resolve_backup_tag_args", MagicMock(return_value=SimpleNamespace()))
+        monkeypatch.setattr(
+            command,
+            "resolve_backup_tag_args",
+            MagicMock(return_value=SimpleNamespace()),
+        )
         run = MagicMock()
         monkeypatch.setattr(command, "_run_backup_pipeline", run)
 
@@ -89,7 +96,11 @@ class TestBackupCommand:
 
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
         monkeypatch.setattr(command, "get_context", MagicMock(return_value=app_ctx))
-        monkeypatch.setattr(command, "resolve_backup_all_args", MagicMock(return_value=SimpleNamespace()))
+        monkeypatch.setattr(
+            command,
+            "resolve_backup_all_args",
+            MagicMock(return_value=SimpleNamespace()),
+        )
         run = MagicMock()
         monkeypatch.setattr(command, "_run_backup_pipeline", run)
 

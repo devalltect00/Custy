@@ -83,10 +83,10 @@ class TestBranchCleanupDisplay:
         assert "Deleted" in message
         assert "Scanned      : 3" in message
         assert "Dry-run mode enabled" not in message
-        assert [
-            entry.args[0]
-            for entry in presentation["printed"].call_args_list
-        ] == ["TABLE", "SUCCESS"]
+        assert [entry.args[0] for entry in presentation["printed"].call_args_list] == [
+            "TABLE",
+            "SUCCESS",
+        ]
 
     def test_show_summary_labels_dry_run_candidates(self, presentation):
         """Preview summaries never imply that branches were deleted."""

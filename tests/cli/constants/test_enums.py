@@ -7,18 +7,17 @@ Unit tests for CLI enums.
 """
 
 from app.cli.constants.enums import (
-    StrategyChoices,
     BumpChoices,
-    StageModeChoices,
-    LogLevelChoices,
     CleanupTypeChoices,
     InitMode,
+    LogLevelChoices,
+    StageModeChoices,
     StepChoices,
+    StrategyChoices,
 )
 
 
 class TestEnums:
-
     def test_strategy_values(self):
         assert StrategyChoices.SEMVER.value == "semver"
         assert StrategyChoices.PEP440.value == "pep440"

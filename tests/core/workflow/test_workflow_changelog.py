@@ -7,7 +7,6 @@ This module verifies changelog generation eligibility,
 dry-run behavior, successful generation, and changelog writing.
 """
 
-
 from unittest.mock import MagicMock
 
 import pytest
@@ -47,7 +46,6 @@ class TestGenerateChangelogIfNeeded:
 
         workflow_engine.changelogGenerator.generate.assert_not_called()
 
-
     def test_dry_run_generates_preview_without_persistent_write(
         self,
         workflow_engine: WorkflowEngine,
@@ -73,7 +71,6 @@ class TestGenerateChangelogIfNeeded:
             path=CHANGELOG_PATH,
         )
 
-
     def test_generates_and_writes_changelog(
         self,
         workflow_engine: WorkflowEngine,
@@ -88,9 +85,7 @@ class TestGenerateChangelogIfNeeded:
             MagicMock(return_value=True),
         )
 
-        workflow_engine.changelogGenerator.generate.return_value = (
-            "# CHANGELOG"
-        )
+        workflow_engine.changelogGenerator.generate.return_value = "# CHANGELOG"
 
         workflow_engine.generate_changelog_if_needed()
 
@@ -100,7 +95,6 @@ class TestGenerateChangelogIfNeeded:
             content="# CHANGELOG",
             path=CHANGELOG_PATH,
         )
-
 
     def test_passes_force_flag(
         self,
@@ -128,7 +122,6 @@ class TestGenerateChangelogIfNeeded:
             force=True,
         )
 
-
     @pytest.mark.parametrize(
         "content",
         [
@@ -137,8 +130,6 @@ class TestGenerateChangelogIfNeeded:
             "## Added\n\n- feature",
         ],
     )
-
-
     def test_forwards_generated_content(
         self,
         workflow_engine: WorkflowEngine,

@@ -1,19 +1,16 @@
 # app/core/dry_run/dry_run.py
 
-import subprocess
 import logging
+import subprocess
 from collections.abc import Callable
+
 # from rich import print as rprint
-
 # from colorama import Fore, Style, init
-
-##### Avoid import this, because the error appear. Errors might be looks like: 
+##### Avoid import this, because the error appear. Errors might be looks like:
 #####   ImportError: cannot import name 'DryRunSupport' from partially initialized module
 #####   'app.core.helper.dry_run' (most likely due to a circular import)
 ##### or something like that
-# from app.utils import setup_logging 
-
-from typing import Union, List
+# from app.utils import setup_logging
 
 # init(autoreset=True)
 # setup_logging(level=logging.INFO)
@@ -21,7 +18,7 @@ from typing import Union, List
 logger = logging.getLogger(__name__)
 
 
-def format_command(command: Union[str, List[str]]) -> str:
+def format_command(command: str | list[str]) -> str:
     """
     Convert command into a clean shell-like string.
     """
@@ -29,24 +26,19 @@ def format_command(command: Union[str, List[str]]) -> str:
         return " ".join(command)
     return command
 
+
 def log_command(command: str):
-    logger.debug(
-        "[primary]cmd[/primary]: [text]%s[/text]",
-        command
-    )
+    logger.debug("[primary]cmd[/primary]: [text]%s[/text]", command)
+
 
 def log_command_with_pointing(command: str):
-    logger.debug(
-        "[pointing]→[/pointing] [text]%s[/text]",
-        command
-    )
+    logger.debug("[pointing]→[/pointing] [text]%s[/text]", command)
+
 
 def log_dry_run(command: str):
     logger.info(
-        "[dry_run](dry-run)[/dry_run] "
-        "[success]✔[/success] "
-        "Simulated: [text]%s[/text]",
-        command
+        "[dry_run](dry-run)[/dry_run] [success]✔[/success] Simulated: [text]%s[/text]",
+        command,
     )
 
 
@@ -76,7 +68,7 @@ class Runner:
 
     def run(
         self,
-        command: Union[str, List[str]],
+        command: str | list[str],
         on_error: Callable[[], None] | None = None,
         *,
         read_only: bool = False,
@@ -137,7 +129,7 @@ class Runner:
 
     def check_output(
         self,
-        command: Union[str, List[str]],
+        command: str | list[str],
         on_error: Callable[[], None] | None = None,
         *,
         read_only: bool = False,

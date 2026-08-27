@@ -83,16 +83,12 @@ class ReleaseMetadata:
                     docs
                     stable
                     template
-        """
+    """
 
     release_type: str | None = None
 
     scope: str | None = None
 
-    classifications: list[str] = field(
-        default_factory=list
-    )
+    classifications: list[str] = field(default_factory=list)
 
-    tags: dict[str, list[str]] = field(
-        default_factory=dict
-    )
+    tags: dict[str, list[str]] = field(default_factory=dict)

@@ -8,14 +8,13 @@ Unit tests for git operation argument models.
 
 from pathlib import Path
 
-from app.cli.commands.git_ops.models import CommitArgs, TagArgs, PushArgs
-from app.cli.constants import StrategyChoices, StageModeChoices, BumpChoices
+from app.cli.commands.git_ops.models import CommitArgs, PushArgs, TagArgs
+from app.cli.constants import BumpChoices, StageModeChoices, StrategyChoices
 
 
 class TestGitOpsModels:
-
     def test_commit_args(self):
-        args=CommitArgs(
+        args = CommitArgs(
             commit_message_file=Path("commit.txt"),
             force_commit=True,
             auto_stage=True,
@@ -27,10 +26,10 @@ class TestGitOpsModels:
         )
         assert args.force_commit is True
         assert args.auto_stage is True
-        assert args.stage_mode==StageModeChoices.ALL
+        assert args.stage_mode == StageModeChoices.ALL
 
     def test_tag_args(self):
-        args=TagArgs(
+        args = TagArgs(
             tag_message_file=Path("tag.txt"),
             version_file=Path("app/__version__.py"),
             strategy=StrategyChoices.PEP440,
@@ -46,17 +45,19 @@ class TestGitOpsModels:
             force_tag=False,
             tag_message_backup_dir=Path("backup"),
         )
-        assert args.tag=="v1.0.0"
+        assert args.tag == "v1.0.0"
 
     def test_push_args(self):
-        args=PushArgs(
+        args = PushArgs(
             all_remote=True,
             remote="origin",
             tag="v1.0.0",
             skip_tag=False,
             sync_backup=True,
         )
-        assert args.remote=="origin"
+        assert args.remote == "origin"
 
     def test_dataclass_equality(self):
-        assert PushArgs(False,None,None,False,False)==PushArgs(False,None,None,False,False)
+        assert PushArgs(False, None, None, False, False) == PushArgs(
+            False, None, None, False, False
+        )

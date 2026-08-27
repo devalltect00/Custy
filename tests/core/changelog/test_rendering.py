@@ -6,7 +6,6 @@ Unit and golden-output tests for changelog rendering.
 
 from pathlib import Path
 
-from app.constants.path import CUSTY_CHANGELOG_J2
 from app.core.changelog.config.models import (
     ChangelogConfig,
     LinksConfig,
@@ -19,6 +18,7 @@ from app.core.changelog.models.metadata import ReleaseMetadata
 from app.core.changelog.models.release import Release
 from app.core.changelog.processing.pipeline import ChangelogProcessingPipeline
 from app.core.changelog.rendering.jinja_renderer import JinjaRenderer
+from app.core.changelog.rendering.template_loader import load_changelog_template
 
 
 def _config() -> ChangelogConfig:
@@ -93,9 +93,7 @@ def test_renders_the_approved_ideal_structure() -> None:
     release = Release(
         version="1.10.6",
         release_date="2025-08-06",
-        compare_url=(
-            "https://github.com/devalltect00/Custy/compare/1.10.5...1.10.6"
-        ),
+        compare_url=("https://github.com/devalltect00/Custy/compare/1.10.5...1.10.6"),
         status="Stable Release",
         summary=(
             "Final release of Custy 1.10.6.\n\n"
@@ -116,14 +114,14 @@ def test_renders_the_approved_ideal_structure() -> None:
         ),
     )
     renderer = JinjaRenderer(
-        template=CUSTY_CHANGELOG_J2.read_text(encoding="utf-8"),
+        template=load_changelog_template(),
         config=config,
     )
 
     rendered = renderer.render(Changelog(releases=[release]))
-    expected = Path(
-        "tests/fixtures/changelog/ideal_output.md"
-    ).read_text(encoding="utf-8")
+    expected = Path("tests/fixtures/changelog/ideal_output.md").read_text(
+        encoding="utf-8"
+    )
 
     assert rendered == expected
     assert "    -" not in rendered

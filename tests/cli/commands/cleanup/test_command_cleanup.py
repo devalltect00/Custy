@@ -1,6 +1,5 @@
 # tests/cli/commands/cleanup/test_command_cleanup.py
 
-
 """
 tests/cli/commands/cleanup/test_command.py
 
@@ -27,7 +26,6 @@ class DummyAppContext:
 
 
 class TestCleanupCommand:
-
     def test_run_cleanup_backup_pipeline(self, monkeypatch):
         register = MagicMock()
 
@@ -43,8 +41,12 @@ class TestCleanupCommand:
         engine.build.return_value = MagicMock()
 
         monkeypatch.setattr(command, "register_all_steps", register)
-        monkeypatch.setattr(command, "CommandResolver", MagicMock(return_value=resolver))
-        monkeypatch.setattr(command, "WorkflowEngineBuilder", MagicMock(return_value=engine))
+        monkeypatch.setattr(
+            command, "CommandResolver", MagicMock(return_value=resolver)
+        )
+        monkeypatch.setattr(
+            command, "WorkflowEngineBuilder", MagicMock(return_value=engine)
+        )
         monkeypatch.setattr(command, "PipelineBuilder", MagicMock(return_value=builder))
 
         command._run_cleanup_backup_pipeline(SimpleNamespace(), ["cleanup_backups"])
@@ -56,7 +58,9 @@ class TestCleanupCommand:
 
     def test_backups_command_calls_pipeline(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
-        monkeypatch.setattr(command, "get_context", MagicMock(return_value=DummyAppContext()))
+        monkeypatch.setattr(
+            command, "get_context", MagicMock(return_value=DummyAppContext())
+        )
         resolved_args = CleanupBackupArgs(
             type=CleanupTypeChoices.ALL,
             keep=10,
@@ -78,7 +82,9 @@ class TestCleanupCommand:
 
     def test_branches_command_calls_pipeline(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
-        monkeypatch.setattr(command, "get_context", MagicMock(return_value=DummyAppContext()))
+        monkeypatch.setattr(
+            command, "get_context", MagicMock(return_value=DummyAppContext())
+        )
         monkeypatch.setattr(
             command,
             "resolve_cleanup_branches_args",
@@ -94,7 +100,9 @@ class TestCleanupCommand:
 
     def test_all_command_calls_both_pipelines(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
-        monkeypatch.setattr(command, "get_context", MagicMock(return_value=DummyAppContext()))
+        monkeypatch.setattr(
+            command, "get_context", MagicMock(return_value=DummyAppContext())
+        )
         resolved_args = CleanupAllArgs(
             type=CleanupTypeChoices.ALL,
             keep=10,

@@ -2,14 +2,14 @@
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional
 
 from app.cli.constants.enums import (
-    StrategyChoices,
     BumpChoices,
-    StageModeChoices,
-    LogLevelChoices,
     CleanupTypeChoices,
+    LogLevelChoices,
+    StageModeChoices,
+    StrategyChoices,
 )
 
 
@@ -59,8 +59,8 @@ class WorkflowConfig:
     sync_backup: bool = False
 
     # ===== Remotes =====
-    main_remotes: Optional[List[str]] = None
-    backup_remotes: Optional[List[str]] = None
+    main_remotes: Optional[list[str]] = None
+    backup_remotes: Optional[list[str]] = None
 
     # ===== Backups =====
     commit_message_backup_dir: Optional[Path] = None

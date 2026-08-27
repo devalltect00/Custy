@@ -1,7 +1,8 @@
 # app/core/pipeline/steps/cleanup_backups_step.py
 
-from .base_step import BaseStep
 from app.core.pipeline.decorators.log_step import log_step
+
+from .base_step import BaseStep
 
 
 class CleanupBackupsStep(BaseStep):

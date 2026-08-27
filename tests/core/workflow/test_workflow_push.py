@@ -14,13 +14,11 @@ Covered behaviors include:
 - Backup synchronization
 """
 
-
 from unittest.mock import MagicMock
 
 import pytest
 
 from app.core.workflow.workflow_engine import WorkflowEngine
-
 
 # ==========================================================
 # Push Orchestration

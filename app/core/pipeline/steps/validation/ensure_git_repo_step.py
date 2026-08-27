@@ -1,7 +1,7 @@
 # app/core/pipeline/steps/validation/ensure_git_repo_step.py
 
-from app.core.pipeline.steps.base_step import BaseStep
 from app.core.pipeline.decorators.log_step import log_step
+from app.core.pipeline.steps.base_step import BaseStep
 
 
 class EnsureGitRepoStep(BaseStep):

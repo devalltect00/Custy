@@ -44,9 +44,7 @@ class TestInitializationPresenter:
 
         presenter = InitializationPresenter()
 
-        table = presenter.render(
-            InitializationResult(mode="config")
-        )
+        table = presenter.render(InitializationResult(mode="config"))
 
         assert table.title == "Initialization Summary"
 
@@ -55,9 +53,7 @@ class TestInitializationPresenter:
 
         presenter = InitializationPresenter()
 
-        table = presenter.render(
-            InitializationResult(mode="config")
-        )
+        table = presenter.render(InitializationResult(mode="config"))
 
         assert len(table.columns) == 2
 
@@ -69,9 +65,7 @@ class TestInitializationPresenter:
 
         presenter = InitializationPresenter()
 
-        table = presenter.render(
-            InitializationResult(mode="config")
-        )
+        table = presenter.render(InitializationResult(mode="config"))
 
         assert len(table.rows) == 6
 

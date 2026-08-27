@@ -16,7 +16,7 @@ class VersionType(str, Enum):
     DEV = "dev"
 
     @classmethod
-    def detect(cls, version: str) -> "VersionType":
+    def detect(cls, version: str) -> VersionType:
         """
         Detects the release stage of a version string based on PEP 440 and SemVer conventions.
         Supports:

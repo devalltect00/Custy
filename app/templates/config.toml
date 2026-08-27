@@ -38,10 +38,16 @@
 
 [tool.custy.project]
 
-# Primary source package directory.
+# Primary source directory.
+#
+# Use "auto" to detect common Python, Node.js, and generic
+# repository layouts at command runtime. Automatic detection
+# checks conventional app/ and src/ directories, then safely
+# falls back to the project root.
 #
 # Examples:
 #
+#     auto
 #     app
 #     src
 #     backend
@@ -54,10 +60,10 @@
 #     path resolvers
 #     file generators
 #
-# Custy will verify that the directory
-# exists relative to the project root.
+# Explicit directories are verified relative to the project
+# root. Automatic mode does not require an app/ directory.
 #
-project_source = "app"
+project_source = "auto"
 
 
 # =========================================================
@@ -273,7 +279,7 @@ backups_tag = ".config/custy/templates/backups/tag"
 
 [tool.custy.cli.paths]
 
-# Version file updated during:
+# Version metadata target updated during:
 #
 #     custy version update
 #     custy commit
@@ -281,12 +287,20 @@ backups_tag = ".config/custy/templates/backups/tag"
 #     custy run release
 #     custy run full
 #
+# Use "auto" to detect an existing Python __version__.py,
+# pyproject.toml project version, or package.json version.
+# Projects without supported metadata remain valid and use
+# Git-tag-only versioning unless an explicit file is configured.
+#
 # Examples:
 #
+#     auto
 #     app/__version__.py
 #     src/package/__version__.py
+#     pyproject.toml
+#     package.json
 #
-version_file = "app/__version__.py"
+version_file = "auto"
 
 
 # =========================================================
@@ -1377,7 +1391,7 @@ Ensures main, develop, and backup branches are synchronized.
 #     https://gitlab.com/org/project
 #     https://codeberg.org/org/project
 #
-repository = "https://github.com/devalltect00/Custy"
+repository = "https://github.com/org/project"
 
 
 # =========================================================

@@ -84,10 +84,7 @@ class JinjaRenderer(
             context=context,
         ).strip()
 
-        rendered = "\n".join(
-            line.rstrip()
-            for line in rendered.splitlines()
-        )
+        rendered = "\n".join(line.rstrip() for line in rendered.splitlines())
 
         rendered = re.sub(
             r"\n{3,}",
@@ -96,9 +93,7 @@ class JinjaRenderer(
         )
 
         item_prefix = (
-            " " * self._config.rendering.indent
-            + self._config.rendering.bullet
-            + " "
+            " " * self._config.rendering.indent + self._config.rendering.bullet + " "
         )
         escaped_prefix = re.escape(item_prefix)
 

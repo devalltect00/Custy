@@ -1,16 +1,14 @@
 # app/cli/commands/workflow/options.py
 
+from typing import Annotated, Optional
+
 import typer
 
-from typing import Annotated, Optional
-from pathlib import Path
-
 from app.cli.constants import (
-  LogLevelChoices,
-  completion_tag,
+    LogLevelChoices,
+    completion_tag,
 )
-
-from app.cli.utils import(
+from app.cli.utils import (
     validate_tag,
 )
 
@@ -20,7 +18,8 @@ from app.cli.utils import(
 EnforceOption = Annotated[
     bool,
     typer.Option(
-        "--enforce", "-enf",
+        "--enforce",
+        "-enf",
         help="""
         [bold red]Enforce workflow policies[/bold red]
 
@@ -34,13 +33,14 @@ EnforceOption = Annotated[
 
         [dim yellow]HINT:[/dim yellow]
         Use validation mode first before enabling enforcement.
-        """
+        """,
     ),
 ]
 CheckTransitionOption = Annotated[
     bool,
     typer.Option(
-        "--check_transition", "-ct",
+        "--check_transition",
+        "-ct",
         help="""
         [bold]Validate transitions[/bold]
 
@@ -49,13 +49,14 @@ CheckTransitionOption = Annotated[
         Useful for testing workflow rules and release readiness.
 
         [dim blue]Default:[/dim blue] False
-        """
+        """,
     ),
 ]
 FromBranchOption = Annotated[
     Optional[str],
     typer.Option(
-        "--from-branch", "-fb",
+        "--from-branch",
+        "-fb",
         help="""
         [bold]Source branch override[/bold]
 
@@ -75,7 +76,8 @@ FromBranchOption = Annotated[
 ToBranchOption = Annotated[
     Optional[str],
     typer.Option(
-        "--to-branch", "-tb",
+        "--to-branch",
+        "-tb",
         help="""
         [bold]Target branch override[/bold]
 
@@ -94,7 +96,8 @@ ToBranchOption = Annotated[
 FromTagOption = Annotated[
     Optional[str],
     typer.Option(
-        "--from-tag", "-ft",
+        "--from-tag",
+        "-ft",
         help="""
         [bold]Source version override[/bold]
 
@@ -116,7 +119,8 @@ FromTagOption = Annotated[
 ToTagOption = Annotated[
     Optional[str],
     typer.Option(
-        "--to-tag", "-tt",
+        "--to-tag",
+        "-tt",
         help="""
         [bold]Target version override[/bold]
 
@@ -142,7 +146,8 @@ ToTagOption = Annotated[
 SyncBackupOption = Annotated[
     bool,
     typer.Option(
-        "--sync-backup", "-sb",
+        "--sync-backup",
+        "-sb",
         help="""
         [bold]Synchronize backup remotes[/bold]
 
@@ -164,7 +169,8 @@ SyncBackupOption = Annotated[
 DryRunOption = Annotated[
     bool,
     typer.Option(
-        "--dry-run/--no-dry-run", "-dr/-Dr",
+        "--dry-run/--no-dry-run",
+        "-dr/-Dr",
         help="""
         [bold yellow]Dry run mode[/bold yellow]
 
@@ -178,7 +184,8 @@ DryRunOption = Annotated[
 DebugOption = Annotated[
     bool,
     typer.Option(
-        "--debug/--no-debug", "-dbg/-Dbg",
+        "--debug/--no-debug",
+        "-dbg/-Dbg",
         help="""
         [bold yellow]Debugging mode[/bold yellow]
 
@@ -190,7 +197,8 @@ DebugOption = Annotated[
 LogLevelOption = Annotated[
     LogLevelChoices,
     typer.Option(
-        "--log-level", "-ll",
+        "--log-level",
+        "-ll",
         help="""
         [bold]Logging level[/bold]
 

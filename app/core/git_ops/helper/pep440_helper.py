@@ -25,7 +25,7 @@ Implements VersionHelperBase to provide strategy-specific logic for:
 """
 
 import re
-from typing import Dict, Optional
+from typing import Optional
 
 from .version_helper_base import VersionHelperBase
 
@@ -108,7 +108,6 @@ class PEP440VersionHelper(VersionHelperBase):
         """
         return self._current_tier() or "release"
 
-
     @property
     def is_prerelease(self) -> bool:
         """
@@ -116,14 +115,12 @@ class PEP440VersionHelper(VersionHelperBase):
         """
         return self.current_pre is not None
 
-
     @property
     def is_dev(self) -> bool:
         """
         Whether this version is a development release.
         """
         return self.dev_tag is not None
-
 
     @property
     def is_post(self) -> bool:
@@ -143,11 +140,11 @@ class PEP440VersionHelper(VersionHelperBase):
             (
                 int(self.dev_tag)
                 if self.dev_tag is not None
-                else self.current_pre_num
-                if self.current_pre_num is not None
-                else int(self.post_tag)
-                if self.post_tag is not None
-                else 0
+                else (
+                    self.current_pre_num
+                    if self.current_pre_num is not None
+                    else int(self.post_tag) if self.post_tag is not None else 0
+                )
             ),
         )
 
@@ -386,7 +383,7 @@ class PEP440VersionHelper(VersionHelperBase):
             return "dev"
         return "release"
 
-    def tier_order(self) -> Dict[str, int]:
+    def tier_order(self) -> dict[str, int]:
         return self.TIER_ORDER
 
     def suggest_tag(self, branch: str) -> str:
@@ -455,7 +452,7 @@ class PEP440VersionHelper(VersionHelperBase):
 
     def compare(
         self,
-        other: "PEP440VersionHelper | str",
+        other: PEP440VersionHelper | str,
     ) -> int:
 
         if isinstance(other, str):

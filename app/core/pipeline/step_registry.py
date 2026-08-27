@@ -13,41 +13,37 @@ Importing this module ensures all steps are registered.
 """
 
 from app.core.pipeline.registry import StepRegistry
-
 from app.core.pipeline.steps import (
-    PrepareVersionStep,
-    WorkflowInitStep,
-    PrepareTagMessageStep,
-    GenerateArtifactsStep,
-    EditFilesStep,
-    ValidateEditedStep,
     ApplyVersionStep,
-    GenerateChangelogStep,
+    BackupCommitMessageStep,
     BackupStep,
+    BackupTagMessageStep,
     CleanupBackupsStep,
-    StageStep,
-    CommitStep,
-    TagStep,
-    PushStep,
-    FinalizeWorkflowStep,
-
     CleanupBranchesStep,
-
-    EnsureGitRepoStep,
-    EnsureRemoteExistsStep,
-    EnsureVersionFileStep,
-    EnsureCommitMessageFileStep,
-    EnsureTagMessageFileStep,
-    EnsureStagedChangesStep,
+    CommitStep,
+    EditFilesStep,
     EnsureCommitizenConventionStep,
     EnsureCommitMessageFileExistsStep,
+    EnsureCommitMessageFileStep,
+    EnsureGitRepoStep,
+    EnsureRemoteExistsStep,
+    EnsureStagedChangesStep,
     EnsureTagMessageFileExistsStep,
-
-    BackupCommitMessageStep,
-    BackupTagMessageStep,
-
+    EnsureTagMessageFileStep,
+    EnsureVersionFileStep,
+    FinalizeWorkflowStep,
+    GenerateArtifactsStep,
+    GenerateChangelogStep,
     InitStep,
+    PrepareTagMessageStep,
+    PrepareVersionStep,
+    PushStep,
+    StageStep,
+    TagStep,
+    ValidateEditedStep,
+    WorkflowInitStep,
 )
+
 
 def register_all_steps() -> None:
     """
@@ -81,12 +77,20 @@ def register_all_steps() -> None:
     StepRegistry.register("ensure_git_repo_step", EnsureGitRepoStep)
     StepRegistry.register("ensure_remote_exists_step", EnsureRemoteExistsStep)
     StepRegistry.register("ensure_version_file_step", EnsureVersionFileStep)
-    StepRegistry.register("ensure_commit_message_file_step", EnsureCommitMessageFileStep)
+    StepRegistry.register(
+        "ensure_commit_message_file_step", EnsureCommitMessageFileStep
+    )
     StepRegistry.register("ensure_tag_message_file_step", EnsureTagMessageFileStep)
     StepRegistry.register("ensure_staged_changes_step", EnsureStagedChangesStep)
-    StepRegistry.register("ensure_commitizen_convention_step", EnsureCommitizenConventionStep)
-    StepRegistry.register("ensure_commit_message_file_exists_step", EnsureCommitMessageFileExistsStep)
-    StepRegistry.register("ensure_tag_message_file_exists_step", EnsureTagMessageFileExistsStep)
+    StepRegistry.register(
+        "ensure_commitizen_convention_step", EnsureCommitizenConventionStep
+    )
+    StepRegistry.register(
+        "ensure_commit_message_file_exists_step", EnsureCommitMessageFileExistsStep
+    )
+    StepRegistry.register(
+        "ensure_tag_message_file_exists_step", EnsureTagMessageFileExistsStep
+    )
 
     StepRegistry.register("backup_commit_message_files_step", BackupCommitMessageStep)
     StepRegistry.register("backup_tag_message_files_step", BackupTagMessageStep)

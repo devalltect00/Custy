@@ -10,7 +10,6 @@ from app.cli.constants.args import CliArgs
 
 
 class TestCliArgs:
-
     def test_empty_instance(self):
         args = CliArgs()
 

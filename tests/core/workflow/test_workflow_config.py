@@ -8,18 +8,17 @@ Unit tests for WorkflowConfig.
 
 from pathlib import Path
 
-from app.core.workflow.workflow_config import WorkflowConfig
 from app.cli.constants.enums import (
-    StrategyChoices,
     BumpChoices,
-    StageModeChoices,
-    LogLevelChoices,
     CleanupTypeChoices,
+    LogLevelChoices,
+    StageModeChoices,
+    StrategyChoices,
 )
+from app.core.workflow.workflow_config import WorkflowConfig
 
 
 class TestWorkflowConfig:
-
     def test_defaults(self):
         config = WorkflowConfig()
 

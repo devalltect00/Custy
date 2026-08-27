@@ -1,6 +1,5 @@
 # tests/logging/test_dry_run.py
 
-
 """
 tests/logging/test_dry_run.py
 
@@ -18,7 +17,6 @@ from app.core.dry_run.dry_run import (
 
 
 class TestDryRunHelpers:
-
     def test_format_command_list(self):
         assert format_command(["git", "status"]) == "git status"
 
@@ -27,7 +25,6 @@ class TestDryRunHelpers:
 
 
 class TestRunner:
-
     def test_default_state(self):
         runner = Runner()
 

@@ -1,15 +1,13 @@
 # app/cli/commands/init/options.py
 
+from typing import Annotated
+
 import typer
 
-from typing import Annotated, Optional
-from pathlib import Path
-
-from app.cli.constants.completions import completion_initialization_mode
 from app.cli.constants import (
-  LogLevelChoices,
+    InitMode,
 )
-from app.cli.constants import InitMode
+from app.cli.constants.completions import completion_initialization_mode
 
 # =========================================================
 # 🟢 INITIALIZATION OPTIONS
@@ -18,7 +16,8 @@ ModeOption = Annotated[
     InitMode,
     typer.Option(
         ...,
-        "--mode", "-m",
+        "--mode",
+        "-m",
         help="""
         [bold]Initialization Mode[/bold]
 
@@ -51,7 +50,8 @@ ModeOption = Annotated[
 ForceOption = Annotated[
     bool,
     typer.Option(
-        "--force/--no-force", "-f/-F",
+        "--force/--no-force",
+        "-f/-F",
         help="""
         [bold red]Force Initialization[/bold red]
 
@@ -65,7 +65,8 @@ ForceOption = Annotated[
 AskOption = Annotated[
     bool,
     typer.Option(
-        "--ask", "-a",
+        "--ask",
+        "-a",
         help="""
         [bold yellow]Interactive Mode[/bold yellow]
 

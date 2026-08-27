@@ -9,28 +9,22 @@ Integration tests for the release workflow.
 from unittest.mock import MagicMock
 
 from app.core.pipeline.pipeline import Pipeline
-
-from app.core.pipeline.steps.prepare_version_step import PrepareVersionStep
-from app.core.pipeline.steps.workflow_init_step import WorkflowInitStep
-from app.core.pipeline.steps.prepare_tag_message_step import PrepareTagMessageStep
-
-from app.core.pipeline.steps.generate_artifacts_step import GenerateArtifactsStep
-from app.core.pipeline.steps.edit_files_step import EditFilesStep
-from app.core.pipeline.steps.validate_edited_step import ValidateEditedStep
-
 from app.core.pipeline.steps.apply_version_step import ApplyVersionStep
-from app.core.pipeline.steps.generate_changelog_step import GenerateChangelogStep
-
 from app.core.pipeline.steps.backup_step import BackupStep
-
-from app.core.pipeline.steps.stage_step import StageStep
 from app.core.pipeline.steps.commit_step import CommitStep
-from app.core.pipeline.steps.tag_step import TagStep
-from app.core.pipeline.steps.push_step import PushStep
-
+from app.core.pipeline.steps.edit_files_step import EditFilesStep
 from app.core.pipeline.steps.finalize_workflow_step import (
     FinalizeWorkflowStep,
 )
+from app.core.pipeline.steps.generate_artifacts_step import GenerateArtifactsStep
+from app.core.pipeline.steps.generate_changelog_step import GenerateChangelogStep
+from app.core.pipeline.steps.prepare_tag_message_step import PrepareTagMessageStep
+from app.core.pipeline.steps.prepare_version_step import PrepareVersionStep
+from app.core.pipeline.steps.push_step import PushStep
+from app.core.pipeline.steps.stage_step import StageStep
+from app.core.pipeline.steps.tag_step import TagStep
+from app.core.pipeline.steps.validate_edited_step import ValidateEditedStep
+from app.core.pipeline.steps.workflow_init_step import WorkflowInitStep
 
 
 class TestReleaseFlow:
@@ -46,21 +40,16 @@ class TestReleaseFlow:
                 PrepareVersionStep(),
                 WorkflowInitStep(),
                 PrepareTagMessageStep(),
-
                 GenerateArtifactsStep(),
                 EditFilesStep(),
                 ValidateEditedStep(),
-
                 ApplyVersionStep(),
                 GenerateChangelogStep(),
-
                 BackupStep(),
-
                 StageStep(),
                 CommitStep(),
                 TagStep(),
                 PushStep(),
-
                 FinalizeWorkflowStep(),
             ],
             isVisible=False,

@@ -38,9 +38,7 @@ class TestWorkflowFlow:
 
         pipeline = PipelineBuilder(
             isVisible=False,
-        ).build(
-            CommandResolver().resolve(["release"])
-        )
+        ).build(CommandResolver().resolve(["release"]))
 
         pipeline.run(ctx)
 
@@ -96,9 +94,7 @@ class TestWorkflowFlow:
 
         pipeline = PipelineBuilder(
             isVisible=False,
-        ).build(
-            CommandResolver().resolve(["validate"])
-        )
+        ).build(CommandResolver().resolve(["validate"]))
 
         pipeline.run(ctx)
 
@@ -129,9 +125,7 @@ class TestWorkflowFlow:
 
         pipeline = PipelineBuilder(
             isVisible=False,
-        ).build(
-            CommandResolver().resolve(["dev"])
-        )
+        ).build(CommandResolver().resolve(["dev"]))
 
         pipeline.run(ctx)
 

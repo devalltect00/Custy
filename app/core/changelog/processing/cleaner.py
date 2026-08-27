@@ -98,9 +98,7 @@ class CommitMessageCleaner:
         }
 
         return "\n".join(
-            line
-            for line in message.splitlines()
-            if line.strip() not in separators
+            line for line in message.splitlines() if line.strip() not in separators
         )
 
     def _remove_headers(
@@ -117,7 +115,6 @@ class CommitMessageCleaner:
         lines: list[str] = []
 
         for line in message.splitlines():
-
             stripped = line.lstrip()
 
             if stripped.startswith("#"):
@@ -141,7 +138,6 @@ class CommitMessageCleaner:
         lines: list[str] = []
 
         for line in message.splitlines():
-
             if line.lstrip().startswith("#"):
                 continue
 
@@ -179,14 +175,10 @@ class CommitMessageCleaner:
         lines: list[str] = []
 
         for line in message.splitlines():
-
             stripped = line.strip().lstrip("-*+• ")
             stripped = stripped.replace("**", "")
 
-            if any(
-                stripped.startswith(prefix)
-                for prefix in metadata_prefixes
-            ):
+            if any(stripped.startswith(prefix) for prefix in metadata_prefixes):
                 continue
 
             lines.append(line)
@@ -213,13 +205,9 @@ class CommitMessageCleaner:
         lines: list[str] = []
 
         for line in message.splitlines():
-
             stripped = line.strip()
 
-            if any(
-                stripped.startswith(prefix)
-                for prefix in ignored_prefixes
-            ):
+            if any(stripped.startswith(prefix) for prefix in ignored_prefixes):
                 continue
 
             lines.append(line)
@@ -237,19 +225,12 @@ class CommitMessageCleaner:
         prose when a keyword appears inside a sentence.
         """
 
-        keywords = [
-            keyword
-            for keyword in self.config.remove_keywords
-            if keyword
-        ]
+        keywords = [keyword for keyword in self.config.remove_keywords if keyword]
 
         return "\n".join(
             line
             for line in message.splitlines()
-            if not any(
-                keyword in line
-                for keyword in keywords
-            )
+            if not any(keyword in line for keyword in keywords)
         )
 
     @staticmethod
@@ -265,7 +246,6 @@ class CommitMessageCleaner:
         previous_blank = False
 
         for line in message.splitlines():
-
             blank = not line.strip()
 
             if blank and previous_blank:

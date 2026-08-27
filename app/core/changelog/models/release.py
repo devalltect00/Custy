@@ -110,27 +110,15 @@ class Release:
 
     summary: str | None = None
 
-    promoted_from: list[str] = field(
-        default_factory=list
-    )
+    promoted_from: list[str] = field(default_factory=list)
 
-    groups: list[CommitGroup] = field(
-        default_factory=list
-    )
+    groups: list[CommitGroup] = field(default_factory=list)
 
-    metadata: ReleaseMetadata = field(
-        default_factory=ReleaseMetadata
-    )
+    metadata: ReleaseMetadata = field(default_factory=ReleaseMetadata)
 
-    contributors: list[
-        ReleaseContributor
-    ] = field(
-        default_factory=list
-    )
+    contributors: list[ReleaseContributor] = field(default_factory=list)
 
-    statistics: ReleaseStatistics = field(
-        default_factory=ReleaseStatistics
-    )
+    statistics: ReleaseStatistics = field(default_factory=ReleaseStatistics)
 
     hidden: bool = False
 

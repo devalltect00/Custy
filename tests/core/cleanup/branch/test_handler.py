@@ -64,9 +64,7 @@ class TestInitialization:
             dry_run=True,
             no_debug=True,
         )
-        collaborators["cleanup_cls"].assert_called_once_with(
-            collaborators["git"]
-        )
+        collaborators["cleanup_cls"].assert_called_once_with(collaborators["git"])
         collaborators["display_cls"].assert_called_once_with()
 
 

@@ -1,7 +1,8 @@
 # app/core/pipeline/steps/push_step.py
 
-from .base_step import BaseStep
 from app.core.pipeline.decorators.log_step import log_step
+
+from .base_step import BaseStep
 
 
 class PushStep(BaseStep):

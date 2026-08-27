@@ -1,9 +1,9 @@
 # app/core/git_ops/helper/commitizen.py
 
+import logging
 import re
 import subprocess
 import sys
-import logging
 from pathlib import Path
 
 from app.core.dry_run import DryRunSupport
@@ -93,7 +93,9 @@ class CommitizenHelper(DryRunSupport):
         """
         cz_path = Path(".cz.toml")
         if not cz_path.exists():
-            logger.warning("⚠️ [yellow]Skipping[/yellow] [dim].cz.toml[/dim] update: file not found.")
+            logger.warning(
+                "⚠️ [yellow]Skipping[/yellow] [dim].cz.toml[/dim] update: file not found."
+            )
             return
 
         cleaned_version = new_version.lstrip("v")
@@ -117,13 +119,19 @@ class CommitizenHelper(DryRunSupport):
             )
 
             if count == 0:
-                logger.warning("⚠️ Could not find 'version =' field in [dim].cz.toml[/dim].")
+                logger.warning(
+                    "⚠️ Could not find 'version =' field in [dim].cz.toml[/dim]."
+                )
                 return
 
             cz_path.write_text(new_content)
             # logger.info(f"✅ [green]Updated[/green] [dim].cz.toml[/dim] version to {cleaned_version}")
-            logger.info(f"✅ [dim].cz.toml[/dim] [green]Updated[/green]. Version updated to {cleaned_version}")
+            logger.info(
+                f"✅ [dim].cz.toml[/dim] [green]Updated[/green]. Version updated to {cleaned_version}"
+            )
         except Exception as e:
-            logger.error("❌ [red]ERROR:[red] Failed to update [dim].cz.toml[dim] version.")
+            logger.error(
+                "❌ [red]ERROR:[red] Failed to update [dim].cz.toml[dim] version."
+            )
             print(f"🔍 Detail: {e}")
             sys.exit(1)

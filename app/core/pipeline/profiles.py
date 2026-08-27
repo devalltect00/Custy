@@ -22,30 +22,25 @@ Naming:
 """
 
 PIPELINE_PROFILES = {
-
-    # 🔍 Validation only 
+    # 🔍 Validation only
     # "validate-sub-common": [
     "validate-sub-repo": [
         {"name": "ensure_git_repo_step"},
     ],
-
     "validate-sub-pre-commit": [
         {"name": "ensure_staged_changes_step"},
         {"name": "ensure_commitizen_convention_step"},
         {"name": "ensure_commit_message_file_step"},
         {"name": "ensure_commit_message_file_exists_step"},
     ],
-
     "validate-sub-pre-tag": [
         {"name": "ensure_version_file_step"},
         {"name": "ensure_tag_message_file_step"},
         {"name": "ensure_tag_message_file_exists_step"},
     ],
-
     "validate-sub-pre-push": [
         {"name": "ensure_remote_exists_step"},
     ],
-    
     "validate": [
         {"name": "ensure_git_repo_step"},
         {"name": "ensure_remote_exists_step"},
@@ -57,12 +52,8 @@ PIPELINE_PROFILES = {
         {"name": "ensure_tag_message_file_step"},
         {"name": "ensure_tag_message_file_exists_step"},
     ],
-
     # Changelog
-    "changelog": [
-        {"name": "generate_changelog_step"}
-    ],
-
+    "changelog": [{"name": "generate_changelog_step"}],
     # Apply version update
     "apply_version": [
         {"name": "validate-sub-repo"},
@@ -73,7 +64,6 @@ PIPELINE_PROFILES = {
         {"name": "apply_version_step"},
         # {"name": "changelog"},
     ],
-
     # 🧾 Commit flow (with all required preparation)
     "commit": [
         {"name": "validate-sub-repo"},
@@ -90,7 +80,6 @@ PIPELINE_PROFILES = {
         {"name": "stage_step"},
         {"name": "commit_step"},
     ],
-
     # 🏷️ Tag flow (with version + message preparation)
     "tag": [
         {"name": "validate-sub-repo"},
@@ -105,7 +94,6 @@ PIPELINE_PROFILES = {
         {"name": "cleanup_backup_step"},
         {"name": "tag_step"},
     ],
-
     # 🚀 Push flow (minimal but safe)
     "push": [
         {"name": "validate-sub-repo"},
@@ -113,7 +101,6 @@ PIPELINE_PROFILES = {
         {"name": "workflow_init_step"},
         {"name": "push_step"},
     ],
-
     # ⚡ Dev flow (commit + push)
     "dev": [
         {"name": "validate-sub-repo"},
@@ -129,7 +116,6 @@ PIPELINE_PROFILES = {
         {"name": "commit_step"},
         {"name": "push_step"},
     ],
-
     # 🚀 Full release (complete pipeline)
     "release": [
         {"name": "validate-sub-repo"},
@@ -152,7 +138,6 @@ PIPELINE_PROFILES = {
         {"name": "tag_step"},
         {"name": "push_step"},
     ],
-
     "full": [
         # {"name": "validate"},
         {"name": "validate-sub-repo"},
@@ -176,35 +161,28 @@ PIPELINE_PROFILES = {
         {"name": "push_step"},
         {"name": "finalize_step"},
     ],
-
     # 🗂️ Backup only
     "backup_commit_message": [
         {"name": "backup_commit_message_files_step"},
     ],
-
     "backup_tag_message": [
         {"name": "backup_tag_message_files_step"},
     ],
-
     "backup_all": [
         {"name": "backup_commit_message_files_step"},
         {"name": "backup_tag_message_files_step"},
     ],
-
     # 🧹 Cleanup only
     "cleanup_backups": [
         {"name": "cleanup_backup_step"},
     ],
-
     "cleanup_branches": [
         {"name": "cleanup_branches_step"},
     ],
-
     "cleanup_all": [
         {"name": "cleanup_backup_step"},
         {"name": "cleanup_branches_step"},
     ],
-
     "init": [
         {"name": "Initialization_custy_step"},
     ],
@@ -213,7 +191,6 @@ PIPELINE_PROFILES = {
 STEP_ORDER = {
     # Initialization
     "Initialization_custy_step": 0,
-
     # Validation
     "ensure_git_repo_step": 10,
     "ensure_staged_changes_step": 11,
@@ -224,33 +201,27 @@ STEP_ORDER = {
     "ensure_tag_message_file_step": 16,
     "ensure_tag_message_file_exists_step": 17,
     "ensure_remote_exists_step": 18,
-
     # Preparation
     "prepare_version_step": 30,
     "workflow_init_step": 31,
     "prepare_tag_message_step": 32,
-
     # Generation / Editing
     "generate_artifacts_step": 40,
     "edit_files_step": 41,
     "validate_edited_step": 42,
     "apply_version_step": 43,
     "generate_changelog_step": 44,
-
     # Backup / Cleanup
     "backup_commit_message_files_step": 50,
     "backup_tag_message_files_step": 51,
     "cleanup_backup_step": 52,
-
     # Execution
     "stage_step": 70,
     "commit_step": 71,
     "tag_step": 72,
     "push_step": 73,
-
     # Branches Migrations
     "cleanup_branches_step": 80,
-
     # Finalize
     "finalize_step": 90,
 }

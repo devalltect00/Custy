@@ -17,7 +17,6 @@ Covered behaviors include:
 - Final staged-file validation
 """
 
-
 from unittest.mock import MagicMock
 
 import pytest
@@ -25,7 +24,6 @@ import pytest
 from app.cli.constants.enums import StageModeChoices
 from app.core.exceptions.validation_error import ValidationError
 from app.core.workflow.workflow_engine import WorkflowEngine
-
 
 # ==========================================================
 # Manual / None Modes

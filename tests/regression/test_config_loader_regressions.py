@@ -37,20 +37,26 @@ class TestConfigLoaderRegressions:
     def test_missing_value_returns_default(self):
         loader = ConfigLoader()
 
-        assert loader.get(
-            "does_not_exist",
-            default="hello",
-        ) == "hello"
+        assert (
+            loader.get(
+                "does_not_exist",
+                default="hello",
+            )
+            == "hello"
+        )
 
     def test_missing_nested_value_returns_default(self):
         loader = ConfigLoader()
 
-        assert loader.get(
-            "a",
-            "b",
-            "c",
-            default=123,
-        ) == 123
+        assert (
+            loader.get(
+                "a",
+                "b",
+                "c",
+                default=123,
+            )
+            == 123
+        )
 
     def test_missing_section_returns_empty_dict(self):
         loader = ConfigLoader()

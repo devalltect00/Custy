@@ -1,6 +1,5 @@
 # tests/cli/commands/workflow/test_resolver_workflow.py
 
-
 """
 tests/cli/commands/workflow/test_resolver.py
 
@@ -32,7 +31,6 @@ class DummyCliArgs:
 
 
 class TestWorkflowResolver:
-
     def test_returns_branch_workflow_args(self):
         args = resolver.resolve_workflow_args(
             DummyConfig(),

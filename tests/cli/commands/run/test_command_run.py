@@ -1,6 +1,5 @@
 # tests/cli/commands/run/test_command_run.py
 
-
 """
 tests/cli/commands/run/test_command.py
 
@@ -21,10 +20,11 @@ class DummyAppContext:
 
 
 class TestRunCommand:
-
     def test_run_executes_pipeline(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
-        monkeypatch.setattr(command, "get_context", MagicMock(return_value=DummyAppContext()))
+        monkeypatch.setattr(
+            command, "get_context", MagicMock(return_value=DummyAppContext())
+        )
         monkeypatch.setattr(
             command,
             "resolve_run_args",
@@ -83,7 +83,9 @@ class TestRunCommand:
 
         resolver = MagicMock()
         resolver.resolve.return_value = []
-        monkeypatch.setattr(command, "CommandResolver", MagicMock(return_value=resolver))
+        monkeypatch.setattr(
+            command, "CommandResolver", MagicMock(return_value=resolver)
+        )
 
         engine = MagicMock()
         engine.from_cli_args.return_value = engine

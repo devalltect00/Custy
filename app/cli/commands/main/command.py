@@ -1,34 +1,28 @@
 # app/cli/commands/main/command.py
 
-import typer
-from rich.console import Console
-import typer.rich_utils
-from typer.main import get_command
-from typing import Annotated
-from rich import print as rprint
 import logging
 import sys
 
-from app.theme import theme
-# from app.cli.commands import push, misc
-from app.cli.utils import banner, version_callback
-from app.ui.console import console
-from app.utils import setup_logging
-from app.cli.context.app_context import AppContext, get_context
-from app.cli.constants.args import CliArgs
-from app.config.config_loader import get_config
+import typer
+import typer.rich_utils
 
 from app.cli.commands.main.options import (
-    NoBannerOption,
-    HelpOption,
-    VersionOption,
-    DryRunOption,
     DebugOption,
+    DryRunOption,
+    HelpOption,
     LogLevelOption,
+    NoBannerOption,
+    VersionOption,
 )
 from app.cli.commands.main.resolver import resolve_main_args
+from app.cli.constants.args import CliArgs
+from app.cli.context.app_context import get_context
 
-from app.cli.commands.run import command
+# from app.cli.commands import push, misc
+from app.cli.utils import banner
+from app.config.config_loader import get_config
+from app.utils import setup_logging
+
 
 def main(
     ctx: typer.Context,
@@ -40,155 +34,155 @@ def main(
     log_level: LogLevelOption = None,
 ):
     """
-🚀 [bold cyan]Custy — Release Automation Platform[/bold cyan]
+    🚀 [bold cyan]Custy — Release Automation Platform[/bold cyan]
 
-Automate versioning, changelog generation, release workflows,
-Git operations, project initialization, validation, backups,
-cleanup tasks, and workflow orchestration.
+    Automate versioning, changelog generation, release workflows,
+    Git operations, project initialization, validation, backups,
+    cleanup tasks, and workflow orchestration.
 
-[dim]Built for consistent releases, automation, and developer productivity.[/dim]
+    [dim]Built for consistent releases, automation, and developer productivity.[/dim]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-⚡ [bold]Quick Start[/bold]
+    ⚡ [bold]Quick Start[/bold]
 
-1. Initialize your project
+    1. Initialize your project
 
-   [yellow]custy init[/yellow]
+       [yellow]custy init[/yellow]
 
-2. Validate your setup
+    2. Validate your setup
 
-   [yellow]custy validate[/yellow]
+       [yellow]custy validate[/yellow]
 
-3. Run your first workflow
+    3. Run your first workflow
 
-   [yellow]custy run release[/yellow]
+       [yellow]custy run release[/yellow]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🚀 [bold]Recommended Commands[/bold]
+    🚀 [bold]Recommended Commands[/bold]
 
-[green]custy run dev[/green]
+    [green]custy run dev[/green]
 
-```
-  Daily development workflow
+    ```
+      Daily development workflow
 
-  commit → push
-```
+      commit → push
+    ```
 
-[green]custy run release[/green]
+    [green]custy run release[/green]
 
-```
-  Standard release workflow
+    ```
+      Standard release workflow
 
-  commit → tag → push
-```
+      commit → tag → push
+    ```
 
-[green]custy run full[/green]
+    [green]custy run full[/green]
 
-```
-  Complete release lifecycle
+    ```
+      Complete release lifecycle
 
-  release → changelog → backup → cleanup
-```
+      release → changelog → backup → cleanup
+    ```
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-📦 [bold]Core Commands[/bold]
+    📦 [bold]Core Commands[/bold]
 
-[yellow]custy init[/yellow]
-Initialize configuration, templates, and examples
+    [yellow]custy init[/yellow]
+    Initialize configuration, templates, and examples
 
-[yellow]custy validate[/yellow]
-Validate project readiness
+    [yellow]custy validate[/yellow]
+    Validate project readiness
 
-[yellow]custy commit[/yellow]
-Create a structured commit
+    [yellow]custy commit[/yellow]
+    Create a structured commit
 
-[yellow]custy tag[/yellow]
-Create release tags
+    [yellow]custy tag[/yellow]
+    Create release tags
 
-[yellow]custy push[/yellow]
-Push commits and tags
+    [yellow]custy push[/yellow]
+    Push commits and tags
 
-[yellow]custy run[/yellow]
-Execute workflow pipelines
+    [yellow]custy run[/yellow]
+    Execute workflow pipelines
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🧩 [bold]Release Management[/bold]
+    🧩 [bold]Release Management[/bold]
 
-[yellow]custy version[/yellow]
-Synchronize project versions
+    [yellow]custy version[/yellow]
+    Synchronize project versions
 
-[yellow]custy changelog[/yellow]
-Generate release notes and CHANGELOG.md
+    [yellow]custy changelog[/yellow]
+    Generate release notes and CHANGELOG.md
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🛠️ [bold]Project Maintenance[/bold]
+    🛠️ [bold]Project Maintenance[/bold]
 
-[yellow]custy backup[/yellow]
-Backup message templates
+    [yellow]custy backup[/yellow]
+    Backup message templates
 
-[yellow]custy cleanup[/yellow]
-Remove stale backups and branches
+    [yellow]custy cleanup[/yellow]
+    Remove stale backups and branches
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-⚙️ [bold]Advanced Features[/bold]
+    ⚙️ [bold]Advanced Features[/bold]
 
-[yellow]custy workflow[/yellow]
+    [yellow]custy workflow[/yellow]
 
-```
-  Branch and release workflow management
+    ```
+      Branch and release workflow management
 
-  ⚠ Experimental / Beta
-```
+      ⚠ Experimental / Beta
+    ```
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-🌐 [bold]Global Options[/bold]
+    🌐 [bold]Global Options[/bold]
 
-Global options are specified before commands.
+    Global options are specified before commands.
 
-[yellow]custy --dry-run run release[/yellow]
+    [yellow]custy --dry-run run release[/yellow]
 
-```
-  Preview the workflow without applying its intended project,
-  Git, or remote changes. Read-only discovery may still run.
-```
+    ```
+      Preview the workflow without applying its intended project,
+      Git, or remote changes. Read-only discovery may still run.
+    ```
 
-[yellow]custy --debug commit[/yellow]
+    [yellow]custy --debug commit[/yellow]
 
-[yellow]custy --log-level debug tag[/yellow]
+    [yellow]custy --log-level debug tag[/yellow]
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-❓ [bold]Need Help?[/bold]
+    ❓ [bold]Need Help?[/bold]
 
-View command help:
+    View command help:
 
-```
-  [yellow]custy run --help[/yellow]
+    ```
+      [yellow]custy run --help[/yellow]
 
-  [yellow]custy tag --help[/yellow]
+      [yellow]custy tag --help[/yellow]
 
-  [yellow]custy workflow --help[/yellow]
-```
+      [yellow]custy workflow --help[/yellow]
+    ```
 
-────────────────────────────────────────
+    ────────────────────────────────────────
 
-💡 [bold]Tip[/bold]
+    💡 [bold]Tip[/bold]
 
-Most users should use:
+    Most users should use:
 
-```
-  [green]custy run release[/green]
-```
+    ```
+      [green]custy run release[/green]
+    ```
 
-instead of executing commit, tag, and push manually.
-"""
+    instead of executing commit, tag, and push manually.
+    """
     config = get_config()
 
     # REQUIRED defaults
@@ -246,12 +240,9 @@ instead of executing commit, tag, and push manually.
         # console.print(ctx.get_help())
         typer.echo(ctx.get_help())
         raise typer.Exit(
-            code=1,
+            code=0,
         )
 
     full_command = " ".join(sys.argv[1:])
     logger = logging.getLogger("main")
-    logger.debug(
-        "[cyan]CLI COMMAND[/cyan] | [dim]custy %s[/dim]",
-        full_command
-    )
+    logger.debug("[cyan]CLI COMMAND[/cyan] | [dim]custy %s[/dim]", full_command)

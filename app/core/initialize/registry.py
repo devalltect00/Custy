@@ -1,25 +1,49 @@
 # app/core/initialize/registry.py
 
+from pathlib import Path
+
+from app.config.config_loader import ConfigLoader
 from app.constants.path import (
-    CUSTY_SETTINGS,
     CUSTY_CHANGELOG_J2,
     CUSTY_COMMIT_MESSAGE_TEMPLATE,
+    CUSTY_SETTINGS,
     CUSTY_TAG_MESSAGE_TEMPLATE,
 )
-from app.constants.resolver import (
-    TARGET_PROJECT_SOURCE,
-)
+from app.constants.resolver import resolve_project_layout
 from app.core.initialize.loader import load_template
-from app.core.initialize.models.template_file import TemplateFile
 from app.core.initialize.models.template_dir import TemplateDir
+from app.core.initialize.models.template_file import TemplateFile
 
 
-def detect_version_file():
-    import os
+def detect_version_file(
+    *,
+    root: str | Path | None = None,
+    config: ConfigLoader | None = None,
+) -> str | None:
+    """Select a new Python version module only when one is needed.
 
-    if os.path.exists(TARGET_PROJECT_SOURCE):
-        return f"{TARGET_PROJECT_SOURCE}/__version__.py"
-    return "src/__version__.py"
+    Existing Python or Node.js version metadata is preserved. Node.js and
+    generic projects do not receive a Python ``__version__.py`` file.
+
+    Args:
+        root: Target-project root. Defaults to the current working directory.
+        config: Optional Custy configuration loader.
+
+    Returns:
+        Relative Python version-module path, or ``None`` when no file should
+        be created.
+    """
+
+    layout = resolve_project_layout(config=config, root=root)
+
+    if not layout.is_python or layout.version_target is not None:
+        return None
+
+    target = layout.source_dir / "__version__.py"
+    try:
+        return target.relative_to(layout.root).as_posix()
+    except ValueError:
+        return str(target)
 
 
 class DirRegistry:
@@ -66,9 +90,14 @@ class FileRegistry:
         # =========================
         # VERSION FILE
         # =========================
-        self.version = TemplateFile(
-            target_path=detect_version_file(),
-            content=lambda: load_template("__version__.py"),
+        version_file = detect_version_file()
+        self.version = (
+            TemplateFile(
+                target_path=version_file,
+                content=lambda: load_template("__version__.py"),
+            )
+            if version_file
+            else None
         )
 
         # =========================
@@ -113,7 +142,6 @@ class FileRegistry:
                 target_path=CUSTY_CHANGELOG_J2,
                 content=lambda: load_template("changelog/changelog.j2"),
             ),
-
             # =========================
             # EMPTY FILES
             # =========================
@@ -132,9 +160,13 @@ class FileRegistry:
         # =========================
         # VERSION FILE
         # =========================
+        version_file = detect_version_file()
+        if not version_file:
+            return []
+
         return [
             TemplateFile(
-                target_path=detect_version_file(),
+                target_path=version_file,
                 content=lambda: load_template("__version__.py"),
             )
         ]

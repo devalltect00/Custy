@@ -13,26 +13,24 @@ cleanup workflow.
 
 from datetime import datetime, timedelta
 
+from app.cli.commands.cleanup.models import (
+    CleanupAllArgs,
+    CleanupBackupArgs,
+    CleanupBranchesArgs,
+)
+from app.cli.constants import (
+    CleanupTypeChoices,
+    MergeStatusChoices,
+)
+from app.constants.path import (
+    CUSTY_BACKUP_COMMIT_DIR,
+    CUSTY_BACKUP_TAG_DIR,
+)
 from app.utils.parsing import (
     parse_date,
     parse_duration,
 )
 
-from app.constants.path import (
-  CUSTY_BACKUP_COMMIT_DIR,
-  CUSTY_BACKUP_TAG_DIR,
-)
-
-from app.cli.commands.cleanup.models import (
-  CleanupBackupArgs,
-  CleanupBranchesArgs,
-  CleanupAllArgs,
-)
-
-from app.cli.constants import (
-  CleanupTypeChoices,
-  MergeStatusChoices,
-)
 
 def _resolve_branch_cleanup_filters(
     config,
@@ -84,11 +82,7 @@ def _resolve_branch_cleanup_filters(
         None,
     )
 
-    max_age = (
-        parse_duration(max_age_value)
-        if max_age_value
-        else None
-    )
+    max_age = parse_duration(max_age_value) if max_age_value else None
 
     before_value = config.resolve(
         cli_args.before,
@@ -96,45 +90,40 @@ def _resolve_branch_cleanup_filters(
         None,
     )
 
-    before = (
-        parse_date(before_value)
-        if before_value
-        else None
-    )
+    before = parse_date(before_value) if before_value else None
 
     if max_age is not None and before is not None:
         raise ValueError(
-            (
-                "Cleanup options '--max-age' and '--before' "
-                "cannot be used together."
-            )
+            "Cleanup options '--max-age' and '--before' cannot be used together."
         )
 
     return max_age, before
 
+
 def resolve_cleanup_backup_args(config, cli_args) -> CleanupBackupArgs:
-  return CleanupBackupArgs(
-    type=config.resolve(
-        cli_args.type,
-        ["cli", "cleanup", "backup", "type"],
-        CleanupTypeChoices.ALL,
-    ),
-    keep=config.resolve(
-        cli_args.keep,
-        ["cli", "cleanup", "backup", "keep"],
-        10,
-    ),
-    commit_message_backup_dir=config.resolve(
-        cli_args.commit_message_backup_dir,
-        ["cli", "templates", "directory", "backups_commit"],
-        CUSTY_BACKUP_COMMIT_DIR,
-    ),
-    tag_message_backup_dir=config.resolve(
-        cli_args.tag_message_backup_dir,
-        ["cli", "templates", "directory", "backups_tag"],
-        CUSTY_BACKUP_TAG_DIR,
-    ),
-  )
+    return CleanupBackupArgs(
+        type=config.resolve(
+            cli_args.type,
+            ["cli", "cleanup", "backup", "type"],
+            CleanupTypeChoices.ALL,
+        ),
+        keep=config.resolve(
+            cli_args.keep,
+            ["cli", "cleanup", "backup", "keep"],
+            10,
+        ),
+        commit_message_backup_dir=config.resolve(
+            cli_args.commit_message_backup_dir,
+            ["cli", "templates", "directory", "backups_commit"],
+            CUSTY_BACKUP_COMMIT_DIR,
+        ),
+        tag_message_backup_dir=config.resolve(
+            cli_args.tag_message_backup_dir,
+            ["cli", "templates", "directory", "backups_tag"],
+            CUSTY_BACKUP_TAG_DIR,
+        ),
+    )
+
 
 def resolve_cleanup_branches_args(
     config,
@@ -155,12 +144,12 @@ def resolve_cleanup_branches_args(
     )
 
     return CleanupBranchesArgs(
-        include_prefixes = config.resolve(
+        include_prefixes=config.resolve(
             cli_args.include_prefixes,
             ["cli", "cleanup", "branch", "include_prefixes"],
             [],
         ),
-        merge_status = config.resolve(
+        merge_status=config.resolve(
             cli_args.merge_status,
             ["cli", "cleanup", "branch", "merge_status"],
             MergeStatusChoices.MERGED,
@@ -168,6 +157,7 @@ def resolve_cleanup_branches_args(
         max_age=max_age,
         before=before,
     )
+
 
 def resolve_cleanup_all_args(config, cli_args) -> CleanupAllArgs:
     max_age, before = _resolve_branch_cleanup_filters(
@@ -186,12 +176,12 @@ def resolve_cleanup_all_args(config, cli_args) -> CleanupAllArgs:
             ["cli", "cleanup", "backup", "keep"],
             10,
         ),
-        include_prefixes = config.resolve(
+        include_prefixes=config.resolve(
             cli_args.include_prefixes,
             ["cli", "cleanup", "branch", "include_prefixes"],
             [],
         ),
-        merge_status = config.resolve(
+        merge_status=config.resolve(
             cli_args.merge_status,
             ["cli", "cleanup", "branch", "merge_status"],
             MergeStatusChoices.MERGED,
@@ -208,4 +198,4 @@ def resolve_cleanup_all_args(config, cli_args) -> CleanupAllArgs:
             ["cli", "templates", "directory", "backups_tag"],
             CUSTY_BACKUP_TAG_DIR,
         ),
-  )
+    )

@@ -4,8 +4,10 @@
 
 ##### Type-safe interface (Protocol)
 
-from typing import Protocol, Optional
+from typing import Optional, Protocol
+
 from app.core.git_ops.git.result import CommandResult
+
 
 class IGitCommandExecutor(Protocol):
     """
@@ -200,8 +202,4 @@ class IGitCommandExecutor(Protocol):
         set_upstream: bool = False,
     ) -> CommandResult: ...
 
-    def push_tag(
-        self,
-        remote: str,
-        tag: str
-    ) -> CommandResult: ...
+    def push_tag(self, remote: str, tag: str) -> CommandResult: ...

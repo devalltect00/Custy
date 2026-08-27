@@ -20,7 +20,6 @@ class DummyAppContext:
 
 
 class TestValidateCommand:
-
     def test_validate_executes_pipeline(self, monkeypatch):
         cfg = MagicMock()
         args = MagicMock()
@@ -78,17 +77,23 @@ class TestValidateCommand:
         app_ctx = DummyAppContext()
         monkeypatch.setattr(command, "get_context", MagicMock(return_value=app_ctx))
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
-        monkeypatch.setattr(command, "resolve_validate_args", MagicMock(return_value=SimpleNamespace()))
+        monkeypatch.setattr(
+            command, "resolve_validate_args", MagicMock(return_value=SimpleNamespace())
+        )
         monkeypatch.setattr(command, "register_all_steps", MagicMock())
 
         resolver = MagicMock()
         resolver.resolve.return_value = []
-        monkeypatch.setattr(command, "CommandResolver", MagicMock(return_value=resolver))
+        monkeypatch.setattr(
+            command, "CommandResolver", MagicMock(return_value=resolver)
+        )
 
         wb = MagicMock()
         wb.from_cli_args.return_value = wb
         wb.build.return_value = MagicMock()
-        monkeypatch.setattr(command, "WorkflowEngineBuilder", MagicMock(return_value=wb))
+        monkeypatch.setattr(
+            command, "WorkflowEngineBuilder", MagicMock(return_value=wb)
+        )
 
         pb = MagicMock()
         pb.build.return_value = MagicMock(run=MagicMock())

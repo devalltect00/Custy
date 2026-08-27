@@ -1,6 +1,5 @@
 # tests/cli/commands/git_ops/test_command_git_ops.py
 
-
 """
 tests/cli/commands/git_ops/test_command.py
 
@@ -21,7 +20,6 @@ class DummyAppContext:
 
 
 class TestGitOpsCommand:
-
     def test_run_pipeline_executes(self, monkeypatch):
         monkeypatch.setattr(command, "register_all_steps", MagicMock())
 
@@ -60,8 +58,12 @@ class TestGitOpsCommand:
 
     def test_commit_calls_pipeline(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
-        monkeypatch.setattr(command, "get_context", MagicMock(return_value=DummyAppContext()))
-        monkeypatch.setattr(command, "resolve_commit_args", MagicMock(return_value=SimpleNamespace()))
+        monkeypatch.setattr(
+            command, "get_context", MagicMock(return_value=DummyAppContext())
+        )
+        monkeypatch.setattr(
+            command, "resolve_commit_args", MagicMock(return_value=SimpleNamespace())
+        )
 
         run = MagicMock()
         monkeypatch.setattr(command, "_run_pipeline", run)
@@ -72,8 +74,12 @@ class TestGitOpsCommand:
 
     def test_tag_calls_pipeline(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
-        monkeypatch.setattr(command, "get_context", MagicMock(return_value=DummyAppContext()))
-        monkeypatch.setattr(command, "resolve_tag_args", MagicMock(return_value=SimpleNamespace()))
+        monkeypatch.setattr(
+            command, "get_context", MagicMock(return_value=DummyAppContext())
+        )
+        monkeypatch.setattr(
+            command, "resolve_tag_args", MagicMock(return_value=SimpleNamespace())
+        )
 
         run = MagicMock()
         monkeypatch.setattr(command, "_run_pipeline", run)
@@ -84,8 +90,12 @@ class TestGitOpsCommand:
 
     def test_push_calls_pipeline(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
-        monkeypatch.setattr(command, "get_context", MagicMock(return_value=DummyAppContext()))
-        monkeypatch.setattr(command, "resolve_push_args", MagicMock(return_value=SimpleNamespace()))
+        monkeypatch.setattr(
+            command, "get_context", MagicMock(return_value=DummyAppContext())
+        )
+        monkeypatch.setattr(
+            command, "resolve_push_args", MagicMock(return_value=SimpleNamespace())
+        )
 
         run = MagicMock()
         monkeypatch.setattr(command, "_run_pipeline", run)

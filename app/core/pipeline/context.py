@@ -19,7 +19,7 @@ This context is passed between steps and provides access to:
 This replaces the heavy reliance on self inside GitWorkflowEngine.
 """
 
-from typing import List, Optional
+from typing import Optional
 
 
 class GitContext:
@@ -81,7 +81,7 @@ class GitContext:
         # =========================================================
         self.tag: Optional[str] = None
         self.workflow_case: Optional[str] = None
-        self.files_to_stage: List[str] = []
+        self.files_to_stage: list[str] = []
 
     # =========================================================
     # 🧰 Helpers (optional but useful)
@@ -96,7 +96,7 @@ class GitContext:
         """
         self.tag = tag
 
-    def add_files(self, files: List[str]):
+    def add_files(self, files: list[str]):
         """
         Add files to staging list.
         """

@@ -134,10 +134,7 @@ class TestGetRemoteUrl:
             stdout="https://github.com/user/repo.git\n",
         )
 
-        assert (
-            service.get_remote_url("origin")
-            == "https://github.com/user/repo.git"
-        )
+        assert service.get_remote_url("origin") == "https://github.com/user/repo.git"
 
     def test_failure_returns_none(self, service):
         service.executor.remote_get_url.return_value = CommandResult(

@@ -18,11 +18,11 @@ import pytest
 
 from app.core.initialize.models.template_dir import TemplateDir
 from app.core.initialize.models.template_file import TemplateFile
+from app.core.initialize.services import scaffold_generator
 from app.core.initialize.services.scaffold_generator import (
     InitializationResult,
     ScaffoldGenerator,
 )
-from app.core.initialize.services import scaffold_generator
 
 
 class TestScaffoldGeneratorConstructor:
@@ -340,9 +340,7 @@ class TestCopyPackageDir:
             str(destination),
         )
 
-        assert (
-            destination / "existing.txt"
-        ).read_text(encoding="utf-8") == "original"
+        assert (destination / "existing.txt").read_text(encoding="utf-8") == "original"
         assert (destination / "new.txt").read_text(encoding="utf-8") == "new"
         assert generator.copied_files == 1
         assert generator.skipped_files == 1
@@ -375,9 +373,9 @@ class TestCopyPackageDir:
         generator.copy_package_dir("examples", str(destination))
 
         assert (destination / "root.txt").read_text(encoding="utf-8") == "root"
-        assert (
-            destination / "nested" / "child.txt"
-        ).read_text(encoding="utf-8") == "child"
+        assert (destination / "nested" / "child.txt").read_text(
+            encoding="utf-8"
+        ) == "child"
         assert generator.copied_files == 2
 
     def test_force_overwrites_nested_existing_files(self, tmp_path, monkeypatch):
@@ -418,12 +416,10 @@ class TestCopyPackageDir:
             force=generator.force,
         )
 
-        assert (
-            destination / "root.txt"
-        ).read_text(encoding="utf-8") == "new root"
-        assert (
-            destination / "nested" / "child.txt"
-        ).read_text(encoding="utf-8") == "new child"
+        assert (destination / "root.txt").read_text(encoding="utf-8") == "new root"
+        assert (destination / "nested" / "child.txt").read_text(
+            encoding="utf-8"
+        ) == "new child"
         assert generator.copied_files == 2
         assert generator.skipped_files == 0
 

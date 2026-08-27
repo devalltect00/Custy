@@ -54,8 +54,6 @@ class TagSorterFactory:
         sorter_cls = cls._SORTERS.get(strategy)
 
         if sorter_cls is None:
-            raise ValueError(
-                f"Unsupported tag sorting strategy: {strategy}"
-            )
+            raise ValueError(f"Unsupported tag sorting strategy: {strategy}")
 
         return sorter_cls(**kwargs)

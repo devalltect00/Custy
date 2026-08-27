@@ -9,32 +9,32 @@ Integration tests for the validation workflow.
 from unittest.mock import MagicMock
 
 from app.core.pipeline.pipeline import Pipeline
+from app.core.pipeline.steps.validation.ensure_commit_message_file_exists_step import (
+    EnsureCommitMessageFileExistsStep,
+)
+from app.core.pipeline.steps.validation.ensure_commit_message_file_step import (
+    EnsureCommitMessageFileStep,
+)
+from app.core.pipeline.steps.validation.ensure_commitizen_convention_step import (
+    EnsureCommitizenConventionStep,
+)
 from app.core.pipeline.steps.validation.ensure_git_repo_step import (
     EnsureGitRepoStep,
 )
 from app.core.pipeline.steps.validation.ensure_remote_exists_step import (
     EnsureRemoteExistsStep,
 )
-from app.core.pipeline.steps.validation.ensure_version_file_step import (
-    EnsureVersionFileStep,
+from app.core.pipeline.steps.validation.ensure_staged_changes_step import (
+    EnsureStagedChangesStep,
 )
-from app.core.pipeline.steps.validation.ensure_commit_message_file_step import (
-    EnsureCommitMessageFileStep,
+from app.core.pipeline.steps.validation.ensure_tag_message_file_exists_step import (
+    EnsureTagMessageFileExistsStep,
 )
 from app.core.pipeline.steps.validation.ensure_tag_message_file_step import (
     EnsureTagMessageFileStep,
 )
-from app.core.pipeline.steps.validation.ensure_staged_changes_step import (
-    EnsureStagedChangesStep,
-)
-from app.core.pipeline.steps.validation.ensure_commitizen_convention_step import (
-    EnsureCommitizenConventionStep,
-)
-from app.core.pipeline.steps.validation.ensure_commit_message_file_exists_step import (
-    EnsureCommitMessageFileExistsStep,
-)
-from app.core.pipeline.steps.validation.ensure_tag_message_file_exists_step import (
-    EnsureTagMessageFileExistsStep,
+from app.core.pipeline.steps.validation.ensure_version_file_step import (
+    EnsureVersionFileStep,
 )
 
 

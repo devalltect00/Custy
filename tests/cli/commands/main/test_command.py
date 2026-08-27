@@ -4,9 +4,8 @@
 
 from typer.testing import CliRunner
 
-from app.cli.main import app
 from app.cli.commands.main import command
-
+from app.cli.main import app
 
 runner = CliRunner()
 
@@ -21,6 +20,15 @@ def test_help_exits_successfully():
     """Explicit help renders usage information and reports success."""
 
     result = runner.invoke(app, ["--help", "--no-banner"])
+
+    assert result.exit_code == 0
+    assert "Usage:" in result.output
+
+
+def test_no_subcommand_shows_help_and_exits_successfully():
+    """A discovery invocation is valid and must not look like a failure."""
+
+    result = runner.invoke(app, ["--no-banner"])
 
     assert result.exit_code == 0
     assert "Usage:" in result.output

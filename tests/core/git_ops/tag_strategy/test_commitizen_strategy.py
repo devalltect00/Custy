@@ -105,9 +105,7 @@ class TestCommitizenStrategy:
     ):
         """Delegates tag generation to SemverStrategy."""
 
-        output = (
-            f"bump: version {current} → {next_version}\n"
-        )
+        output = f"bump: version {current} → {next_version}\n"
 
         monkeypatch.setattr(
             commitizen_strategy.subprocess,
@@ -237,7 +235,4 @@ class TestCommitizenStrategy:
 
         assert captured["kwargs"]["text"] is True
 
-        assert (
-            captured["kwargs"]["stderr"]
-            == subprocess.STDOUT
-        )
+        assert captured["kwargs"]["stderr"] == subprocess.STDOUT

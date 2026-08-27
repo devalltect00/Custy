@@ -13,7 +13,6 @@ from app.core.pipeline.profiles import (
 
 
 class TestPipelineProfiles:
-
     def test_required_profiles_exist(self):
         expected = {
             "validate",
@@ -31,7 +30,7 @@ class TestPipelineProfiles:
         assert expected.issubset(PIPELINE_PROFILES)
 
     def test_every_profile_is_non_empty(self):
-        for name, profile in PIPELINE_PROFILES.items():
+        for profile in PIPELINE_PROFILES.values():
             assert isinstance(profile, list)
             assert len(profile) > 0
 

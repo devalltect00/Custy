@@ -159,9 +159,66 @@ Releases = "https://github.com/devalltect00/Custy/releases"
 "GitLab CI" = "https://gitlab.com/devalltects-group/custy/-/pipelines"
 "Container Images" = "https://github.com/devalltect00/Custy/pkgs/container/custy"
 
+[tool.devalltect.github]
+
+# Curated GitHub repository topics are maintained separately from the broader
+# Python package-discovery keywords under [project]. This table stores desired
+# metadata only; applying it to GitHub requires an explicit synchronization.
+topics = [
+    "custy",
+    "git",
+    "git-automation",
+    "release-automation",
+    "release-management",
+    "versioning",
+    "semantic-versioning",
+    "pep440",
+    "changelog",
+    "changelog-generator",
+    "conventional-commits",
+    "project-initialization",
+    "project-validation",
+    "release-pipeline",
+    "multi-remote",
+    "dry-run",
+    "developer-tools",
+    "cli",
+    "python",
+    "devops",
+]
+
+[tool.devalltect.gitlab]
+
+# Curated GitLab project topics are maintained separately from GitHub topics
+# and the broader Python package-discovery keywords under [project]. This table
+# stores desired metadata only; applying it to GitLab requires explicit
+# synchronization. Do not include credentials or other sensitive information.
+topics = [
+    "custy",
+    "git",
+    "git-automation",
+    "release-automation",
+    "release-management",
+    "versioning",
+    "semantic-versioning",
+    "pep440",
+    "changelog",
+    "changelog-generator",
+    "conventional-commits",
+    "project-initialization",
+    "project-validation",
+    "release-pipeline",
+    "multi-remote",
+    "dry-run",
+    "developer-tools",
+    "cli",
+    "python",
+    "devops",
+]
+
 [project.scripts]
 
-custy = "app.cli.main:app"
+custy = "app.__main__:main"
 
 # =========================================================
 # TYPER
@@ -292,7 +349,22 @@ filterwarnings = [
 [tool.black]
 
 line-length = 88
-target-version = ["py311"]
+target-version = ["py314"]
+
+# Preserve inactive migration/reference files even when paths are supplied
+# explicitly by pre-commit, an editor, or a developer command.
+force-exclude = '''
+(
+    /old/
+  | /example_before/
+  | \.deprecated\.py$
+  | \.old[^/]*\.py$
+  | \.dev\.py$
+  | [ _]copy\.py$
+  | _temp\.py$
+  | _temp_before\.py$
+)
+'''
 
 # =========================================================
 # RUFF
@@ -301,7 +373,11 @@ target-version = ["py311"]
 [tool.ruff]
 
 line-length = 88
-target-version = "py311"
+target-version = "py314"
+
+# Respect `exclude` even when pre-commit or another caller supplies file paths
+# explicitly instead of relying on Ruff's recursive file discovery.
+force-exclude = true
 
 exclude = [
     ".git",
@@ -310,6 +386,15 @@ exclude = [
     "__pycache__",
     "build",
     "dist",
+    "**/old/**",
+    "**/example_before/**",
+    "**/*.deprecated.py",
+    "**/*.old*.py",
+    "**/*.dev.py",
+    "**/* copy.py",
+    "**/*_copy.py",
+    "**/*_temp.py",
+    "**/*_temp_before.py",
 ]
 
 # =========================================================
@@ -325,61 +410,15 @@ select = [
     "I",   # isort
     "UP",  # pyupgrade
     "B",   # flake8-bugbear
-
-    # -----------------------------------------------------
-    # Documentation
-    # -----------------------------------------------------
-
-    "D",    # pydocstyle (docstring conventions)
-
-    # -----------------------------------------------------
-    # Type Annotations
-    # -----------------------------------------------------
-
-    "ANN",  # flake8-annotations (type hint enforcement)
-
-    # -----------------------------------------------------
-    # Exceptions
-    # -----------------------------------------------------
-
-    "TRY",  # tryceratops (exception handling best practices)
-
-    # -----------------------------------------------------
-    # Formatting
-    # -----------------------------------------------------
-
-    "COM",  # flake8-commas (trailing comma consistency)
 ]
 
 ignore = [
-    # Docstring rules
-    "D100",    # Missing docstring in module
-    "D103",    # Missing docstring in function
-    "D104",    # Missing docstring in package (__init__.py)
-    "D101",    # Missing docstring in class
-    "D102",    # Missing docstring in method
-    "D105",    # Missing docstring in magic method
-    "D106",    # Missing docstring in nested class
-    "D107",    # Missing docstring in __init__
-    "D212",  # Conflicts with D213 — ignore both to avoid layout noise
-    "D213",  # Conflicts with D212 — ignore both to avoid layout noise
-
-    # Type annotation noise
-    "ANN101",  # Missing type annotation for self
-    "ANN102",  # Missing type annotation for cls
-    "ANN201",  # Missing return type annotation
-
-    # Other common noise
     "E501",    # Line too long
     "INP001",  # Implicit namespace package
     "T201",    # print() found
-    "TRY003",  # Avoid specifying long messages outside exception class
-
     "UP045",    # pyupgrade. Ignore checking for example: 'Optional[str]' -> 'str | None'
-    "COM812",   # flake8-commas. Ignore trailing comma
     "UP042",     # pyupgrade StrEnum suggestion
 ]
-# Example: Ignore specific docstring rule
 
 [tool.ruff.lint.per-file-ignores]
 
@@ -391,9 +430,8 @@ ignore = [
 #
 # Ruff formatter configuration.
 #
-# This project uses Ruff as the primary formatter and linter.
-# Formatting behavior is intentionally aligned with Black
-# where practical while keeping Ruff as the single tool.
+# Ruff provides linting and optional formatting. Black remains supported,
+# and both formatters share the same line-length and target-version policy.
 #
 # =========================================================
 

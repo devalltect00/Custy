@@ -1,16 +1,15 @@
 # app/cli/commands/cleanup/options.py
 
+from pathlib import Path
+from typing import Annotated, Optional
+
 import typer
 
-from typing import Annotated, Optional
-from pathlib import Path
-
 from app.cli.constants import (
-  LogLevelChoices,
-  CleanupTypeChoices,
-  MergeStatusChoices,
-  completion_commit_message_backup_dir,
-  completion_tag_message_backup_dir,
+    CleanupTypeChoices,
+    MergeStatusChoices,
+    completion_commit_message_backup_dir,
+    completion_tag_message_backup_dir,
 )
 
 # ---------------------------
@@ -19,7 +18,8 @@ from app.cli.constants import (
 TypeOption = Annotated[
     list[CleanupTypeChoices],
     typer.Option(
-        "--type", "-t",
+        "--type",
+        "-t",
         help="""
         [bold]Backup type[/bold]
 
@@ -43,7 +43,8 @@ TypeOption = Annotated[
 KeepOption = Annotated[
     Optional[int],
     typer.Option(
-        "--keep", "-k",
+        "--keep",
+        "-k",
         help="""
         [bold]Retention count[/bold]
 
@@ -185,7 +186,8 @@ BeforeOption = Annotated[
 CommitMessageBackupDirOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--backup-commit-dir", "-bcd",
+        "--backup-commit-dir",
+        "-bcd",
         help="""
         [bold]Commit backup directory[/bold]
 
@@ -219,7 +221,8 @@ CommitMessageBackupDirOption = Annotated[
 TagMessageBackupDirOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--backup-tag-dir", "-btd",
+        "--backup-tag-dir",
+        "-btd",
         help="""
         [bold]Tag backup directory[/bold]
 
@@ -253,7 +256,8 @@ TagMessageBackupDirOption = Annotated[
 DryRunOption = Annotated[
     bool,
     typer.Option(
-        "--dry-run/--no-dry-run", "-dr/-Dr",
+        "--dry-run/--no-dry-run",
+        "-dr/-Dr",
         help="""
         [bold yellow]Dry run mode[/bold yellow]
 

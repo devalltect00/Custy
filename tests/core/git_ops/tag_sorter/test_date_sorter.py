@@ -192,6 +192,7 @@ def test_custom_date_format():
         "20241231",
     ]
 
+
 def test_duplicate_dates(
     sorter: DateSorter,
 ):

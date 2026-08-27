@@ -1,30 +1,27 @@
 # app/cli/commands/git_ops/options.py
 
+from pathlib import Path
+from typing import Annotated, Optional
+
 import typer
 
-from typing import Annotated, Optional
-from pathlib import Path
-
 from app.cli.constants import (
-    StrategyChoices,
     BumpChoices,
-    LogLevelChoices,
     StageModeChoices,
-    completion_commit_message_file,
-    completion_tag_message_file,
-    completion_tag,
-    completion_meta,
-    completion_tag_message,
-    completion_version_file,
-    completion_remote_name,
+    StrategyChoices,
     completion_commit_message_backup_dir,
+    completion_commit_message_file,
+    completion_meta,
+    completion_remote_name,
+    completion_tag,
+    completion_tag_message,
     completion_tag_message_backup_dir,
+    completion_tag_message_file,
+    completion_version_file,
 )
-
-from app.cli.utils import(
+from app.cli.utils import (
     validate_tag,
 )
-
 
 # =========================================================
 # 🟢 COMMIT OPTIONS
@@ -32,7 +29,8 @@ from app.cli.utils import(
 CheckCzOption = Annotated[
     bool,
     typer.Option(
-        "--check-cz", "-cz",
+        "--check-cz",
+        "-cz",
         help="""
         [bold]Commitizen Validation[/bold]
 
@@ -59,7 +57,8 @@ CheckCzOption = Annotated[
 AutoStageOption = Annotated[
     bool,
     typer.Option(
-        "--auto-stage", "-as",
+        "--auto-stage",
+        "-as",
         help="""
         [bold]Auto Stage[/bold]
 
@@ -76,7 +75,8 @@ AutoStageOption = Annotated[
 StageModeOption = Annotated[
     Optional[StageModeChoices],
     typer.Option(
-        "--stage-mode", "-sm",
+        "--stage-mode",
+        "-sm",
         help="""
         [bold]Stage Mode[/bold]
 
@@ -102,7 +102,8 @@ CommitMessageFileOption = Annotated[
     Optional[Path],
     # typer.Argument(
     typer.Option(
-        "--commit-msg-file", "-cmsg",
+        "--commit-msg-file",
+        "-cmsg",
         help="""
         [bold]Commit message template[/bold]
 
@@ -130,7 +131,8 @@ CommitMessageFileOption = Annotated[
 ForceCommitOption = Annotated[
     bool,
     typer.Option(
-        "--allow-empty-commit/--no-allow-empty-commit", "-aec/-Aec",
+        "--allow-empty-commit/--no-allow-empty-commit",
+        "-aec/-Aec",
         help="""
         [bold red]Force commit[/bold red]
 
@@ -147,7 +149,8 @@ ForceCommitOption = Annotated[
 CommitMessageBackupDirOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--backup-commit-dir", "-bcd",
+        "--backup-commit-dir",
+        "-bcd",
         help="""
         [bold]Commit backup directory[/bold]
 
@@ -181,7 +184,8 @@ CommitMessageBackupDirOption = Annotated[
 TagMessageFileOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--tag-msg-file", "-tmsg",
+        "--tag-msg-file",
+        "-tmsg",
         help="""
         [bold]Tag message template[/bold]
 
@@ -209,7 +213,8 @@ TagMessageFileOption = Annotated[
 VersionFileOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--version-file", "-vf",
+        "--version-file",
+        "-vf",
         help="""
         [bold]Version file[/bold]
 
@@ -309,7 +314,7 @@ TagMessageOption = Annotated[
         "--tag-message",
         help="Message for the Git tag [bright_blue]([dim blue]Default:[/dim blue] same as tag name)[/bright_blue]",
         rich_help_panel="Tag • Versioning",
-        autocompletion= completion_tag_message,
+        autocompletion=completion_tag_message,
     ),
 ]
 PreReleaseOption = Annotated[
@@ -356,7 +361,8 @@ EpochOption = Annotated[
 ForceTagOption = Annotated[
     bool,
     typer.Option(
-        "--force-tag/--no-force-tag", "-ft/-Ft",
+        "--force-tag/--no-force-tag",
+        "-ft/-Ft",
         help="""
         [bold red]Force tag creation[/bold red]
 
@@ -383,7 +389,8 @@ SkipChecksOption = Annotated[
 TagMessageBackupDirOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--backup-tag-dir", "-btd",
+        "--backup-tag-dir",
+        "-btd",
         help="""
         [bold]Tag backup directory[/bold]
 
@@ -417,7 +424,8 @@ TagMessageBackupDirOption = Annotated[
 AllRemoteOption = Annotated[
     bool,
     typer.Option(
-        "--all-remote", "-ar",
+        "--all-remote",
+        "-ar",
         help="""
         [bold]Push to all configured remotes.[/bold]
 
@@ -433,12 +441,13 @@ AllRemoteOption = Annotated[
         Better using config.toml configuration.
         """,
         rich_help_panel="Push • Execution",
-),
+    ),
 ]
 RemoteOption = Annotated[
     Optional[str],
     typer.Option(
-        "--remote" , "-r",
+        "--remote",
+        "-r",
         help="""
         [bold]Remote Name[/bold]
 
@@ -453,7 +462,8 @@ RemoteOption = Annotated[
 SkipTagOption = Annotated[
     bool,
     typer.Option(
-        "--skip-tag", "-st",
+        "--skip-tag",
+        "-st",
         help="""
         [bold]Skip Tag[/bold]
 
@@ -470,7 +480,8 @@ SkipTagOption = Annotated[
 SyncBackupOption = Annotated[
     bool,
     typer.Option(
-        "--sync-backup", "-sb",
+        "--sync-backup",
+        "-sb",
         help="""
         [bold]Sync Backup Remote[/bold]
 
@@ -492,7 +503,8 @@ SyncBackupOption = Annotated[
 DryRunOption = Annotated[
     bool,
     typer.Option(
-        "--dry-run/--no-dry-run", "-dr/-Dr",
+        "--dry-run/--no-dry-run",
+        "-dr/-Dr",
         help="""
         [bold yellow]Dry run mode[/bold yellow]
 
@@ -516,7 +528,8 @@ CommitMessageFileAdditionalOption = Annotated[
     Optional[Path],
     # typer.Argument(
     typer.Option(
-        "--commit-msg-file", "-cmsg",
+        "--commit-msg-file",
+        "-cmsg",
         help="""
         [bold](Additional) Commit message template[/bold]
 
@@ -544,7 +557,8 @@ CommitMessageFileAdditionalOption = Annotated[
 TagMessageFileAdditionalOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--tag-msg-file", "-tmsg",
+        "--tag-msg-file",
+        "-tmsg",
         help="""
         [bold](Additional) Tag message template[/bold]
 
@@ -572,7 +586,8 @@ TagMessageFileAdditionalOption = Annotated[
 VersionFileAdditionalOption = Annotated[
     Optional[Path],
     typer.Option(
-        "--version-file", "-vf",
+        "--version-file",
+        "-vf",
         help="""
         [bold](Additional) Version file[/bold]
 
@@ -602,7 +617,8 @@ VersionFileAdditionalOption = Annotated[
 AutoStageAdditionalOption = Annotated[
     bool,
     typer.Option(
-        "--auto-stage", "-as",
+        "--auto-stage",
+        "-as",
         help="""
         [bold](Additional) Auto Stage[/bold]
 
@@ -619,7 +635,8 @@ AutoStageAdditionalOption = Annotated[
 StageModeAdditionalOption = Annotated[
     Optional[StageModeChoices],
     typer.Option(
-        "--stage-mode", "-sm",
+        "--stage-mode",
+        "-sm",
         help="""
         [bold](Additional) Stage Mode[/bold]
 
@@ -644,7 +661,8 @@ StageModeAdditionalOption = Annotated[
 CheckCzAdditionalOption = Annotated[
     bool,
     typer.Option(
-        "--check-cz", "-cz",
+        "--check-cz",
+        "-cz",
         help="""
         [bold](Additional) Commitizen Validation[/bold]
 

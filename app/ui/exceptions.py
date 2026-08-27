@@ -25,6 +25,9 @@ show_error(
 )
 """
 
+from typing import Protocol
+
+from rich.console import RenderableType
 from rich.traceback import install
 
 from app.ui.console import console
@@ -51,3 +54,20 @@ def show_error(
     """
 
     console.print(error_panel(message))
+
+
+class StructuredError(Protocol):
+    """Protocol for exceptions that provide their own Rich rendering."""
+
+    def render(self) -> RenderableType:
+        """Build the Rich representation for the exception."""
+
+
+def show_structured_error(error: StructuredError) -> None:
+    """Display a structured exception through Custy's shared console.
+
+    Args:
+        error: Exception-like object exposing a Rich ``render`` method.
+    """
+
+    console.print(error.render())

@@ -11,7 +11,6 @@ from app.core.dry_run.dry_run_support import DryRunSupport
 
 
 class TestDryRunSupport:
-
     def test_default_runner(self):
         support = DryRunSupport()
 

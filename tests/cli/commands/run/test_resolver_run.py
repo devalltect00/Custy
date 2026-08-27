@@ -1,6 +1,5 @@
 # tests/cli/commands/run/test_resolver_run.py
 
-
 """
 tests/cli/commands/run/test_resolver.py
 
@@ -11,7 +10,7 @@ from pathlib import Path
 
 from app.cli.commands.run import resolver
 from app.cli.commands.run.models import RunArgs
-from app.cli.constants import StrategyChoices, StageModeChoices
+from app.cli.constants import StageModeChoices, StrategyChoices
 
 
 class DummyConfig:
@@ -29,7 +28,6 @@ class DummyCliArgs:
         defaults = {
             # pipeline
             "steps": None,
-
             # commit
             "check_cz": None,
             "auto_stage": None,
@@ -37,7 +35,6 @@ class DummyCliArgs:
             "commit_message_file": None,
             "force_commit": None,
             "commit_message_backup_dir": None,
-
             # tag
             "tag_message_file": None,
             "version_file": None,
@@ -53,7 +50,6 @@ class DummyCliArgs:
             "force_tag": None,
             "skip_check": None,
             "tag_message_backup_dir": None,
-
             # push
             "all_remote": None,
             "remote": None,
@@ -68,7 +64,6 @@ class DummyCliArgs:
 
 
 class TestRunResolver:
-
     def test_returns_run_args(self, monkeypatch):
         monkeypatch.setattr(
             resolver,

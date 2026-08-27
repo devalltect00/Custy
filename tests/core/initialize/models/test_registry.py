@@ -9,9 +9,9 @@ These tests verify that the registry exposes the expected directory and
 template definitions used by the initialization workflow.
 """
 
+from types import SimpleNamespace
 from unittest.mock import MagicMock
 
-import os
 import pytest
 
 from app.core.initialize.models.template_dir import TemplateDir
@@ -26,48 +26,66 @@ from app.core.initialize.registry import (
 class TestDetectVersionFile:
     """Tests for detect_version_file()."""
 
-    def test_returns_target_project_version_file_when_project_source_exists(
+    def test_returns_python_version_file_when_metadata_is_missing(
         self,
         monkeypatch,
+        tmp_path,
     ):
-        """Returns the configured project version file when it exists."""
+        """Creates a version module only for a detected Python project."""
 
-        # monkeypatch.setattr(
-        #     "app.core.initialize.registry.os.path.exists",
-        #     lambda _: True,
-        # )
+        source = tmp_path / "app"
+        source.mkdir()
 
         monkeypatch.setattr(
-            os.path,
-            "exists",
-            lambda _: True,
-        )
-
-        monkeypatch.setattr(
-            "app.core.initialize.registry.TARGET_PROJECT_SOURCE",
-            "app",
+            "app.core.initialize.registry.resolve_project_layout",
+            lambda **_: SimpleNamespace(
+                root=tmp_path,
+                source_dir=source,
+                is_python=True,
+                version_target=None,
+            ),
         )
 
         assert detect_version_file() == "app/__version__.py"
 
-    def test_returns_default_version_file_when_project_source_does_not_exist(
+    def test_returns_none_for_node_or_generic_project(
         self,
         monkeypatch,
+        tmp_path,
     ):
-        """Falls back to the default version file."""
-
-        # monkeypatch.setattr(
-        #     "app.core.initialize.registry.os.path.exists",
-        #     lambda _: False,
-        # )
+        """Does not create Python metadata for a non-Python project."""
 
         monkeypatch.setattr(
-            os.path,
-            "exists",
-            lambda _: False,
+            "app.core.initialize.registry.resolve_project_layout",
+            lambda **_: SimpleNamespace(
+                root=tmp_path,
+                source_dir=tmp_path,
+                is_python=False,
+                version_target=None,
+            ),
         )
 
-        assert detect_version_file() == "src/__version__.py"
+        assert detect_version_file() is None
+
+    def test_returns_none_when_version_metadata_already_exists(
+        self,
+        monkeypatch,
+        tmp_path,
+    ):
+        """Preserves an existing version target during initialization."""
+
+        version_target = tmp_path / "pyproject.toml"
+        monkeypatch.setattr(
+            "app.core.initialize.registry.resolve_project_layout",
+            lambda **_: SimpleNamespace(
+                root=tmp_path,
+                source_dir=tmp_path,
+                is_python=True,
+                version_target=version_target,
+            ),
+        )
+
+        assert detect_version_file() is None
 
 
 class TestDirRegistry:
@@ -97,14 +115,8 @@ class TestDirRegistry:
         directories = DirRegistry.get_examples_directories()
 
         assert ".config/custy/templates/examples" in directories
-        assert (
-            ".config/custy/templates/examples/commit_message"
-            in directories
-        )
-        assert (
-            ".config/custy/templates/examples/tag_message"
-            in directories
-        )
+        assert ".config/custy/templates/examples/commit_message" in directories
+        assert ".config/custy/templates/examples/tag_message" in directories
 
     def test_returns_all_directories(self):
         """Combines every directory registry into a single list."""
@@ -129,7 +141,7 @@ class TestFileRegistry:
         registry = FileRegistry()
 
         assert isinstance(registry.config, TemplateFile)
-        assert isinstance(registry.version, TemplateFile)
+        assert registry.version is None
         assert isinstance(registry.changelog, TemplateFile)
         assert isinstance(registry.commit_message, TemplateFile)
         assert isinstance(registry.tag_message, TemplateFile)
@@ -139,7 +151,7 @@ class TestFileRegistry:
         [
             ("get_config", 1),
             ("get_templates", 3),
-            ("get_version", 1),
+            ("get_version", 0),
             ("get_examples", 1),
         ],
     )
@@ -159,40 +171,28 @@ class TestFileRegistry:
 
         files = FileRegistry.get_config()
 
-        assert all(
-            isinstance(item, TemplateFile)
-            for item in files
-        )
+        assert all(isinstance(item, TemplateFile) for item in files)
 
     def test_get_templates_returns_template_files(self):
         """Returns template file definitions."""
 
         files = FileRegistry.get_templates()
 
-        assert all(
-            isinstance(item, TemplateFile)
-            for item in files
-        )
+        assert all(isinstance(item, TemplateFile) for item in files)
 
     def test_get_version_returns_template_files(self):
-        """Returns version template definitions."""
+        """Does not overwrite existing project version metadata."""
 
         files = FileRegistry.get_version()
 
-        assert all(
-            isinstance(item, TemplateFile)
-            for item in files
-        )
+        assert files == []
 
     def test_get_examples_returns_template_directories(self):
         """Returns example template directories."""
 
         directories = FileRegistry.get_examples()
 
-        assert all(
-            isinstance(item, TemplateDir)
-            for item in directories
-        )
+        assert all(isinstance(item, TemplateDir) for item in directories)
 
     def test_get_all_files_combines_every_registry(
         self,
@@ -233,9 +233,4 @@ class TestFileRegistry:
 
         result = registry.get_all_files()
 
-        assert result == (
-            config
-            + templates
-            + version
-            + examples
-        )
+        assert result == (config + templates + version + examples)

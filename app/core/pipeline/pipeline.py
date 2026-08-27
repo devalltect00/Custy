@@ -36,13 +36,11 @@ Example:
     pipeline.run(ctx)
 """
 
-from typing import List
 import logging
 
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn
-from app.ui.console import console
+from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
 
-from app.cli.constants.enums import LogLevelChoices
+from app.ui.console import console
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +63,7 @@ class Pipeline:
         >>> pipeline.run(context)
     """
 
-    def __init__(self, steps: List, isVisible: bool = True):
+    def __init__(self, steps: list, isVisible: bool = True):
         self.steps = steps
 
         # level = logger.getEffectiveLevel()
@@ -95,11 +93,8 @@ class Pipeline:
             TextColumn("{task.completed}/{task.total}"),
             console=console,
         ) as progress:
-
             task = progress.add_task(
-                "[bold]Executing pipeline...[/bold]",
-                total=total,
-                visible=self.visible
+                "[bold]Executing pipeline...[/bold]", total=total, visible=self.visible
             )
 
             for step in self.steps:
@@ -126,9 +121,7 @@ class Pipeline:
 
             logger.debug("")
 
-            progress.console.print(
-                "[green]✔ Pipeline completed successfully![/green]"
-            )
+            progress.console.print("[green]✔ Pipeline completed successfully![/green]")
 
 
 class SimplePipeline:
@@ -149,7 +142,7 @@ class SimplePipeline:
         >>> pipeline.run(context)
     """
 
-    def __init__(self, steps: List, useCompletedMessage: bool = True):
+    def __init__(self, steps: list, useCompletedMessage: bool = True):
         self.steps = steps
         self.useCompletedMessage = useCompletedMessage
 

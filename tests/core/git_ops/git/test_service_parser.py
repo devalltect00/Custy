@@ -49,9 +49,7 @@ class TestParseCommit:
         """
         Merge commits should be skipped.
         """
-        result = service.parse_commit(
-            "Merge branch 'develop' into main"
-        )
+        result = service.parse_commit("Merge branch 'develop' into main")
 
         assert result == {
             "type": "merge",
@@ -62,9 +60,7 @@ class TestParseCommit:
         """
         Conventional commit without scope.
         """
-        result = service.parse_commit(
-            "feat: add login"
-        )
+        result = service.parse_commit("feat: add login")
 
         assert result["type"] == "feat"
         assert result["scope"] == "general"
@@ -76,9 +72,7 @@ class TestParseCommit:
         """
         Conventional commit with scope.
         """
-        result = service.parse_commit(
-            "fix(auth): validate token"
-        )
+        result = service.parse_commit("fix(auth): validate token")
 
         assert result["type"] == "fix"
         assert result["scope"] == "auth"
@@ -88,9 +82,7 @@ class TestParseCommit:
         """
         Non-conventional commits fall back to 'other'.
         """
-        result = service.parse_commit(
-            "Updated README"
-        )
+        result = service.parse_commit("Updated README")
 
         assert result["type"] == "other"
         assert result["scope"] == "general"
@@ -101,10 +93,7 @@ class TestParseCommit:
         Body should be preserved.
         """
         msg = (
-            "feat(api): add endpoint\n"
-            "\n"
-            "This adds a new endpoint.\n"
-            "Supports pagination."
+            "feat(api): add endpoint\n\nThis adds a new endpoint.\nSupports pagination."
         )
 
         result = service.parse_commit(msg)
@@ -113,10 +102,7 @@ class TestParseCommit:
         assert result["scope"] == "api"
         assert result["subject"] == "add endpoint"
 
-        assert result["body"] == (
-            "This adds a new endpoint.\n"
-            "Supports pagination."
-        )
+        assert result["body"] == ("This adds a new endpoint.\nSupports pagination.")
 
         assert result["raw_body_lines"] == [
             "",
@@ -128,19 +114,10 @@ class TestParseCommit:
         """
         Multiple body lines are preserved.
         """
-        msg = (
-            "docs: update docs\n"
-            "line1\n"
-            "line2\n"
-            "line3"
-        )
+        msg = "docs: update docs\nline1\nline2\nline3"
 
         result = service.parse_commit(msg)
 
-        assert result["body"] == (
-            "line1\n"
-            "line2\n"
-            "line3"
-        )
+        assert result["body"] == ("line1\nline2\nline3")
 
         assert len(result["raw_body_lines"]) == 3

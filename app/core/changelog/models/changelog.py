@@ -24,6 +24,4 @@ class Changelog:
             Ordered releases to render.
     """
 
-    releases: list[Release] = field(
-        default_factory=list
-    )
+    releases: list[Release] = field(default_factory=list)

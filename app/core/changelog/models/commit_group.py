@@ -41,6 +41,4 @@ class CommitGroup:
 
     commit_type: str
 
-    scopes: list[CommitScope] = field(
-        default_factory=list
-    )
+    scopes: list[CommitScope] = field(default_factory=list)

@@ -319,16 +319,16 @@ or render inside Markdown preview tools.
 
 # ✅ What You Now Have
 
-- ✔ Full system design documentation  
-- ✔ Clear pipeline explanation  
-- ✔ Mermaid diagrams (ready to render)  
-- ✔ Separation of manual vs automated steps  
-- ✔ Future-ready structure  
+- ✔ Full system design documentation
+- ✔ Clear pipeline explanation
+- ✔ Mermaid diagrams (ready to render)
+- ✔ Separation of manual vs automated steps
+- ✔ Future-ready structure
 
 ---
 
 If you want next level:
 
-👉 I can generate **actual PNG/SVG diagram exports**  
+👉 I can generate **actual PNG/SVG diagram exports**
 👉 Or convert this into **developer onboarding docs (HOW_TO_USE.md)**
 ```

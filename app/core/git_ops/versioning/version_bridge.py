@@ -46,8 +46,6 @@ class VersionBridge:
         Returns:
             str | None: SemVer string or None if invalid
         """
-        original = tag
-
         tag = tag.lstrip("v")
 
         # Extract build metadata
@@ -62,7 +60,7 @@ class VersionBridge:
             return None
 
         base = match.group(1)
-        rest = tag[len(base):]
+        rest = tag[len(base) :]
 
         result = f"v{base}"
 

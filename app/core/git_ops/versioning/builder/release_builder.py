@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 
 from app.config import load_custy_config
+
 from ..models.release_info import ReleaseInfo
 from ..models.version_type import VersionType
 

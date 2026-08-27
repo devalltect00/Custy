@@ -6,39 +6,24 @@ Main CLI application.
 Entrypoint for Custy.
 """
 
-from app.cli.commands import (
-    main_command,
-    init_command,
-    validate_command,
-    git_ops_command,
-    changelog_command,
-    workflow_command,
-    version_command,
-    backup_command,
-    cleanup_command,
-)
 import typer
-from rich.console import Console
 import typer.rich_utils
-from typer.main import get_command
-from typing import Annotated
-from rich import print as rprint
-import logging
-import sys
 
-from app.theme import theme
-# from app.cli.commands import push, misc
-from app.cli.utils import banner, version_callback
-from app.ui.console import console
-from app.utils import setup_logging
-from app.cli.context.app_context import AppContext, get_context
-from app.cli.constants.args import CliArgs
-from app.config.config_loader import get_config
-
-from .commands.main.options import *
-from .commands.main.resolver import resolve_main_args
-
+from app.cli.commands import (
+    backup_command,
+    changelog_command,
+    cleanup_command,
+    git_ops_command,
+    init_command,
+    main_command,
+    validate_command,
+    version_command,
+    workflow_command,
+)
 from app.cli.commands.run import command
+
+# from app.cli.commands import push, misc
+from app.ui.console import console
 
 typer.rich_utils._console = console
 

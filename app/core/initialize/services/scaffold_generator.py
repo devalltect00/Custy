@@ -72,9 +72,7 @@ class ScaffoldGenerator:
         reason: str,
     ) -> None:
         console.print(
-            f"[yellow]Skipped[/yellow] "
-            f"[cyan]{path}[/cyan] "
-            f"[dim]({reason})[/dim]"
+            f"[yellow]Skipped[/yellow] [cyan]{path}[/cyan] [dim]({reason})[/dim]"
         )
 
     def create_directories(
@@ -149,10 +147,7 @@ class ScaffoldGenerator:
 
         if self.dry_run:
             action = "overwrite" if path.exists() else "create"
-            console.print(
-                "[dry_run](dry-run)[/dry_run] "
-                f"Would {action} {path}"
-            )
+            console.print(f"[dry_run](dry-run)[/dry_run] Would {action} {path}")
             self.created_files += 1
             return
 
@@ -257,10 +252,7 @@ class ScaffoldGenerator:
                 continue
 
             if self.dry_run:
-                console.print(
-                    "[dry_run](dry-run)[/dry_run] "
-                    f"Would copy {target}"
-                )
+                console.print(f"[dry_run](dry-run)[/dry_run] Would copy {target}")
             else:
                 target.parent.mkdir(
                     parents=True,

@@ -8,8 +8,8 @@ Integration tests for profile resolution and pipeline execution.
 
 from unittest.mock import MagicMock
 
-from app.core.pipeline.command_resolver import CommandResolver
 from app.core.pipeline.builder import PipelineBuilder
+from app.core.pipeline.command_resolver import CommandResolver
 
 
 class TestRunProfiles:
@@ -23,9 +23,7 @@ class TestRunProfiles:
         resolver = CommandResolver()
         builder = PipelineBuilder(isVisible=False)
 
-        pipeline = builder.build(
-            resolver.resolve(["validate"])
-        )
+        pipeline = builder.build(resolver.resolve(["validate"]))
 
         pipeline.run(ctx)
 
@@ -39,9 +37,7 @@ class TestRunProfiles:
         resolver = CommandResolver()
         builder = PipelineBuilder(isVisible=False)
 
-        pipeline = builder.build(
-            resolver.resolve(["release"])
-        )
+        pipeline = builder.build(resolver.resolve(["release"]))
 
         pipeline.run(ctx)
 
@@ -56,9 +52,7 @@ class TestRunProfiles:
         resolver = CommandResolver()
         builder = PipelineBuilder(isVisible=False)
 
-        pipeline = builder.build(
-            resolver.resolve(["dev"])
-        )
+        pipeline = builder.build(resolver.resolve(["dev"]))
 
         pipeline.run(ctx)
 

@@ -1,9 +1,6 @@
-<!-- docs/TODO_tracking_history_v2.0.0-rc.1.md -->
+<!-- docs/TODO_tracking_history.md -->
 
-# Custy TODO Tracking History — v2.0.0-rc.1
-
-> Cumulative snapshot for **v2.0.0-rc.1**. Earlier history, unfinished work,
-> considerations, ideas, cancelled items, and notes are intentionally retained.
+# Custy TODO Tracking History
 
 Personal notes, planning, and roadmap for **Custy**
 
@@ -95,90 +92,6 @@ Since v1.10.0
 - [x] fix bug. Bugs: handling errors when the repository detected is new and no commits yet
 - [x] fix little bugs and typo.
 
-## Since v2.0.0-rc.1
-
-### Version context
-
-| Field                 | Value                                                                                                            |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Version               | `v2.0.0-rc.1`                                                                                                    |
-| Previous release line | `1.10.x`                                                                                                         |
-| Release type          | Major release candidate                                                                                          |
-| Version strategy      | Semantic Versioning                                                                                              |
-| Runtime policy        | Python 3.14+                                                                                                     |
-| Purpose               | Validate the redesigned CLI, configuration, pipelines, changelog, and release foundation before stable promotion |
-
-### Completed release-candidate scope
-
-#### CLI and workflows
-
-- [x] Replace the monolithic `argparse` entry point with a Typer and Rich CLI.
-- [x] Add focused `init`, `validate`, `version`, `changelog`, `backup`, `cleanup`, `commit`, `tag`, and `push` commands.
-- [x] Add `custy run dev`, `custy run release`, and `custy run full` profiles plus ordered custom steps.
-- [x] Add global dry-run, debug, logging, progress, summaries, and actionable error output.
-- [x] Keep the workflow-policy command explicitly experimental.
-
-#### Configuration and templates
-
-- [x] Replace `.custor.toml` with `.config/custy/config.toml`.
-- [x] Add CLI → configuration → default resolution across project, Git, workflow, cleanup, logging, and changelog settings.
-- [x] Separate packaged defaults under `app/templates` from project-owned files under `.config/custy`.
-- [x] Support selective initialization and nested template/example copying.
-
-#### Changelog, versioning, and Git
-
-- [x] Rebuild changelog generation around parsing, cleaning, grouping, deduplication, sorting, integration, links, statistics, and Jinja rendering.
-- [x] Add determinate progress for `Unreleased` and every discovered Git tag.
-- [x] Preserve SemVer, PEP 440, Commitizen, date, and Git-count strategies behind focused interfaces.
-- [x] Separate Git execution and service responsibilities with structured results and clearer failures.
-- [x] Add multi-remote behavior, staging modes, annotated tags, message backups, retention cleanup, and protected branch cleanup.
-
-#### Safety and maintainability
-
-- [x] Apply the dry-run contract to initialization, versioning, changelog, backup, cleanup, commit, tag, push, pipelines, and experimental workflows.
-- [x] Allow read-only discovery during dry-run while simulating file, editor, Git, and remote mutations.
-- [x] Separate CLI, core, pipeline, Git, configuration, UI, template, and shared-error responsibilities.
-- [x] Add centralized console and rotating-file logging without exposing secrets.
-
-#### Delivery and documentation
-
-- [x] Add modular Make, Docker, Docker Compose, GitHub Actions, GitLab CI, packaging, and pre-commit workflows.
-- [x] Expand CLI, core, integration, regression, dry-run, changelog, cleanup, logging, and UI tests.
-- [x] Refresh the README and project metadata for the 2.0 command and packaging model.
-- [x] Publish comprehensive English and Indonesian guidance in the Devalltect documentation portal.
-- [x] Prepare distinct internal commit and public tag/release messages for RC.1 and stable 2.0.0.
-
-### Breaking-change checklist
-
-- [x] Document the Python 3.14+ requirement.
-- [x] Document migration from `.custor.toml` to `.config/custy/config.toml`.
-- [x] Document the new command hierarchy and `custy run` profiles.
-- [x] Document replacement cleanup and changelog commands.
-- [x] Document the new template layout, entry point, pipeline model, and internal extension boundaries.
-
-### RC validation and release checklist
-
-- [ ] Validate initialization and configuration migration in a disposable 1.x-style repository.
-- [ ] Run `custy validate` against representative supported projects.
-- [ ] Verify `custy --dry-run run dev` and `custy --dry-run run release` do not mutate project, Git, or remote state.
-- [ ] Validate message templates, changelog output, backup retention, cleanup rules, and configured remotes.
-- [ ] Complete approved tests, coverage, lint, format, package, Make, Docker, Compose, and documentation checks.
-- [ ] Commit, tag, publish, and verify `v2.0.0-rc.1` only with explicit release approval.
-
-### Deferred beyond RC.1
-
-- [ ] Complete stable-release repository cleanup after RC validation.
-- [ ] Incorporate only release-blocking fixes, documentation corrections, and migration clarifications before `v2.0.0`.
-- [ ] Review configured registry image names and destinations before publication.
-- [ ] Keep custom tag-format conversion as future work unless separately approved.
-
-### Notes
-
-- This snapshot records the intended RC scope; it does not prove that Git tags,
-  releases, packages, or container images were published.
-- The rolling `docs/TODO_tracking_history.md` remains the source for broader
-  historical notes and long-term ideas.
-
 Until v2.0.0
 
 - [x] Replaced the former monolithic CLI and workflow responsibilities with separated `app/cli`, `app/core`, `app/ui`, pipeline, Git-service, configuration, and template layers.
@@ -219,7 +132,6 @@ Until v2.0.0
 - [ ] Add conversion support between PEP 440, SemVer, and supported custom tag formats.
 - [ ] Validate configured GitHub and GitLab container image URLs and image names before publication.
 - [ ] Review and update `.pre-commit-config.yaml` so hook versions, Python targets, and validation commands align with the current Custy project. This is planning only; do not update the configuration as part of the current release-planning work.
-- [ ] Add options to push all tags
 
 ---
 

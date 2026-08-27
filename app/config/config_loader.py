@@ -137,8 +137,9 @@ class ConfigLoader:
         path = Path(self.filename)
 
         if not path.exists():
-            logger.warning(
-                "Config file not found: %s",
+            logger.debug(
+                "Custy configuration not found yet: %s. "
+                "Using runtime defaults until the project is initialized.",
                 self.filename,
             )
             return {}
@@ -151,20 +152,12 @@ class ConfigLoader:
 
         except tomllib.TOMLDecodeError as exc:
             raise ConfigurationError(
-                "Invalid TOML format in '%s': %s"
-                % (
-                    self.filename,
-                    exc,
-                )
+                f"Invalid TOML format in '{self.filename}': {exc}"
             ) from exc
 
         except Exception as exc:
             raise ConfigurationError(
-                "Failed to load config '%s': %s"
-                % (
-                    self.filename,
-                    exc,
-                )
+                f"Failed to load config '{self.filename}': {exc}"
             ) from exc
 
     # ---------------------------------------------------------
