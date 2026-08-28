@@ -1,6 +1,6 @@
 # app/core/workflow/workflow_config.py
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
@@ -11,6 +11,7 @@ from app.cli.constants.enums import (
     StageModeChoices,
     StrategyChoices,
 )
+from app.core.editor import EditorSettings
 
 
 @dataclass
@@ -45,6 +46,9 @@ class WorkflowConfig:
     skip_checks: bool = False
     log_level: LogLevelChoices = LogLevelChoices.INFO
 
+    # ===== Editor =====
+    editor_settings: EditorSettings = field(default_factory=EditorSettings)
+
     # ===== Files =====
     version_file: Optional[Path] = None
 
@@ -57,8 +61,13 @@ class WorkflowConfig:
     force_commit: bool = False
     force_changelog: bool = False
     sync_backup: bool = False
+    skip_tag: bool = False
 
     # ===== Remotes =====
+    remote: Optional[str] = None
+    default_remote: str = "origin"
+    all_remote: bool = False
+    push_to: str = "main"
     main_remotes: Optional[list[str]] = None
     backup_remotes: Optional[list[str]] = None
 

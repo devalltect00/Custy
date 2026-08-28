@@ -6,10 +6,12 @@ tests/workflow/test_pipeline_runtime.py
 Unit tests for Pipeline and SimplePipeline runtime.
 """
 
+from contextlib import contextmanager
 from unittest.mock import MagicMock
 
 import pytest
 
+from app.core.pipeline import pipeline as pipeline_module
 from app.core.pipeline.pipeline import Pipeline, SimplePipeline
 
 
@@ -90,3 +92,63 @@ class TestPipelineRuntime:
         ).run(ctx)
 
         assert calls == [ctx, ctx]
+
+    def test_pipeline_suspends_progress_for_exclusive_terminal_step(
+        self,
+        monkeypatch,
+    ):
+        """Releases live progress while an interactive step uses the terminal."""
+
+        events = []
+
+        class InteractiveStep:
+            name = "interactive"
+            requires_exclusive_terminal = True
+
+            def execute(self, context):
+                events.append("execute")
+
+        @contextmanager
+        def fake_suspend_progress(
+            progress,
+            task_id,
+            *,
+            restore_visible,
+        ):
+            events.append(("suspend", restore_visible))
+            yield
+            events.append("resume")
+
+        monkeypatch.setattr(
+            pipeline_module,
+            "suspend_progress",
+            fake_suspend_progress,
+        )
+
+        Pipeline([InteractiveStep()]).run(MagicMock())
+
+        assert events == [
+            ("suspend", True),
+            "execute",
+            "resume",
+        ]
+
+    def test_hidden_pipeline_does_not_suspend_progress(self, monkeypatch):
+        """Avoids unnecessary display lifecycle calls for hidden pipelines."""
+
+        class InteractiveStep:
+            requires_exclusive_terminal = True
+
+            def execute(self, context):
+                return None
+
+        suspend = MagicMock()
+        monkeypatch.setattr(
+            pipeline_module,
+            "suspend_progress",
+            suspend,
+        )
+
+        Pipeline([InteractiveStep()], isVisible=False).run(MagicMock())
+
+        suspend.assert_not_called()

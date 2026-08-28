@@ -11,6 +11,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from app.core.changelog.config.models import LinksConfig
+from app.core.changelog.config.repository import resolve_compare_repository
 from app.core.changelog.generator import ChangelogGenerator
 from app.core.changelog.models.commit import Commit
 
@@ -72,6 +74,76 @@ def test_stable_release_uses_previous_stable_boundary(
         current_index=0,
         previous_index=4,
     ) == ["1.10.6rc4", "1.10.6rc3", "1.10.6b1"]
+
+
+def test_compare_repository_is_normalized() -> None:
+    """Browser URLs are normalized before comparison links are built."""
+
+    repository = resolve_compare_repository(
+        LinksConfig(
+            repository=" https://github.com/devalltect00/Custy.git/ ",
+            enable_compare=True,
+        )
+    )
+
+    assert repository == "https://github.com/devalltect00/Custy"
+
+
+@pytest.mark.parametrize(
+    "repository",
+    [
+        None,
+        "",
+        42,
+        "https://github.com/org/project",
+        "git@github.com:devalltect00/Custy.git",
+        "not a repository URL",
+    ],
+)
+def test_invalid_compare_repository_warns_and_is_skipped(
+    repository: object,
+    caplog,
+) -> None:
+    """Unsafe compare configuration remains non-fatal and actionable."""
+
+    with caplog.at_level("WARNING"):
+        resolved = resolve_compare_repository(
+            LinksConfig(
+                repository=repository,
+                enable_compare=True,
+            )
+        )
+
+    assert resolved is None
+    assert "Changelog comparison links were skipped" in caplog.text
+    assert "tool.custy.changelog.links.repository" in caplog.text
+
+
+def test_disabled_compare_repository_is_silent(caplog) -> None:
+    """An intentionally disabled feature does not emit configuration noise."""
+
+    with caplog.at_level("WARNING"):
+        resolved = resolve_compare_repository(
+            LinksConfig(
+                repository="",
+                enable_compare=False,
+            )
+        )
+
+    assert resolved is None
+    assert "Changelog comparison links were skipped" not in caplog.text
+
+
+def test_build_compare_url_uses_validated_repository(
+    generator: ChangelogGenerator,
+) -> None:
+    """The generator only builds links from the prevalidated browser URL."""
+
+    generator.compare_repository = "https://github.com/devalltect00/Custy"
+
+    assert generator._build_compare_url("v2.0.0", "v2.1.0") == (
+        "https://github.com/devalltect00/Custy/compare/v2.0.0...v2.1.0"
+    )
 
 
 def test_prerelease_uses_adjacent_boundary(

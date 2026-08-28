@@ -253,6 +253,7 @@ def commit(
         dry_run=app_ctx.dry_run,
         debug=app_ctx.debug,
         log_level=app_ctx.log_level,
+        editor_settings=config.get_section("editor"),
     )
 
     # _run_pipeline(app_ctx, ["commit"])
@@ -401,6 +402,7 @@ def tag(
         dry_run=app_ctx.dry_run,
         debug=app_ctx.debug,
         log_level=app_ctx.log_level,
+        editor_settings=config.get_section("editor"),
     )
 
     # _run_pipeline(app_ctx, ["tag"])

@@ -565,6 +565,7 @@ Common directories include:
 │   │   ├── changelog
 │   │   │   ├── config
 │   │   │   │   ├── models.py
+│   │   │   │   ├── repository.py
 │   │   │   │   └── resolver.py
 │   │   │   ├── integration
 │   │   │   │   ├── generation.py
@@ -634,6 +635,9 @@ Common directories include:
 │   │   │   ├── dry_run.py
 │   │   │   └── dry_run_support.py
 │   │   ├── editor
+│   │   │   ├── __init__.py
+│   │   │   ├── service.py
+│   │   │   └── settings.py
 │   │   ├── exceptions
 │   │   │   └── validation_error.py
 │   │   ├── files
@@ -794,6 +798,12 @@ Common directories include:
 │   └── __version__.py
 ├── build/ ... (collapsed)
 ├── dist/ ... (collapsed)
+├── docker
+│   └── editors
+│       ├── micro
+│       │   └── bindings.json
+│       ├── nanorc
+│       └── vimrc
 ├── docs
 │   ├── docs_v1
 │   │   ├── git
@@ -1042,6 +1052,9 @@ Common directories include:
 │   │   │       ├── test_models.py
 │   │   │       └── test_service.py
 │   │   ├── editor
+│   │   │   ├── test_docker_assets.py
+│   │   │   ├── test_service.py
+│   │   │   └── test_settings.py
 │   │   ├── files
 │   │   │   └── test_cross_project_version_updates.py
 │   │   ├── git_ops

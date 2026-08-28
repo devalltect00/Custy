@@ -130,6 +130,12 @@ DOCKER_COMPOSE := $(DOCKER) compose
 DOCKER_TAG := latest
 DOCKER_REPOSITORY := $(APP_NAME)
 
+# Resolve the source version before Docker loses access to .git through
+# .dockerignore. Callers may override CUSTY_BUILD_VERSION explicitly.
+DETECTED_CUSTY_BUILD_VERSION = $(strip $(shell "$(PYTHON)" -m app.core.build.version 2>$(NULL_DEVICE)))
+CUSTY_BUILD_VERSION ?= $(or $(DETECTED_CUSTY_BUILD_VERSION),0.1.0)
+DOCKER_BUILD_VERSION_ARG = --build-arg CUSTY_BUILD_VERSION=$(CUSTY_BUILD_VERSION)
+
 # Docker Images
 DOCKER_IMAGE_BASE := $(APP_NAME)-base:$(DOCKER_TAG)
 DOCKER_IMAGE_DEV := $(APP_NAME)-dev:$(DOCKER_TAG)

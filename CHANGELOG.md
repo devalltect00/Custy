@@ -14,12 +14,12 @@ Unreleased
 
 **Summary**
 
-Add runtime project discovery, ecosystem-aware version metadata
-synchronization, safer initialization, resilient template loading, correct
-message-backup routing, and a protected CLI error boundary. This development
-checkpoint removes the former assumption that every target repository owns an
-`app/` directory or Python version module while improving release-workflow
-reliability ahead of Custy v2.1.0.
+Make commit and tag message editing configurable across local and Docker
+workflows, fix Windows Visual Studio Code launcher handling, and provide a
+predictable terminal-editor experience in the production image. Coordinate
+live pipeline progress with blocking editors so terminal refreshes cannot cover
+the message buffer. This development checkpoint follows the project-layout
+checkpoint and remains part of the unreleased Custy v2.1.0 work.
 
 ### Project Layout Detection
 
@@ -90,9 +90,20 @@ reliability ahead of Custy v2.1.0.
 - Align Ruff and Black configuration with the active source tree while excluding protected historical and temporary reference files.
 - Apply import, formatting, typing, and lint cleanup across active application and test code.
 - Validate the refreshed pre-commit configuration before release.
-- Validate the complete suite with 1,179 passing tests and 82% overall coverage.
-- Confirm `ruff check .`, `black --check .`, and `git diff --check` complete successfully.
 - Validate the rebuilt `custy-prod:latest` image from the Devalltect documentation repository.
+
+#### Editor
+
+- Add unit coverage for configuration parsing, aliases, platform and container precedence, fallback controls, and invalid values.
+- Add unit coverage for resolved executable launching, TTY requirements, dry-run simulation, missing files, and launch failures.
+- Add regression coverage for the Docker editor packages, settings files, and expected key bindings.
+- Add unit coverage for exact tags, release candidates, development versions, post releases, Git commit distance, and missing Git metadata.
+- Add workflow integration coverage proving edit steps delegate correctly in normal and dry-run modes.
+- Add regression coverage for exclusive terminal ownership, hidden task visibility, progress restart, and exception-safe restoration.
+- Validate the complete suite with 1,235 passing tests and 82% overall coverage.
+- Confirm `ruff check .` and `black --check .` complete successfully.
+- Build `custy-prod:latest` and verify it reports the resolved source version.
+- Verify Micro, Nano, Vim, and Vi are present, their bundled settings load, and Custy resolves the intended container priority.
 
 ### 📚 Documentation
 
@@ -100,7 +111,17 @@ reliability ahead of Custy v2.1.0.
 - Explain initialization and versioning behavior for Python, Node.js, mixed, and generic repositories.
 - Add Docker guidance for repositories without an `app/` directory.
 - Add migration and troubleshooting guidance for older explicit path configuration.
-- Keep English and Indonesian Custy documentation behaviorally aligned for v2.1.0.
+
+#### Editor
+
+- Add a complete editor-configuration reference in the English and Indonesian documentation.
+- Document candidate precedence, supported identifiers, aliases, fallback controls, and structured failures.
+- Explain `VISUAL` and `EDITOR` overrides, the Windows `code.cmd` behavior, and the boundary between host and container editors.
+- Document interactive Docker requirements, bundled editors, key bindings, and the recommended `-it` invocation.
+- Add direct Docker build guidance for supplying an explicit Custy package version.
+- Add recovery guidance for failures at `EditFilesStep`, including the boundary between generated artifacts and later Git mutations.
+- Explain expected progress suspension during terminal editing and how to identify an outdated executable or cached image when stale rows remain.
+- Keep the English and Indonesian Custy documentation behaviorally aligned.
 
 ### Compatibility Notes
 
@@ -109,9 +130,67 @@ reliability ahead of Custy v2.1.0.
 - Existing editable installations should be reinstalled after updating source so the generated `custy` console script uses the protected entry point.
 - The experimental status of `custy workflow` is unchanged.
 
+### Configurable Editor Resolution
+
+#### Editor
+
+- Add typed `[tool.custy.editor]` settings with separate Windows, Linux, macOS, and container candidate lists.
+- Support `vscode`, `notepad`, `micro`, `nano`, `vim`, `vi`, and `neovim`, including the `code` and `nvim` aliases.
+- Honor `VISUAL` first and `EDITOR` second when environment precedence is enabled.
+- Resolve configured candidates in list order and use built-in platform defaults only when fallback is enabled.
+- Validate unsupported identifiers and malformed editor configuration with actionable configuration errors.
+- Propagate the resolved editor settings through direct commit/tag commands and supported `custy run` workflows.
+
+### Reliable Local Launching
+
+#### Editor
+
+- Launch the executable path returned by system discovery instead of retrying the unresolved command name.
+- Fix Windows installations where `code` resolves to the `code.cmd` shim and previously fell through to Notepad.
+- Keep subprocess execution shell-free so file paths and editor arguments are not reinterpreted by a command shell.
+- Skip unavailable editors and non-interactive terminal candidates while recording useful diagnostics.
+- Stop with `EDITOR_PROCESS_FAILED` when an editor starts but exits unsuccessfully instead of unexpectedly opening another editor.
+- Preserve dry-run behavior by reporting the selected editor without launching a process.
+- Route workflow message editing through the shared editor service.
+- Hide and stop live pipeline progress while a blocking editor owns the terminal, then restore the same step after the editor exits.
+- Restore progress state through both successful and failed editor handoffs so Micro, Nano, Vim, and Vi buffers remain unobstructed.
+
+### Docker Editor Experience
+
+#### Editor
+
+- Install Micro, Nano, Vim, and Vi in the production-capable image.
+- Prefer Micro for interactive container workflows, followed by Nano, Vim, and Vi.
+- Ship Custy-managed Micro, Nano, and Vim configuration under `/etc/custy/editors`.
+- Provide `Alt+Z` for undo and `Alt+Y` for redo in Micro and Vim while retaining their native bindings.
+- Retain Nano's native `Alt+U` undo and `Alt+E` redo bindings to avoid conflicts with Nano interface shortcuts.
+- Mark the image with `CUSTY_CONTAINER=1` so editor selection does not depend only on runtime filesystem heuristics.
+- Require `docker run -it` when a terminal editor must receive interactive input.
+
+### Docker Runtime And Packaging
+
+#### Editor
+
+- Include Nano in the production-capable base image for interactive message editing with `docker run -it`.
+- Resolve the Custy package version from repository tags and commit distance before building an image.
+- Normalize supported SemVer and PEP 440 Git descriptions into valid Python package versions.
+- Pass the resolved version into Docker and Compose builds through `CUSTY_BUILD_VERSION`.
+- Use setuptools-scm's build-time override so images built without copied `.git` metadata no longer fall back to `0.1.0`.
+- Keep a safe `0.1.0` fallback for source archives or environments where repository metadata cannot be resolved.
+
+### Compatibility And Usage Notes
+
+#### Editor
+
+- Interactive container workflows should continue to use `docker run -it` when Custy must open commit or tag messages.
+- Non-interactive automation must configure a suitable non-interactive editor or use workflow options that avoid interactive editing.
+- Existing projects remain compatible because missing editor configuration uses platform-aware defaults.
+- Host editor installations are not automatically available inside a container; container candidates are resolved independently.
+- This checkpoint does not create a release tag; its changes will be included in the cumulative v2.1.0 release commit and tag messages.
+
 **Tags**
 
-docs • tests • project-detection • versioning • initialization • cli-errors • docker • cross-project
+workflow • docs • tests • editor • terminal-ui • configuration • docker • packaging • versioning
 
 ## v2.0.0 (2026-08-24)
 

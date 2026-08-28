@@ -14,8 +14,13 @@ from app.cli.constants import StageModeChoices, StrategyChoices
 
 
 class DummyConfig:
+    def __init__(self, values=None):
+        self.values = values or {}
+
     def resolve(self, value, key, default):
-        return default if value is None else value
+        if value is not None:
+            return value
+        return self.values.get(tuple(key), default)
 
 
 # class DummyCliArgs:
@@ -126,3 +131,21 @@ class TestGitOpsResolvers:
         assert isinstance(args, PushArgs)
         assert args.remote == "origin"
         assert args.sync_backup is True
+
+    def test_resolve_push_args_loads_git_remote_configuration(self):
+        config = DummyConfig(
+            {
+                ("git", "default_remote"): "upstream",
+                ("git", "main_remotes"): ["upstream", "github"],
+                ("git", "backup_remotes"): ["mirror"],
+                ("git", "push_to"): "backup",
+            }
+        )
+
+        args = resolver.resolve_push_args(config, DummyCliArgs())
+
+        assert args.remote is None
+        assert args.default_remote == "upstream"
+        assert args.main_remotes == ["upstream", "github"]
+        assert args.backup_remotes == ["mirror"]
+        assert args.push_to == "backup"

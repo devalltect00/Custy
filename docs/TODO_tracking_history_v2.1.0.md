@@ -298,6 +298,10 @@ Since v1.10.0
 - [x] Present expected configuration and validation failures without duplicate tracebacks.
 - [x] Keep full unexpected-error tracebacks available through `--debug`.
 - [x] Make a no-subcommand invocation display help and exit successfully.
+- [x] Add `[tool.custy.editor]` configuration with `VISUAL` and `EDITOR` precedence, platform-specific candidate lists, and controlled fallback behavior.
+- [x] Resolve Windows `code.cmd` correctly and skip unavailable editor candidates without hiding launched-process failures.
+- [x] Bundle Micro, Nano, Vim, and Vi in the production image with conflict-aware undo and redo key bindings.
+- [x] Suspend live Rich pipeline progress while a blocking editor owns the terminal, then restore the current step after successful or failed editing.
 - [x] Expand Make targets for installing, validating, running, cleaning, updating, and refreshing pre-commit.
 - [x] Run pre-commit through `python -m pre_commit` in the active virtual environment.
 - [x] Refresh Ruff, pre-commit-hooks, and Black for the Python 3.14 toolchain.
@@ -309,9 +313,11 @@ Since v1.10.0
 - [x] Add detector coverage for Python, Node.js, mixed, PHP, and generic projects.
 - [x] Add version-update coverage for Python modules, `pyproject.toml`, `package.json`, lockfiles, mixed projects, and tag-only projects.
 - [x] Add protected-entry-point, structured-error, no-command, template-fallback, backup-routing, and cross-project regression tests.
-- [x] Validate 1,179 tests with 82% overall coverage.
+- [x] Add editor settings, editor service, Docker asset, workflow delegation, and exclusive-terminal progress lifecycle coverage.
+- [x] Validate 1,235 tests with 82% overall coverage.
 - [x] Validate Ruff, Black, diff whitespace, pre-commit configuration, and the production Docker image.
-- [x] Update canonical English and Indonesian documentation for discovery, initialization, versioning, errors, Docker, pre-commit, testing, and contributing.
+- [x] Validate the rebuilt production image, resolved source version, editor-progress marker, and Rich suspend/restart lifecycle.
+- [x] Update canonical English and Indonesian documentation for discovery, initialization, versioning, errors, Docker, editors, terminal-progress handoff, pre-commit, testing, and contributing.
 
 ### Upgrade checklist from v2.0.0
 

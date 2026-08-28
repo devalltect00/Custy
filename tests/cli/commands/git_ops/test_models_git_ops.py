@@ -51,6 +51,10 @@ class TestGitOpsModels:
         args = PushArgs(
             all_remote=True,
             remote="origin",
+            default_remote="origin",
+            main_remotes=["origin"],
+            backup_remotes=["backup"],
+            push_to="all",
             tag="v1.0.0",
             skip_tag=False,
             sync_backup=True,
@@ -58,6 +62,16 @@ class TestGitOpsModels:
         assert args.remote == "origin"
 
     def test_dataclass_equality(self):
-        assert PushArgs(False, None, None, False, False) == PushArgs(
-            False, None, None, False, False
-        )
+        values = {
+            "all_remote": False,
+            "remote": None,
+            "default_remote": "origin",
+            "main_remotes": ["origin"],
+            "backup_remotes": [],
+            "push_to": "main",
+            "tag": None,
+            "skip_tag": False,
+            "sync_backup": False,
+        }
+
+        assert PushArgs(**values) == PushArgs(**values)

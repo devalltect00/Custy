@@ -14,6 +14,7 @@ help-cleanup-project:
 	@echo   make clean-build                    ^|    Remove build artifacts
 	@echo   make clean-pyc                      ^|    Remove Python cache files
 	@echo   make clean-coverage                 ^|    Remove coverage files and reports
+	@echo   make clean-pytest-tmp               ^|    Remove pytest temporary directories
 	@echo   make clean-pip-cache                ^|    Remove pip cache
 	@echo   make clean-venv                     ^|    Remove virtual environment
 	@echo.

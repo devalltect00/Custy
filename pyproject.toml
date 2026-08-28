@@ -156,7 +156,7 @@ Changelog = "https://github.com/devalltect00/Custy/blob/main/CHANGELOG.md"
 Discussions = "https://github.com/devalltect00/Custy/discussions"
 Releases = "https://github.com/devalltect00/Custy/releases"
 "GitHub Actions" = "https://github.com/devalltect00/Custy/actions"
-"GitLab CI" = "https://gitlab.com/devalltects-group/custy/-/pipelines"
+"GitLab CI" = "https://gitlab.com/devalltects-group/Custy/-/pipelines"
 "Container Images" = "https://github.com/devalltect00/Custy/pkgs/container/custy"
 
 [tool.devalltect.github]

@@ -123,6 +123,9 @@ def test_renders_the_approved_ideal_structure() -> None:
         encoding="utf-8"
     )
 
+    if expected.startswith("<!-- tests/fixtures/"):
+        _, expected = expected.split("\n\n", maxsplit=1)
+
     assert rendered == expected
     assert "    -" not in rendered
     assert "#workflow" not in rendered

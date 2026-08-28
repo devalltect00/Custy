@@ -417,6 +417,21 @@ class TestEvaluateTaggingEligibility:
 
         workflow_engine.gitService.get_latest_tag.assert_not_called()
 
+    def test_preserves_explicit_skip_tag_configuration(
+        self,
+        workflow_engine: WorkflowEngine,
+    ) -> None:
+        """A CLI or configuration skip request cannot be reset by validation."""
+
+        workflow_engine.skip_tag = True
+        workflow_engine.tag = "v2.1.0"
+
+        workflow_engine.evaluate_tagging_eligibility("feat")
+
+        assert workflow_engine.skip_tag is True
+        assert workflow_engine.tag == "v2.1.0"
+        workflow_engine.gitService.get_latest_tag.assert_not_called()
+
     @pytest.mark.parametrize(
         "commit_type",
         [

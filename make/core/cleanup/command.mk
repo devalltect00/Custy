@@ -15,6 +15,7 @@ PROJECT_CLEANUP_COMMANDS_LIST := \
 	clean-build \
 	clean-pyc \
 	clean-coverage \
+	clean-pytest-tmp \
 	clean-pip-cache \
 	clean-venv \
 	clean \
@@ -80,6 +81,15 @@ clean-coverage:
 shutil.rmtree('htmlcov', ignore_errors=True)"
 	@echo Coverage cleanup completed.
 
+# 🧹 CLEANUP - PYTEST TEMP DIRECTORIES
+.PHONY: clean-pytest-tmp
+clean-pytest-tmp:
+	$(call REQUIRE_PYTHON)
+	@echo Cleaning pytest temporary directories...
+	@$(PYTHON_SYSTEM) -c "import pathlib, shutil; \
+[shutil.rmtree(p, ignore_errors=True) for p in pathlib.Path('.').glob('.pytest-tmp-*') if p.is_dir()]"
+	@echo Pytest temporary directories cleanup completed.
+
 # 🧹 CLEANUP - PIP CACHE
 .PHONY: clean-pip-cache
 clean-pip-cache:
@@ -102,7 +112,7 @@ shutil.rmtree(venv, ignore_errors=True) if venv.exists() else None"
 # -------------------------------------------------------------------------
 
 .PHONY: clean
-clean: clean-cache clean-build clean-pyc clean-coverage
+clean: clean-cache clean-build clean-pyc clean-coverage clean-pytest-tmp
 	@echo Project cleanup completed.
 
 .PHONY: clean-all

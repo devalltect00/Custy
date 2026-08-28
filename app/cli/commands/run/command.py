@@ -257,6 +257,7 @@ def run(
         dry_run=app_ctx.dry_run,
         debug=app_ctx.debug,
         log_level=app_ctx.log_level,
+        editor_settings=config.get_section("editor"),
     )
 
     # ✅ 1. Register steps (VERY IMPORTANT)

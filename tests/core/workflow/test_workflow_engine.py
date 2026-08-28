@@ -11,7 +11,7 @@ Business workflow methods will be covered in later phases.
 """
 
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, call
 
 from app.cli.constants.enums import (
     BumpChoices,
@@ -61,6 +61,7 @@ class TestWorkflowEngineInitialization:
         assert engine.commit_message_file == Path("commit.txt")
 
         assert engine.tag_input == "v1.0.0"
+        assert engine.tag == "v1.0.0"
 
         assert engine.strategy_input == StrategyChoices.SEMVER
         assert engine.bump_level == BumpChoices.MINOR
@@ -92,6 +93,45 @@ class TestWorkflowHelpers:
         engine = WorkflowEngine(config)
 
         assert engine.is_commitizen_auto() is False
+
+
+class TestWorkflowEditorIntegration:
+    """Tests the workflow boundary around the editor service."""
+
+    def test_open_editor_delegates_with_current_dry_run(self) -> None:
+        """Workflow state is passed to the editor service at call time."""
+
+        engine = WorkflowEngine(WorkflowConfig(dry_run=True))
+        engine.editorService = MagicMock()
+        message_file = Path("commit-message.txt")
+
+        engine.open_editor(message_file, label="commit message")
+
+        engine.editorService.open_file.assert_called_once_with(
+            message_file,
+            label="commit message",
+            dry_run=True,
+        )
+
+    def test_edit_release_files_preserves_commit_then_tag_order(self) -> None:
+        """Commit and tag messages are opened in deterministic order."""
+
+        commit_file = Path("commit-message.txt")
+        tag_file = Path("tag-message.txt")
+        engine = WorkflowEngine(
+            WorkflowConfig(
+                commit_message_file=commit_file,
+                tag_message_file=tag_file,
+            )
+        )
+        engine.editorService = MagicMock()
+
+        engine.edit_release_files()
+
+        assert engine.editorService.open_file.call_args_list == [
+            call(commit_file, label="commit message", dry_run=False),
+            call(tag_file, label="tag message", dry_run=False),
+        ]
 
 
 class TestSilentMode:

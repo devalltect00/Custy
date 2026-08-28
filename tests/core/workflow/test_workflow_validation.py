@@ -20,7 +20,7 @@ Covered responsibilities:
 """
 
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, call
 
 import pytest
 
@@ -207,6 +207,26 @@ class TestEnsureRemoteExists:
 
         assert error.code == "REMOTE_NOT_FOUND"
         assert error.context["remote"] == "origin"
+
+    def test_validates_every_selected_remote(
+        self,
+        workflow_engine,
+    ):
+        """Checks all effective main and backup destinations."""
+
+        workflow_engine.all_remote = True
+        workflow_engine.main_remotes = ["origin", "github"]
+        workflow_engine.backup_remotes = ["mirror"]
+        workflow_engine.gitService.get_current_branch.return_value = "main"
+        workflow_engine.gitService.check_remote.return_value = True
+
+        workflow_engine.ensure_remote_exists()
+
+        assert workflow_engine.gitService.check_remote.call_args_list == [
+            call("origin"),
+            call("github"),
+            call("mirror"),
+        ]
 
 
 class TestEnsureVersionFile:

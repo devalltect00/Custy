@@ -14,8 +14,13 @@ from app.cli.constants import StageModeChoices, StrategyChoices
 
 
 class DummyConfig:
+    def __init__(self, values=None):
+        self.values = values or {}
+
     def resolve(self, value, key, default):
-        return default if value is None else value
+        if value is not None:
+            return value
+        return self.values.get(tuple(key), default)
 
 
 # class DummyCliArgs:
@@ -95,7 +100,11 @@ class TestRunResolver:
         assert args.check_cz is False
         assert args.stage_mode == StageModeChoices.ALL
         assert args.strategy == StrategyChoices.SEMVER
-        assert args.remote == "origin"
+        assert args.remote is None
+        assert args.default_remote == "origin"
+        assert args.main_remotes == ["origin"]
+        assert args.backup_remotes == []
+        assert args.push_to == "main"
         assert args.all_remote is True
 
     def test_explicit_values_are_preserved(self):
@@ -128,3 +137,23 @@ class TestRunResolver:
         assert args.tag == "v2.0.0"
         assert args.remote == "backup"
         assert args.sync_backup is True
+
+    def test_git_remote_configuration_is_available_to_run_profiles(self):
+        config = DummyConfig(
+            {
+                ("git", "default_remote"): "gitlab",
+                ("git", "main_remotes"): ["gitlab"],
+                ("git", "backup_remotes"): ["mirror"],
+                ("git", "push_to"): "all",
+            }
+        )
+
+        args = resolver.resolve_run_args(
+            config,
+            DummyCliArgs(steps=["release"], all_remote=False),
+        )
+
+        assert args.default_remote == "gitlab"
+        assert args.main_remotes == ["gitlab"]
+        assert args.backup_remotes == ["mirror"]
+        assert args.push_to == "all"

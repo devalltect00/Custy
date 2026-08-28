@@ -32,6 +32,12 @@ from app.ui.console import console
 from app.ui.panels import success_summary_panel
 from app.ui.progress import progress_spinner
 
+_CONFIG_GENERATING_MODES = {
+    "all",
+    "all_no_examples",
+    "config",
+}
+
 
 class InitMain:
     """
@@ -143,6 +149,19 @@ class InitMain:
 
             if config.dry_run:
                 console.print("  [cyan]custy init[/cyan]")
+            elif config.mode.value in _CONFIG_GENERATING_MODES:
+                console.print("  1. Review [cyan].config/custy/config.toml[/cyan].")
+                console.print(
+                    "  2. Set [cyan]tool.custy.changelog.links.repository[/cyan] "
+                    "if changelog compare links are needed."
+                )
+                console.print(
+                    "  3. Verify [cyan]default_remote[/cyan], "
+                    "[cyan]main_remotes[/cyan], and "
+                    "[cyan]backup_remotes[/cyan] with "
+                    "[cyan]git remote -v[/cyan]."
+                )
+                console.print("  4. Run [cyan]custy validate[/cyan].")
             else:
                 console.print("  [cyan]custy commit[/cyan]")
 

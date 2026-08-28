@@ -52,6 +52,10 @@ class RunArgs:
     ## Push • Execution
     all_remote: bool
     remote: Optional[str]
+    default_remote: str
+    main_remotes: list[str]
+    backup_remotes: list[str]
+    push_to: str
     ## Push • Behavior
     skip_tag: bool
     sync_backup: bool

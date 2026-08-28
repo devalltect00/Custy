@@ -16,6 +16,8 @@ class EditFilesStep(BaseStep):
     Blocking step until user finishes editing.
     """
 
+    requires_exclusive_terminal: bool = True
+
     @log_step(label="edit-files")
     def execute(self, ctx):
         ctx.engine.edit_release_files()

@@ -1,0 +1,4 @@
+# Keep Nano's established, non-conflicting Meta shortcuts explicit.
+# M-Z and M-Y are intentionally not replaced: Nano uses them for UI toggles.
+bind M-U undo main
+bind M-E redo main

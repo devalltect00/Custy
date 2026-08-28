@@ -49,14 +49,14 @@ d-build-dev: d-build-base
 	@echo.
 	@echo ==============================================================
 	@echo.
-	$(DOCKER) build -f $(DOCKERFILE_BASE) --target development -t $(DOCKER_IMAGE_DEV) .
+	$(DOCKER) build $(DOCKER_BUILD_VERSION_ARG) -f $(DOCKERFILE_BASE) --target development -t $(DOCKER_IMAGE_DEV) .
 
 .PHONY: d-build-prod
 d-build-prod: d-build-base
 	@echo.
 	@echo ==============================================================
 	@echo.
-	$(DOCKER) build -f $(DOCKERFILE_BASE) --target production -t $(DOCKER_IMAGE_PROD) .
+	$(DOCKER) build $(DOCKER_BUILD_VERSION_ARG) -f $(DOCKERFILE_BASE) --target production -t $(DOCKER_IMAGE_PROD) .
 
 .PHONY: d-build-all
 d-build-all: docker-check
@@ -67,8 +67,8 @@ d-build-all: docker-check
 	@echo.
 	@echo ==============================================================
 	@echo.
-	$(DOCKER) build -f $(DOCKERFILE_BASE) --target development -t $(DOCKER_IMAGE_DEV) .
+	$(DOCKER) build $(DOCKER_BUILD_VERSION_ARG) -f $(DOCKERFILE_BASE) --target development -t $(DOCKER_IMAGE_DEV) .
 	@echo.
 	@echo ==============================================================
 	@echo.
-	$(DOCKER) build -f $(DOCKERFILE_BASE) --target production -t $(DOCKER_IMAGE_PROD) .
+	$(DOCKER) build $(DOCKER_BUILD_VERSION_ARG) -f $(DOCKERFILE_BASE) --target production -t $(DOCKER_IMAGE_PROD) .

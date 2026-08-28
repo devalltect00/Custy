@@ -18,6 +18,7 @@ from app.cli.constants.enums import (
     StageModeChoices,
     StrategyChoices,
 )
+from app.core.editor import EditorIdentifier, EditorSettings
 from app.core.workflow.workflow_builder import WorkflowEngineBuilder
 from app.core.workflow.workflow_engine import WorkflowEngine
 
@@ -49,6 +50,11 @@ class TestWorkflowBuilder:
             .with_force_tag()
             .with_force_changelog()
             .with_sync_backup()
+            .with_skip_tag()
+            .with_remote("upstream")
+            .with_default_remote("origin")
+            .with_all_remote()
+            .with_push_to("all")
             .with_main_remotes(["origin"])
             .with_backup_remotes(["backup"])
             .with_cleanup_types(CleanupTypeChoices.TAG)
@@ -59,6 +65,7 @@ class TestWorkflowBuilder:
             .with_debug()
             .with_skip_checks()
             .with_log_level(LogLevelChoices.DEBUG)
+            .with_editor_settings(EditorSettings(windows=(EditorIdentifier.NOTEPAD,)))
             .build()
         )
 
@@ -83,7 +90,12 @@ class TestWorkflowBuilder:
         assert cfg.force_changelog is True
 
         assert cfg.sync_backup is True
+        assert cfg.skip_tag is True
 
+        assert cfg.remote == "upstream"
+        assert cfg.default_remote == "origin"
+        assert cfg.all_remote is True
+        assert cfg.push_to == "all"
         assert cfg.main_remotes == ["origin"]
         assert cfg.backup_remotes == ["backup"]
 
@@ -94,6 +106,7 @@ class TestWorkflowBuilder:
         assert cfg.no_debug is False
         assert cfg.skip_checks is True
         assert cfg.log_level == LogLevelChoices.DEBUG
+        assert cfg.editor_settings.windows == (EditorIdentifier.NOTEPAD,)
 
     def test_with_debug_false(self):
         builder = WorkflowEngineBuilder()
@@ -153,7 +166,12 @@ class TestFromCliArgs:
         force_changelog = True
 
         sync_backup = True
+        skip_tag = True
 
+        remote = "upstream"
+        default_remote = "origin"
+        all_remote = True
+        push_to = "all"
         main_remotes = ["origin"]
         backup_remotes = ["backup"]
 
@@ -168,6 +186,10 @@ class TestFromCliArgs:
         skip_checks = True
 
         log_level = LogLevelChoices.DEBUG
+        editor_settings = {
+            "prefer_environment": False,
+            "candidates": {"windows": ["notepad"]},
+        }
 
     def test_from_cli_args_populates_config(self):
         builder = WorkflowEngineBuilder()
@@ -203,12 +225,14 @@ class TestFromCliArgs:
         assert cfg.force_changelog is True
 
         assert cfg.sync_backup is True
+        assert cfg.skip_tag is True
 
-        # assert cfg.main_remotes == ["origin"]
-        # assert cfg.backup_remotes == ["backup"]
-
-        assert cfg.main_remotes is None
-        assert cfg.backup_remotes is None
+        assert cfg.remote == "upstream"
+        assert cfg.default_remote == "origin"
+        assert cfg.all_remote is True
+        assert cfg.push_to == "all"
+        assert cfg.main_remotes == ["origin"]
+        assert cfg.backup_remotes == ["backup"]
 
         assert cfg.cleanup_backup_type == CleanupTypeChoices.TAG
         assert cfg.backup_retention_count == 10
@@ -220,6 +244,8 @@ class TestFromCliArgs:
         assert cfg.no_debug is False
         assert cfg.skip_checks is True
         assert cfg.log_level == LogLevelChoices.DEBUG
+        assert cfg.editor_settings.prefer_environment is False
+        assert cfg.editor_settings.windows == (EditorIdentifier.NOTEPAD,)
 
     def test_from_cli_args_empty_object(self):
         class Args:

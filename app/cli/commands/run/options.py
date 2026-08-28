@@ -556,7 +556,8 @@ AllRemoteOption = Annotated[
         help="""
         [bold]Push to all configured remotes.[/bold]
 
-        When enabled, Custy will push commits and tags to every configured remote.
+        When enabled, Custy pushes commits and eligible tags to the
+        de-duplicated main and backup remote groups.
 
         [dim blue]Default:[/dim blue]
         Configured from config.toml
@@ -565,7 +566,7 @@ AllRemoteOption = Annotated[
         'tool.custy.cli.push.all_remote'
 
         [dim yellow]HINT:[/dim yellow]
-        Better using config.toml configuration.
+        An explicit --remote value takes priority over this option.
         """,
         rich_help_panel="Push • Execution",
     ),
@@ -578,9 +579,11 @@ RemoteOption = Annotated[
         help="""
         [bold]Remote Name[/bold]
 
-        Manually specify remote name [magenta]([dim]e.g.[/dim] origin or backup or other remote name)[/magenta]
+        Select exactly one remote. This overrides --all-remote, push_to,
+        and the configured remote groups.
 
-        [dim blue]Default:[/dim blue] origin
+        [dim blue]Default:[/dim blue]
+        Resolved from tool.custy.git.default_remote and the configured groups.
         """,
         rich_help_panel="Push • Execution",
         autocompletion=completion_remote_name,
@@ -594,11 +597,11 @@ SkipTagOption = Annotated[
         help="""
         [bold]Skip Tag[/bold]
 
-        If True: skipping push tag
+        Push HEAD without creating or pushing a tag in combined workflows.
 
         [dim blue]Default:[/dim blue] False
 
-        [dim yellow]HINT:[/dim yellow] better using .custy.toml configuration.
+        [dim yellow]HINT:[/dim yellow] Configure the default in config.toml.
         [dim]Variable:[/dim] 'tool.custy.cli.push.skip_tag'
         """,
         rich_help_panel="Push • Behavior",
@@ -612,11 +615,12 @@ SyncBackupOption = Annotated[
         help="""
         [bold]Sync Backup Remote[/bold]
 
-        Push and sync changes to backup remote
+        Add configured backup remotes to a main-group push. Backup targets
+        remain skipped on non-critical feature, CI, and sandbox branches.
 
         [dim blue]Default:[/dim blue] False
 
-        [dim yellow]HINT:[/dim yellow] better using .custy.toml configuration.
+        [dim yellow]HINT:[/dim yellow] Configure backup remotes before enabling.
         [dim]Variable:[/dim] 'tool.custy.cli.push.sync_backup'
         """,
         rich_help_panel="Push • Behavior",

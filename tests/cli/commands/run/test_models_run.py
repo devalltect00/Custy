@@ -38,6 +38,10 @@ class TestRunArgs:
             tag_message_backup_dir=Path("backup/tag"),
             all_remote=True,
             remote="origin",
+            default_remote="origin",
+            main_remotes=["origin"],
+            backup_remotes=["backup"],
+            push_to="all",
             skip_tag=False,
             sync_backup=True,
         )
@@ -79,6 +83,10 @@ class TestRunArgs:
             tag_message_backup_dir=None,
             all_remote=True,
             remote="origin",
+            default_remote="origin",
+            main_remotes=["origin"],
+            backup_remotes=[],
+            push_to="main",
             skip_tag=False,
             sync_backup=False,
         )
@@ -115,6 +123,10 @@ class TestRunArgs:
             tag_message_backup_dir=None,
             all_remote=True,
             remote="origin",
+            default_remote="origin",
+            main_remotes=["origin"],
+            backup_remotes=[],
+            push_to="main",
             skip_tag=False,
             sync_backup=False,
         )

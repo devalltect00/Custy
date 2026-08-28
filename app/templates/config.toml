@@ -121,6 +121,93 @@ force = false
 ask = false
 
 
+# =========================================================
+# CLI - 📝 EDITOR
+# =========================================================
+#
+# Editor selection used for commit and tag message files.
+#
+# VISUAL and EDITOR are process environment variables, not TOML keys.
+# Custy does not create or persist them. A user, shell profile, operating
+# system, IDE, Docker/Compose service, or CI job may set them before Custy
+# starts. Custy inherits them from the process environment and reads them
+# when a workflow reaches its message-editing step.
+#
+# Exact editor-selection variable names accepted by Custy:
+#
+#     VISUAL     Primary environment editor command
+#     EDITOR     Secondary environment editor command
+#
+# Use the uppercase names exactly for portable behavior. Values may name a
+# trusted executable and optional arguments, for example:
+#
+#     VISUAL="code --wait"
+#     VISUAL="micro"
+#     EDITOR="nano"
+#     EDITOR="vim"
+#
+# PATH is related but does not select an editor: it lets Custy find the
+# executable named by an environment command or candidate identifier.
+# CUSTY_CONTAINER is an image/runtime marker that selects the container list;
+# it is not an editor command and normally does not need to be set manually.
+#
+# Empty or undefined VISUAL/EDITOR values are skipped. Environment commands
+# are executed without a shell, but should still be treated as trusted input.
+#
+# Resolution order:
+#
+#     1. VISUAL, then EDITOR, when prefer_environment = true
+#     2. The active container or operating-system candidate list
+#     3. Matching built-in defaults when allow_fallback = true
+#
+# Candidate values are stable identifiers, not shell commands.
+# Supported:
+#
+#     vscode, notepad, micro, nano, vim, vi, neovim
+#
+# Behavior combinations:
+#
+#     prefer_environment = true,  allow_fallback = true
+#         Environment -> configured candidates -> built-in defaults
+#
+#     prefer_environment = true,  allow_fallback = false
+#         Environment -> configured candidates only
+#
+#     prefer_environment = false, allow_fallback = true
+#         Configured candidates -> built-in defaults
+#
+#     prefer_environment = false, allow_fallback = false
+#         Configured candidates only
+#
+# =========================================================
+
+[tool.custy.editor]
+
+# Honor VISUAL and EDITOR before the configured candidate lists.
+prefer_environment = true
+
+# Append Custy's safe platform defaults after configured candidates.
+# Set false when only the listed candidates should be considered.
+allow_fallback = true
+
+[tool.custy.editor.candidates]
+
+# Windows host preference. "vscode" resolves to "code --wait".
+windows = ["vscode", "notepad"]
+
+# Native Linux host preference.
+linux = ["micro", "nano", "vim", "vi"]
+
+# Native macOS host preference.
+macos = ["vscode", "micro", "nano", "vim", "vi"]
+
+# Docker and other detected container environments.
+# Desktop editors on the host cannot be opened directly by a normal
+# isolated Linux container, so use terminal editors here.
+container = ["micro", "nano", "vim", "vi"]
+
+
+
 # ---------------------------------------------------------
 # CLI Related
 # ---------------------------------------------------------
@@ -423,8 +510,8 @@ check_cz = false
 
 # Push to all configured remotes.
 #
-# false:
-#     Push only to the primary remote.
+#false:
+#    Select remotes through tool.custy.git.push_to.
 #
 # true:
 #     Push to all configured remotes.
@@ -441,13 +528,16 @@ all_remote = true
 #
 skip_tag = false
 
-# Synchronize backup repositories after push.
+#Synchronize backup repositories after push.
 #
-# false:
-#     Do not sync backups.
+#false:
+#    Do not add backups to a main-only selection.
+#    Backups can still be selected by all_remote
+#    or tool.custy.git.push_to.
 #
-# true:
-#     Sync backup repositories.
+#true:
+#    Add configured backup remotes to a
+#    main-only selection when branch safety permits.
 #
 sync_backup = false
 
@@ -1378,12 +1468,17 @@ Ensures main, develop, and backup branches are synchronized.
 # REPOSITORY
 # =========================================================
 
-# Repository URL.
+# Repository browser URL used only for
+# changelog comparison links.
 #
-# This URL is used as the base when
-# generating links inside the changelog.
+# This setting does not select a Git remote
+# and is not used by ``custy push``. Configure
+# operational remote names under
+# ``[tool.custy.git]`` instead.
 #
-# Do not include a trailing slash.
+# Leave the value empty until the project
+# repository URL is known. Use an HTTP or HTTPS
+# browser URL and do not include a trailing slash.
 #
 # Examples:
 #
@@ -1391,7 +1486,7 @@ Ensures main, develop, and backup branches are synchronized.
 #     https://gitlab.com/org/project
 #     https://codeberg.org/org/project
 #
-repository = "https://github.com/org/project"
+repository = ""
 
 
 # =========================================================
@@ -1415,9 +1510,10 @@ repository = "https://github.com/org/project"
 # true
 #
 #     Display compare links beneath each
-#     release heading.
+#     release heading. Set ``repository`` to the
+#     real project repository URL first.
 #
-enable_compare = true
+enable_compare = false
 
 
 # =========================================================
@@ -2153,8 +2249,8 @@ smart_formatting = false
 
 # Default Git remote.
 #
-# Used when no remote is explicitly
-# provided via CLI options.
+# Used when main_remotes is empty and no
+# remote is explicitly provided via CLI.
 #
 # Examples:
 #
@@ -2207,6 +2303,9 @@ main_remotes = ["origin"]
 # backup_remotes = ["backup", "mirror"]
 
 # Push strategy.
+#
+# Used when no explicit --remote is supplied
+# and all_remote is false.
 #
 # Available:
 #

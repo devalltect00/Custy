@@ -108,7 +108,27 @@ def resolve_run_args(config, cli_args) -> RunArgs:
             ["cli", "push", "all_remote"],
             True,
         ),
-        remote=cli_args.remote or "origin",
+        remote=cli_args.remote or None,
+        default_remote=config.resolve(
+            None,
+            ["git", "default_remote"],
+            "origin",
+        ),
+        main_remotes=config.resolve(
+            None,
+            ["git", "main_remotes"],
+            ["origin"],
+        ),
+        backup_remotes=config.resolve(
+            None,
+            ["git", "backup_remotes"],
+            [],
+        ),
+        push_to=config.resolve(
+            None,
+            ["git", "push_to"],
+            "main",
+        ),
         ## Push • Behavior
         skip_tag=config.resolve(
             cli_args.skip_tag,

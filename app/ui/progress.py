@@ -99,6 +99,60 @@ def create_progress() -> Progress:
 
 
 @contextmanager
+def suspend_progress(
+    progress: Progress,
+    task_id: TaskID,
+    *,
+    restore_visible: bool = True,
+) -> Iterator[None]:
+    """Temporarily release the terminal from a live progress display.
+
+    Description:
+        Hide the current task and stop Rich's live refresh loop while an
+        interactive subprocess, such as Nano, Micro, or Vim, owns the
+        terminal.
+
+    Logic:
+        The task is hidden and the display is refreshed before progress is
+        stopped. After the caller finishes, the original visibility is
+        restored and live progress starts again.
+
+    Args:
+        progress:
+            Active Rich progress instance to suspend.
+
+        task_id:
+            Identifier of the task whose rendered row must be hidden.
+
+        restore_visible:
+            Visibility to restore after the interactive operation finishes.
+
+    Yields:
+        Control while the progress display is stopped.
+
+    Notes:
+        Restoration happens even when the interactive operation raises an
+        exception, allowing the pipeline's normal error presentation to take
+        over without leaving a live-refresh thread behind.
+
+    Examples:
+        with suspend_progress(progress, task_id):
+            open_terminal_editor()
+    """
+
+    progress.update(task_id, visible=False)
+    progress.refresh()
+    progress.stop()
+
+    try:
+        yield
+    finally:
+        progress.update(task_id, visible=restore_visible)
+        progress.start()
+        progress.refresh()
+
+
+@contextmanager
 def progress_task(
     description: str,
     *,

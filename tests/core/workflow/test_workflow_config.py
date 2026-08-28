@@ -15,6 +15,7 @@ from app.cli.constants.enums import (
     StageModeChoices,
     StrategyChoices,
 )
+from app.core.editor import EditorIdentifier, EditorSettings
 from app.core.workflow.workflow_config import WorkflowConfig
 
 
@@ -44,6 +45,7 @@ class TestWorkflowConfig:
         assert config.skip_checks is False
 
         assert config.log_level == LogLevelChoices.INFO
+        assert config.editor_settings == EditorSettings()
 
         assert config.version_file is None
 
@@ -54,7 +56,12 @@ class TestWorkflowConfig:
         assert config.force_commit is False
         assert config.force_changelog is False
         assert config.sync_backup is False
+        assert config.skip_tag is False
 
+        assert config.remote is None
+        assert config.default_remote == "origin"
+        assert config.all_remote is False
+        assert config.push_to == "main"
         assert config.main_remotes is None
         assert config.backup_remotes is None
 
@@ -89,21 +96,34 @@ class TestWorkflowConfig:
             force_commit=True,
             force_changelog=True,
             sync_backup=True,
+            skip_tag=True,
+            remote="upstream",
+            default_remote="origin",
+            all_remote=True,
+            push_to="all",
             main_remotes=["origin"],
             backup_remotes=["backup"],
             commit_message_backup_dir=Path("backup/commit"),
             tag_message_backup_dir=Path("backup/tag"),
             cleanup_backup_type=CleanupTypeChoices.TAG,
             backup_retention_count=25,
+            editor_settings=EditorSettings(
+                windows=(EditorIdentifier.NOTEPAD,),
+            ),
         )
 
         assert config.strategy == StrategyChoices.SEMVER
         assert config.bump_level == BumpChoices.MINOR
         assert config.stage_mode == StageModeChoices.UPDATE
         assert config.log_level == LogLevelChoices.DEBUG
+        assert config.skip_tag is True
+        assert config.remote == "upstream"
+        assert config.all_remote is True
+        assert config.push_to == "all"
         assert config.main_remotes == ["origin"]
         assert config.backup_remotes == ["backup"]
         assert config.backup_retention_count == 25
+        assert config.editor_settings.windows == (EditorIdentifier.NOTEPAD,)
 
     def test_dataclass_equality(self):
         left = WorkflowConfig()

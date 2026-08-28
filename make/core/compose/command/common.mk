@@ -46,14 +46,14 @@ c-build-dev: c-build-base
 	@echo.
 	@echo ==============================================================
 	@echo.
-	$(COMPOSE_DEV) build app
+	$(COMPOSE_DEV) build $(DOCKER_BUILD_VERSION_ARG) app
 
 .PHONY: c-build-prod
 c-build-prod: c-build-base
 	@echo.
 	@echo ==============================================================
 	@echo.
-	$(COMPOSE_PROD) build app
+	$(COMPOSE_PROD) build $(DOCKER_BUILD_VERSION_ARG) app
 
 .PHONY: c-build-all
 c-build-all: docker-check
@@ -64,11 +64,11 @@ c-build-all: docker-check
 	@echo.
 	@echo ==============================================================
 	@echo.
-	$(COMPOSE_DEV) build app
+	$(COMPOSE_DEV) build $(DOCKER_BUILD_VERSION_ARG) app
 	@echo.
 	@echo ==============================================================
 	@echo.
-	$(COMPOSE_PROD) build app
+	$(COMPOSE_PROD) build $(DOCKER_BUILD_VERSION_ARG) app
 
 .PHONY: c-up
 c-up: docker-check
@@ -76,7 +76,8 @@ c-up: docker-check
 
 .PHONY: c-up-build
 c-up-build: docker-check
-	$(COMPOSE_DEV) up --build
+	$(COMPOSE_DEV) build $(DOCKER_BUILD_VERSION_ARG) app
+	$(COMPOSE_DEV) up
 
 .PHONY: c-up-detached
 c-up-detached: docker-check

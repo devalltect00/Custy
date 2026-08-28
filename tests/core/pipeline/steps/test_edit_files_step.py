@@ -30,3 +30,8 @@ class TestEditFilesStep:
         step.execute(ctx)
 
         ctx.engine.edit_release_files.assert_called_once_with()
+
+    def test_requires_exclusive_terminal(self):
+        """Declares that blocking editors need sole terminal ownership."""
+
+        assert EditFilesStep.requires_exclusive_terminal is True

@@ -44,13 +44,13 @@ class TestPushChanges:
 
         workflow_engine.gitService.get_current_branch.return_value = "main"
 
-        resolve_main = MagicMock(return_value=["origin"])
+        resolve_groups = MagicMock(return_value=(["origin"], []))
         push = MagicMock()
 
         monkeypatch.setattr(
             workflow_engine,
-            "_resolve_main_remotes",
-            resolve_main,
+            "_resolve_push_remote_groups",
+            resolve_groups,
         )
 
         monkeypatch.setattr(
@@ -61,7 +61,7 @@ class TestPushChanges:
 
         workflow_engine.push_changes()
 
-        resolve_main.assert_called_once()
+        resolve_groups.assert_called_once_with(current_branch="main")
 
         push.assert_called_once_with(
             ["origin"],
@@ -83,14 +83,8 @@ class TestPushChanges:
 
         monkeypatch.setattr(
             workflow_engine,
-            "_resolve_main_remotes",
-            MagicMock(return_value=["origin"]),
-        )
-
-        monkeypatch.setattr(
-            workflow_engine,
-            "_resolve_backup_remotes",
-            MagicMock(return_value=["backup"]),
+            "_resolve_push_remote_groups",
+            MagicMock(return_value=(["origin"], ["backup"])),
         )
 
         push = MagicMock()
@@ -104,6 +98,24 @@ class TestPushChanges:
         workflow_engine.push_changes()
 
         assert push.call_count == 2
+
+    def test_dry_run_resolves_all_groups_without_pushing(
+        self,
+        workflow_engine: WorkflowEngine,
+    ) -> None:
+        """Dry-run reports all targets without mutating any remote."""
+
+        workflow_engine.dry_run = True
+        workflow_engine.all_remote = True
+        workflow_engine.main_remotes = ["origin"]
+        workflow_engine.backup_remotes = ["backup"]
+        workflow_engine.tag = "v2.1.0"
+        workflow_engine.gitService.get_current_branch.return_value = "main"
+
+        workflow_engine.push_changes()
+
+        workflow_engine.gitService.push.assert_not_called()
+        workflow_engine.gitService.push_tag.assert_not_called()
 
     @pytest.mark.parametrize(
         "branch",
@@ -128,18 +140,11 @@ class TestPushChanges:
 
         workflow_engine.gitService.get_current_branch.return_value = branch
 
+        resolve_groups = MagicMock(return_value=(["origin"], []))
         monkeypatch.setattr(
             workflow_engine,
-            "_resolve_main_remotes",
-            MagicMock(return_value=["origin"]),
-        )
-
-        backup = MagicMock(return_value=["backup"])
-
-        monkeypatch.setattr(
-            workflow_engine,
-            "_resolve_backup_remotes",
-            backup,
+            "_resolve_push_remote_groups",
+            resolve_groups,
         )
 
         push = MagicMock()
@@ -152,6 +157,5 @@ class TestPushChanges:
 
         workflow_engine.push_changes()
 
-        backup.assert_not_called()
-
+        resolve_groups.assert_called_once_with(current_branch=branch)
         push.assert_called_once()

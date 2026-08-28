@@ -1,0 +1,6 @@
+" Custy message-editor aliases. Native u and Ctrl-R remain available.
+set nocompatible
+nnoremap <silent> <M-z> u
+nnoremap <silent> <M-y> <C-r>
+inoremap <silent> <M-z> <C-o>u
+inoremap <silent> <M-y> <C-o><C-r>

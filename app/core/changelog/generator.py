@@ -22,6 +22,7 @@ from app.constants.path import (
     CUSTY_CHANGELOG_J2,
     CUSTY_COMMIT_MESSAGE_TEMPLATE,
 )
+from app.core.changelog.config.repository import resolve_compare_repository
 from app.core.changelog.config.resolver import ChangelogConfigResolver
 from app.core.changelog.models.changelog import Changelog
 from app.core.changelog.models.commit import Commit
@@ -145,6 +146,7 @@ class ChangelogGenerator(DryRunSupport):
         super().__init__(dry_run=dry_run)
 
         self.config = ChangelogConfigResolver().load()
+        self.compare_repository = resolve_compare_repository(self.config.links)
         self.git_service = create_git_service(
             dry_run=dry_run,
             strategy=strategy,
@@ -384,17 +386,10 @@ class ChangelogGenerator(DryRunSupport):
             Compare URL when configured and both boundaries exist.
         """
 
-        if (
-            not self.config.links.enable_compare
-            or not self.config.links.repository
-            or not previous
-            or not current
-        ):
+        if not self.compare_repository or not previous or not current:
             return None
 
-        repository = self.config.links.repository.rstrip("/")
-
-        return f"{repository}/compare/{previous}...{current}"
+        return f"{self.compare_repository}/compare/{previous}...{current}"
 
     def _determine_release_status(self, version: str) -> str:
         """

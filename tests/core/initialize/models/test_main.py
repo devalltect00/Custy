@@ -238,6 +238,90 @@ class TestInitMain:
         assert "Message One" in output
         assert "Message Two" in output
 
+    @pytest.mark.parametrize(
+        "mode",
+        [
+            InitMode.ALL,
+            InitMode.ALL_NO_EXAMPLES,
+            InitMode.CONFIG,
+        ],
+    )
+    def test_execute_prints_configuration_next_steps(
+        self,
+        monkeypatch,
+        mode,
+    ):
+        """Config-generating modes explain required project-specific review."""
+
+        args = self._build_args()
+        args.mode = mode
+        spec = InitSpec(
+            name=mode.value,
+            templates=[],
+            dirs=[],
+            template_dirs=None,
+            messages=None,
+        )
+
+        monkeypatch.setattr(
+            main,
+            "InitBuilder",
+            MagicMock(
+                return_value=MagicMock(
+                    build=MagicMock(return_value=spec),
+                )
+            ),
+        )
+        monkeypatch.setattr(
+            main,
+            "ScaffoldGenerator",
+            MagicMock(
+                return_value=MagicMock(
+                    run=MagicMock(
+                        return_value=InitializationResult(mode=mode.value),
+                    ),
+                )
+            ),
+        )
+        monkeypatch.setattr(
+            main,
+            "InitializationPresenter",
+            MagicMock(
+                return_value=MagicMock(
+                    render=MagicMock(return_value="TABLE"),
+                )
+            ),
+        )
+        printed = MagicMock()
+        monkeypatch.setattr(main.console, "print", printed)
+        monkeypatch.setattr(
+            main,
+            "progress_spinner",
+            lambda *_: DummyProgress(),
+        )
+        monkeypatch.setattr(
+            main,
+            "success_summary_panel",
+            lambda **_: "SUCCESS",
+        )
+        monkeypatch.setattr(
+            main,
+            "perf_counter",
+            MagicMock(side_effect=[0.0, 1.0]),
+        )
+
+        InitMain().execute(args)
+
+        output = "".join(str(call) for call in printed.call_args_list)
+
+        assert ".config/custy/config.toml" in output
+        assert "tool.custy.changelog.links.repository" in output
+        assert "default_remote" in output
+        assert "main_remotes" in output
+        assert "backup_remotes" in output
+        assert "git remote -v" in output
+        assert "custy validate" in output
+
     def test_execute_passes_dry_run_to_scaffold_generator(
         self,
         monkeypatch,

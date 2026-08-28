@@ -41,6 +41,7 @@ import logging
 from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn
 
 from app.ui.console import console
+from app.ui.progress import suspend_progress
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +110,17 @@ class Pipeline:
                 )
 
                 try:
-                    step.execute(context)
+                    if self.visible and getattr(
+                        step, "requires_exclusive_terminal", False
+                    ):
+                        with suspend_progress(
+                            progress,
+                            task,
+                            restore_visible=self.visible,
+                        ):
+                            step.execute(context)
+                    else:
+                        step.execute(context)
                 except Exception:
                     progress.stop()
                     console.print(

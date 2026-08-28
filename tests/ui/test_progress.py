@@ -29,6 +29,9 @@ class DummyProgress:
 
         self.add_task = MagicMock(return_value=123)
         self.update = MagicMock()
+        self.refresh = MagicMock()
+        self.start = MagicMock()
+        self.stop = MagicMock()
 
     def __enter__(self):
         """Enter the context manager."""
@@ -264,3 +267,51 @@ class TestProgress:
                 raise RuntimeError("generation failed")
 
         dummy.update.assert_not_called()
+
+    # ==========================================================
+    # suspend_progress()
+    # ==========================================================
+
+    def test_suspend_progress_releases_and_restores_display(self):
+        """Stops live rendering while the caller owns the terminal."""
+
+        dummy = DummyProgress()
+        events = []
+
+        with progress.suspend_progress(
+            dummy,
+            123,
+            restore_visible=True,
+        ):
+            events.append("interactive operation")
+            dummy.stop.assert_called_once_with()
+            dummy.start.assert_not_called()
+
+        assert events == ["interactive operation"]
+        assert dummy.update.call_args_list == [
+            ((123,), {"visible": False}),
+            ((123,), {"visible": True}),
+        ]
+        assert dummy.refresh.call_count == 2
+        dummy.start.assert_called_once_with()
+
+    def test_suspend_progress_restores_display_after_failure(self):
+        """Restores live rendering without replacing the caller's error."""
+
+        dummy = DummyProgress()
+
+        with pytest.raises(RuntimeError, match="editor failed"):
+            with progress.suspend_progress(
+                dummy,
+                123,
+                restore_visible=False,
+            ):
+                raise RuntimeError("editor failed")
+
+        assert dummy.update.call_args_list[-1] == (
+            (123,),
+            {"visible": False},
+        )
+        dummy.stop.assert_called_once_with()
+        dummy.start.assert_called_once_with()
+        assert dummy.refresh.call_count == 2

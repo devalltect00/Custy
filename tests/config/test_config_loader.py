@@ -6,9 +6,12 @@ tests/config/test_config_loader.py
 Unit tests for ConfigLoader.
 """
 
+from pathlib import Path
+
 import pytest
 
 from app.config.config_loader import ConfigLoader, get_config
+from app.core.editor import EditorIdentifier, EditorSettings
 from app.core.shared import ConfigurationError
 
 VALID_TOML = """
@@ -20,6 +23,12 @@ level = "debug"
 
 [tool.custy.cli.execution]
 dry_run = true
+
+[tool.custy.editor]
+prefer_environment = false
+
+[tool.custy.editor.candidates]
+windows = ["vscode", "notepad"]
 """
 
 INVALID_TOML = """
@@ -74,6 +83,11 @@ class TestConfigLoader:
         loader = ConfigLoader(path)
 
         assert loader.get_section("git")["auto_push"] is True
+        assert loader.get_section("editor")["prefer_environment"] is False
+        assert loader.get_section("editor")["candidates"]["windows"] == [
+            "vscode",
+            "notepad",
+        ]
         assert loader.get_section("unknown") == {}
 
     def test_resolve_priority(self, tmp_path):
@@ -112,3 +126,14 @@ class TestConfigLoader:
 
     def test_singleton(self):
         assert get_config() is get_config()
+
+    def test_packaged_template_has_valid_editor_defaults(self):
+        loader = ConfigLoader(Path("app/templates/config.toml"))
+
+        settings = EditorSettings.from_mapping(loader.get_section("editor"))
+
+        assert settings.windows == (
+            EditorIdentifier.VSCODE,
+            EditorIdentifier.NOTEPAD,
+        )
+        assert settings.container[0] is EditorIdentifier.MICRO

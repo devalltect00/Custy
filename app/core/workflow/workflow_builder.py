@@ -28,8 +28,9 @@ Or from CLI args:
     engine = WorkflowEngineBuilder().from_cli_args(args).build()
 """
 
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 from app.cli.constants.enums import (
     BumpChoices,
@@ -38,6 +39,7 @@ from app.cli.constants.enums import (
     StageModeChoices,
     StrategyChoices,
 )
+from app.core.editor import EditorSettings
 from app.core.workflow.workflow_config import WorkflowConfig
 from app.core.workflow.workflow_engine import WorkflowEngine
 
@@ -147,6 +149,26 @@ class WorkflowEngineBuilder:
         self.config.sync_backup = value
         return self
 
+    def with_skip_tag(self, value: bool = True):
+        self.config.skip_tag = value
+        return self
+
+    def with_remote(self, remote: str):
+        self.config.remote = remote
+        return self
+
+    def with_default_remote(self, remote: str):
+        self.config.default_remote = remote
+        return self
+
+    def with_all_remote(self, value: bool = True):
+        self.config.all_remote = value
+        return self
+
+    def with_push_to(self, push_to: str):
+        self.config.push_to = push_to
+        return self
+
     def with_main_remotes(self, remotes: list[str]):
         self.config.main_remotes = remotes
         return self
@@ -185,6 +207,19 @@ class WorkflowEngineBuilder:
 
     def with_log_level(self, choice: LogLevelChoices):
         self.config.log_level = choice
+        return self
+
+    def with_editor_settings(
+        self,
+        settings: EditorSettings | Mapping[str, Any] | None,
+    ):
+        """Configure editor precedence for interactive workflow messages."""
+
+        self.config.editor_settings = (
+            settings
+            if isinstance(settings, EditorSettings)
+            else EditorSettings.from_mapping(settings)
+        )
         return self
 
     # =========================================================
@@ -261,8 +296,29 @@ class WorkflowEngineBuilder:
         if getattr(args, "force_changelog", False):
             self.with_force_changelog(True)
 
-        if getattr(args, "sync_backup", False):
-            self.with_sync_backup(True)
+        if hasattr(args, "sync_backup") and args.sync_backup is not None:
+            self.with_sync_backup(args.sync_backup)
+
+        if hasattr(args, "skip_tag") and args.skip_tag is not None:
+            self.with_skip_tag(args.skip_tag)
+
+        if getattr(args, "remote", None):
+            self.with_remote(args.remote)
+
+        if getattr(args, "default_remote", None):
+            self.with_default_remote(args.default_remote)
+
+        if hasattr(args, "all_remote") and args.all_remote is not None:
+            self.with_all_remote(args.all_remote)
+
+        if getattr(args, "push_to", None):
+            self.with_push_to(args.push_to)
+
+        if hasattr(args, "main_remotes") and args.main_remotes is not None:
+            self.with_main_remotes(args.main_remotes)
+
+        if hasattr(args, "backup_remotes") and args.backup_remotes is not None:
+            self.with_backup_remotes(args.backup_remotes)
 
         if hasattr(args, "cleanup_backup_type"):
             value = self._get(args, "cleanup_backup_type")
@@ -295,6 +351,9 @@ class WorkflowEngineBuilder:
             value = self._get(args, "log_level")
             if value not in (None, LogLevelChoices.INFO):
                 self.with_log_level(args.log_level)
+
+        if hasattr(args, "editor_settings"):
+            self.with_editor_settings(args.editor_settings)
 
         return self
 

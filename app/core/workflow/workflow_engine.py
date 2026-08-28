@@ -23,6 +23,7 @@ from app.core.backup import BackupManager
 from app.core.branch_workflow import BranchWorkflowManager
 from app.core.changelog.generator import ChangelogGenerator
 from app.core.cleanup.backups.handle_cleanup_backups import HandleCleanupBackups
+from app.core.editor import EditorService
 from app.core.exceptions.validation_error import ValidationError  # adjust if needed
 from app.core.files.update_files import (
     update_version_target,
@@ -98,8 +99,13 @@ class WorkflowEngine:
         self.force_changelog = config.force_changelog
         self.force_commit = config.force_commit
         self.sync_backup = config.sync_backup
+        self.skip_tag = config.skip_tag
         self.skip_checks = config.skip_checks
 
+        self.remote = config.remote
+        self.default_remote = config.default_remote
+        self.all_remote = config.all_remote
+        self.push_to = config.push_to
         self.main_remotes = config.main_remotes
         self.backup_remotes = config.backup_remotes
 
@@ -113,7 +119,7 @@ class WorkflowEngine:
         self.log_level = config.log_level
 
         # ===== Runtime =====
-        self.tag: str = ""
+        self.tag: str = self.tag_input or ""
         self.tag_message: str = ""
         self.changes_to_staged: list[str] = []
 
@@ -135,6 +141,7 @@ class WorkflowEngine:
             sync_backup=self.sync_backup,
             dry_run=self.dry_run,
         )
+        self.editorService = EditorService(settings=config.editor_settings)
 
         # Silent mode
         if self.no_debug:
@@ -200,12 +207,13 @@ class WorkflowEngine:
                 code="NOT_GIT_REPO",
             )
 
-    def ensure_remote_exists(self, remote: str = "origin"):
+    def ensure_remote_exists(self, remote: str | None = None) -> None:
         """
         Ensure a required Git remote exists.
 
         Args:
-            remote (str): Remote name to check (default: 'origin').
+            remote: Optional explicit remote name. When omitted, validate every
+                remote selected by the current push configuration.
 
         Behavior:
             - Uses GitService abstraction
@@ -215,13 +223,28 @@ class WorkflowEngine:
         if self.skip_checks:
             return
 
-        if not self.gitService.check_remote(remote):
-            raise ValidationError(
-                message=f"Git remote '{remote}' not found or unreachable.",
-                hint=f"Add remote using: git remote add {remote} <url>",
-                code="REMOTE_NOT_FOUND",
-                context={"remote": remote},
+        if remote:
+            remotes = [remote]
+        else:
+            current_branch = self.gitService.get_current_branch()
+            main_remotes, backup_remotes = self._resolve_push_remote_groups(
+                current_branch=current_branch
             )
+            remotes = [*main_remotes, *backup_remotes]
+
+        for resolved_remote in remotes:
+            if not self.gitService.check_remote(resolved_remote):
+                raise ValidationError(
+                    message=(
+                        f"Git remote '{resolved_remote}' not found or unreachable."
+                    ),
+                    hint=(
+                        "Add the remote with git remote add "
+                        f"{resolved_remote} <url> or update Custy's Git configuration."
+                    ),
+                    code="REMOTE_NOT_FOUND",
+                    context={"remote": resolved_remote},
+                )
 
     def ensure_version_file(self):
         """
@@ -640,7 +663,7 @@ class WorkflowEngine:
 
         Behavior:
             - Skips missing files
-            - Uses system editor (VSCode, Notepad fallback)
+            - Uses environment and platform-aware editor discovery
             - Respects dry-run mode
         """
 
@@ -659,8 +682,9 @@ class WorkflowEngine:
             label (str): Human-friendly name (for logging).
 
         Behavior:
-            - Tries multiple editors (VSCode → Notepad fallback)
-            - Blocks execution until editor is closed (if supported)
+            - Honors VISUAL and EDITOR before platform defaults
+            - Blocks execution until the selected editor exits
+            - Supports terminal editors in interactive Linux containers
             - Respects dry-run mode
 
         Raises:
@@ -681,39 +705,10 @@ class WorkflowEngine:
             f"[dim white]save and close the file to continue.[/dim white]"
         )
 
-        editors = [
-            ["code", "--wait"],  # VSCode
-            ["notepad"],  # Windows fallback
-        ]
-
-        for editor_cmd in editors:
-            try:
-                if self.dry_run:
-                    logger.info(
-                        f"(dry-run) Would open editor: {' '.join(editor_cmd)} {path}"
-                    )
-                    return
-
-                result = self.gitService.executor.runner.run(
-                    command=editor_cmd + [str(path)],
-                    shell=True,
-                    check=True,
-                )
-
-                if result is not None:
-                    logger.info(f"✅ Finished editing {label}.")
-                    return
-
-            except Exception as e:
-                logger.debug(f"Editor failed: {editor_cmd} → {e}")
-                continue
-
-        # ❌ If all editors fail
-        raise ValidationError(
-            message="Unable to open editor automatically.",
-            hint="Please open and edit the file manually.",
-            code="EDITOR_LAUNCH_FAILED",
-            context={"file": str(path)},
+        self.editorService.open_file(
+            Path(path),
+            label=label,
+            dry_run=self.dry_run,
         )
 
     def validate_edited_files(self) -> None:
@@ -738,7 +733,9 @@ class WorkflowEngine:
             - may override self.tag
         """
 
-        self.skip_tag = False
+        if self.skip_tag:
+            logger.info("⏭️ Tagging remains disabled by push configuration.")
+            return
 
         if commit_type not in ALLOWED_COMMIT_TYPES:
             if self.force_tag:
@@ -1489,15 +1486,13 @@ class WorkflowEngine:
 
     def push_changes(self) -> None:
         """
-        Push commits and tags to configured remotes.
+        Push commits and tags to the resolved remote groups.
 
-        Behavior:
-            - uses user-provided remotes if available
-            - Optionally pushes to backup remote(s)
-            - falls back to 'origin' / 'backup' with confirmation
-            - skips backup for non-critical branches
-            - Respects skip_tag flag
-            - Uses GitService abstraction
+        Selection priority:
+            1. An explicit remote supplied by the CLI.
+            2. All configured groups when all_remote is enabled.
+            3. The configured push_to group.
+            4. Optional backup synchronization for a main-group push.
 
         Branch Rules:
             Backup push is skipped for branches starting with:
@@ -1511,32 +1506,13 @@ class WorkflowEngine:
         current_branch = self.gitService.get_current_branch()
         logger.debug(f"Current branch: {current_branch}")
 
-        # =========================================================
-        # Resolve main remotes
-        # =========================================================
-        main_remotes = self._resolve_main_remotes()
+        main_remotes, backup_remotes = self._resolve_push_remote_groups(
+            current_branch=current_branch
+        )
 
-        # =========================================================
-        # Resolve backup remotes
-        # =========================================================
-        backup_remotes = []
+        if main_remotes:
+            self._push_to_remotes(main_remotes, label="main")
 
-        if self.sync_backup:
-            if any(current_branch.startswith(p) for p in NON_CRITICAL_BRANCHES):
-                logger.warning(
-                    f"[yellow]⛔ Skipping backup push for branch '{current_branch}'[/yellow]"
-                )
-            else:
-                backup_remotes = self._resolve_backup_remotes()
-
-        # =========================================================
-        # Push main
-        # =========================================================
-        self._push_to_remotes(main_remotes, label="main")
-
-        # =========================================================
-        # Push backup
-        # =========================================================
         if backup_remotes:
             self._push_to_remotes(backup_remotes, label="backup")
 
@@ -1546,25 +1522,29 @@ class WorkflowEngine:
 
         Priority:
             1. self.main_remotes
-            2. fallback to 'origin'
+            2. self.default_remote
         """
 
-        if self.main_remotes:
-            return self.main_remotes
+        remotes = self._deduplicate_remotes(self.main_remotes or [])
+        if remotes:
+            return remotes
 
-        # fallback to origin
-        if self.gitService.check_remote("origin"):
-            confirm = (
-                input("No main remote provided. Use 'origin'? (y/n): ").strip().lower()
+        if self.default_remote is not None and not isinstance(self.default_remote, str):
+            raise ValidationError(
+                message="The configured default_remote must be a string.",
+                hint="Set tool.custy.git.default_remote to a Git remote name.",
+                code="INVALID_REMOTE_CONFIG",
+                context={"field": "default_remote"},
             )
 
-            if confirm in ("y", "yes"):
-                logger.info("[dim]Using default remote: origin[/dim]")
-                return ["origin"]
+        default_remote = (self.default_remote or "").strip()
+        if default_remote:
+            logger.info(f"[dim]Using default remote: {default_remote}[/dim]")
+            return [default_remote]
 
         raise ValidationError(
             message="No valid main remote found.",
-            hint="Provide --main-remotes or configure 'origin'.",
+            hint="Configure tool.custy.git.main_remotes or default_remote.",
             code="MAIN_REMOTE_MISSING",
         )
 
@@ -1572,27 +1552,125 @@ class WorkflowEngine:
         """
         Resolve backup remotes list.
 
-        Priority:
-            1. self.backup_remotes
-            2. fallback to 'backup'
+        Empty backup groups remain optional unless push_to explicitly selects
+        the backup group.
         """
 
-        if self.backup_remotes:
-            return self.backup_remotes
+        remotes = self._deduplicate_remotes(self.backup_remotes or [])
+        if remotes:
+            return remotes
 
-        if self.gitService.check_remote("backup"):
-            confirm = (
-                input("No backup remote provided. Use 'backup'? (y/n): ")
-                .strip()
-                .lower()
+        return []
+
+    @staticmethod
+    def _deduplicate_remotes(remotes: list[str]) -> list[str]:
+        """Normalize remote names while preserving configuration order."""
+
+        if not isinstance(remotes, list):
+            raise ValidationError(
+                message="Configured Git remote groups must be arrays of names.",
+                hint='Use TOML arrays such as main_remotes = ["origin"].',
+                code="INVALID_REMOTE_CONFIG",
             )
 
-            if confirm in ("y", "yes"):
-                logger.info("[dim]Using default remote: backup[/dim]")
-                return ["backup"]
+        normalized: list[str] = []
+        for remote in remotes:
+            if not isinstance(remote, str):
+                raise ValidationError(
+                    message="Every configured Git remote name must be a string.",
+                    hint="Remove non-string values from the configured remote arrays.",
+                    code="INVALID_REMOTE_CONFIG",
+                    context={"remote": remote},
+                )
 
-        logger.warning("[yellow]⚠️ No backup remote configured.[/yellow]")
-        return []
+            remote = remote.strip()
+            if remote and remote not in normalized:
+                normalized.append(remote)
+
+        return normalized
+
+    def _resolve_push_remote_groups(
+        self,
+        current_branch: str | None = None,
+    ) -> tuple[list[str], list[str]]:
+        """
+        Resolve the main and backup remote groups for the current push.
+
+        An explicit CLI remote always wins. Otherwise all_remote overrides the
+        push_to strategy. sync_backup adds configured backups to a main push.
+        Backup targets remain protected on non-critical branches.
+        """
+
+        explicit_remote = (self.remote or "").strip()
+        if explicit_remote:
+            return [explicit_remote], []
+
+        if self.push_to is not None and not isinstance(self.push_to, str):
+            raise ValidationError(
+                message="The configured push_to value must be a string.",
+                hint="Set tool.custy.git.push_to to main, backup, or all.",
+                code="INVALID_PUSH_TARGET",
+                context={"push_to": self.push_to},
+            )
+
+        push_to = (self.push_to or "main").strip().lower()
+        if push_to not in {"main", "backup", "all"}:
+            raise ValidationError(
+                message=f"Unsupported Git push target: '{self.push_to}'.",
+                hint="Set tool.custy.git.push_to to main, backup, or all.",
+                code="INVALID_PUSH_TARGET",
+                context={"push_to": self.push_to},
+            )
+
+        select_main = self.all_remote or push_to in {"main", "all"}
+        select_backup = self.all_remote or push_to in {"backup", "all"}
+
+        main_remotes = self._resolve_main_remotes() if select_main else []
+        backup_remotes = self._resolve_backup_remotes() if select_backup else []
+
+        if self.sync_backup and select_main and not select_backup:
+            backup_remotes = self._resolve_backup_remotes()
+            if not backup_remotes:
+                logger.warning(
+                    "[yellow]⚠️ Backup synchronization was requested, "
+                    "but no backup remotes are configured.[/yellow]"
+                )
+
+        if push_to == "backup" and not self.all_remote and not backup_remotes:
+            raise ValidationError(
+                message="The backup push target has no configured remotes.",
+                hint="Configure tool.custy.git.backup_remotes or select push_to = main.",
+                code="BACKUP_REMOTE_MISSING",
+            )
+
+        if (
+            backup_remotes
+            and current_branch
+            and any(
+                current_branch.startswith(prefix) for prefix in NON_CRITICAL_BRANCHES
+            )
+        ):
+            logger.warning(
+                f"[yellow]⛔ Skipping backup push for branch '{current_branch}'[/yellow]"
+            )
+            backup_remotes = []
+
+        main_remotes = self._deduplicate_remotes(main_remotes)
+        main_remote_names = set(main_remotes)
+        backup_remotes = [
+            remote
+            for remote in self._deduplicate_remotes(backup_remotes)
+            if remote not in main_remote_names
+        ]
+
+        if not main_remotes and not backup_remotes:
+            raise ValidationError(
+                message="No Git remotes were selected for push.",
+                hint="Configure a default, main, or backup Git remote.",
+                code="PUSH_REMOTE_MISSING",
+            )
+
+        return main_remotes, backup_remotes
 
     def _push_to_remotes(self, remotes: list[str], label: str) -> None:
         """
