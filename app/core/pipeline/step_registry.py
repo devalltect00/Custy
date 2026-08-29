@@ -22,9 +22,11 @@ from app.core.pipeline.steps import (
     CleanupBranchesStep,
     CommitStep,
     EditFilesStep,
+    EnsureCommitHookPolicyStep,
     EnsureCommitizenConventionStep,
     EnsureCommitMessageFileExistsStep,
     EnsureCommitMessageFileStep,
+    EnsureCommitValidationProviderStep,
     EnsureGitRepoStep,
     EnsureRemoteExistsStep,
     EnsureStagedChangesStep,
@@ -83,7 +85,15 @@ def register_all_steps() -> None:
     StepRegistry.register("ensure_tag_message_file_step", EnsureTagMessageFileStep)
     StepRegistry.register("ensure_staged_changes_step", EnsureStagedChangesStep)
     StepRegistry.register(
+        "ensure_commit_hook_policy_step",
+        EnsureCommitHookPolicyStep,
+    )
+    StepRegistry.register(
         "ensure_commitizen_convention_step", EnsureCommitizenConventionStep
+    )
+    StepRegistry.register(
+        "ensure_commit_validation_provider_step",
+        EnsureCommitValidationProviderStep,
     )
     StepRegistry.register(
         "ensure_commit_message_file_exists_step", EnsureCommitMessageFileExistsStep

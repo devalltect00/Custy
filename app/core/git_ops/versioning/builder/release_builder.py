@@ -153,8 +153,7 @@ class ReleaseNoteBuilder:
         """
         Determine commit type based on version type.
         """
-        # return "docs" if self.info.version_type in [VersionType.FINAL, VersionType.POST] else "chore"
-        return "<type>"
+        return "release"
 
     def _description(self) -> str:
         """

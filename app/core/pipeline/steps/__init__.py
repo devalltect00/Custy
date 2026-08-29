@@ -27,9 +27,11 @@ from .stage_step import StageStep
 from .tag_step import TagStep
 from .validate_edited_step import ValidateEditedStep
 from .validation import (
+    EnsureCommitHookPolicyStep,
     EnsureCommitizenConventionStep,
     EnsureCommitMessageFileExistsStep,
     EnsureCommitMessageFileStep,
+    EnsureCommitValidationProviderStep,
     EnsureGitRepoStep,
     EnsureRemoteExistsStep,
     EnsureStagedChangesStep,
@@ -57,12 +59,14 @@ __all__ = [
     "FinalizeWorkflowStep",
     "CleanupBranchesStep",
     "EnsureGitRepoStep",
+    "EnsureCommitHookPolicyStep",
     "EnsureRemoteExistsStep",
     "EnsureVersionFileStep",
     "EnsureCommitMessageFileStep",
     "EnsureTagMessageFileStep",
     "EnsureStagedChangesStep",
     "EnsureCommitizenConventionStep",
+    "EnsureCommitValidationProviderStep",
     "EnsureCommitMessageFileExistsStep",
     "EnsureTagMessageFileExistsStep",
     "BackupCommitMessageStep",

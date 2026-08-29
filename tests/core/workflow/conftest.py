@@ -8,6 +8,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from app.core.git_ops.hooks import GitHookPlan
 from app.core.workflow.workflow_config import WorkflowConfig
 from app.core.workflow.workflow_engine import WorkflowEngine
 
@@ -28,5 +29,7 @@ def workflow_engine():
     engine.changelogGenerator = MagicMock()
     engine.backupManager = MagicMock()
     engine.branchWorkflowManager = MagicMock()
+    engine.gitHookService = MagicMock()
+    engine.commit_hook_plan = GitHookPlan()
 
     return engine

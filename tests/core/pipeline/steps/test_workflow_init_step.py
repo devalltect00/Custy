@@ -30,3 +30,8 @@ class TestWorkflowInitStep:
         step.execute(ctx)
 
         ctx.engine.initialize_workflow.assert_called_once_with()
+
+    def test_requires_exclusive_terminal(self):
+        """Workflow confirmation must remain visible while awaiting input."""
+
+        assert WorkflowInitStep.requires_exclusive_terminal is True

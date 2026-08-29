@@ -10,6 +10,7 @@ including dry-run and failure handling.
 import pytest
 
 from app.core.exceptions.validation_error import ValidationError
+from app.core.shared import GitOperationError
 from app.core.workflow.workflow_engine import WorkflowEngine
 
 
@@ -102,6 +103,34 @@ class TestPushFailures:
             )
 
         assert exc.value.code == "PUSH_FAILED"
+
+    def test_preserves_authentication_diagnostics(
+        self,
+        workflow_engine: WorkflowEngine,
+    ):
+        """Container authentication errors keep Git's actionable detail."""
+
+        workflow_engine.gitService.push.side_effect = GitOperationError(
+            "Git push failed",
+            operation="push",
+            returncode=128,
+            stderr=(
+                "fatal: could not read Username for 'https://github.com': "
+                "terminal prompts disabled"
+            ),
+        )
+
+        with pytest.raises(ValidationError) as exc_info:
+            workflow_engine._push_to_remotes(
+                ["origin"],
+                label="main",
+            )
+
+        error = exc_info.value
+        assert error.code == "PUSH_FAILED"
+        assert "current execution environment" in error.hint
+        assert error.context["exit_code"] == 128
+        assert "could not read Username" in error.context["detail"]
 
     def test_wraps_tag_push_failure(
         self,

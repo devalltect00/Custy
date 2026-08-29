@@ -23,9 +23,8 @@ CheckCzOption = Annotated[
         help="""
         [bold]Commitizen Validation[/bold]
 
-        Validate Commitizen configuration and integration.
-
-        Useful when using Commitizen-based versioning workflows.
+        Explicitly require Commitizen configuration, availability, and
+        commit-message validation for this command.
 
         [dim blue]Default:[/dim blue] False
 
@@ -33,7 +32,7 @@ CheckCzOption = Annotated[
         Commitizen must be installed and configured.
 
         [dim yellow]HINT:[/dim yellow]
-        Enable this only if your project uses Commitizen.
+        Prefer tool.custy.commit.validation for persistent configuration.
 
         [dim]Variable:[/dim]
         'tool.custy.cli.execution.check_cz'

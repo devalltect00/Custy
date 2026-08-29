@@ -50,6 +50,18 @@ class TestPipelineProfiles:
         assert "tag_step" in names
         assert "push_step" in names
 
+    def test_push_profile_has_no_release_workflow_initialization(self):
+        """A standalone push validates remotes and publishes existing state."""
+
+        names = [step["name"] for step in PIPELINE_PROFILES["push"]]
+
+        assert names == [
+            "validate-sub-repo",
+            "validate-sub-pre-push",
+            "push_step",
+        ]
+        assert "workflow_init_step" not in names
+
     def test_full_finishes_with_finalize(self):
         full = PIPELINE_PROFILES["full"]
 

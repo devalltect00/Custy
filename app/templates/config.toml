@@ -207,6 +207,50 @@ macos = ["vscode", "micro", "nano", "vim", "vi"]
 container = ["micro", "nano", "vim", "vi"]
 
 
+# =========================================================
+# COMMIT MESSAGE VALIDATION
+# =========================================================
+#
+# Custy's built-in validator works without optional tools.
+# Commitizen is enabled only according to the provider rules below.
+#
+# Behavior matrix:
+#
+#     provider     Commitizen config     cz command     Result
+#     --------     -----------------     ----------     ----------------------
+#     auto         absent                any            Custy validation
+#     auto         present               present        Custy + Commitizen
+#     auto         present               absent         Warn, then Custy
+#     custy        any                   any            Custy validation only
+#     commitizen   present               present        Custy + Commitizen
+#     commitizen   absent/invalid        any            Fail before mutation
+#     git          any                   any            Basic file checks only
+#
+# With provider = "auto", require_tool = true changes unavailable or
+# invalid detected Commitizen integration from a warning into an error.
+#
+# Installing `cz` alone does not activate Commitizen. A recognized project
+# configuration must also exist: .cz.toml, .cz.yaml, .cz.yml, .cz.json, or
+# [tool.commitizen] in pyproject.toml.
+#
+# Version strategy and commit-message validation are independent. For example,
+# strategy = "semver" can still use provider = "commitizen".
+#
+# =========================================================
+
+[tool.custy.commit.validation]
+
+# Available: "auto", "custy", "commitizen", "git".
+provider = "auto"
+
+# false:
+#     Optional auto-detection failures warn and fall back to Custy.
+#
+# true:
+#     A detected but unavailable or invalid external provider is fatal.
+require_tool = false
+
+
 
 # ---------------------------------------------------------
 # CLI Related
@@ -490,8 +534,9 @@ auto_stage = false
 #
 stage_mode = "all"
 
-# Verify Commitizen installation before
-# running version-related operations.
+# Backward-compatible CLI default for --check-cz.
+# true explicitly requires Commitizen for commit-message validation.
+# Prefer tool.custy.commit.validation for new configuration.
 #
 check_cz = false
 
@@ -2320,3 +2365,40 @@ main_remotes = ["origin"]
 #         backup remotes.
 #
 push_to = "main"
+
+
+# =========================================================
+# GIT - 🪝 COMMIT HOOKS
+# =========================================================
+#
+# Controls how Custy executes pre-commit and commit-msg hooks.
+#
+# Projects without installed hooks continue through normal Git behavior in
+# every mode except explicit pre_commit mode. A .pre-commit-config.yaml file
+# alone does not activate pre-commit; the hook must be installed or the mode
+# must be set explicitly.
+#
+# Available modes:
+#
+#     auto (recommended)
+#         Use native Git hooks when they are absent or compatible. When a
+#         recognized pre-commit-generated wrapper is incompatible with the
+#         current environment (for example, a Windows hook mounted into a
+#         Linux container), run the same configured pre-commit stages directly.
+#
+#     native
+#         Always let Git execute installed hooks exactly as they are. Use this
+#         for custom hooks or when every hook matches the runtime environment.
+#
+#     pre_commit
+#         Require .pre-commit-config.yaml and the pre-commit executable, run
+#         configured stages directly, then skip only the wrappers that already
+#         completed successfully for the current commit.
+#
+# Custy never silently skips an unknown or failing hook.
+#
+# =========================================================
+
+[tool.custy.git.hooks]
+
+mode = "auto"

@@ -9,6 +9,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from app.core.git_ops.git.service import GitService
+from app.core.shared import GitOperationError
 
 
 @pytest.fixture
@@ -45,6 +46,7 @@ class TestCommit:
         service.executor.commit.assert_called_once_with(
             "feat: add feature",
             None,
+            no_verify=False,
         )
 
     def test_message_file(self, service, tmp_path):
@@ -68,6 +70,7 @@ class TestCommit:
         service.executor.commit.assert_called_once_with(
             None,
             str(message_file),
+            no_verify=False,
         )
 
     def test_both_message_and_file(self, service, tmp_path):
@@ -92,18 +95,39 @@ class TestCommit:
         service.executor.commit.assert_called_once_with(
             "feat: priority",
             str(message_file),
+            no_verify=False,
+        )
+
+    def test_no_verify_is_forwarded_after_external_hook_execution(self, service):
+        """The service forwards an explicit one-commit wrapper bypass."""
+
+        result = MagicMock(success=True)
+        service.executor.commit.return_value = result
+
+        service.commit(message="fix: checked", no_verify=True)
+
+        service.executor.commit.assert_called_once_with(
+            "fix: checked",
+            None,
+            no_verify=True,
         )
 
     def test_failure(self, service):
         result = MagicMock()
         result.success = False
+        result.returncode = 1
+        result.stdout = ""
+        result.stderr = "pre-commit hook failed"
 
         service.executor.commit.return_value = result
 
-        with pytest.raises(RuntimeError):
+        with pytest.raises(GitOperationError) as exc:
             service.commit(
                 message="feat: fail",
             )
+
+        assert exc.value.returncode == 1
+        assert exc.value.stderr == "pre-commit hook failed"
 
 
 # class TestCommitAmend:

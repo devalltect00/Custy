@@ -161,11 +161,11 @@ CheckCzOption = Annotated[
         help="""
         [bold]Commitizen Validation[/bold]
 
-        Check commit and tag message using commitizen
+        Explicitly require Commitizen for commit-message validation.
 
-        Validate Commitizen configuration and integration.
-
-        Useful when using Commitizen-based versioning workflows.
+        This overrides provider = "auto" for the current command. Custy's
+        built-in validation remains the default fallback when this flag is not
+        supplied.
 
         [dim blue]Default:[/dim blue] False
 
@@ -173,7 +173,7 @@ CheckCzOption = Annotated[
         Commitizen must be installed and configured.
 
         [dim yellow]HINT:[/dim yellow]
-        Enable this only if your project uses Commitizen.
+        Prefer tool.custy.commit.validation for persistent configuration.
 
         [dim]Variable:[/dim]
         'tool.custy.cli.execution.check_cz'

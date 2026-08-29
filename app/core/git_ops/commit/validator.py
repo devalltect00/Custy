@@ -9,6 +9,45 @@ from app.core.exceptions.validation_error import ValidationError
 HEADER_REGEX = re.compile(r"(?P<type>\w+)(\((?P<scope>[^\)]+)\))?!?: (?P<summary>.+)$")
 
 
+def validate_commit_message_file(file_path: Path) -> None:
+    """Validate only the safety requirements for a commit-message file.
+
+    This provider-neutral check is used by ``provider = "git"``. It accepts
+    arbitrary Git commit-message formats while still rejecting missing,
+    unreadable, or empty files.
+
+    Args:
+        file_path: Commit-message file to inspect.
+
+    Raises:
+        ValidationError: If the file is missing, unreadable, or empty.
+    """
+
+    if not file_path.exists():
+        raise ValidationError(
+            message=f"Commit message file not found: {file_path}",
+            hint="Run `custy init templates` or correct the configured path.",
+            code="COMMIT_MSG_FILE_NOT_FOUND",
+        )
+
+    try:
+        content = file_path.read_text(encoding="utf-8").strip()
+    except (OSError, UnicodeError) as error:
+        raise ValidationError(
+            message=f"Unable to read commit message file: {file_path}",
+            hint="Use a readable UTF-8 text file.",
+            code="COMMIT_MSG_FILE_UNREADABLE",
+            context={"error": str(error)},
+        ) from error
+
+    if not content:
+        raise ValidationError(
+            message="Commit message is empty.",
+            hint="Write a commit message before continuing.",
+            code="EMPTY_COMMIT_MSG",
+        )
+
+
 def validate_commit_message_format(file_path: Path) -> str:
     """
     Validate commit message format and return detected commit type.
@@ -20,21 +59,8 @@ def validate_commit_message_format(file_path: Path) -> str:
         ValidationError
     """
 
-    if not file_path.exists():
-        raise ValidationError(
-            message=f"Commit message file not found: {file_path}",
-            hint="Run `custy init templates`",
-            code="COMMIT_MSG_FILE_NOT_FOUND",
-        )
-
+    validate_commit_message_file(file_path)
     content = file_path.read_text(encoding="utf-8").strip()
-
-    if not content:
-        raise ValidationError(
-            message="Commit message is empty.",
-            hint="Write a valid commit message.",
-            code="EMPTY_COMMIT_MSG",
-        )
 
     first_line = content.splitlines()[0].strip()
 

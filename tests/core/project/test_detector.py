@@ -6,7 +6,11 @@ import json
 
 import pytest
 
-from app.core.project import ProjectEcosystem, detect_project_layout
+from app.core.project import (
+    ProjectEcosystem,
+    detect_project_layout,
+    detect_project_name,
+)
 from app.core.shared import ConfigurationError
 
 
@@ -122,3 +126,32 @@ class TestProjectLayoutDetection:
 
         with pytest.raises(ConfigurationError, match="version_file"):
             detect_project_layout(root=tmp_path, version_file="missing.json")
+
+
+class TestProjectNameDetection:
+    """Cover Python, Node.js, and generic release-message project names."""
+
+    def test_prefers_pyproject_name(self, tmp_path) -> None:
+        """Python project metadata has deterministic priority."""
+
+        (tmp_path / "pyproject.toml").write_text(
+            '[project]\nname = "path-header-scanner"\n',
+            encoding="utf-8",
+        )
+
+        assert detect_project_name(root=tmp_path) == "path-header-scanner"
+
+    def test_uses_package_name_when_python_metadata_is_absent(self, tmp_path) -> None:
+        """Node.js and Docusaurus projects use package.json metadata."""
+
+        (tmp_path / "package.json").write_text(
+            json.dumps({"name": "devalltect-docs"}),
+            encoding="utf-8",
+        )
+
+        assert detect_project_name(root=tmp_path) == "devalltect-docs"
+
+    def test_generic_project_uses_directory_name(self, tmp_path) -> None:
+        """Repositories without supported metadata still receive a name."""
+
+        assert detect_project_name(root=tmp_path) == tmp_path.name

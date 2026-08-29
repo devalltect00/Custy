@@ -69,6 +69,21 @@ class TestCommit:
             check=True,
         )
 
+    def test_commit_can_skip_already_executed_hook_wrappers(self, executor):
+        """An explicit verified hook plan adds --no-verify before the message."""
+
+        executor.commit(message_file="commit.txt", no_verify=True)
+
+        executor._run.assert_called_once_with(
+            [
+                "commit",
+                "--no-verify",
+                "-F",
+                "commit.txt",
+            ],
+            check=True,
+        )
+
     def test_commit_requires_input(self, executor):
         with pytest.raises(
             ValueError,

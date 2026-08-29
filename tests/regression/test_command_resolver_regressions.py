@@ -35,7 +35,7 @@ class TestCommandResolverRegressions:
         assert "ensure_remote_exists_step" in names
         assert "ensure_version_file_step" in names
         assert "ensure_staged_changes_step" in names
-        assert "ensure_commitizen_convention_step" in names
+        assert "ensure_commit_validation_provider_step" in names
         assert "ensure_commit_message_file_step" in names
         assert "ensure_commit_message_file_exists_step" in names
         assert "ensure_tag_message_file_step" in names
@@ -58,6 +58,18 @@ class TestCommandResolverRegressions:
         assert "commit_step" in names
         assert "tag_step" in names
         assert "push_step" in names
+
+    def test_push_profile_skips_release_workflow_initialization(self):
+        """Keep standalone push focused on validation and synchronization."""
+        resolver = CommandResolver()
+
+        steps = resolver.resolve(["push"])
+
+        assert [step["name"] for step in steps] == [
+            "ensure_git_repo_step",
+            "ensure_remote_exists_step",
+            "push_step",
+        ]
 
     def test_duplicate_steps_are_removed(self):
         """

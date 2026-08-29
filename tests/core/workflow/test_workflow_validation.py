@@ -25,6 +25,11 @@ from unittest.mock import MagicMock, call
 import pytest
 
 from app.core.exceptions.validation_error import ValidationError
+from app.core.git_ops.commit.settings import (
+    CommitValidationProvider,
+    CommitValidationSettings,
+)
+from app.core.git_ops.helper import CommitizenCommandResult, CommitizenInspection
 from app.core.workflow.workflow_config import WorkflowConfig
 from app.core.workflow.workflow_engine import WorkflowEngine
 
@@ -42,6 +47,7 @@ def workflow_engine():
 
     engine.gitService = MagicMock()
     engine.commitizenHelper = MagicMock()
+    engine.commitizenHelper.inspect.return_value = CommitizenInspection(None, None)
     engine.changelogGenerator = MagicMock()
     engine.backupManager = MagicMock()
     engine.branchWorkflowManager = MagicMock()
@@ -102,8 +108,8 @@ class TestValidate:
 
         monkeypatch.setattr(
             workflow_engine,
-            "ensure_commitizen_convention",
-            record("commitizen"),
+            "ensure_commit_validation_provider",
+            record("commit_provider"),
         )
 
         monkeypatch.setattr(
@@ -127,7 +133,7 @@ class TestValidate:
             "commit_file",
             "tag_file",
             "staged",
-            "commitizen",
+            "commit_provider",
             "commit_exists",
             "tag_exists",
         ]
@@ -332,31 +338,188 @@ class TestEnsureTagMessageFile:
         assert exc.value.code == "TAG_MSG_FILE_NOT_FOUND"
 
 
-class TestEnsureCommitizenConvention:
-    """Tests for ensure_commitizen_convention()."""
+class TestEnsureCommitValidationProvider:
+    """Tests for provider discovery and strict optional integration."""
 
-    def test_accepts_valid_commitizen_configuration(
+    def test_auto_without_project_configuration_uses_custy(
         self,
         workflow_engine,
     ):
-        """Succeeds when Commitizen validation is available."""
+        """Tool absence and configuration absence keep Custy universal."""
 
-        workflow_engine.commitizenHelper.check_commit = True
+        assert (
+            workflow_engine.ensure_commit_validation_provider()
+            == CommitValidationProvider.CUSTY
+        )
 
-        workflow_engine.ensure_commitizen_convention()
-
-    def test_raises_when_commitizen_validation_fails(
+    def test_auto_ignores_installed_tool_without_configuration(
         self,
         workflow_engine,
     ):
-        """Raises ValidationError when Commitizen validation fails."""
+        """A globally installed executable alone does not activate Commitizen."""
 
-        workflow_engine.commitizenHelper.check_commit = False
+        workflow_engine.commitizenHelper.inspect.return_value = CommitizenInspection(
+            None,
+            "cz",
+        )
+
+        assert (
+            workflow_engine.ensure_commit_validation_provider()
+            == CommitValidationProvider.CUSTY
+        )
+
+    def test_auto_with_configuration_and_tool_uses_commitizen(
+        self,
+        workflow_engine,
+    ):
+        """Auto mode enables Commitizen only when both signals are present."""
+
+        workflow_engine.commitizenHelper.inspect.return_value = CommitizenInspection(
+            Path(".cz.toml"),
+            "cz",
+        )
+
+        assert (
+            workflow_engine.ensure_commit_validation_provider()
+            == CommitValidationProvider.COMMITIZEN
+        )
+
+    def test_auto_missing_tool_falls_back_to_custy(
+        self,
+        workflow_engine,
+    ):
+        """Optional auto mode warns and falls back when ``cz`` is unavailable."""
+
+        workflow_engine.commitizenHelper.inspect.return_value = CommitizenInspection(
+            Path(".cz.toml"),
+            None,
+        )
+
+        assert (
+            workflow_engine.ensure_commit_validation_provider()
+            == CommitValidationProvider.CUSTY
+        )
+
+    def test_explicit_commitizen_requires_configuration(
+        self,
+        workflow_engine,
+    ):
+        """Explicit Commitizen mode fails before mutation without configuration."""
+
+        workflow_engine.commit_validation_settings = CommitValidationSettings(
+            provider=CommitValidationProvider.COMMITIZEN,
+            require_tool=True,
+        )
 
         with pytest.raises(ValidationError) as exc:
-            workflow_engine.ensure_commitizen_convention()
+            workflow_engine.ensure_commit_validation_provider()
 
-        assert exc.value.code == "COMMITIZEN_CONVENTION_FAILED"
+        assert exc.value.code == "COMMITIZEN_NOT_CONFIGURED"
+
+    def test_strict_auto_requires_detected_tool(
+        self,
+        workflow_engine,
+    ):
+        """Strict auto mode rejects detected integration without ``cz``."""
+
+        workflow_engine.commit_validation_settings = CommitValidationSettings(
+            provider=CommitValidationProvider.AUTO,
+            require_tool=True,
+        )
+        workflow_engine.commitizenHelper.inspect.return_value = CommitizenInspection(
+            Path(".cz.toml"),
+            None,
+        )
+
+        with pytest.raises(ValidationError) as exc:
+            workflow_engine.ensure_commit_validation_provider()
+
+        assert exc.value.code == "COMMITIZEN_NOT_AVAILABLE"
+
+    def test_invalid_explicit_configuration_is_actionable(
+        self,
+        workflow_engine,
+    ):
+        """Malformed strict configuration retains its parser diagnostic."""
+
+        workflow_engine.commit_validation_settings = CommitValidationSettings(
+            provider=CommitValidationProvider.COMMITIZEN,
+            require_tool=True,
+        )
+        workflow_engine.commitizenHelper.inspect.return_value = CommitizenInspection(
+            Path(".cz.toml"),
+            "cz",
+            "invalid TOML",
+        )
+
+        with pytest.raises(ValidationError) as exc:
+            workflow_engine.ensure_commit_validation_provider()
+
+        assert exc.value.code == "COMMITIZEN_CONFIGURATION_INVALID"
+        assert exc.value.context["error"] == "invalid TOML"
+
+
+class TestValidateEditedCommitMessage:
+    """Tests for final provider-aware validation after editor completion."""
+
+    def test_custy_provider_uses_internal_rules(
+        self,
+        workflow_engine,
+        tmp_path,
+    ):
+        """Custy validates conventional syntax without optional tools."""
+
+        message = tmp_path / "commit.txt"
+        message.write_text("fix(core): preserve diagnostics\n", encoding="utf-8")
+        workflow_engine.commit_message_file = message
+        workflow_engine.commit_validation_provider = CommitValidationProvider.CUSTY
+        workflow_engine.evaluate_tagging_eligibility = MagicMock()
+
+        workflow_engine.validate_edited_files()
+
+        workflow_engine.evaluate_tagging_eligibility.assert_called_once_with("fix")
+        workflow_engine.commitizenHelper.check_commit.assert_not_called()
+
+    def test_git_provider_accepts_non_conventional_message(
+        self,
+        workflow_engine,
+        tmp_path,
+    ):
+        """Git mode applies only required file safety checks."""
+
+        message = tmp_path / "commit.txt"
+        message.write_text("A project-specific message\n", encoding="utf-8")
+        workflow_engine.commit_message_file = message
+        workflow_engine.commit_validation_provider = CommitValidationProvider.GIT
+        workflow_engine.evaluate_tagging_eligibility = MagicMock()
+
+        workflow_engine.validate_edited_files()
+
+        workflow_engine.evaluate_tagging_eligibility.assert_not_called()
+
+    def test_commitizen_failure_preserves_tool_output(
+        self,
+        workflow_engine,
+        tmp_path,
+    ):
+        """Commitizen rejection is reported with its exact diagnostic."""
+
+        message = tmp_path / "commit.txt"
+        message.write_text("fix(core): preserve diagnostics\n", encoding="utf-8")
+        workflow_engine.commit_message_file = message
+        workflow_engine.commit_validation_provider = CommitValidationProvider.COMMITIZEN
+        workflow_engine.commitizenHelper.check_commit.return_value = (
+            CommitizenCommandResult(
+                returncode=1,
+                stderr="subject does not match project rules",
+            )
+        )
+
+        with pytest.raises(ValidationError) as exc:
+            workflow_engine.validate_edited_files()
+
+        assert exc.value.code == "COMMITIZEN_CHECK_FAILED"
+        assert "subject does not match" in exc.value.context["detail"]
 
 
 class TestEnsureCommitMessageFileExists:

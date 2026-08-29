@@ -159,7 +159,7 @@ class TestValidationEntry:
         engine.ensure_commit_message_file = MagicMock()
         engine.ensure_tag_message_file = MagicMock()
         engine.ensure_staged_changes = MagicMock()
-        engine.ensure_commitizen_convention = MagicMock()
+        engine.ensure_commit_validation_provider = MagicMock()
         engine.ensure_commit_message_file_exists = MagicMock()
         engine.ensure_tag_message_file_exists = MagicMock()
 
@@ -171,6 +171,6 @@ class TestValidationEntry:
         engine.ensure_commit_message_file.assert_called_once()
         engine.ensure_tag_message_file.assert_called_once()
         engine.ensure_staged_changes.assert_called_once()
-        engine.ensure_commitizen_convention.assert_called_once()
+        engine.ensure_commit_validation_provider.assert_called_once()
         engine.ensure_commit_message_file_exists.assert_called_once()
         engine.ensure_tag_message_file_exists.assert_called_once()

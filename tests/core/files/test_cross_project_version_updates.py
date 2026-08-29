@@ -32,6 +32,17 @@ class TestCrossProjectVersionUpdates:
         content = path.read_text(encoding="utf-8")
         assert 'NAME = "demo"' in content
         assert '__version__ = "2.0.0"' in content
+        assert content.endswith("\n")
+
+    def test_adds_final_newline_when_replacing_version_at_eof(self, tmp_path):
+        """Normalizes a version module that previously lacked its final LF."""
+
+        path = tmp_path / "__version__.py"
+        path.write_text('__version__ = "1.0.0"', encoding="utf-8")
+
+        assert update_python_version_module(path, "v2.0.0") is True
+
+        assert path.read_text(encoding="utf-8") == '__version__ = "2.0.0"\n'
 
     def test_updates_static_pyproject_version(self, tmp_path):
         """Writes normalized metadata while preserving TOML structure."""

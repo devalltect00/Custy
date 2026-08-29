@@ -126,7 +126,14 @@ def update_json_version(file_path: Path, new_version: str) -> bool:
 
 
 def update_python_version_module(file_path: Path, new_version: str) -> bool:
-    """Update or add ``__version__`` in an existing Python module."""
+    """Update or add ``__version__`` and preserve a valid final newline.
+
+    Notes:
+        Horizontal whitespace around an existing assignment is replaced without
+        consuming its line ending. A missing end-of-file newline is added so
+        the generated module remains compatible with standard formatting and
+        pre-commit checks.
+    """
 
     if not file_path.exists():
         return False
@@ -135,7 +142,7 @@ def update_python_version_module(file_path: Path, new_version: str) -> bool:
     content = file_path.read_text(encoding="utf-8")
     replacement = f'__version__ = "{normalized}"'
     pattern = re.compile(
-        r'^__version__\s*=\s*(["\']).*?\1\s*$',
+        r'^__version__[ \t]*=[ \t]*(["\']).*?\1[ \t]*$',
         flags=re.MULTILINE,
     )
     updated_content, count = pattern.subn(replacement, content, count=1)
@@ -143,6 +150,9 @@ def update_python_version_module(file_path: Path, new_version: str) -> bool:
     if count == 0:
         separator = "" if not content or content.endswith("\n") else "\n"
         updated_content = f"{content}{separator}{replacement}\n"
+
+    if not updated_content.endswith("\n"):
+        updated_content += "\n"
 
     file_path.write_text(updated_content, encoding="utf-8")
     logger.info("%s version updated to %s", file_path, normalized)

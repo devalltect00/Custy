@@ -166,7 +166,8 @@ class TestRunner:
         )
 
         callback.assert_called_once_with()
-        assert result is None
+        assert result.returncode == 1
+        assert result.args == ["git", "status"]
 
     def test_check_output_decodes_bytes_by_default(self, monkeypatch):
         """Byte output is decoded when text output is expected."""

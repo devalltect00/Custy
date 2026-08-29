@@ -14,6 +14,7 @@ Covered behaviors include:
 - Backup synchronization
 """
 
+import logging
 from unittest.mock import MagicMock
 
 import pytest
@@ -98,6 +99,32 @@ class TestPushChanges:
         workflow_engine.push_changes()
 
         assert push.call_count == 2
+
+    def test_container_push_explains_credential_boundary(
+        self,
+        workflow_engine: WorkflowEngine,
+        monkeypatch,
+        caplog,
+    ) -> None:
+        """Container execution explains that host credentials are isolated."""
+
+        monkeypatch.setenv("CUSTY_CONTAINER", "1")
+        workflow_engine.gitService.get_current_branch.return_value = "main"
+        monkeypatch.setattr(
+            workflow_engine,
+            "_resolve_push_remote_groups",
+            MagicMock(return_value=(["origin"], [])),
+        )
+        monkeypatch.setattr(
+            workflow_engine,
+            "_push_to_remotes",
+            MagicMock(),
+        )
+        caplog.set_level(logging.INFO)
+
+        workflow_engine.push_changes()
+
+        assert "Host credential-manager sessions are not inherited" in caplog.text
 
     def test_dry_run_resolves_all_groups_without_pushing(
         self,

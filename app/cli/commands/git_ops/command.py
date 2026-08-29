@@ -254,6 +254,8 @@ def commit(
         debug=app_ctx.debug,
         log_level=app_ctx.log_level,
         editor_settings=config.get_section("editor"),
+        commit_validation_settings=config.get_section("commit", "validation"),
+        git_hook_settings=config.get_section("git", "hooks"),
     )
 
     # _run_pipeline(app_ctx, ["commit"])

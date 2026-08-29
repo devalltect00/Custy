@@ -116,6 +116,16 @@ dependencies = [
 
 [project.optional-dependencies]
 
+commitizen = [
+    # Optional commit-message validation and version strategy integration
+    "commitizen>=4.0.0",
+]
+
+hooks = [
+    # Optional direct execution for cross-platform pre-commit wrappers
+    "pre-commit>=3.7.0",
+]
+
 dev = [
     # Test
     "pytest>=8.0.0",
@@ -138,7 +148,7 @@ dev = [
     "ipykernel",
 
     # Commitizen
-    "commitizen",
+    "commitizen>=4.0.0",
 ]
 
 docs = [

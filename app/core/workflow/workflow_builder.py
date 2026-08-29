@@ -40,6 +40,8 @@ from app.cli.constants.enums import (
     StrategyChoices,
 )
 from app.core.editor import EditorSettings
+from app.core.git_ops.commit.settings import CommitValidationSettings
+from app.core.git_ops.hooks import GitHookSettings
 from app.core.workflow.workflow_config import WorkflowConfig
 from app.core.workflow.workflow_engine import WorkflowEngine
 
@@ -78,6 +80,38 @@ class WorkflowEngineBuilder:
 
     def with_commit_file(self, path: str):
         self.config.commit_message_file = Path(path)
+        return self
+
+    def with_check_cz(self, value: bool = True):
+        """Preserve the legacy CLI flag that explicitly requires Commitizen."""
+
+        self.config.check_cz = value
+        return self
+
+    def with_commit_validation_settings(
+        self,
+        settings: CommitValidationSettings | Mapping[str, Any] | None,
+    ):
+        """Configure provider-aware commit-message validation."""
+
+        self.config.commit_validation_settings = (
+            settings
+            if isinstance(settings, CommitValidationSettings)
+            else CommitValidationSettings.from_mapping(settings)
+        )
+        return self
+
+    def with_git_hook_settings(
+        self,
+        settings: GitHookSettings | Mapping[str, Any] | None,
+    ):
+        """Configure safe native or pre-commit hook execution."""
+
+        self.config.git_hook_settings = (
+            settings
+            if isinstance(settings, GitHookSettings)
+            else GitHookSettings.from_mapping(settings)
+        )
         return self
 
     def with_tag(self, tag: str):
@@ -240,6 +274,15 @@ class WorkflowEngineBuilder:
 
         if getattr(args, "commit_message_file", None):
             self.with_commit_file(args.commit_message_file)
+
+        if getattr(args, "check_cz", False):
+            self.with_check_cz(True)
+
+        if hasattr(args, "commit_validation_settings"):
+            self.with_commit_validation_settings(args.commit_validation_settings)
+
+        if hasattr(args, "git_hook_settings"):
+            self.with_git_hook_settings(args.git_hook_settings)
 
         if getattr(args, "tag", None):
             self.with_tag(args.tag)

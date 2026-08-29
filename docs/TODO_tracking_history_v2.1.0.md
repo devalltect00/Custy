@@ -279,6 +279,7 @@ Since v1.10.0
 - [x] Synchronize supported Python and Node.js metadata in mixed repositories.
 - [x] Update supported root Node.js lockfile metadata.
 - [x] Remove a leading `v` before storing versions in project metadata.
+- [x] Preserve or add the final newline when updating Python `__version__` modules so generated metadata passes end-of-file pre-commit checks.
 - [x] Support Git-tag-only versioning when no compatible version file exists.
 
 #### Initialization and templates
@@ -307,17 +308,25 @@ Since v1.10.0
 - [x] Refresh Ruff, pre-commit-hooks, and Black for the Python 3.14 toolchain.
 - [x] Protect historical, copied, deprecated, development, and temporary files from automated formatting.
 - [x] Validate production-container startup and dry-run initialization from a Docusaurus repository without `app/`.
+- [x] Add adaptive `auto`, `custy`, `commitizen`, and `git` commit-message validation providers.
+- [x] Detect project-owned Commitizen configuration without requiring Commitizen in every target repository.
+- [x] Preserve `--check-cz` as a backward-compatible strict Commitizen override.
+- [x] Preserve Git stdout, stderr, operation, and exit status when commits fail.
+- [x] Classify hook failures separately from ordinary Git commit failures and surface actionable diagnostics.
+- [x] Include the optional Commitizen extra in the production image.
 
 #### Tests and documentation
 
 - [x] Add detector coverage for Python, Node.js, mixed, PHP, and generic projects.
 - [x] Add version-update coverage for Python modules, `pyproject.toml`, `package.json`, lockfiles, mixed projects, and tag-only projects.
+- [x] Add regression coverage for final-newline preservation through direct Python metadata updates and the release workflow.
 - [x] Add protected-entry-point, structured-error, no-command, template-fallback, backup-routing, and cross-project regression tests.
 - [x] Add editor settings, editor service, Docker asset, workflow delegation, and exclusive-terminal progress lifecycle coverage.
-- [x] Validate 1,235 tests with 82% overall coverage.
+- [x] Add commit-validation settings, Commitizen inspection, provider resolution, structured Git error, and hook-classification coverage.
+- [x] Validate 1,260 tests with 83% overall coverage and all configured quality hooks.
 - [x] Validate Ruff, Black, diff whitespace, pre-commit configuration, and the production Docker image.
 - [x] Validate the rebuilt production image, resolved source version, editor-progress marker, and Rich suspend/restart lifecycle.
-- [x] Update canonical English and Indonesian documentation for discovery, initialization, versioning, errors, Docker, editors, terminal-progress handoff, pre-commit, testing, and contributing.
+- [x] Update canonical English and Indonesian documentation for discovery, initialization, versioning, errors, Docker, editors, terminal-progress handoff, commit validation, Git hooks, pre-commit, testing, and contributing.
 
 ### Upgrade checklist from v2.0.0
 
@@ -325,6 +334,7 @@ Since v1.10.0
 - [x] Document switching `project_source` and `version_file` to `"auto"` when discovery is preferred.
 - [x] Document reviewing initialization through dry-run before replacing customized configuration.
 - [x] Document reinstalling editable checkouts so the console script uses the protected entry point.
+- [x] Document the commit-validation behavior matrix and the difference between version strategy and message validation.
 - [x] Preserve the experimental status of `custy workflow`.
 
 ### Release checklist

@@ -8,7 +8,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from app.core.git_ops.git.result import CommandResult
 from app.core.git_ops.git.service import GitService
+from app.core.shared import GitOperationError
 
 
 @pytest.fixture
@@ -70,16 +72,20 @@ class TestPush:
         )
 
     def test_push_failure(self, service):
-        result = MagicMock()
-        result.success = False
+        service.executor.push.return_value = CommandResult(
+            returncode=128,
+            stderr="fatal: Authentication failed for origin",
+        )
 
-        service.executor.push.return_value = result
-
-        with pytest.raises(RuntimeError):
+        with pytest.raises(GitOperationError) as exc_info:
             service.push(
                 remote="origin",
                 ref="HEAD",
             )
+
+        assert exc_info.value.operation == "push"
+        assert exc_info.value.returncode == 128
+        assert exc_info.value.detail == "fatal: Authentication failed for origin"
 
 
 class TestPushTag:
@@ -104,16 +110,20 @@ class TestPushTag:
         )
 
     def test_failure(self, service):
-        result = MagicMock()
-        result.success = False
+        service.executor.push_tag.return_value = CommandResult(
+            returncode=1,
+            stderr="remote rejected the tag",
+        )
 
-        service.executor.push_tag.return_value = result
-
-        with pytest.raises(RuntimeError):
+        with pytest.raises(GitOperationError) as exc_info:
             service.push_tag(
                 remote="origin",
                 tag="v1.2.3",
             )
+
+        assert exc_info.value.operation == "push-tag"
+        assert exc_info.value.returncode == 1
+        assert exc_info.value.detail == "remote rejected the tag"
 
 
 # class TestPushAllTags:

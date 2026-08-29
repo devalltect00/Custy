@@ -16,7 +16,13 @@ class PushStep(BaseStep):
     Supports:
     - multiple remotes
     - backup remotes
+
+    The live pipeline display is suspended because Git may request credentials
+    from the terminal. Keeping the terminal exclusive makes authentication
+    prompts visible instead of allowing the progress bar to redraw over them.
     """
+
+    requires_exclusive_terminal: bool = True
 
     @log_step(label="push")
     def execute(self, ctx):

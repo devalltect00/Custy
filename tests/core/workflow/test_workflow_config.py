@@ -16,6 +16,11 @@ from app.cli.constants.enums import (
     StrategyChoices,
 )
 from app.core.editor import EditorIdentifier, EditorSettings
+from app.core.git_ops.commit.settings import (
+    CommitValidationProvider,
+    CommitValidationSettings,
+)
+from app.core.git_ops.hooks import GitHookMode, GitHookSettings
 from app.core.workflow.workflow_config import WorkflowConfig
 
 
@@ -25,6 +30,9 @@ class TestWorkflowConfig:
 
         assert config.commit_message_input is None
         assert config.commit_message_file is None
+        assert config.check_cz is False
+        assert config.commit_validation_settings == CommitValidationSettings()
+        assert config.git_hook_settings == GitHookSettings()
 
         assert config.tag_input is None
         assert config.tag_message_input is None
@@ -110,6 +118,12 @@ class TestWorkflowConfig:
             editor_settings=EditorSettings(
                 windows=(EditorIdentifier.NOTEPAD,),
             ),
+            check_cz=True,
+            commit_validation_settings=CommitValidationSettings(
+                provider=CommitValidationProvider.COMMITIZEN,
+                require_tool=True,
+            ),
+            git_hook_settings=GitHookSettings(mode=GitHookMode.PRE_COMMIT),
         )
 
         assert config.strategy == StrategyChoices.SEMVER
@@ -124,6 +138,12 @@ class TestWorkflowConfig:
         assert config.backup_remotes == ["backup"]
         assert config.backup_retention_count == 25
         assert config.editor_settings.windows == (EditorIdentifier.NOTEPAD,)
+        assert config.check_cz is True
+        assert (
+            config.commit_validation_settings.provider
+            == CommitValidationProvider.COMMITIZEN
+        )
+        assert config.git_hook_settings.mode is GitHookMode.PRE_COMMIT
 
     def test_dataclass_equality(self):
         left = WorkflowConfig()

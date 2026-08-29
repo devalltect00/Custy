@@ -613,6 +613,8 @@ class GitCommandExecutor(DryRunSupport):
         self,
         message: Optional[str] = None,
         message_file: Optional[str] = None,
+        *,
+        no_verify: bool = False,
     ) -> CommandResult:
         """
         Create commit.
@@ -620,8 +622,13 @@ class GitCommandExecutor(DryRunSupport):
         Args:
             message: commit message (-m)
             message_file: file path (-F)
+            no_verify: Skip Git's pre-commit and commit-msg wrappers after
+                Custy has already executed recognized pre-commit stages.
         """
         cmd = ["commit"]
+
+        if no_verify:
+            cmd.append("--no-verify")
 
         if message_file:
             cmd += ["-F", message_file]

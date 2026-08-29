@@ -21,6 +21,9 @@ from pathlib import Path
 import pytest
 
 from app.core.exceptions.validation_error import ValidationError
+from app.core.git_ops.git.result import CommandResult
+from app.core.git_ops.hooks import GitHookPlan, HookExecution
+from app.core.shared import GitOperationError
 from app.core.workflow.workflow_engine import WorkflowEngine
 
 # ==========================================================
@@ -183,6 +186,89 @@ class TestCommitFailure:
 
         assert exc.value.code == "COMMIT_FAILED"
 
+    def test_surfaces_repository_hook_diagnostics(
+        self,
+        workflow_engine: WorkflowEngine,
+        tmp_path: Path,
+    ) -> None:
+        """Classifies a mounted cross-platform hook failure without hiding it."""
+
+        commit_file = tmp_path / "commit.txt"
+        commit_file.write_text("fix: test\n", encoding="utf-8")
+        workflow_engine.commit_message_file = commit_file
+        workflow_engine.gitService.has_staged_files.return_value = True
+        workflow_engine.gitService.commit.side_effect = GitOperationError(
+            "Git commit failed",
+            operation="commit",
+            returncode=2,
+            stderr=".git/hooks/pre-commit: Syntax error: '(' unexpected",
+        )
+
+        with pytest.raises(ValidationError) as exc:
+            workflow_engine.create_commit()
+
+        assert exc.value.code == "GIT_HOOK_FAILED"
+        assert "Syntax error" in exc.value.context["detail"]
+
+
+class TestManagedPreCommitHooks:
+    """Verify safe direct hook execution before the final Git commit."""
+
+    def test_success_uses_no_verify_only_after_direct_hooks_pass(
+        self,
+        workflow_engine: WorkflowEngine,
+        tmp_path: Path,
+    ) -> None:
+        """A verified pre-commit plan bypasses only its broken wrapper."""
+
+        commit_file = tmp_path / "commit.txt"
+        commit_file.write_text("fix: portable hook\n")
+        workflow_engine.commit_message_file = commit_file
+        workflow_engine.gitService.has_staged_files.return_value = True
+        workflow_engine.commit_hook_plan = GitHookPlan(
+            execution=HookExecution.PRE_COMMIT,
+            stages=("pre-commit",),
+        )
+        workflow_engine.gitHookService.run.return_value = CommandResult(returncode=0)
+
+        workflow_engine.create_commit()
+
+        workflow_engine.gitHookService.run.assert_called_once_with(
+            workflow_engine.commit_hook_plan,
+            message_file=commit_file,
+        )
+        workflow_engine.gitService.commit.assert_called_once_with(
+            message=None,
+            message_file=str(commit_file),
+            no_verify=True,
+        )
+
+    def test_failed_direct_hook_prevents_git_commit(
+        self,
+        workflow_engine: WorkflowEngine,
+        tmp_path: Path,
+    ) -> None:
+        """A failing pre-commit check never reaches ``git commit``."""
+
+        commit_file = tmp_path / "commit.txt"
+        commit_file.write_text("fix: rejected\n")
+        workflow_engine.commit_message_file = commit_file
+        workflow_engine.gitService.has_staged_files.return_value = True
+        workflow_engine.commit_hook_plan = GitHookPlan(
+            execution=HookExecution.PRE_COMMIT,
+            stages=("pre-commit",),
+        )
+        workflow_engine.gitHookService.run.return_value = CommandResult(
+            returncode=1,
+            stdout="end-of-file-fixer failed",
+        )
+
+        with pytest.raises(ValidationError) as exc:
+            workflow_engine.create_commit()
+
+        assert exc.value.code == "PRE_COMMIT_HOOK_FAILED"
+        workflow_engine.gitService.commit.assert_not_called()
+
 
 # ==========================================================
 # Commit Message Resolution
@@ -212,4 +298,5 @@ class TestCommitMessageResolution:
         workflow_engine.gitService.commit.assert_called_once_with(
             message="feat: inline",
             message_file=None,
+            no_verify=False,
         )

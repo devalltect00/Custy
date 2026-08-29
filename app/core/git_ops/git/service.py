@@ -27,6 +27,7 @@ from app.core.git_ops.tag_sorter.base import (
 from app.core.git_ops.tag_sorter.factory import (
     TagSorterFactory,
 )
+from app.core.shared import GitOperationError
 
 logger = logging.getLogger(__name__)
 
@@ -642,6 +643,8 @@ class GitService:
         self,
         message: str | None = None,
         message_file: str | None = None,
+        *,
+        no_verify: bool = False,
     ) -> None:
         """
         Create a Git commit.
@@ -652,6 +655,8 @@ class GitService:
         Args:
             message (str | None): Inline commit message
             message_file (str | None): File containing message
+            no_verify: Skip native commit wrappers only after their equivalent
+                pre-commit stages have already completed successfully.
 
         Returns:
             None
@@ -661,8 +666,23 @@ class GitService:
                 If commit fails
         """
 
-        if not self.executor.commit(message, message_file).success:
-            raise RuntimeError("Git commit failed")
+        result = self.executor.commit(
+            message,
+            message_file,
+            no_verify=no_verify,
+        )
+        if not result.success:
+            detail = (result.stderr or result.stdout).strip()
+            message_text = "Git commit failed"
+            if detail:
+                message_text = f"{message_text}: {detail}"
+            raise GitOperationError(
+                message_text,
+                operation="commit",
+                returncode=result.returncode,
+                stdout=result.stdout,
+                stderr=result.stderr,
+            )
 
     @log_execution
     def get_commit_message(self, sha: str) -> str:
@@ -952,6 +972,10 @@ class GitService:
             remotes (list[str] | None): multiple remotes
             ref (str): branch or ref
             push_to (str): strategy ('main', 'backup', 'all')
+
+        Raises:
+            GitOperationError: If Git rejects or cannot complete a push. The
+                exception preserves stdout, stderr, and the return code.
         """
 
         # Resolve remotes
@@ -971,7 +995,17 @@ class GitService:
             result = self.executor.push(remote=r, ref=ref)
 
             if not result.success:
-                raise RuntimeError(f"Failed to push to {r}")
+                detail = (result.stderr or result.stdout).strip()
+                message = f"Git push to {r} failed"
+                if detail:
+                    message = f"{message}: {detail}"
+                raise GitOperationError(
+                    message,
+                    operation="push",
+                    returncode=result.returncode,
+                    stdout=result.stdout,
+                    stderr=result.stderr,
+                )
 
     @log_execution
     def push_tag(
@@ -981,8 +1015,11 @@ class GitService:
         remotes: list[str] | None = None,
         push_to: str | None = None,
     ) -> None:
-        """
-        Push tag to remotes.
+        """Push a tag to one or more resolved remotes.
+
+        Raises:
+            GitOperationError: If Git rejects or cannot complete a tag push.
+                The exception preserves stdout, stderr, and the return code.
         """
 
         if remotes:
@@ -997,7 +1034,17 @@ class GitService:
             result = self.executor.push_tag(r, tag)
 
             if not result.success:
-                raise RuntimeError(f"Failed to push tag to {r}")
+                detail = (result.stderr or result.stdout).strip()
+                message = f"Git tag push to {r} failed"
+                if detail:
+                    message = f"{message}: {detail}"
+                raise GitOperationError(
+                    message,
+                    operation="push-tag",
+                    returncode=result.returncode,
+                    stdout=result.stdout,
+                    stderr=result.stderr,
+                )
 
     # =========================================================
     # ===================== ADVANCED ===========================

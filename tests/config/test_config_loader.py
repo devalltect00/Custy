@@ -12,6 +12,11 @@ import pytest
 
 from app.config.config_loader import ConfigLoader, get_config
 from app.core.editor import EditorIdentifier, EditorSettings
+from app.core.git_ops.commit.settings import (
+    CommitValidationProvider,
+    CommitValidationSettings,
+)
+from app.core.git_ops.hooks import GitHookMode, GitHookSettings
 from app.core.shared import ConfigurationError
 
 VALID_TOML = """
@@ -137,3 +142,24 @@ class TestConfigLoader:
             EditorIdentifier.NOTEPAD,
         )
         assert settings.container[0] is EditorIdentifier.MICRO
+
+    def test_packaged_template_has_safe_commit_validation_defaults(self):
+        """Generated projects use optional automatic Commitizen discovery."""
+
+        loader = ConfigLoader(Path("app/templates/config.toml"))
+
+        settings = CommitValidationSettings.from_mapping(
+            loader.get_section("commit", "validation")
+        )
+
+        assert settings.provider == CommitValidationProvider.AUTO
+        assert settings.require_tool is False
+
+    def test_packaged_template_has_safe_git_hook_defaults(self):
+        """Generated projects adapt known hooks without requiring pre-commit."""
+
+        loader = ConfigLoader(Path("app/templates/config.toml"))
+
+        settings = GitHookSettings.from_mapping(loader.get_section("git", "hooks"))
+
+        assert settings.mode is GitHookMode.AUTO

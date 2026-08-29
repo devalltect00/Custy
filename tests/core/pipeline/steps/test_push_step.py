@@ -30,3 +30,8 @@ class TestPushStep:
         step.execute(ctx)
 
         ctx.engine.push_changes.assert_called_once_with()
+
+    def test_requires_exclusive_terminal(self):
+        """Push prompts must not compete with the live progress display."""
+
+        assert PushStep.requires_exclusive_terminal is True

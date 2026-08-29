@@ -1,7 +1,9 @@
 # app/core/workflow/workflow_engine.py
 
 import logging
+import os
 import re
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -29,13 +31,26 @@ from app.core.files.update_files import (
     update_version_target,
     update_version_universal,
 )
-from app.core.git_ops.commit.validator import validate_commit_message_format
+from app.core.git_ops.commit.settings import (
+    CommitValidationProvider,
+    CommitValidationSettings,
+)
+from app.core.git_ops.commit.validator import (
+    validate_commit_message_file,
+    validate_commit_message_format,
+)
 from app.core.git_ops.git.factory import create_git_service
 from app.core.git_ops.git.service import GitService
 from app.core.git_ops.helper import (
     CommitizenHelper,
     get_sorted_tags,
     maybe_assert_is_final,
+)
+from app.core.git_ops.hooks import (
+    GitHookPlan,
+    GitHookPolicyError,
+    GitHookService,
+    HookExecution,
 )
 from app.core.git_ops.tag_strategy import (
     CommitizenStrategy,
@@ -50,7 +65,8 @@ from app.core.git_ops.versioning import (
     VersionBridge,
     VersionType,
 )
-from app.core.project import detect_project_layout
+from app.core.project import detect_project_layout, detect_project_name
+from app.core.shared import GitOperationError
 from app.core.workflow.workflow_config import WorkflowConfig
 
 logger = logging.getLogger(__name__)
@@ -82,6 +98,16 @@ class WorkflowEngine:
         # ===== Inputs =====
         self.commit_message_input = config.commit_message_input
         self.commit_message_file = config.commit_message_file
+        self.check_cz = config.check_cz
+        self.commit_validation_settings = config.commit_validation_settings
+        if self.check_cz:
+            self.commit_validation_settings = CommitValidationSettings(
+                provider=CommitValidationProvider.COMMITIZEN,
+                require_tool=True,
+            )
+        self.commit_validation_provider: CommitValidationProvider | None = None
+        self.git_hook_settings = config.git_hook_settings
+        self.commit_hook_plan: GitHookPlan | None = None
         self.tag_input = config.tag_input
         self.tag_message_input = config.tag_message_input
         self.tag_message_file = config.tag_message_file
@@ -142,6 +168,7 @@ class WorkflowEngine:
             dry_run=self.dry_run,
         )
         self.editorService = EditorService(settings=config.editor_settings)
+        self.gitHookService = GitHookService(settings=self.git_hook_settings)
 
         # Silent mode
         if self.no_debug:
@@ -188,7 +215,8 @@ class WorkflowEngine:
         self.ensure_commit_message_file()
         self.ensure_tag_message_file()
         self.ensure_staged_changes()
-        self.ensure_commitizen_convention()
+        self.ensure_commit_validation_provider()
+        self.ensure_commit_hook_policy()
         self.ensure_commit_message_file_exists()
         self.ensure_tag_message_file_exists()
 
@@ -383,16 +411,132 @@ class WorkflowEngine:
                 code="NO_STAGED_CHANGES",
             )
 
-    def ensure_commitizen_convention(self):
+    def ensure_commit_validation_provider(self) -> CommitValidationProvider:
+        """Resolve and validate the configured commit-message provider.
+
+        ``auto`` enables Commitizen only when the project has recognizable
+        configuration and the executable is available. Optional discovery
+        failures fall back to Custy's built-in validator unless strict mode is
+        requested.
+
+        Returns:
+            Effective provider used after discovery and fallback handling.
+
+        Raises:
+            ValidationError: If an explicitly required Commitizen integration
+                is missing or malformed.
         """
-        Ensure commitizen convention.
-        """
-        if not self.commitizenHelper.check_commit:
-            raise ValidationError(
-                message=f"Checking commitizen convention '{self.commit_message_file}' not found.",
-                hint="Use cz check --commit-msg-file (path)]",
-                code="COMMITIZEN_CONVENTION_FAILED",
+
+        requested = self.commit_validation_settings.provider
+        strict = self.commit_validation_settings.require_tool
+
+        if requested in {
+            CommitValidationProvider.CUSTY,
+            CommitValidationProvider.GIT,
+        }:
+            self.commit_validation_provider = requested
+            logger.debug("Commit validation provider: %s", requested.value)
+            return requested
+
+        inspection = self.commitizenHelper.inspect()
+
+        if inspection.config_error:
+            if requested == CommitValidationProvider.COMMITIZEN or strict:
+                raise ValidationError(
+                    message="Commitizen configuration is invalid.",
+                    hint="Correct the detected Commitizen configuration or use "
+                    'provider = "custy".',
+                    code="COMMITIZEN_CONFIGURATION_INVALID",
+                    context={
+                        "file": str(inspection.config_path),
+                        "error": inspection.config_error,
+                    },
+                )
+            logger.warning(
+                "⚠️ Commitizen configuration in [dim]%s[/dim] is invalid; "
+                "using Custy's built-in commit validation. Detail: %s",
+                inspection.config_path,
+                inspection.config_error,
             )
+            self.commit_validation_provider = CommitValidationProvider.CUSTY
+            return self.commit_validation_provider
+
+        if not inspection.configured:
+            if requested == CommitValidationProvider.COMMITIZEN:
+                raise ValidationError(
+                    message="Commitizen validation was requested but the project "
+                    "has no Commitizen configuration.",
+                    hint="Add .cz.toml or [tool.commitizen] in pyproject.toml, "
+                    'or use provider = "custy".',
+                    code="COMMITIZEN_NOT_CONFIGURED",
+                )
+            self.commit_validation_provider = CommitValidationProvider.CUSTY
+            logger.debug(
+                "No Commitizen project configuration detected; using Custy validation."
+            )
+            return self.commit_validation_provider
+
+        if not inspection.available:
+            if requested == CommitValidationProvider.COMMITIZEN or strict:
+                raise ValidationError(
+                    message="Commitizen validation is configured but 'cz' is not "
+                    "available.",
+                    hint='Install `custy[commitizen]` or set provider = "custy".',
+                    code="COMMITIZEN_NOT_AVAILABLE",
+                    context={"file": str(inspection.config_path)},
+                )
+            logger.warning(
+                "⚠️ Commitizen configuration detected in [dim]%s[/dim], but "
+                "'cz' is unavailable; using Custy's built-in validation.",
+                inspection.config_path,
+            )
+            self.commit_validation_provider = CommitValidationProvider.CUSTY
+            return self.commit_validation_provider
+
+        self.commit_validation_provider = CommitValidationProvider.COMMITIZEN
+        logger.info(
+            "🧪 Commit validation: Custy + Commitizen ([dim]%s[/dim])",
+            inspection.config_path,
+        )
+        return self.commit_validation_provider
+
+    def ensure_commitizen_convention(self) -> None:
+        """Backward-compatible alias for provider preflight validation."""
+
+        self.ensure_commit_validation_provider()
+
+    def ensure_commit_hook_policy(self) -> GitHookPlan:
+        """Resolve commit-hook behavior before the workflow mutates files.
+
+        Returns:
+            Safe native or direct pre-commit execution plan.
+
+        Raises:
+            ValidationError: If a configured or detected hook cannot be
+                executed safely in the current environment.
+        """
+
+        try:
+            plan = self.gitHookService.inspect()
+        except GitHookPolicyError as error:
+            raise ValidationError(
+                message="Git commit hooks are not runnable in this environment.",
+                hint=(
+                    "Repair the hook, install `custy[hooks]`, use the production "
+                    "image with hook support, or select native mode only when "
+                    "the installed hooks are compatible."
+                ),
+                code="GIT_HOOK_POLICY_INVALID",
+                context={"detail": str(error)},
+            ) from error
+
+        self.commit_hook_plan = plan
+        if plan.execution is HookExecution.PRE_COMMIT:
+            logger.info("🪝 Commit hooks: direct pre-commit execution")
+            logger.info("[dim]%s[/dim]", plan.reason)
+        else:
+            logger.debug("Commit hooks: native Git execution. %s", plan.reason)
+        return plan
 
     def ensure_commit_message_file_exists(self) -> None:
         """
@@ -577,19 +721,23 @@ class WorkflowEngine:
 
     def generate_release_artifacts(self) -> None:
         """
-        Generate commit and tag message files using ReleaseNoteBuilder.
+        Generate missing or empty release message files.
 
         Uses:
             - GitService for tag retrieval
             - ReleaseNoteBuilder for structured output
 
         Side Effects:
-            - writes commit-message.txt
-            - writes tag-message.txt
+            - writes empty or missing commit-message.txt
+            - writes empty or missing tag-message.txt
+
+        Notes:
+            Existing non-empty files are user-owned reviewed input and are
+            preserved. Custy never replaces them with generic release text.
         """
 
         version = self.tag
-        print("version", version)
+        logger.debug("Generating release artifacts for version %s", version)
         version_type = VersionType.detect(version)
 
         all_tags = self.gitService.get_all_tags()
@@ -615,7 +763,7 @@ class WorkflowEngine:
         info = ReleaseInfo(
             version=version,
             version_type=version_type,
-            app_name="Custy",
+            app_name=detect_project_name(),
             prerelease_tags=prereleases,
             latest_prerelease=latest_pre,
             has_changes_since_rc=has_changes,
@@ -623,35 +771,66 @@ class WorkflowEngine:
 
         builder = ReleaseNoteBuilder(info)
 
-        # Write commit message
+        # Write commit message only when no reviewed content exists.
         if self.commit_message_file:
             commit_content = builder.build_commit_msg()
+            self._write_release_artifact(
+                self.commit_message_file,
+                commit_content,
+                label="commit message",
+            )
 
-            if self.dry_run:
-                logger.info(
-                    "[dry_run](dry-run)[/dry_run] Would update release "
-                    f"commit message: {self.commit_message_file}"
-                )
-            else:
-                self.commit_message_file.write_text(
-                    commit_content,
-                    encoding="utf-8",
-                )
-
-        # Write tag message
+        # Write tag message only when no reviewed content exists.
         if self.tag_message_file:
             tag_content = builder.build_tag_msg()
+            self._write_release_artifact(
+                Path(self.tag_message_file),
+                tag_content,
+                label="tag message",
+            )
 
-            if self.dry_run:
-                logger.info(
-                    "[dry_run](dry-run)[/dry_run] Would update release "
-                    f"tag message: {self.tag_message_file}"
-                )
-            else:
-                Path(self.tag_message_file).write_text(
-                    tag_content,
-                    encoding="utf-8",
-                )
+    def _write_release_artifact(
+        self,
+        path: Path,
+        content: str,
+        *,
+        label: str,
+    ) -> None:
+        """Write generated content without replacing reviewed user input.
+
+        Args:
+            path: Configured release-message path.
+            content: Generated fallback content.
+            label: Human-readable artifact label used in terminal output.
+        """
+
+        if path.is_file():
+            try:
+                if path.read_text(encoding="utf-8").strip():
+                    logger.info(
+                        "📝 Preserving existing %s: [dim]%s[/dim]",
+                        label,
+                        path,
+                    )
+                    return
+            except (OSError, UnicodeError) as error:
+                raise ValidationError(
+                    message=f"Unable to read the configured {label} file.",
+                    hint="Check the file encoding and permissions before retrying.",
+                    code="RELEASE_ARTIFACT_READ_FAILED",
+                    context={"file": str(path), "error": str(error)},
+                ) from error
+
+        if self.dry_run:
+            logger.info(
+                "[dry_run](dry-run)[/dry_run] Would generate release "
+                f"{label}: {path}"
+            )
+            return
+
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content.rstrip() + "\n", encoding="utf-8")
+        logger.info("📝 Generated %s: [dim]%s[/dim]", label, path)
 
     def edit_release_files(self) -> None:
         """
@@ -716,7 +895,34 @@ class WorkflowEngine:
         Validate user-edited files and determine tagging behavior.
         """
 
+        provider = (
+            self.commit_validation_provider or self.ensure_commit_validation_provider()
+        )
+
+        if provider == CommitValidationProvider.GIT:
+            validate_commit_message_file(self.commit_message_file)
+            logger.info(
+                "🧪 Commit validation: basic Git message-file safety checks only."
+            )
+            return
+
         commit_type = validate_commit_message_format(self.commit_message_file)
+
+        if provider == CommitValidationProvider.COMMITIZEN:
+            result = self.commitizenHelper.check_commit(self.commit_message_file)
+            if not result.success:
+                detail = (result.stderr or result.stdout).strip()
+                raise ValidationError(
+                    message="Commit message failed Commitizen validation.",
+                    hint="Update the message to match the project's Commitizen "
+                    'rules, or choose provider = "custy".',
+                    code="COMMITIZEN_CHECK_FAILED",
+                    context={
+                        "file": str(self.commit_message_file),
+                        "exit_code": result.returncode,
+                        "detail": detail or "Commitizen did not provide output.",
+                    },
+                )
 
         self.evaluate_tagging_eligibility(commit_type)
 
@@ -1271,10 +1477,20 @@ class WorkflowEngine:
                 return
 
             try:
-                self.commitizenHelper.commit()
+                commit_result = self.commitizenHelper.commit()
+                if not commit_result.success:
+                    raise RuntimeError(
+                        (commit_result.stderr or commit_result.stdout).strip()
+                        or "Commitizen commit command failed."
+                    )
                 logger.info("[green]✅ Commitizen commit created[/green]")
 
-                self.commitizenHelper.check_commit()
+                check_result = self.commitizenHelper.check_commit()
+                if not check_result.success:
+                    raise RuntimeError(
+                        (check_result.stderr or check_result.stdout).strip()
+                        or "Commitizen check command failed."
+                    )
                 logger.info("[green]✅ Commit message validated by Commitizen[/green]")
 
             except Exception as e:
@@ -1363,14 +1579,53 @@ class WorkflowEngine:
         # =========================================================
         # Execute commit
         # =========================================================
+        no_verify = self._execute_commit_hooks(
+            message=message,
+            message_file=message_file,
+        )
+
         try:
             self.gitService.commit(
                 message=message,
                 message_file=message_file,
+                no_verify=no_verify,
             )
 
             logger.info("[green]✅ Commit created successfully.[/green]")
 
+        except GitOperationError as error:
+            detail = error.detail
+            normalized_detail = detail.lower().replace("\\", "/")
+            hook_failure = any(
+                marker in normalized_detail
+                for marker in (
+                    ".git/hooks/",
+                    "pre-commit",
+                    "commit-msg hook",
+                    "hook failed",
+                    "files were modified by this hook",
+                )
+            )
+            raise ValidationError(
+                message=(
+                    "Git commit was rejected by a repository hook."
+                    if hook_failure
+                    else "Git failed to create the commit."
+                ),
+                hint=(
+                    "Run the failing hook in the same environment and repair or "
+                    "reinstall it. For a Windows-created pre-commit hook mounted "
+                    "into Linux Docker, install the hook inside that environment."
+                    if hook_failure
+                    else "Review the captured Git output, commit message, staged "
+                    "files, and repository state."
+                ),
+                code=("GIT_HOOK_FAILED" if hook_failure else "GIT_COMMIT_FAILED"),
+                context={
+                    "exit_code": error.returncode,
+                    "detail": detail or "Git did not provide diagnostic output.",
+                },
+            ) from error
         except Exception as e:
             raise ValidationError(
                 message="Failed to create commit.",
@@ -1378,6 +1633,80 @@ class WorkflowEngine:
                 code="COMMIT_FAILED",
                 context={"error": str(e)},
             ) from e
+
+    def _execute_commit_hooks(
+        self,
+        *,
+        message: str | None,
+        message_file: str | None,
+    ) -> bool:
+        """Run a safe direct pre-commit plan before creating a Git commit.
+
+        Args:
+            message: Optional inline commit message.
+            message_file: Optional configured commit-message file.
+
+        Returns:
+            ``True`` only when Git should use ``--no-verify`` because every
+            bypassed pre-commit-managed stage already succeeded directly.
+
+        Raises:
+            ValidationError: If direct hook execution fails or cannot be
+                prepared safely.
+        """
+
+        plan = self.commit_hook_plan or self.ensure_commit_hook_policy()
+        if plan.execution is HookExecution.NATIVE:
+            return False
+
+        temporary_directory: tempfile.TemporaryDirectory[str] | None = None
+        hook_message_file = Path(message_file) if message_file else None
+        try:
+            if "commit-msg" in plan.stages and message is not None:
+                temporary_directory = tempfile.TemporaryDirectory(
+                    prefix="custy-commit-message-"
+                )
+                hook_message_file = Path(temporary_directory.name) / "message.txt"
+                hook_message_file.write_text(
+                    message.rstrip() + "\n",
+                    encoding="utf-8",
+                )
+
+            result = self.gitHookService.run(
+                plan,
+                message_file=hook_message_file,
+            )
+        except GitHookPolicyError as error:
+            raise ValidationError(
+                message="Custy could not prepare the configured commit hooks.",
+                hint="Review tool.custy.git.hooks and the repository hook files.",
+                code="GIT_HOOK_EXECUTION_INVALID",
+                context={"detail": str(error)},
+            ) from error
+        finally:
+            if temporary_directory is not None:
+                temporary_directory.cleanup()
+
+        if not result.success:
+            detail = (result.stderr or result.stdout).strip()
+            raise ValidationError(
+                message="A pre-commit hook rejected the staged changes.",
+                hint=(
+                    "Run `pre-commit run --hook-stage pre-commit`, repair the "
+                    "reported files or checks, stage the result, and retry."
+                ),
+                code="PRE_COMMIT_HOOK_FAILED",
+                context={
+                    "exit_code": result.returncode,
+                    "detail": detail or "pre-commit did not provide output.",
+                },
+            )
+
+        output = (result.stdout or result.stderr).strip()
+        if output:
+            logger.info("%s", output)
+        logger.info("✅ Pre-commit hooks completed successfully.")
+        return plan.requires_no_verify
 
     def is_commitizen_auto(self) -> bool:
         return (
@@ -1509,6 +1838,13 @@ class WorkflowEngine:
         main_remotes, backup_remotes = self._resolve_push_remote_groups(
             current_branch=current_branch
         )
+
+        if not self.dry_run and os.getenv("CUSTY_CONTAINER"):
+            logger.info(
+                "[yellow]ℹ️ Container push authentication uses credentials "
+                "available inside the container. Host credential-manager "
+                "sessions are not inherited automatically.[/yellow]"
+            )
 
         if main_remotes:
             self._push_to_remotes(main_remotes, label="main")
@@ -1704,11 +2040,12 @@ class WorkflowEngine:
                 logger.info(f"[green]✅ Commit pushed to {remote}[/green]")
 
             except Exception as e:
+                context = self._push_failure_context(e, remote=remote)
                 raise ValidationError(
                     message=f"Failed to push commit to {remote}.",
-                    hint="Check remote or network connection.",
+                    hint=self._push_failure_hint(e),
                     code="PUSH_FAILED",
-                    context={"remote": remote, "error": str(e)},
+                    context=context,
                 ) from e
 
             # =========================
@@ -1723,12 +2060,90 @@ class WorkflowEngine:
                 logger.info(f"[green]🏷️ Tag pushed to {remote}[/green]")
 
             except Exception as e:
+                context = self._push_failure_context(
+                    e,
+                    remote=remote,
+                    tag=self.tag,
+                )
                 raise ValidationError(
                     message=f"Failed to push tag to {remote}.",
-                    hint="Ensure tag exists and remote is accessible.",
+                    hint=self._push_failure_hint(e, is_tag=True),
                     code="PUSH_TAG_FAILED",
-                    context={"remote": remote, "tag": self.tag, "error": str(e)},
+                    context=context,
                 ) from e
+
+    @staticmethod
+    def _push_failure_hint(error: Exception, *, is_tag: bool = False) -> str:
+        """Return an actionable hint for a Git push failure.
+
+        Authentication failures are called out separately because a Docker
+        container does not automatically share the host credential manager.
+        Other failures retain the normal remote, network, and tag guidance.
+
+        Args:
+            error: Exception raised by the Git service.
+            is_tag: Whether the failed operation was a tag push.
+
+        Returns:
+            A user-facing recovery hint.
+        """
+
+        detail = error.detail if isinstance(error, GitOperationError) else str(error)
+        normalized = detail.lower()
+        authentication_markers = (
+            "authentication failed",
+            "could not read username",
+            "could not read password",
+            "invalid username or password",
+            "permission denied (publickey)",
+            "terminal prompts disabled",
+        )
+        if any(marker in normalized for marker in authentication_markers):
+            return (
+                "Authenticate Git inside the current execution environment. "
+                "Docker does not inherit the host credential-manager session; "
+                "provide an approved credential helper, SSH access, or provider "
+                "token without storing secrets in Custy configuration."
+            )
+
+        if is_tag:
+            return "Ensure the tag exists and the remote is reachable and writable."
+
+        return (
+            "Check the remote URL, network connection, permissions, and branch policy."
+        )
+
+    @staticmethod
+    def _push_failure_context(
+        error: Exception,
+        *,
+        remote: str,
+        tag: str | None = None,
+    ) -> dict[str, object]:
+        """Build structured push diagnostics without discarding Git output.
+
+        Args:
+            error: Exception raised by the Git service.
+            remote: Remote name being processed.
+            tag: Optional tag involved in the failed operation.
+
+        Returns:
+            Context suitable for the CLI validation-error renderer.
+        """
+
+        context: dict[str, object] = {
+            "remote": remote,
+            "error": str(error),
+        }
+        if tag:
+            context["tag"] = tag
+        if isinstance(error, GitOperationError):
+            if error.returncode is not None:
+                context["exit_code"] = error.returncode
+            if error.detail:
+                context["detail"] = error.detail
+
+        return context
 
     def execute_post_workflow(self) -> None:
         """

@@ -110,7 +110,7 @@ ARG CUSTY_BUILD_VERSION=0.1.0
 # =========================
 
 RUN SETUPTOOLS_SCM_PRETEND_VERSION_FOR_CUSTY="${CUSTY_BUILD_VERSION}" \
-    pip install --no-cache-dir .
+    pip install --no-cache-dir ".[commitizen,hooks]"
 
 # Fail the image build when a runtime import or CLI startup dependency is
 # missing without depending on command-specific exit-code behavior.

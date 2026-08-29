@@ -15,8 +15,8 @@ from app.core.pipeline.steps.validation.ensure_commit_message_file_exists_step i
 from app.core.pipeline.steps.validation.ensure_commit_message_file_step import (
     EnsureCommitMessageFileStep,
 )
-from app.core.pipeline.steps.validation.ensure_commitizen_convention_step import (
-    EnsureCommitizenConventionStep,
+from app.core.pipeline.steps.validation.ensure_commit_validation_provider_step import (
+    EnsureCommitValidationProviderStep,
 )
 from app.core.pipeline.steps.validation.ensure_git_repo_step import (
     EnsureGitRepoStep,
@@ -54,7 +54,7 @@ class TestValidateFlow:
                 EnsureCommitMessageFileStep(),
                 EnsureTagMessageFileStep(),
                 EnsureStagedChangesStep(),
-                EnsureCommitizenConventionStep(),
+                EnsureCommitValidationProviderStep(),
                 EnsureCommitMessageFileExistsStep(),
                 EnsureTagMessageFileExistsStep(),
             ],
@@ -69,6 +69,6 @@ class TestValidateFlow:
         ctx.engine.ensure_commit_message_file.assert_called_once_with()
         ctx.engine.ensure_tag_message_file.assert_called_once_with()
         ctx.engine.ensure_staged_changes.assert_called_once_with()
-        ctx.engine.ensure_commitizen_convention.assert_called_once_with()
+        ctx.engine.ensure_commit_validation_provider.assert_called_once_with()
         ctx.engine.ensure_commit_message_file_exists.assert_called_once_with()
         ctx.engine.ensure_tag_message_file_exists.assert_called_once_with()

@@ -165,6 +165,49 @@ def _has_json_version(path: Path) -> bool:
     return isinstance(data, dict) and isinstance(data.get("version"), str)
 
 
+def detect_project_name(*, root: str | Path | None = None) -> str:
+    """Resolve a human-readable project name from common metadata.
+
+    Args:
+        root: Target-project root. Defaults to the current working directory.
+
+    Returns:
+        ``project.name`` from ``pyproject.toml``, ``name`` from
+        ``package.json``, or the project-directory name when neither metadata
+        source provides a non-empty string.
+
+    Notes:
+        Invalid or unreadable optional metadata is ignored so generic projects
+        remain valid Custy targets.
+    """
+
+    project_root = Path(root or Path.cwd()).expanduser().resolve()
+    pyproject_path = project_root / "pyproject.toml"
+    if pyproject_path.is_file():
+        try:
+            with pyproject_path.open("rb") as stream:
+                project = tomllib.load(stream).get("project")
+            if isinstance(project, dict):
+                name = project.get("name")
+                if isinstance(name, str) and name.strip():
+                    return name.strip()
+        except OSError, tomllib.TOMLDecodeError:
+            pass
+
+    package_path = project_root / "package.json"
+    if package_path.is_file():
+        try:
+            package = json.loads(package_path.read_text(encoding="utf-8"))
+            if isinstance(package, dict):
+                name = package.get("name")
+                if isinstance(name, str) and name.strip():
+                    return name.strip()
+        except OSError, json.JSONDecodeError, UnicodeError:
+            pass
+
+    return project_root.name or "Project"
+
+
 def _python_version_candidates(root: Path, source_dir: Path) -> tuple[Path, ...]:
     """Return deterministic Python version-module candidates."""
 

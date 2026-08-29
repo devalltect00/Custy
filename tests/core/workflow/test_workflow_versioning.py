@@ -14,6 +14,7 @@ These tests intentionally isolate WorkflowEngine from external Git
 operations by mocking all strategy implementations.
 """
 
+import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -392,6 +393,66 @@ class TestGenerateReleaseArtifacts:
         builder.build_commit_msg.assert_called_once_with()
         builder.build_tag_msg.assert_called_once_with()
 
+    def test_preserves_existing_reviewed_message_files(
+        self,
+        workflow_engine: WorkflowEngine,
+        tmp_path,
+        monkeypatch,
+    ) -> None:
+        """Normal execution never replaces non-empty user-managed messages."""
+
+        commit_file = tmp_path / "commit-message.txt"
+        tag_file = tmp_path / "tag-message.txt"
+        commit_file.write_text("release(main): preserve this\n")
+        tag_file.write_text("Release notes to preserve\n")
+        workflow_engine.tag = "v2.1.0"
+        workflow_engine.commit_message_file = commit_file
+        workflow_engine.tag_message_file = tag_file
+        workflow_engine.gitService.get_all_tags.return_value = []
+
+        builder = MagicMock()
+        builder.build_commit_msg.return_value = "generated commit"
+        builder.build_tag_msg.return_value = "generated tag"
+        monkeypatch.setattr(
+            "app.core.workflow.workflow_engine.ReleaseNoteBuilder",
+            MagicMock(return_value=builder),
+        )
+
+        workflow_engine.generate_release_artifacts()
+
+        assert commit_file.read_text() == "release(main): preserve this\n"
+        assert tag_file.read_text() == "Release notes to preserve\n"
+
+    def test_generates_content_for_empty_message_files(
+        self,
+        workflow_engine: WorkflowEngine,
+        tmp_path,
+        monkeypatch,
+    ) -> None:
+        """Empty initialized files receive usable generated fallbacks."""
+
+        commit_file = tmp_path / "commit-message.txt"
+        tag_file = tmp_path / "tag-message.txt"
+        commit_file.write_text("\n")
+        tag_file.write_text("")
+        workflow_engine.tag = "v2.1.0"
+        workflow_engine.commit_message_file = commit_file
+        workflow_engine.tag_message_file = tag_file
+        workflow_engine.gitService.get_all_tags.return_value = []
+
+        builder = MagicMock()
+        builder.build_commit_msg.return_value = "release(main): v2.1.0"
+        builder.build_tag_msg.return_value = "Release v2.1.0"
+        monkeypatch.setattr(
+            "app.core.workflow.workflow_engine.ReleaseNoteBuilder",
+            MagicMock(return_value=builder),
+        )
+
+        workflow_engine.generate_release_artifacts()
+
+        assert commit_file.read_text() == "release(main): v2.1.0\n"
+        assert tag_file.read_text() == "Release v2.1.0\n"
+
 
 # ==========================================================
 # Tagging Eligibility
@@ -558,7 +619,10 @@ class TestUpdatePythonVersionFile:
         """
 
         version_file = tmp_path / "__version__.py"
-        version_file.write_text("old")
+        version_file.write_text(
+            '# app/__version__.py\n\n__version__ = "1.0.0"\n',
+            encoding="utf-8",
+        )
 
         workflow_engine.version_file = version_file
         workflow_engine.tag = "v2.5.0"
@@ -568,6 +632,7 @@ class TestUpdatePythonVersionFile:
         content = version_file.read_text(encoding="utf-8")
 
         assert '__version__ = "2.5.0"' in content
+        assert content.endswith("\n")
 
     def test_uses_version_override(
         self,
@@ -835,13 +900,20 @@ class TestCommitizenHelper:
 
         message_file = tmp_path / "commit-message.txt"
         message_file.write_text("feat(core): preview")
-        helper = CommitizenHelper(dry_run=True)
+        helper = CommitizenHelper(
+            dry_run=True,
+            executable_resolver=lambda _: "cz",
+        )
         helper.runner = MagicMock()
 
         helper.check_commit(message_file)
 
         helper.runner.run.assert_called_once_with(
             ["cz", "check", "--commit-msg-file", str(message_file)],
-            check=True,
+            check=False,
             read_only=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
         )

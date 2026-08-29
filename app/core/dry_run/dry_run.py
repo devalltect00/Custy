@@ -117,10 +117,15 @@ class Runner:
                 # Avoid `shell=False` when passing **untrusted input**, to prevent shell injection attacks.
                 result = subprocess.run(command, **kwargs)
                 return result
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as error:
                 if on_error:
                     on_error()
-                return None
+                return subprocess.CompletedProcess(
+                    args=error.cmd,
+                    returncode=error.returncode,
+                    stdout=error.stdout or error.output,
+                    stderr=error.stderr,
+                )
         else:
             # logger.info(f"{Fore.CYAN}(dry-run){Style.RESET_ALL} ✅ Simulated: {command}")
             # logger.info(f"[cyan](dry-run)[/cyan] ✅ Simulated: %s", command)

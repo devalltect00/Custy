@@ -12,6 +12,8 @@ from app.cli.constants.enums import (
     StrategyChoices,
 )
 from app.core.editor import EditorSettings
+from app.core.git_ops.commit.settings import CommitValidationSettings
+from app.core.git_ops.hooks import GitHookSettings
 
 
 @dataclass
@@ -25,6 +27,11 @@ class WorkflowConfig:
     # ===== Commit =====
     commit_message_input: Optional[str] = None
     commit_message_file: Optional[Path] = None
+    check_cz: bool = False
+    commit_validation_settings: CommitValidationSettings = field(
+        default_factory=CommitValidationSettings
+    )
+    git_hook_settings: GitHookSettings = field(default_factory=GitHookSettings)
 
     # ===== Tag =====
     tag_input: Optional[str] = None

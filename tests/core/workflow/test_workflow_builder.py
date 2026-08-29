@@ -19,6 +19,7 @@ from app.cli.constants.enums import (
     StrategyChoices,
 )
 from app.core.editor import EditorIdentifier, EditorSettings
+from app.core.git_ops.hooks import GitHookMode, GitHookSettings
 from app.core.workflow.workflow_builder import WorkflowEngineBuilder
 from app.core.workflow.workflow_engine import WorkflowEngine
 
@@ -66,6 +67,7 @@ class TestWorkflowBuilder:
             .with_skip_checks()
             .with_log_level(LogLevelChoices.DEBUG)
             .with_editor_settings(EditorSettings(windows=(EditorIdentifier.NOTEPAD,)))
+            .with_git_hook_settings(GitHookSettings(mode=GitHookMode.NATIVE))
             .build()
         )
 
@@ -107,6 +109,7 @@ class TestWorkflowBuilder:
         assert cfg.skip_checks is True
         assert cfg.log_level == LogLevelChoices.DEBUG
         assert cfg.editor_settings.windows == (EditorIdentifier.NOTEPAD,)
+        assert cfg.git_hook_settings.mode is GitHookMode.NATIVE
 
     def test_with_debug_false(self):
         builder = WorkflowEngineBuilder()
@@ -190,6 +193,8 @@ class TestFromCliArgs:
             "prefer_environment": False,
             "candidates": {"windows": ["notepad"]},
         }
+        check_cz = True
+        git_hook_settings = {"mode": "pre_commit"}
 
     def test_from_cli_args_populates_config(self):
         builder = WorkflowEngineBuilder()
@@ -246,6 +251,8 @@ class TestFromCliArgs:
         assert cfg.log_level == LogLevelChoices.DEBUG
         assert cfg.editor_settings.prefer_environment is False
         assert cfg.editor_settings.windows == (EditorIdentifier.NOTEPAD,)
+        assert cfg.check_cz is True
+        assert cfg.git_hook_settings.mode is GitHookMode.PRE_COMMIT
 
     def test_from_cli_args_empty_object(self):
         class Args:

@@ -47,6 +47,7 @@ class TestCreateCommit:
         workflow_engine.gitService.commit.assert_called_once_with(
             message=None,
             message_file=str(commit_file),
+            no_verify=False,
         )
 
     def test_commit_skips_during_dry_run(

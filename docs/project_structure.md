@@ -645,6 +645,7 @@ Common directories include:
 │   │   │   └── update_files.py
 │   │   ├── git_ops
 │   │   │   ├── commit
+│   │   │   │   ├── settings.py
 │   │   │   │   └── validator.py
 │   │   │   ├── credentials
 │   │   │   ├── engine
@@ -669,6 +670,9 @@ Common directories include:
 │   │   │   │   ├── version_helper_base.py
 │   │   │   │   └── version_utils.py
 │   │   │   ├── hooks
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── service.py
+│   │   │   │   └── settings.py
 │   │   │   ├── tag_sorter
 │   │   │   │   ├── base.py
 │   │   │   │   ├── date_sorter.py
@@ -1059,6 +1063,7 @@ Common directories include:
 │   │   │   └── test_cross_project_version_updates.py
 │   │   ├── git_ops
 │   │   │   ├── commit
+│   │   │   │   └── test_settings.py
 │   │   │   ├── credentials
 │   │   │   ├── git
 │   │   │   │   ├── test_executor_commit.py
@@ -1082,7 +1087,10 @@ Common directories include:
 │   │   │   │   ├── test_service_tag.py
 │   │   │   │   └── test_service_tags.py
 │   │   │   ├── helper
+│   │   │   │   └── test_commitizen.py
 │   │   │   ├── hooks
+│   │   │   │   ├── test_service.py
+│   │   │   │   └── test_settings.py
 │   │   │   ├── tag_sorter
 │   │   │   │   ├── test_date_sorter.py
 │   │   │   │   ├── test_factory.py

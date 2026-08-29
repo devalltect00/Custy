@@ -24,6 +24,13 @@ class TestDockerEditorAssets:
         assert "COPY docker/editors /etc/custy/editors" in dockerfile
         assert "ENV CUSTY_CONTAINER=1" in dockerfile
 
+    def test_production_image_installs_optional_hook_runtime(self) -> None:
+        """Cross-platform pre-commit fallback is available in production."""
+
+        dockerfile = (PROJECT_ROOT / "Dockerfile").read_text(encoding="utf-8")
+
+        assert 'pip install --no-cache-dir ".[commitizen,hooks]"' in dockerfile
+
     def test_micro_adds_alt_undo_and_redo_aliases(self) -> None:
         """Micro receives aliases without replacing its native Ctrl shortcuts."""
 
