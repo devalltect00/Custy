@@ -56,6 +56,11 @@ help-docker-run:
 
 	@echo   make d-run                          ^|    Run Docker command with custom arguments
 	@echo.
+	@echo   make d-credentials-set-github       ^|    Store a GitHub PAT in the external credential directory
+	@echo   make d-credentials-set-gitlab       ^|    Store a GitLab PAT in the external credential directory
+	@echo   make d-credentials-status           ^|    Inspect credential availability without showing tokens
+	@echo   make d-credentials-test             ^|    Test read-only access to CUSTY_CREDENTIALS_REMOTE
+	@echo.
 	@echo   make d-run-validate                 ^|    Run the validate command
 	@echo   make d-run-apply-version            ^|    Run version update
 	@echo   make d-run-changelog                ^|    Run changelog generate

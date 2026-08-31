@@ -115,6 +115,11 @@ help-remote-custy-runtime:
 	@echo   make r-custy-init-force             ^|    Initialize and overwrite files
 	@echo   make r-custy-init-ask               ^|    Initialize with confirmation prompts
 	@echo.
+	@echo   make r-custy-credentials-set-github ^|    Store a GitHub PAT using the remote image
+	@echo   make r-custy-credentials-set-gitlab ^|    Store a GitLab PAT using the remote image
+	@echo   make r-custy-credentials-status     ^|    Inspect mounted credential availability
+	@echo   make r-custy-credentials-test       ^|    Test read-only access to CUSTY_CREDENTIALS_REMOTE
+	@echo.
 	@echo   make r-custy-run                    ^|    Run remote command with custom arguments
 	@echo   make r-custy-run-validate           ^|    Run the validate command
 	@echo   make r-custy-run-apply-version      ^|    Run version update

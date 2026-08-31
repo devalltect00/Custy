@@ -4,7 +4,9 @@
 
 ##### Infrastructure
 
+import os
 import subprocess
+from collections.abc import Mapping
 from typing import Optional
 
 from app.core.dry_run import DryRunSupport
@@ -61,6 +63,8 @@ class GitCommandExecutor(DryRunSupport):
         check: bool = False,
         *,
         read_only: bool = False,
+        environment: Mapping[str, str] | None = None,
+        terminal_passthrough: bool = False,
     ) -> CommandResult:
         """
         Execute a git command.
@@ -69,19 +73,30 @@ class GitCommandExecutor(DryRunSupport):
             args (List[str]): Git command arguments (excluding 'git').
             check (bool): If True, subprocess will raise on non-zero exit.
             read_only (bool): Execute discovery during dry-run mode.
+            environment: Non-secret environment overrides for this Git process.
+            terminal_passthrough: Inherit the active terminal streams so Git
+                can display and read interactive authentication prompts.
 
         Returns:
             CommandResult: Normalized result of execution.
         """
-        result = self.runner.run(
-            ["git"] + args,
-            check=check,
-            read_only=read_only,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            encoding="utf-8",
-        )
+        process_environment = None
+        if environment:
+            process_environment = {**os.environ, **environment}
+
+        run_options: dict[str, object] = {
+            "check": check,
+            "read_only": read_only,
+            "text": True,
+            "encoding": "utf-8",
+        }
+        if not terminal_passthrough:
+            run_options["stdout"] = subprocess.PIPE
+            run_options["stderr"] = subprocess.PIPE
+        if process_environment is not None:
+            run_options["env"] = process_environment
+
+        result = self.runner.run(["git"] + args, **run_options)
 
         if result is None:
             if self.runner.get_is_dry_run() and not read_only:
@@ -674,6 +689,9 @@ class GitCommandExecutor(DryRunSupport):
         remote: str = "origin",
         ref: str = "HEAD",
         set_upstream: bool = False,
+        credential_helper: str | None = None,
+        environment: Mapping[str, str] | None = None,
+        terminal_passthrough: bool = False,
     ) -> CommandResult:
         """
         Push to remote.
@@ -682,18 +700,89 @@ class GitCommandExecutor(DryRunSupport):
             remote: remote name
             ref: branch or tag
             set_upstream: add --set-upstream
+            credential_helper: Optional per-process Git helper name.
+            environment: Non-secret environment overrides for the push.
+            terminal_passthrough: Give Git direct terminal ownership when it
+                may request interactive authentication.
         """
-        cmd = ["push"]
+        cmd: list[str] = []
+
+        if credential_helper:
+            cmd += ["-c", f"credential.helper={credential_helper}"]
+
+        cmd.append("push")
 
         if set_upstream:
             cmd.append("--set-upstream")
 
         cmd += [remote, ref]
 
-        return self._run(cmd, check=True)
+        run_options: dict[str, object] = {}
+        if environment:
+            run_options["environment"] = environment
+        if terminal_passthrough:
+            run_options["terminal_passthrough"] = True
+        return self._run(cmd, check=True, **run_options)
 
-    def push_tag(self, remote: str, tag: str) -> CommandResult:
+    def push_tag(
+        self,
+        remote: str,
+        tag: str,
+        credential_helper: str | None = None,
+        environment: Mapping[str, str] | None = None,
+        terminal_passthrough: bool = False,
+    ) -> CommandResult:
+        """Push one tag to a remote.
+
+        Args:
+            remote: Git remote name.
+            tag: Exact local tag to push.
+            credential_helper: Optional per-process Git helper name.
+            environment: Non-secret environment overrides for the push.
+            terminal_passthrough: Give Git direct terminal ownership when it
+                may request interactive authentication.
+
+        Returns:
+            Normalized Git command result.
         """
-        Push specific tag.
+        cmd: list[str] = []
+        if credential_helper:
+            cmd += ["-c", f"credential.helper={credential_helper}"]
+        cmd += ["push", remote, tag]
+        run_options: dict[str, object] = {}
+        if environment:
+            run_options["environment"] = environment
+        if terminal_passthrough:
+            run_options["terminal_passthrough"] = True
+        return self._run(cmd, check=True, **run_options)
+
+    def ls_remote(
+        self,
+        remote: str,
+        credential_helper: str | None = None,
+        environment: Mapping[str, str] | None = None,
+        terminal_passthrough: bool = False,
+    ) -> CommandResult:
+        """Test read-only remote access with the push credential policy.
+
+        Args:
+            remote: Git remote name.
+            credential_helper: Optional per-process Git helper name.
+            environment: Non-secret environment overrides for the query.
+            terminal_passthrough: Give Git direct terminal ownership when it
+                may request interactive authentication.
+
+        Returns:
+            Normalized result from ``git ls-remote``.
         """
-        return self._run(["push", remote, tag], check=True)
+
+        cmd: list[str] = []
+        if credential_helper:
+            cmd += ["-c", f"credential.helper={credential_helper}"]
+        cmd += ["ls-remote", "--exit-code", remote]
+        run_options: dict[str, object] = {}
+        if environment:
+            run_options["environment"] = environment
+        if terminal_passthrough:
+            run_options["terminal_passthrough"] = True
+        return self._run(cmd, check=False, read_only=True, **run_options)

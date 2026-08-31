@@ -116,6 +116,31 @@ class TestRun:
 
         assert result is expected
 
+    @patch("app.core.git_ops.git.executor.CommandResult.from_completed")
+    def test_terminal_passthrough_inherits_process_streams(
+        self,
+        from_completed,
+        executor,
+    ):
+        """Interactive Git owns the terminal instead of captured pipes."""
+
+        completed = MagicMock()
+        executor.runner.run.return_value = completed
+        expected = MagicMock()
+        from_completed.return_value = expected
+
+        result = executor._run(["push", "origin", "HEAD"], terminal_passthrough=True)
+
+        executor.runner.run.assert_called_once_with(
+            ["git", "push", "origin", "HEAD"],
+            check=False,
+            read_only=False,
+            text=True,
+            encoding="utf-8",
+        )
+        from_completed.assert_called_once_with(completed)
+        assert result is expected
+
     @patch("app.core.git_ops.git.executor.CommandResult.dry_run")
     def test_run_returns_dry_run_result(
         self,

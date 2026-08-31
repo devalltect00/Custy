@@ -43,16 +43,18 @@ class TestGitOpsCommand:
         pipeline = MagicMock()
         builder = MagicMock()
         builder.build.return_value = pipeline
+        builder_factory = MagicMock(return_value=builder)
         monkeypatch.setattr(
             command,
             "PipelineBuilder",
-            MagicMock(return_value=builder),
+            builder_factory,
         )
 
         command._run_pipeline(SimpleNamespace(), ["commit"])
 
         resolver.resolve.assert_called_once_with(["commit"])
         engine.from_cli_args.assert_called_once()
+        builder_factory.assert_called_once_with(isVisible=False)
         builder.build.assert_called_once_with(["commit"])
         pipeline.run.assert_called_once()
 
@@ -71,6 +73,7 @@ class TestGitOpsCommand:
         command.commit(ctx=MagicMock())
 
         run.assert_called_once()
+        assert run.call_args.args[1] == ["commit"]
 
     def test_tag_calls_pipeline(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
@@ -87,6 +90,7 @@ class TestGitOpsCommand:
         command.tag(ctx=MagicMock())
 
         run.assert_called_once()
+        assert run.call_args.args[1] == ["tag"]
 
     def test_push_calls_pipeline(self, monkeypatch):
         monkeypatch.setattr(command, "get_config", MagicMock(return_value=MagicMock()))
@@ -103,3 +107,4 @@ class TestGitOpsCommand:
         command.push(ctx=MagicMock())
 
         run.assert_called_once()
+        assert run.call_args.args[1] == ["push"]

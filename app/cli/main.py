@@ -13,6 +13,7 @@ from app.cli.commands import (
     backup_command,
     changelog_command,
     cleanup_command,
+    configure_command,
     git_ops_command,
     init_command,
     main_command,
@@ -55,6 +56,7 @@ app.add_typer(workflow_command.app, name="workflow")
 app.add_typer(version_command.app, name="version")
 app.add_typer(backup_command.app, name="backup")
 app.add_typer(cleanup_command.app, name="cleanup")
+app.add_typer(configure_command.app, name="configure")
 # app.add_typer(commit_tag_command.app, name="commit-tag")
 
 # =========================

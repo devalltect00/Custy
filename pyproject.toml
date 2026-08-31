@@ -229,6 +229,7 @@ topics = [
 [project.scripts]
 
 custy = "app.__main__:main"
+git-credential-custy = "app.core.git_ops.credentials.helper:main"
 
 # =========================================================
 # TYPER

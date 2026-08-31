@@ -220,6 +220,7 @@ Until v2.0.0
 - [ ] Add conversion support between PEP 440, SemVer, and supported custom tag formats.
 - [ ] Validate configured GitHub and GitLab container image URLs and image names before publication.
 - [ ] Review and update `.pre-commit-config.yaml` so hook versions, Python targets, and validation commands align with the current Custy project. This is planning only; do not update the configuration as part of the current release-planning work.
+- [ ] Add options to push all tags
 
 ---
 

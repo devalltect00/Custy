@@ -5,7 +5,6 @@
 > Cumulative snapshot for **v2.1.0**. Earlier history, unfinished work,
 > considerations, ideas, cancelled items, and notes are intentionally retained.
 
-
 Personal notes, planning, and roadmap for **Custy**
 
 ---
@@ -100,14 +99,14 @@ Since v1.10.0
 
 ### Version context
 
-| Field | Value |
-| --- | --- |
-| Version | `v2.0.0-rc.1` |
-| Previous release line | `1.10.x` |
-| Release type | Major release candidate |
-| Version strategy | Semantic Versioning |
-| Runtime policy | Python 3.14+ |
-| Purpose | Validate the redesigned CLI, configuration, pipelines, changelog, and release foundation before stable promotion |
+| Field                 | Value                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Version               | `v2.0.0-rc.1`                                                                                                    |
+| Previous release line | `1.10.x`                                                                                                         |
+| Release type          | Major release candidate                                                                                          |
+| Version strategy      | Semantic Versioning                                                                                              |
+| Runtime policy        | Python 3.14+                                                                                                     |
+| Purpose               | Validate the redesigned CLI, configuration, pipelines, changelog, and release foundation before stable promotion |
 
 ### Completed release-candidate scope
 
@@ -186,14 +185,14 @@ Since v1.10.0
 
 ### Version context
 
-| Field | Value |
-| --- | --- |
-| Version | `v2.0.0` |
-| Previous version | `v2.0.0-rc.1` |
-| Release type | Stable major release |
-| Version strategy | Semantic Versioning |
-| Feature baseline | The behavior validated in `v2.0.0-rc.1` |
-| Promotion rule | No new supported-command behavior after RC.1 |
+| Field            | Value                                        |
+| ---------------- | -------------------------------------------- |
+| Version          | `v2.0.0`                                     |
+| Previous version | `v2.0.0-rc.1`                                |
+| Release type     | Stable major release                         |
+| Version strategy | Semantic Versioning                          |
+| Feature baseline | The behavior validated in `v2.0.0-rc.1`      |
+| Promotion rule   | No new supported-command behavior after RC.1 |
 
 ### Stable feature baseline
 
@@ -254,14 +253,14 @@ Since v1.10.0
 
 ### Version context
 
-| Field | Value |
-| --- | --- |
-| Version | `v2.1.0` |
-| Previous version | `v2.0.0` |
-| Release type | Stable minor release |
-| Version strategy | Semantic Versioning |
-| Primary goal | Run safely across Python, Node.js, mixed, PHP, documentation-only, and generic repositories |
-| Compatibility | Existing explicit paths remain strict; new projects default to automatic discovery |
+| Field            | Value                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------- |
+| Version          | `v2.1.0`                                                                                    |
+| Previous version | `v2.0.0`                                                                                    |
+| Release type     | Stable minor release                                                                        |
+| Version strategy | Semantic Versioning                                                                         |
+| Primary goal     | Run safely across Python, Node.js, mixed, PHP, documentation-only, and generic repositories |
+| Compatibility    | Existing explicit paths remain strict; new projects default to automatic discovery          |
 
 ### Completed implementation scope
 
@@ -314,6 +313,16 @@ Since v1.10.0
 - [x] Preserve Git stdout, stderr, operation, and exit status when commits fail.
 - [x] Classify hook failures separately from ordinary Git commit failures and surface actionable diagnostics.
 - [x] Include the optional Commitizen extra in the production image.
+- [x] Add native-first GitHub and GitLab HTTPS token fallback for containers without inherited host credential-manager sessions.
+- [x] Add secure external file and environment sources without storing token values in project configuration.
+- [x] Add `custy configure credentials` with guided setup plus `set`, `status`, `test`, and `remove` operations.
+- [x] Add opt-in Docker, Compose, and remote-image Make helpers that use writable mounts only for credential setup and read-only mounts for status, testing, and runtime pushes.
+- [x] Keep SSH, normal Git credential helpers, and local authentication authoritative; inject Custy's helper only for an enabled supported HTTPS push.
+- [x] Prevent non-interactive credential hangs while preserving approved interactive Git prompts.
+- [x] Give manual Git authentication direct terminal ownership and explain PAT input before an HTTPS prompt.
+- [x] Disable Rich rendering for hidden direct-command pipelines so standalone push prompts remain stable.
+- [x] Reject hidden PAT setup without an interactive TTY instead of accepting potentially echoed input.
+- [x] Keep dry-run free from token reads, credential writes, and remote access tests.
 
 #### Tests and documentation
 
@@ -323,9 +332,16 @@ Since v1.10.0
 - [x] Add protected-entry-point, structured-error, no-command, template-fallback, backup-routing, and cross-project regression tests.
 - [x] Add editor settings, editor service, Docker asset, workflow delegation, and exclusive-terminal progress lifecycle coverage.
 - [x] Add commit-validation settings, Commitizen inspection, provider resolution, structured Git error, and hook-classification coverage.
-- [x] Validate 1,260 tests with 83% overall coverage and all configured quality hooks.
-- [x] Validate Ruff, Black, diff whitespace, pre-commit configuration, and the production Docker image.
-- [x] Validate the rebuilt production image, resolved source version, editor-progress marker, and Rich suspend/restart lifecycle.
+- [x] Add credential settings, secure storage, source precedence, exact-host matching, helper protocol, CLI secrecy, dry-run, and per-push injection coverage.
+- [x] Add hidden-pipeline rendering and direct Git-command routing regression coverage.
+- [x] Validate 1,340 tests with 83% overall coverage and all configured quality hooks.
+- [x] Validate Ruff, Black, diff whitespace, and the complete pre-commit configuration.
+- [ ] Rebuild the credential-enabled production image and verify the packaged
+      `git-credential-custy` entry point plus a container push dry-run before
+      publication. The current local attempt reached Dockerfile execution but was
+      blocked by Windows pagefile/memory exhaustion rather than a source failure.
+- [x] Validate the earlier editor-enabled production image baseline, resolved
+      source version, editor-progress marker, and Rich suspend/restart lifecycle.
 - [x] Update canonical English and Indonesian documentation for discovery, initialization, versioning, errors, Docker, editors, terminal-progress handoff, commit validation, Git hooks, pre-commit, testing, and contributing.
 
 ### Upgrade checklist from v2.0.0
@@ -336,6 +352,8 @@ Since v1.10.0
 - [x] Document reinstalling editable checkouts so the console script uses the protected entry point.
 - [x] Document the commit-validation behavior matrix and the difference between version strategy and message validation.
 - [x] Preserve the experimental status of `custy workflow`.
+- [x] Document native/auto credentials, container-only behavior, external paths, environment variables, SSH boundaries, and Docker secret usage.
+- [x] Document Docker bind-mount mapping, persistent versus disposable token files, status-column interpretation, and manual username/PAT fallback.
 
 ### Release checklist
 
@@ -423,6 +441,7 @@ Until v2.0.0
 - [ ] Add conversion support between PEP 440, SemVer, and supported custom tag formats.
 - [ ] Validate configured GitHub and GitLab container image URLs and image names before publication.
 - [ ] Review and update `.pre-commit-config.yaml` so hook versions, Python targets, and validation commands align with the current Custy project. This is planning only; do not update the configuration as part of the current release-planning work.
+- [ ] Add options to push all tags
 
 ---
 

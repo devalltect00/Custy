@@ -52,6 +52,11 @@ help-compose-run:
 
 	@echo   make c-run                          ^|    Run compose command with custom arguments
 	@echo.
+	@echo   make c-credentials-set-github       ^|    Store a GitHub PAT using a writable credential mount
+	@echo   make c-credentials-set-gitlab       ^|    Store a GitLab PAT using a writable credential mount
+	@echo   make c-credentials-status           ^|    Inspect mounted credential availability
+	@echo   make c-credentials-test             ^|    Test read-only access to CUSTY_CREDENTIALS_REMOTE
+	@echo.
 	@echo   make c-run-validate                 ^|    Run the validate command
 	@echo   make c-run-apply-version            ^|    Run version update
 	@echo   make c-run-changelog                ^|    Run changelog generate

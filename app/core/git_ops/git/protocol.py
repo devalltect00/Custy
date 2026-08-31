@@ -4,6 +4,7 @@
 
 ##### Type-safe interface (Protocol)
 
+from collections.abc import Mapping
 from typing import Optional, Protocol
 
 from app.core.git_ops.git.result import CommandResult
@@ -200,6 +201,24 @@ class IGitCommandExecutor(Protocol):
         remote: str,
         ref: str,
         set_upstream: bool = False,
+        credential_helper: str | None = None,
+        environment: Mapping[str, str] | None = None,
+        terminal_passthrough: bool = False,
     ) -> CommandResult: ...
 
-    def push_tag(self, remote: str, tag: str) -> CommandResult: ...
+    def push_tag(
+        self,
+        remote: str,
+        tag: str,
+        credential_helper: str | None = None,
+        environment: Mapping[str, str] | None = None,
+        terminal_passthrough: bool = False,
+    ) -> CommandResult: ...
+
+    def ls_remote(
+        self,
+        remote: str,
+        credential_helper: str | None = None,
+        environment: Mapping[str, str] | None = None,
+        terminal_passthrough: bool = False,
+    ) -> CommandResult: ...

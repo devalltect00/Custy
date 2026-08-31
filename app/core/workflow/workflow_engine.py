@@ -2102,8 +2102,9 @@ class WorkflowEngine:
             return (
                 "Authenticate Git inside the current execution environment. "
                 "Docker does not inherit the host credential-manager session; "
-                "provide an approved credential helper, SSH access, or provider "
-                "token without storing secrets in Custy configuration."
+                "use SSH, allow the interactive prompt, or run "
+                "'custy configure credentials' to configure Custy's optional "
+                "external token fallback. Tokens are never stored in config.toml."
             )
 
         if is_tag:

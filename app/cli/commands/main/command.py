@@ -128,6 +128,9 @@ def main(
     [yellow]custy cleanup[/yellow]
     Remove stale backups and branches
 
+    [yellow]custy configure credentials[/yellow]
+    Configure optional external Git token fallback for containers
+
     ────────────────────────────────────────
 
     ⚙️ [bold]Advanced Features[/bold]

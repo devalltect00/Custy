@@ -15,6 +15,10 @@ help-variables:
 
 	@echo.
 	@echo   DOCKER_TAG=^<tag^>                    ^|    Docker image tag
+	@echo   CUSTY_CREDENTIALS_MOUNT=true^|false   ^|    Opt in to the read-only Custy credential mount
+	@echo   CUSTY_CREDENTIALS_HOST_DIR=^<path^>   ^|    External host credential directory
+	@echo   CUSTY_CREDENTIALS_CONTAINER_DIR=^<path^> ^| Container credential directory
+	@echo   CUSTY_CREDENTIALS_REMOTE=^<name^>     ^|    Remote tested by credential helper targets
 
 	@echo.
 	@echo   REMOTE_TAG=^<tag^>                    ^|    Remote image tag

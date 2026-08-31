@@ -25,6 +25,10 @@ DOCKER_INITIALIZATION_COMMANDS_LIST := \
 
 DOCKER_RUN_COMMANDS_LIST := \
 	d-run \
+	d-credentials-set-github \
+	d-credentials-set-gitlab \
+	d-credentials-status \
+	d-credentials-test \
 	d-run-validate \
 	d-run-apply-version \
 	d-run-changelog \
@@ -61,6 +65,50 @@ $(foreach cmd,$(DOCKER_RUN_COMMANDS_LIST),\
 .PHONY: d-test
 d-test: d-build-dev
 	$(DOCKER_RUN_NO_ENTRYPOINT) $(DOCKER_WORKSPACE) $(DOCKER_IMAGE_DEV) python -m pytest -v
+
+# =========================================================
+# 🐋 DOCKER CREDENTIALS
+# =========================================================
+
+.PHONY: d-credentials-set-github
+d-credentials-set-github: docker-check
+	$(DOCKER_RUN_INTERACTIVE) \
+	$(DOCKER_WORKSPACE) \
+	$(CUSTY_CREDENTIALS_RW_VOLUME) \
+	$(DOCKER_IMAGE_PROD) \
+		$(DOCKER_CUSTY_GLOBAL_ARGS) \
+		configure credentials set --provider github \
+		$(DOCKER_CUSTY_EXTRA_ARGS)
+
+.PHONY: d-credentials-set-gitlab
+d-credentials-set-gitlab: docker-check
+	$(DOCKER_RUN_INTERACTIVE) \
+	$(DOCKER_WORKSPACE) \
+	$(CUSTY_CREDENTIALS_RW_VOLUME) \
+	$(DOCKER_IMAGE_PROD) \
+		$(DOCKER_CUSTY_GLOBAL_ARGS) \
+		configure credentials set --provider gitlab \
+		$(DOCKER_CUSTY_EXTRA_ARGS)
+
+.PHONY: d-credentials-status
+d-credentials-status: docker-check
+	$(DOCKER_RUN_INTERACTIVE) \
+	$(DOCKER_WORKSPACE) \
+	$(CUSTY_CREDENTIALS_RO_VOLUME) \
+	$(DOCKER_IMAGE_PROD) \
+		$(DOCKER_CUSTY_GLOBAL_ARGS) \
+		configure credentials status \
+		$(DOCKER_CUSTY_EXTRA_ARGS)
+
+.PHONY: d-credentials-test
+d-credentials-test: docker-check
+	$(DOCKER_RUN_INTERACTIVE) \
+	$(DOCKER_WORKSPACE) \
+	$(CUSTY_CREDENTIALS_RO_VOLUME) \
+	$(DOCKER_IMAGE_PROD) \
+		$(DOCKER_CUSTY_GLOBAL_ARGS) \
+		configure credentials test --remote "$(CUSTY_CREDENTIALS_REMOTE)" \
+		$(DOCKER_CUSTY_EXTRA_ARGS)
 
 # =========================================================
 # 🐋 DOCKER RUN (PROD)
@@ -115,6 +163,7 @@ d-init-examples: docker-check
 d-run: docker-check
 	$(DOCKER_RUN_INTERACTIVE) \
 	$(DOCKER_WORKSPACE) \
+	$(CUSTY_CREDENTIALS_RUNTIME_VOLUME) \
 	$(DOCKER_IMAGE_PROD) \
 		$(DOCKER_CUSTY_GLOBAL_ARGS) \
 		run \
@@ -260,6 +309,7 @@ d-run-cleanup-all: docker-check
 d-workflow: docker-check
 	$(DOCKER_RUN_INTERACTIVE) \
 	$(DOCKER_WORKSPACE) \
+	$(CUSTY_CREDENTIALS_RUNTIME_VOLUME) \
 	$(DOCKER_IMAGE_PROD) \
 		$(DOCKER_CUSTY_GLOBAL_ARGS) \
 		workflow branch \

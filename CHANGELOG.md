@@ -14,12 +14,121 @@ Unreleased
 
 **Summary**
 
-Make commit-message validation work predictably in repositories that use
-Commitizen, repositories that do not, and mixed local or Docker environments.
-Preserve the earlier final-newline fix so generated Python version modules do
-not trigger end-of-file hooks during the commit phase. Keep standalone push
-focused on synchronization, preserve Git failure details, and prevent live
-pipeline progress from hiding authentication prompts in Docker.
+Add a native-first credential policy for GitHub and GitLab HTTPS pushes so a
+Custy container can reuse an explicitly supplied personal access token without
+placing secrets in the target repository, TOML configuration, command history,
+Docker image, or remote URL. Keep existing local Git credentials and SSH flows
+authoritative, retain the normal interactive Git prompt when permitted, and
+fail non-interactive jobs instead of waiting indefinitely.
+
+### Commit Validation Providers
+
+#### Workflow
+
+- Add `auto`, `custy`, `commitizen`, and `git` providers under
+- Make `auto` select Commitizen only when project configuration is present and
+- Fall back to Custy's built-in Conventional Commit validation when optional
+- Let projects require the external tool with `require_tool = true`.
+- Keep `--check-cz` as a backward-compatible strict Commitizen override.
+- Keep version-strategy selection independent from commit-message validation.
+
+### Git And Pre Commit Execution
+
+#### Workflow
+
+- Preserve Git stdout, stderr, operation name, and exit code when a commit
+- Classify hook-originated failures as `GIT_HOOK_FAILED` and show the hook's
+- Keep ordinary Git commit failures distinct as `GIT_COMMIT_FAILED`.
+- Confirm that `git commit -F <message-file>` remains the correct file-based
+- Add `auto`, `native`, and `pre_commit` execution policies under
+- Keep repositories without installed hooks on Git's normal native path; a
+- Detect Windows-generated pre-commit wrappers that cannot execute inside a
+- Use `git commit --no-verify` only after every bypassed pre-commit-managed
+- Report policy and direct-hook failures with actionable error codes before a
+- Preserve or add the final newline in generated Python version modules so
+
+### 🚀 Releases
+
+#### Workflow
+
+- Preserve non-empty commit and tag message files as reviewed project-owned
+- Generate fallback messages only when the configured file is missing or
+- Keep generated fallback files newline-terminated for formatting-hook
+
+### Docker Push Workflow And Diagnostics
+
+#### Workflow
+
+- Resolve standalone `custy push` and `custy run push` through repository
+- Give push and workflow-initialization steps exclusive terminal ownership so
+- Explain at runtime that a Linux container uses credentials available inside
+- Preserve Git push stdout, stderr, operation, exit code, remote, and tag
+- Distinguish likely authentication failures and provide recovery guidance for
+- Keep authentication external to Custy; this checkpoint does not add token
+
+### 📚 Documentation
+
+- Document automatic project-source and version-target detection in the canonical Custy guide.
+- Explain initialization and versioning behavior for Python, Node.js, mixed, and generic repositories.
+- Add Docker guidance for repositories without an `app/` directory.
+- Add migration and troubleshooting guidance for older explicit path configuration.
+
+#### Credentials
+
+- Add focused settings, storage, provider-matching, precedence, malformed-file,
+- Verify hidden direct pipelines do not claim the terminal and direct Git
+- Verify the targeted credential and Git compatibility suites before the full
+- Validate the complete 1,340-test suite with 83% overall coverage, plus Ruff,
+- Update the canonical English and Indonesian documentation for configuration,
+- Pass TypeScript validation and production builds for both documentation
+
+#### Editor
+
+- Document candidate precedence, supported identifiers, aliases, fallback controls, and structured failures.
+- Explain `VISUAL` and `EDITOR` overrides, the Windows `code.cmd` behavior, and the boundary between host and container editors.
+- Document interactive Docker requirements, bundled editors, key bindings, and the recommended `-it` invocation.
+- Add direct Docker build guidance for supplying an explicit Custy package version.
+- Add recovery guidance for failures at `EditFilesStep`, including the boundary between generated artifacts and later Git mutations.
+- Explain expected progress suspension during terminal editing and how to identify an outdated executable or cached image when stale rows remain.
+- Keep the English and Indonesian Custy documentation behaviorally aligned.
+
+#### Workflow
+
+- Add `commitizen` and `hooks` installation extras and include both in the
+- Document the validation-provider and Git-hook behavior matrices in generated
+- Add matching English and Indonesian guidance for configuration, commit,
+- Add provider resolution, hook-policy, direct pre-commit, no-hook project,
+
+### 🧪 Tests
+
+- Add focused detector coverage for Python, Node.js, mixed, PHP, and generic layouts.
+- Add cross-project version-update tests for Python modules, `pyproject.toml`, `package.json`, lockfiles, mixed repositories, and tag-only repositories.
+- Add protected-entry-point, structured-error, no-subcommand, and cross-project startup regression tests.
+- Update initialization, resolver, validation, and workflow tests for optional automatic version targets.
+- Align Ruff and Black configuration with the active source tree while excluding protected historical and temporary reference files.
+- Apply import, formatting, typing, and lint cleanup across active application and test code.
+- Validate the refreshed pre-commit configuration before release.
+- Validate the rebuilt `custy-prod:latest` image from the Devalltect documentation repository.
+
+#### Editor
+
+- Add unit coverage for configuration parsing, aliases, platform and container precedence, fallback controls, and invalid values.
+- Add unit coverage for resolved executable launching, TTY requirements, dry-run simulation, missing files, and launch failures.
+- Add regression coverage for the Docker editor packages, settings files, and expected key bindings.
+- Add unit coverage for exact tags, release candidates, development versions, post releases, Git commit distance, and missing Git metadata.
+- Add workflow integration coverage proving edit steps delegate correctly in normal and dry-run modes.
+- Add regression coverage for exclusive terminal ownership, hidden task visibility, progress restart, and exception-safe restoration.
+- Validate the complete suite with 1,235 passing tests and 82% overall coverage.
+- Confirm `ruff check .` and `black --check .` complete successfully.
+- Build `custy-prod:latest` and verify it reports the resolved source version.
+- Verify Micro, Nano, Vim, and Vi are present, their bundled settings load, and Custy resolves the intended container priority.
+
+#### Workflow
+
+- Confirm Ruff, Black, and diff-whitespace validation pass.
+- Confirm English and Indonesian documentation typechecking and production
+- Rebuild `custy-prod:latest` and verify the standalone push profile resolves
+- Verify Docker dry-run simulates the configured GitHub and GitLab destinations
 
 ### Configurable Editor Resolution
 
@@ -68,62 +177,6 @@ pipeline progress from hiding authentication prompts in Docker.
 - Pass the resolved version into Docker and Compose builds through `CUSTY_BUILD_VERSION`.
 - Use setuptools-scm's build-time override so images built without copied `.git` metadata no longer fall back to `0.1.0`.
 - Keep a safe `0.1.0` fallback for source archives or environments where repository metadata cannot be resolved.
-
-### 🧪 Tests
-
-- Add focused detector coverage for Python, Node.js, mixed, PHP, and generic layouts.
-- Add cross-project version-update tests for Python modules, `pyproject.toml`, `package.json`, lockfiles, mixed repositories, and tag-only repositories.
-- Add protected-entry-point, structured-error, no-subcommand, and cross-project startup regression tests.
-- Update initialization, resolver, validation, and workflow tests for optional automatic version targets.
-- Align Ruff and Black configuration with the active source tree while excluding protected historical and temporary reference files.
-- Apply import, formatting, typing, and lint cleanup across active application and test code.
-- Validate the refreshed pre-commit configuration before release.
-- Validate the rebuilt `custy-prod:latest` image from the Devalltect documentation repository.
-
-#### Editor
-
-- Add unit coverage for configuration parsing, aliases, platform and container precedence, fallback controls, and invalid values.
-- Add unit coverage for resolved executable launching, TTY requirements, dry-run simulation, missing files, and launch failures.
-- Add regression coverage for the Docker editor packages, settings files, and expected key bindings.
-- Add unit coverage for exact tags, release candidates, development versions, post releases, Git commit distance, and missing Git metadata.
-- Add workflow integration coverage proving edit steps delegate correctly in normal and dry-run modes.
-- Add regression coverage for exclusive terminal ownership, hidden task visibility, progress restart, and exception-safe restoration.
-- Validate the complete suite with 1,235 passing tests and 82% overall coverage.
-- Confirm `ruff check .` and `black --check .` complete successfully.
-- Build `custy-prod:latest` and verify it reports the resolved source version.
-- Verify Micro, Nano, Vim, and Vi are present, their bundled settings load, and Custy resolves the intended container priority.
-
-#### Workflow
-
-- Confirm Ruff, Black, and diff-whitespace validation pass.
-- Confirm English and Indonesian documentation typechecking and production
-- Rebuild `custy-prod:latest` and verify the standalone push profile resolves
-- Verify Docker dry-run simulates the configured GitHub and GitLab destinations
-
-### 📚 Documentation
-
-- Document automatic project-source and version-target detection in the canonical Custy guide.
-- Explain initialization and versioning behavior for Python, Node.js, mixed, and generic repositories.
-- Add Docker guidance for repositories without an `app/` directory.
-- Add migration and troubleshooting guidance for older explicit path configuration.
-
-#### Editor
-
-- Add a complete editor-configuration reference in the English and Indonesian documentation.
-- Document candidate precedence, supported identifiers, aliases, fallback controls, and structured failures.
-- Explain `VISUAL` and `EDITOR` overrides, the Windows `code.cmd` behavior, and the boundary between host and container editors.
-- Document interactive Docker requirements, bundled editors, key bindings, and the recommended `-it` invocation.
-- Add direct Docker build guidance for supplying an explicit Custy package version.
-- Add recovery guidance for failures at `EditFilesStep`, including the boundary between generated artifacts and later Git mutations.
-- Explain expected progress suspension during terminal editing and how to identify an outdated executable or cached image when stale rows remain.
-- Keep the English and Indonesian Custy documentation behaviorally aligned.
-
-#### Workflow
-
-- Add `commitizen` and `hooks` installation extras and include both in the
-- Document the validation-provider and Git-hook behavior matrices in generated
-- Add matching English and Indonesian guidance for configuration, commit,
-- Add provider resolution, hook-policy, direct pre-commit, no-hook project,
 
 ### Compatibility And Usage Notes
 
@@ -202,54 +255,67 @@ pipeline progress from hiding authentication prompts in Docker.
 - Existing editable installations should be reinstalled after updating source so the generated `custy` console script uses the protected entry point.
 - The experimental status of `custy workflow` is unchanged.
 
-### Commit Validation Providers
+### Credential Policy And Storage
 
-#### Workflow
+#### Credentials
 
-- Add `auto`, `custy`, `commitizen`, and `git` providers under
-- Make `auto` select Commitizen only when project configuration is present and
-- Fall back to Custy's built-in Conventional Commit validation when optional
-- Let projects require the external tool with `require_tool = true`.
-- Keep `--check-cz` as a backward-compatible strict Commitizen override.
-- Keep version-strategy selection independent from commit-message validation.
+- Add strict `native` and `auto` credential modes under
+- Keep `container_only = true` as the recommended boundary so local Git
+- Add ordered `file` and `environment` sources for GitHub and GitLab tokens.
+- Store only provider policy, usernames, external filenames, and environment
+- Resolve external files from platform-specific user data directories or
+- Reject token files inside the target project, symbolic links, non-regular
+- Write token files atomically with restrictive permissions and require an
 
-### Git And Pre Commit Execution
+### Native First Git Integration
 
-#### Workflow
+#### Credentials
 
-- Preserve Git stdout, stderr, operation name, and exit code when a commit
-- Classify hook-originated failures as `GIT_HOOK_FAILED` and show the hook's
-- Keep ordinary Git commit failures distinct as `GIT_COMMIT_FAILED`.
-- Confirm that `git commit -F <message-file>` remains the correct file-based
-- Add `auto`, `native`, and `pre_commit` execution policies under
-- Keep repositories without installed hooks on Git's normal native path; a
-- Detect Windows-generated pre-commit wrappers that cannot execute inside a
-- Use `git commit --no-verify` only after every bypassed pre-commit-managed
-- Report policy and direct-hook failures with actionable error codes before a
-- Preserve or add the final newline in generated Python version modules so
+- Preserve normal Git credential helpers and SSH authentication as the first
+- Add `git-credential-custy` as a per-process helper only for an enabled,
+- Avoid system, global, and repository Git configuration changes by injecting
+- Leave SSH remotes and unsupported or lookalike hosts entirely on native Git
+- Allow a missing external file to fall through to the configured environment
+- Preserve interactive username/PAT prompts when policy allows them, give Git
+- Disable Rich rendering entirely for hidden direct-command pipelines so
+- Explain before a manual HTTPS prompt that Git's `Password` field expects a
+- Apply the same policy to branch pushes, tag pushes, and read-only remote
 
-### 🚀 Releases
+### Configure Credentials Cli
 
-#### Workflow
+#### Credentials
 
-- Preserve non-empty commit and tag message files as reviewed project-owned
-- Generate fallback messages only when the configured file is missing or
-- Keep generated fallback files newline-terminated for formatting-hook
+- Add the guided `custy configure credentials` workflow.
+- Add focused `set`, `status`, `test`, and `remove` subcommands for GitHub and
+- Prompt for file-backed tokens with hidden input and confirmation; deliberately
+- Reject hidden token entry when no controllable TTY is attached and direct
+- Show source availability and external paths without printing token values.
+- Test access with read-only `git ls-remote` and provide an explicit file-delete
+- Keep dry-run secret-free and network-free: it does not read token material,
 
-### Docker Push Workflow And Diagnostics
+### Docker Compose And Remote Image Make Helpers
 
-#### Workflow
+#### Credentials
 
-- Resolve standalone `custy push` and `custy run push` through repository
-- Give push and workflow-initialization steps exclusive terminal ownership so
-- Explain at runtime that a Linux container uses credentials available inside
-- Preserve Git push stdout, stderr, operation, exit code, remote, and tag
-- Distinguish likely authentication failures and provide recovery guidance for
-- Keep authentication external to Custy; this checkpoint does not add token
+- Add `d-credentials-*`, `c-credentials-*`, and
+- Keep `CUSTY_CREDENTIALS_MOUNT=false` as the safe runtime default so existing
+- Allow an explicit `CUSTY_CREDENTIALS_MOUNT=true` on Docker, Compose, and
+- Use a writable mount only for credential `set`; keep status, test, and
+- Add platform-aware host-directory defaults and explicit host, container, and
+
+### Configuration Diagnostics And Compatibility
+
+#### Credentials
+
+- Document the native/auto and container-only behavior matrix directly in the
+- Add GitHub defaults (`x-access-token`, `CUSTY_GITHUB_TOKEN`) and GitLab
+- Update push authentication hints to direct users to SSH, an interactive Git
+- Preserve the original executor call shape in native mode and omit empty
+- Register the helper as a packaged console entry point without logging or
 
 **Tags**
 
-release • workflow • docs • tests • commit • commitizen • git-hooks • pre-commit • release-messages • versioning • push • terminal-ui • docker • documentation
+release • docs • tests • credentials
 
 ## v2.0.0 (2026-08-24)
 

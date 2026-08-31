@@ -2368,6 +2368,91 @@ push_to = "main"
 
 
 # =========================================================
+# GIT - 🔐 OPTIONAL HTTPS CREDENTIAL FALLBACK
+# =========================================================
+#
+# Custy does not replace Git authentication. Normal Git credential helpers,
+# cached host sessions, and SSH remain the first and recommended choices.
+# These settings provide an optional HTTPS token fallback, primarily for a
+# Docker container that cannot inherit the host credential-manager session.
+#
+# Tokens are never stored in this TOML file. They may come from:
+#
+#     file
+#         An external token file under the platform credential directory.
+#
+#     environment
+#         A named environment variable passed to Custy or the container.
+#
+# External credential directory defaults:
+#
+#     Windows:  %LOCALAPPDATA%\Custy\credentials
+#     Linux:    $XDG_DATA_HOME/custy/credentials
+#               or ~/.local/share/custy/credentials
+#     Docker:   /run/secrets/custy
+#
+# Override the directory with CUSTY_CREDENTIALS_DIR. Custy rejects token paths
+# inside the target project and never writes a token into config.toml.
+#
+# Recommended setup:
+#
+#     custy configure credentials
+#
+# Inspect or test it safely:
+#
+#     custy configure credentials status
+#     custy configure credentials test --remote origin
+#
+# Behavior matrix:
+#
+#   mode     container_only   Local execution       Container execution
+#   native   true/false       Native Git only       Native Git only
+#   auto     true             Native Git only       Native Git, then fallback
+#   auto     false            Native Git, fallback  Native Git, then fallback
+#
+# SSH remotes always stay on native SSH authentication. Custy does not copy,
+# generate, mount, or manage SSH private keys.
+#
+# =========================================================
+
+[tool.custy.git.credentials]
+
+# native (default): never use Custy's token fallback.
+# auto: use enabled external sources after normal Git helpers.
+mode = "native"
+
+# true (recommended): managed fallback is active only in a container.
+# false: managed fallback may also be used by local HTTPS pushes.
+container_only = true
+
+# Search order after normal Git authentication. A missing file falls through
+# to the next source. An invalid or malformed source stops with a clear error.
+source_order = ["file", "environment"]
+
+# true: when no managed token is available in an interactive terminal, Git may
+# ask for a username and password/PAT as usual.
+interactive_fallback = true
+
+# true (recommended): non-interactive jobs fail instead of waiting forever for
+# a credential prompt. Interactive terminals are unaffected.
+fail_non_interactive = true
+
+[tool.custy.git.credentials.github]
+
+enabled = false
+username = "x-access-token"
+token_file = "github.token"
+token_env = "CUSTY_GITHUB_TOKEN"
+
+[tool.custy.git.credentials.gitlab]
+
+enabled = false
+username = "oauth2"
+token_file = "gitlab.token"
+token_env = "CUSTY_GITLAB_TOKEN"
+
+
+# =========================================================
 # GIT - 🪝 COMMIT HOOKS
 # =========================================================
 #

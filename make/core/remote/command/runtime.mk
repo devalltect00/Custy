@@ -37,6 +37,10 @@ REMOTE_CUSTY_RUNTIME_COMMANDS_LIST := \
 	r-custy-init-examples \
 	r-custy-init-force \
 	r-custy-init-ask \
+	r-custy-credentials-set-github \
+	r-custy-credentials-set-gitlab \
+	r-custy-credentials-status \
+	r-custy-credentials-test \
 	r-custy-run \
 	r-custy-run-validate \
 	r-custy-run-apply-version \
@@ -236,6 +240,13 @@ r-doc-analyze:
 # 🌐 Remote Runtime Commands - Custy
 # -------------------------------------------------------------------------
 
+define REMOTE_CUSTY_RUN
+$(DOCKER_RUN_INTERACTIVE) \
+	$(DOCKER_REMOTE_WORKSPACE) \
+	$(1) \
+	$(call REMOTE_IMAGE_FULL,REMOTE_IMAGE_CUSTY)
+endef
+
 .PHONY: r-custy-init
 r-custy-init:
 	$(call REQUIRE_REMOTE)
@@ -274,11 +285,47 @@ r-custy-init-force: r-custy-init
 r-custy-init-ask: override REMOTE_CUSTY_INIT_ARGS += --ask --mode all
 r-custy-init-ask: r-custy-init
 
+.PHONY: r-custy-credentials-set-github
+r-custy-credentials-set-github:
+	$(call REQUIRE_REMOTE)
+	$(call ENSURE_REMOTE_IMAGE,REMOTE_IMAGE_CUSTY)
+	$(call REMOTE_CUSTY_RUN,$(CUSTY_CREDENTIALS_RW_VOLUME)) \
+		$(REMOTE_CUSTY_GLOBAL_ARGS) \
+		configure credentials set --provider github \
+		$(REMOTE_CUSTY_EXTRA_ARGS)
+
+.PHONY: r-custy-credentials-set-gitlab
+r-custy-credentials-set-gitlab:
+	$(call REQUIRE_REMOTE)
+	$(call ENSURE_REMOTE_IMAGE,REMOTE_IMAGE_CUSTY)
+	$(call REMOTE_CUSTY_RUN,$(CUSTY_CREDENTIALS_RW_VOLUME)) \
+		$(REMOTE_CUSTY_GLOBAL_ARGS) \
+		configure credentials set --provider gitlab \
+		$(REMOTE_CUSTY_EXTRA_ARGS)
+
+.PHONY: r-custy-credentials-status
+r-custy-credentials-status:
+	$(call REQUIRE_REMOTE)
+	$(call ENSURE_REMOTE_IMAGE,REMOTE_IMAGE_CUSTY)
+	$(call REMOTE_CUSTY_RUN,$(CUSTY_CREDENTIALS_RO_VOLUME)) \
+		$(REMOTE_CUSTY_GLOBAL_ARGS) \
+		configure credentials status \
+		$(REMOTE_CUSTY_EXTRA_ARGS)
+
+.PHONY: r-custy-credentials-test
+r-custy-credentials-test:
+	$(call REQUIRE_REMOTE)
+	$(call ENSURE_REMOTE_IMAGE,REMOTE_IMAGE_CUSTY)
+	$(call REMOTE_CUSTY_RUN,$(CUSTY_CREDENTIALS_RO_VOLUME)) \
+		$(REMOTE_CUSTY_GLOBAL_ARGS) \
+		configure credentials test --remote "$(CUSTY_CREDENTIALS_REMOTE)" \
+		$(REMOTE_CUSTY_EXTRA_ARGS)
+
 .PHONY: r-custy-run
 r-custy-run:
 	$(call REQUIRE_REMOTE)
 	$(call ENSURE_REMOTE_IMAGE,REMOTE_IMAGE_CUSTY)
-	$(call REMOTE_RUN,REMOTE_IMAGE_CUSTY) \
+	$(call REMOTE_CUSTY_RUN,$(CUSTY_CREDENTIALS_RUNTIME_VOLUME)) \
 		$(REMOTE_CUSTY_GLOBAL_ARGS) \
 		run \
 		$(REMOTE_CUSTY_RUN_SUBCOMMAND) \
@@ -423,7 +470,7 @@ r-custy-run-cleanup-all:
 r-custy-workflow:
 	$(call REQUIRE_REMOTE)
 	$(call ENSURE_REMOTE_IMAGE,REMOTE_IMAGE_CUSTY)
-	$(call REMOTE_RUN,REMOTE_IMAGE_CUSTY) \
+	$(call REMOTE_CUSTY_RUN,$(CUSTY_CREDENTIALS_RUNTIME_VOLUME)) \
 		$(REMOTE_CUSTY_GLOBAL_ARGS) \
 		workflow branch \
 		$(REMOTE_CUSTY_WORKFLOW_ARGS) \

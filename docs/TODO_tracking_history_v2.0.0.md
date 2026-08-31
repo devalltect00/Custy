@@ -5,7 +5,6 @@
 > Cumulative snapshot for **v2.0.0**. Earlier history, unfinished work,
 > considerations, ideas, cancelled items, and notes are intentionally retained.
 
-
 Personal notes, planning, and roadmap for **Custy**
 
 ---
@@ -100,14 +99,14 @@ Since v1.10.0
 
 ### Version context
 
-| Field | Value |
-| --- | --- |
-| Version | `v2.0.0-rc.1` |
-| Previous release line | `1.10.x` |
-| Release type | Major release candidate |
-| Version strategy | Semantic Versioning |
-| Runtime policy | Python 3.14+ |
-| Purpose | Validate the redesigned CLI, configuration, pipelines, changelog, and release foundation before stable promotion |
+| Field                 | Value                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Version               | `v2.0.0-rc.1`                                                                                                    |
+| Previous release line | `1.10.x`                                                                                                         |
+| Release type          | Major release candidate                                                                                          |
+| Version strategy      | Semantic Versioning                                                                                              |
+| Runtime policy        | Python 3.14+                                                                                                     |
+| Purpose               | Validate the redesigned CLI, configuration, pipelines, changelog, and release foundation before stable promotion |
 
 ### Completed release-candidate scope
 
@@ -186,14 +185,14 @@ Since v1.10.0
 
 ### Version context
 
-| Field | Value |
-| --- | --- |
-| Version | `v2.0.0` |
-| Previous version | `v2.0.0-rc.1` |
-| Release type | Stable major release |
-| Version strategy | Semantic Versioning |
-| Feature baseline | The behavior validated in `v2.0.0-rc.1` |
-| Promotion rule | No new supported-command behavior after RC.1 |
+| Field            | Value                                        |
+| ---------------- | -------------------------------------------- |
+| Version          | `v2.0.0`                                     |
+| Previous version | `v2.0.0-rc.1`                                |
+| Release type     | Stable major release                         |
+| Version strategy | Semantic Versioning                          |
+| Feature baseline | The behavior validated in `v2.0.0-rc.1`      |
+| Promotion rule   | No new supported-command behavior after RC.1 |
 
 ### Stable feature baseline
 
@@ -288,6 +287,7 @@ Until v2.0.0
 - [ ] Add conversion support between PEP 440, SemVer, and supported custom tag formats.
 - [ ] Validate configured GitHub and GitLab container image URLs and image names before publication.
 - [ ] Review and update `.pre-commit-config.yaml` so hook versions, Python targets, and validation commands align with the current Custy project. This is planning only; do not update the configuration as part of the current release-planning work.
+- [ ] Add options to push all tags
 
 ---
 

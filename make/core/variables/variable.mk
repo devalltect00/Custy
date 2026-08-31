@@ -152,6 +152,29 @@ DOCKER_RUN_NO_ENTRYPOINT := $(DOCKER_RUN) --entrypoint ""
 DOCKER_SOCKET ?= /var/run/docker.sock
 DOCKER_SOCKET_MOUNT := -v "$(DOCKER_SOCKET):$(DOCKER_SOCKET)"
 
+# Optional external Custy credential mount. The switch is disabled by default
+# so manual Git prompts, SSH, and native helpers retain their existing behavior.
+CUSTY_CREDENTIALS_MOUNT ?= false
+CUSTY_CREDENTIALS_CONTAINER_DIR ?= /run/secrets/custy
+CUSTY_CREDENTIALS_REMOTE ?= origin
+
+ifeq ($(PLATFORM),windows)
+CUSTY_CREDENTIALS_HOST_DIR ?= $(if $(strip $(LOCALAPPDATA)),$(LOCALAPPDATA)/Custy/credentials,$(error LOCALAPPDATA is unavailable; set CUSTY_CREDENTIALS_HOST_DIR explicitly))
+else
+CUSTY_CREDENTIALS_HOST_DIR ?= $(if $(strip $(XDG_DATA_HOME)),$(XDG_DATA_HOME)/custy/credentials,$(if $(strip $(HOME)),$(HOME)/.local/share/custy/credentials,$(error HOME and XDG_DATA_HOME are unavailable; set CUSTY_CREDENTIALS_HOST_DIR explicitly)))
+endif
+
+CUSTY_CREDENTIALS_RO_VOLUME = -v "$(CUSTY_CREDENTIALS_HOST_DIR):$(CUSTY_CREDENTIALS_CONTAINER_DIR):ro"
+CUSTY_CREDENTIALS_RW_VOLUME = -v "$(CUSTY_CREDENTIALS_HOST_DIR):$(CUSTY_CREDENTIALS_CONTAINER_DIR)"
+
+ifeq ($(strip $(CUSTY_CREDENTIALS_MOUNT)),true)
+CUSTY_CREDENTIALS_RUNTIME_VOLUME = $(CUSTY_CREDENTIALS_RO_VOLUME)
+else ifeq ($(strip $(CUSTY_CREDENTIALS_MOUNT)),false)
+CUSTY_CREDENTIALS_RUNTIME_VOLUME =
+else
+$(error CUSTY_CREDENTIALS_MOUNT must be true or false)
+endif
+
 # Container Shell
 SHELL_BIN ?= sh
 

@@ -93,6 +93,10 @@ class Pipeline:
             BarColumn(),
             TextColumn("{task.completed}/{task.total}"),
             console=console,
+            # A hidden task still leaves Rich's live display active. Disable
+            # rendering entirely for direct commands so Git and terminal
+            # editors retain stable ownership of interactive prompts.
+            disable=not self.visible,
         ) as progress:
             task = progress.add_task(
                 "[bold]Executing pipeline...[/bold]", total=total, visible=self.visible

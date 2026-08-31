@@ -22,6 +22,10 @@ COMPOSE_INIT_COMMANDS_LIST := \
 
 COMPOSE_RUN_COMMANDS_LIST := \
 	c-run \
+	c-credentials-set-github \
+	c-credentials-set-gitlab \
+	c-credentials-status \
+	c-credentials-test \
 	c-run-validate \
 	c-run-apply-version \
 	c-run-changelog \
@@ -74,6 +78,34 @@ $(foreach cmd,$(COMPOSE_UTILITIES_COMMANDS_LIST),\
 # 🐋 DOCKER COMPOSE - CORE
 # -------------------------------------------------------------------------
 
+.PHONY: c-credentials-set-github
+c-credentials-set-github: docker-check
+	$(COMPOSE_PROD_RUN) $(CUSTY_CREDENTIALS_RW_VOLUME) $(SERVICE_APP) \
+		$(COMPOSE_CUSTY_GLOBAL_ARGS) \
+		configure credentials set --provider github \
+		$(COMPOSE_CUSTY_EXTRA_ARGS)
+
+.PHONY: c-credentials-set-gitlab
+c-credentials-set-gitlab: docker-check
+	$(COMPOSE_PROD_RUN) $(CUSTY_CREDENTIALS_RW_VOLUME) $(SERVICE_APP) \
+		$(COMPOSE_CUSTY_GLOBAL_ARGS) \
+		configure credentials set --provider gitlab \
+		$(COMPOSE_CUSTY_EXTRA_ARGS)
+
+.PHONY: c-credentials-status
+c-credentials-status: docker-check
+	$(COMPOSE_PROD_RUN) $(CUSTY_CREDENTIALS_RO_VOLUME) $(SERVICE_APP) \
+		$(COMPOSE_CUSTY_GLOBAL_ARGS) \
+		configure credentials status \
+		$(COMPOSE_CUSTY_EXTRA_ARGS)
+
+.PHONY: c-credentials-test
+c-credentials-test: docker-check
+	$(COMPOSE_PROD_RUN) $(CUSTY_CREDENTIALS_RO_VOLUME) $(SERVICE_APP) \
+		$(COMPOSE_CUSTY_GLOBAL_ARGS) \
+		configure credentials test --remote "$(CUSTY_CREDENTIALS_REMOTE)" \
+		$(COMPOSE_CUSTY_EXTRA_ARGS)
+
 .PHONY: c-init
 c-init: docker-check
 	$(COMPOSE_PROD_RUN_APP) \
@@ -119,7 +151,7 @@ c-init-examples: docker-check
 
 .PHONY: c-run
 c-run: docker-check
-	$(COMPOSE_PROD_RUN_APP) \
+	$(COMPOSE_PROD_RUN) $(CUSTY_CREDENTIALS_RUNTIME_VOLUME) $(SERVICE_APP) \
 		$(COMPOSE_CUSTY_GLOBAL_ARGS) \
 		run \
 		$(COMPOSE_CUSTY_RUN_SUBCOMMAND) \
@@ -244,7 +276,7 @@ c-run-cleanup-all: docker-check
 # Still in development
 .PHONY: c-workflow
 c-workflow: docker-check
-	$(COMPOSE_PROD_RUN_APP) \
+	$(COMPOSE_PROD_RUN) $(CUSTY_CREDENTIALS_RUNTIME_VOLUME) $(SERVICE_APP) \
 		$(COMPOSE_CUSTY_GLOBAL_ARGS) \
 		workflow branch \
 		$(COMPOSE_CUSTY_WORKFLOW_ARGS) \

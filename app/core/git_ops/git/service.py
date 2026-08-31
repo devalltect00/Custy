@@ -17,6 +17,7 @@ from app.core.cleanup.branch.models import (
     BranchInfo,
 )
 from app.core.decorators.log_decorators import log_execution
+from app.core.git_ops.credentials import CredentialService
 from app.core.git_ops.git.protocol import IGitCommandExecutor
 from app.core.git_ops.helper import (
     detect_tag_sorting_strategy,
@@ -54,11 +55,47 @@ class GitService:
         executor: IGitCommandExecutor,
         config: ConfigLoader | None = None,
         strategy: StrategyChoices | None = None,
+        credential_service: CredentialService | None = None,
     ):
         self.executor = executor
         self.config = config or get_config()
         self.strategy = strategy
+        self.credential_service = credential_service or CredentialService(
+            config=self.config
+        )
         self._tag_sorter: TagSorter | None = None
+
+    def _credential_push_kwargs(self, remote: str) -> dict[str, object]:
+        """Resolve optional per-push authentication without changing Git config.
+
+        Dry-run never resolves token material. Interactive native Git fallback
+        receives direct terminal ownership only when no managed token resolved.
+        """
+
+        if self.executor.get_is_dry_run():
+            return {}
+
+        remote_url = self.get_remote_url(remote) or ""
+        plan = self.credential_service.plan_for_remote(remote_url)
+        kwargs: dict[str, object] = {}
+        if plan.helper:
+            kwargs["credential_helper"] = plan.helper
+        if plan.environment:
+            kwargs["environment"] = plan.environment
+        if plan.terminal_passthrough:
+            kwargs["terminal_passthrough"] = True
+            logger.info(
+                "\n🔐 Git may request interactive authentication for %s. "
+                "For an HTTPS password prompt, enter a personal access token "
+                "rather than an account password.",
+                remote,
+            )
+        logger.debug(
+            "Credential plan resolved for remote %s: %s",
+            remote,
+            plan.reason,
+        )
+        return kwargs
 
     def _resolve_tag_sorting_strategy(
         self,
@@ -992,7 +1029,8 @@ class GitService:
 
         for r in target_remotes:
             logger.info(f"\n🚀 Pushing to {r}:{ref}")
-            result = self.executor.push(remote=r, ref=ref)
+            kwargs = self._credential_push_kwargs(r)
+            result = self.executor.push(remote=r, ref=ref, **kwargs)
 
             if not result.success:
                 detail = (result.stderr or result.stdout).strip()
@@ -1031,7 +1069,8 @@ class GitService:
 
         for r in target_remotes:
             logger.info(f"\n🏷️ Pushing tag {tag} to {r}")
-            result = self.executor.push_tag(r, tag)
+            kwargs = self._credential_push_kwargs(r)
+            result = self.executor.push_tag(r, tag, **kwargs)
 
             if not result.success:
                 detail = (result.stderr or result.stdout).strip()
@@ -1045,6 +1084,46 @@ class GitService:
                     stdout=result.stdout,
                     stderr=result.stderr,
                 )
+
+    def test_remote_access(self, remote: str) -> None:
+        """Test read-only access using the same credential plan as push.
+
+        Args:
+            remote: Configured Git remote name.
+
+        Raises:
+            GitOperationError: If ``git ls-remote`` cannot authenticate or
+                reach the selected remote.
+        """
+
+        if self.executor.get_is_dry_run():
+            logger.info(
+                "[dry_run](dry-run)[/dry_run] Would test read-only access "
+                "to remote %s without reading credentials or contacting it.",
+                remote,
+            )
+            return
+
+        remote_url = self.get_remote_url(remote)
+        if not remote_url:
+            raise GitOperationError(
+                f"Git remote does not exist: {remote}",
+                operation="credential-test",
+            )
+        kwargs = self._credential_push_kwargs(remote)
+        result = self.executor.ls_remote(remote, **kwargs)
+        if not result.success:
+            detail = (result.stderr or result.stdout).strip()
+            message = f"Credential test failed for remote {remote}"
+            if detail:
+                message = f"{message}: {detail}"
+            raise GitOperationError(
+                message,
+                operation="credential-test",
+                returncode=result.returncode,
+                stdout=result.stdout,
+                stderr=result.stderr,
+            )
 
     # =========================================================
     # ===================== ADVANCED ===========================

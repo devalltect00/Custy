@@ -105,6 +105,37 @@ make r-reflow-dockerize-dryrun \
 
 Override `DOCKER_SOCKET` only when the host uses a different Docker endpoint.
 
+## Remote Custy Credential Helpers
+
+Published Custy-image workflows can use an external credential directory
+without copying tokens into the repository or image:
+
+```bash
+make r-custy-credentials-set-github
+make r-custy-credentials-set-gitlab
+make r-custy-credentials-status
+make r-custy-credentials-test CUSTY_CREDENTIALS_REMOTE=origin
+```
+
+The two `set` targets mount the credential directory read-write so Custy can
+store the selected provider token. `status` and `test` mount it read-only;
+`test` performs a read-only access check against the selected Git remote.
+Credential values are not passed as Make variables or printed by these targets.
+
+`CUSTY_CREDENTIALS_HOST_DIR` defaults to
+`%LOCALAPPDATA%/Custy/credentials` on Windows and
+`$XDG_DATA_HOME/custy/credentials` or
+`$HOME/.local/share/custy/credentials` on Unix. The directory is mounted at
+`CUSTY_CREDENTIALS_CONTAINER_DIR`, which defaults to `/run/secrets/custy`.
+
+Normal `r-custy-run*` and `r-custy-workflow` execution does not mount this
+directory by default. Enable its read-only runtime mount explicitly when the
+selected workflow needs the configured fallback:
+
+```bash
+make r-custy-run-push CUSTY_CREDENTIALS_MOUNT=true
+```
+
 ## Safety and Credentials
 
 Start with a `-dryrun` target. Reflow previews its own Git, release, and Docker

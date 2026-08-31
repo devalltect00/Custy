@@ -495,6 +495,11 @@ Common directories include:
 │   │   │   │   ├── options.py
 │   │   │   │   └── resolver.py
 │   │   │   ├── configure
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── command.py
+│   │   │   │   ├── models.py
+│   │   │   │   ├── options.py
+│   │   │   │   └── resolver.py
 │   │   │   ├── git_ops
 │   │   │   │   ├── command.py
 │   │   │   │   ├── models.py
@@ -648,6 +653,13 @@ Common directories include:
 │   │   │   │   ├── settings.py
 │   │   │   │   └── validator.py
 │   │   │   ├── credentials
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── helper.py
+│   │   │   │   ├── models.py
+│   │   │   │   ├── resolver.py
+│   │   │   │   ├── service.py
+│   │   │   │   ├── settings.py
+│   │   │   │   └── store.py
 │   │   │   ├── engine
 │   │   │   │   ├── __init__.py
 │   │   │   │   └── git_workflow_engine.deprecated.py
@@ -984,6 +996,8 @@ Common directories include:
 │   │   │   │   ├── test_options_cleanup.py
 │   │   │   │   └── test_resolver_cleanup.py
 │   │   │   ├── configure
+│   │   │   │   ├── test_command.py
+│   │   │   │   └── test_resolver.py
 │   │   │   ├── git_ops
 │   │   │   │   ├── test_command_git_ops.py
 │   │   │   │   ├── test_models_git_ops.py
@@ -1065,6 +1079,11 @@ Common directories include:
 │   │   │   ├── commit
 │   │   │   │   └── test_settings.py
 │   │   │   ├── credentials
+│   │   │   │   ├── test_helper.py
+│   │   │   │   ├── test_resolver.py
+│   │   │   │   ├── test_service.py
+│   │   │   │   ├── test_settings.py
+│   │   │   │   └── test_store.py
 │   │   │   ├── git
 │   │   │   │   ├── test_executor_commit.py
 │   │   │   │   ├── test_executor_core.py

@@ -241,3 +241,28 @@ class TestPush:
             ],
             check=True,
         )
+
+    def test_push_uses_per_process_credential_helper(self, executor):
+        executor.push(
+            remote="origin",
+            credential_helper="custy",
+            environment={"GIT_TERMINAL_PROMPT": "0"},
+        )
+
+        executor._run.assert_called_once_with(
+            ["-c", "credential.helper=custy", "push", "origin", "HEAD"],
+            check=True,
+            environment={"GIT_TERMINAL_PROMPT": "0"},
+        )
+
+    def test_push_can_give_git_direct_terminal_ownership(self, executor):
+        executor.push(
+            remote="origin",
+            terminal_passthrough=True,
+        )
+
+        executor._run.assert_called_once_with(
+            ["push", "origin", "HEAD"],
+            check=True,
+            terminal_passthrough=True,
+        )

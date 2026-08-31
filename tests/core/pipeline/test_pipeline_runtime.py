@@ -133,8 +133,8 @@ class TestPipelineRuntime:
             "resume",
         ]
 
-    def test_hidden_pipeline_does_not_suspend_progress(self, monkeypatch):
-        """Avoids unnecessary display lifecycle calls for hidden pipelines."""
+    def test_hidden_pipeline_disables_rich_rendering(self, monkeypatch):
+        """Prevents hidden pipelines from redrawing interactive prompts."""
 
         class InteractiveStep:
             requires_exclusive_terminal = True
@@ -143,12 +143,23 @@ class TestPipelineRuntime:
                 return None
 
         suspend = MagicMock()
+        progress = MagicMock()
+        progress.__enter__.return_value = progress
+        progress.add_task.return_value = 1
+        progress_factory = MagicMock(return_value=progress)
+
         monkeypatch.setattr(
             pipeline_module,
             "suspend_progress",
             suspend,
         )
+        monkeypatch.setattr(
+            pipeline_module,
+            "Progress",
+            progress_factory,
+        )
 
         Pipeline([InteractiveStep()], isVisible=False).run(MagicMock())
 
+        assert progress_factory.call_args.kwargs["disable"] is True
         suspend.assert_not_called()

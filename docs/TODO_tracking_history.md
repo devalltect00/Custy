@@ -92,6 +92,26 @@ Since v1.10.0
 - [x] fix bug. Bugs: handling errors when the repository detected is new and no commits yet
 - [x] fix little bugs and typo.
 
+Since v2.1.0 development checkpoint 3
+
+- [x] Add a backward-compatible native-first Git credential policy for container pushes.
+- [x] Add optional GitHub and GitLab HTTPS token fallback from protected external files or environment variables.
+- [x] Keep tokens out of project configuration, command arguments, message templates, remote URLs, and image layers.
+- [x] Add guided `custy configure credentials` setup plus provider set, status, read-only test, and removal commands.
+- [x] Add opt-in Docker, Compose, and remote-image Make helpers that use writable mounts only for credential setup and read-only mounts for status, testing, and runtime pushes.
+- [x] Preserve local Git credential managers and SSH behavior with `container_only = true` as the recommended boundary.
+- [x] Inject `git-credential-custy` per push without modifying persistent Git credential-helper configuration.
+- [x] Prevent non-interactive prompt hangs and keep dry-run free from token reads and remote contact.
+- [x] Give manual Git authentication direct terminal ownership so username/PAT and SSH prompts remain visible.
+- [x] Disable Rich rendering for hidden direct-command pipelines so `custy push` preserves interactive prompts like `custy run push`.
+- [x] Reject hidden PAT setup without an interactive TTY instead of allowing echoed token input.
+- [x] Add focused credential storage, resolution, CLI, helper, push, and compatibility tests.
+- [x] Align the shipped configuration and canonical English/Indonesian documentation with the credential behavior matrix, Docker bind mounts, source-status interpretation, and manual fallback.
+- [x] Validate the complete 1,340-test suite at 83% coverage, Ruff, Black,
+      pre-commit, and English/Indonesian documentation builds.
+- [ ] Rebuild and validate the credential-enabled production image when the
+      Docker host has sufficient pagefile memory.
+
 Until v2.0.0
 
 - [x] Replaced the former monolithic CLI and workflow responsibilities with separated `app/cli`, `app/core`, `app/ui`, pipeline, Git-service, configuration, and template layers.
@@ -132,6 +152,7 @@ Until v2.0.0
 - [ ] Add conversion support between PEP 440, SemVer, and supported custom tag formats.
 - [ ] Validate configured GitHub and GitLab container image URLs and image names before publication.
 - [ ] Review and update `.pre-commit-config.yaml` so hook versions, Python targets, and validation commands align with the current Custy project. This is planning only; do not update the configuration as part of the current release-planning work.
+- [ ] Add options to push all tags
 
 ---
 
