@@ -2,15 +2,15 @@
 
 name: 🐋 Docker Production Image
 
-run-name: 🐋 Production Docker Build • ${{ github.ref_name }}
+run-name: 🐋 Production Docker Build • ${{ inputs.tag || github.ref_name }}
 
 # =========================================================
 # 🐋 Production Docker Image
 # ---------------------------------------------------------
 # Trigger:
-# - Runs on push to `main`
-# - Runs on version tags like `v1.2.3`
-# - Can also be triggered manually
+# - Runs when an annotated version tag like `v1.2.3` is pushed
+# - Can be triggered manually for an existing annotated version tag
+# - Does not run for ordinary commits pushed to `main`
 #
 # Purpose:
 # - Build and publish stable production Docker images
@@ -22,9 +22,6 @@ run-name: 🐋 Production Docker Build • ${{ github.ref_name }}
 # - `:v<version>`
 #     Versioned production release image
 #
-# - `:sha-<commit>`
-#     Immutable image for debugging and rollback
-#
 # Docker Target:
 # - Uses the `production` stage from the multi-stage
 #   Dockerfile
@@ -34,30 +31,34 @@ run-name: 🐋 Production Docker Build • ${{ github.ref_name }}
 # - Easy version pinning
 # - Reproducible deployments
 #
-# Why SHA Tags?
-# - Exact build reproducibility
-# - Easier debugging
-# - Safer rollback strategy
-# - CI/CD traceability
+# Why Annotated Release Tags?
+# - Preserve reviewed release notes in the Git tag message
+# - Avoid publishing production images for ordinary commits
+# - Keep stable and prerelease image publication predictable
 #
 # Registry:
 # - GitHub Container Registry (GHCR)
 #
 # Example Images:
-# - ghcr.io/devalltect00/path-header-scanner:latest
-# - ghcr.io/devalltect00/path-header-scanner:v1.2.3
-# - ghcr.io/devalltect00/path-header-scanner:sha-abc123
+# - ghcr.io/<owner>/<repository>:latest
+# - ghcr.io/<owner>/<repository>:v1.2.3
+# - ghcr.io/<owner>/<repository>:v2.0.0-rc.1
 # =========================================================
 
 on:
   push:
-    branches:
-      - main
+    ## branches:
+    ##   - main
 
     tags:
       - "v*"
 
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing annotated release tag, such as v2.1.0 or v2.1.0-rc.1
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -74,6 +75,73 @@ jobs:
 
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.tag || github.ref }}
+
+      # =====================================================
+      # 🐍 BUILD VERSION
+      # =====================================================
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: 🔖 Resolve and validate Custy build version
+        id: version
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          python -m pip install --disable-pip-version-check packaging
+
+          TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+([.-](alpha|beta|rc|dev|post)\.[0-9]+)?(\+[0-9A-Za-z.]+)?$'
+          STABLE_TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+(\+[0-9A-Za-z.]+)?$'
+          TAG="$RELEASE_TAG"
+          PUBLISH_LATEST=false
+
+          if [[ ! "$TAG" =~ $TAG_REGEX ]]; then
+            echo "Invalid Custy release tag: $TAG" >&2
+            exit 1
+          fi
+
+          if ! git show-ref --verify --quiet "refs/tags/$TAG"; then
+            echo "Release tag does not exist in the repository: $TAG" >&2
+            exit 1
+          fi
+
+          TAG_TYPE="$(git cat-file -t "refs/tags/$TAG")"
+          if [[ "$TAG_TYPE" != "tag" ]]; then
+            echo "Production images require an annotated Git tag: $TAG" >&2
+            exit 1
+          fi
+
+          TAG_MESSAGE="$(git tag -l --format='%(contents)' "$TAG")"
+          if [[ -z "${TAG_MESSAGE//[[:space:]]/}" ]]; then
+            echo "Annotated release tag has an empty message: $TAG" >&2
+            exit 1
+          fi
+
+          VERSION="$(python -m app.core.build.version)"
+          if [[ -z "$VERSION" ]]; then
+            echo "Custy build version resolution returned an empty value." >&2
+            exit 1
+          fi
+
+          EXPECTED_VERSION="$(python -c 'from packaging.version import Version; import sys; print(Version(sys.argv[1].removeprefix("v")).public)' "$TAG")"
+          if [[ "$VERSION" != "$EXPECTED_VERSION" ]]; then
+            echo "Resolved build version '$VERSION' does not match release tag '$TAG' ('$EXPECTED_VERSION')." >&2
+            exit 1
+          fi
+
+          if [[ "$TAG" =~ $STABLE_TAG_REGEX ]]; then
+            PUBLISH_LATEST=true
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "publish_latest=$PUBLISH_LATEST" >> "$GITHUB_OUTPUT"
 
       # =====================================================
       # 🐳 SETUP DOCKER BUILDX
@@ -97,23 +165,25 @@ jobs:
       # 🏷️ DOCKER METADATA
       # =====================================================
 
+      - name: 🔤 Normalize image name
+        id: vars
+        shell: bash
+        run: |
+          echo "image_name=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
       - name: 🏷️ Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/path-header-scanner
+            ghcr.io/${{ steps.vars.outputs.image_name }}
 
           tags: |
+            # exact stable or prerelease version
+            type=raw,value=${{ steps.version.outputs.tag }}
 
-            # latest
-            type=raw,value=latest
-
-            # semantic version tags from git tags
-            type=ref,event=tag
-
-            # sha tags
-            type=sha
+            # latest stable production version
+            type=raw,value=latest,enable=${{ steps.version.outputs.publish_latest }}
 
       # =====================================================
       # 🏗️ BUILD AND PUSH
@@ -127,6 +197,9 @@ jobs:
           file: Dockerfile
 
           target: production
+
+          build-args: |
+            CUSTY_BUILD_VERSION=${{ steps.version.outputs.version }}
 
           push: true
 

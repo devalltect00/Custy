@@ -132,10 +132,10 @@ dev = [
     "pytest-cov>=5.0.0",
 
     # Formatting
-    "black>=25.0.0",
+    "black==26.5.1",
 
     # Linting
-    "ruff>=0.12.0",
+    "ruff==0.16.5",
 
     # Packaging
     "build>=1.2.0",
@@ -430,6 +430,12 @@ ignore = [
     "UP045",    # pyupgrade. Ignore checking for example: 'Optional[str]' -> 'str | None'
     "UP042",     # pyupgrade StrEnum suggestion
 ]
+
+[tool.ruff.lint.isort]
+
+# Custy is imported as the top-level ``app`` package. Declaring it explicitly
+# keeps local, pre-commit, and hosted CI import grouping deterministic.
+known-first-party = ["app"]
 
 [tool.ruff.lint.per-file-ignores]
 

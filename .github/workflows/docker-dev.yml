@@ -35,8 +35,8 @@ run-name: 🐋 Dev Docker Build • ${{ github.ref_name }}
 # - GitHub Container Registry (GHCR)
 #
 # Example Images:
-# - ghcr.io/devalltect00/path-header-scanner:dev
-# - ghcr.io/devalltect00/path-header-scanner:sha-abc123
+# - ghcr.io/<owner>/<repository>:dev
+# - ghcr.io/<owner>/<repository>:sha-abc123
 # =========================================================
 
 on:
@@ -67,6 +67,31 @@ jobs:
       # 📥 Checkout repository
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # =====================================================
+      # 🐍 BUILD VERSION
+      # =====================================================
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+
+      - name: 🔖 Resolve Custy build version
+        id: version
+        shell: bash
+        run: |
+          python -m pip install --disable-pip-version-check packaging
+          VERSION="$(python -m app.core.build.version)"
+
+          if [[ -z "$VERSION" ]]; then
+            echo "Custy build version resolution returned an empty value." >&2
+            exit 1
+          fi
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       # =====================================================
       # 🐳 DOCKER BUILDX
@@ -91,22 +116,23 @@ jobs:
       # 🏷️ IMAGE METADATA
       # =====================================================
 
+      # 🔤 Normalize repository name → lowercase (required by GHCR)
+      - name: 🔤 Normalize image name
+        id: vars
+        shell: bash
+        run: |
+          echo "image_name=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
       - name: 🏷️ Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
-            ghcr.io/${{ github.repository_owner }}/path-header-scanner
+            ghcr.io/${{ steps.vars.outputs.image_name }}
 
           tags: |
             type=raw,value=dev
             type=sha
-
-      # 🔤 Normalize repository name → lowercase (required by GHCR)
-      - name: 🔤 Normalize image name
-        id: vars
-        run: |
-          echo "image_name=$(echo $GITHUB_REPOSITORY | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
 
       # =====================================================
       # 🏗️ BUILD AND PUSH
@@ -120,6 +146,9 @@ jobs:
           file: Dockerfile
 
           target: development
+
+          build-args: |
+            CUSTY_BUILD_VERSION=${{ steps.version.outputs.version }}
 
           push: true
 

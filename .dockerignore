@@ -54,7 +54,7 @@ pytestdebug.log
 # =========================================================
 # BUILD / PACKAGING
 # =========================================================
-build/
+/build/
 dist/
 *.egg-info/
 .eggs/
@@ -106,7 +106,7 @@ logs/
 # PROJECT-SPECIFIC
 # =========================================================
 app_test/
-backups/
+/backups/
 docker-data/
 
 # =========================================================
@@ -119,7 +119,6 @@ tests/
 # =========================================================
 TODO.md
 docker-data/
-backups/
 # .config/
 # .config/path_header_scanner/
 # .config/doc_gen/
@@ -133,7 +132,7 @@ templates/commit-msg.txt
 templates/tag-msg.txt
 templates/commit-message.txt
 templates/tag-message.txt
-tools/git-commit/backups/
+/tools/git-commit/backups/
 temp.txt
 
-tools
+/tools/

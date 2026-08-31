@@ -2,7 +2,7 @@
 
 name: 🚀 Release
 
-run-name: 🚀 Release • ${{ github.ref_name }}
+run-name: 🚀 Release • ${{ inputs.tag || github.ref_name }}
 
 # =========================================================
 # 🚀 GitHub Release Workflow
@@ -36,7 +36,7 @@ run-name: 🚀 Release • ${{ github.ref_name }}
 #
 #   🧪 Final Release 1.0.0
 #
-#   Path Header Scanner v1.0.0 is now stable
+#   Custy v1.0.0 is now stable
 #   and production-ready.
 #
 #   ### 🔍 Highlights
@@ -52,7 +52,7 @@ run-name: 🚀 Release • ${{ github.ref_name }}
 # - Uses production container tags
 #
 # Example Images:
-# - ghcr.io/devalltect00/path-header-scanner:v1.0.0
+# - ghcr.io/<owner>/<repository>:v1.0.0
 # =========================================================
 
 on:
@@ -61,10 +61,18 @@ on:
       - "v*"
 
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to build, such as v2.0.0 or v2.0.0-rc.1
+        required: true
+        type: string
 
 permissions:
   contents: write
   packages: read
+
+env:
+  RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
 
 jobs:
   release:
@@ -81,6 +89,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: 🔤 Normalize image name
+        id: vars
+        shell: bash
+        run: |
+          echo "image_name=${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
 
       # =====================================================
       # 🐍 SETUP PYTHON
@@ -110,7 +125,7 @@ jobs:
         shell: bash
         run: |
 
-          TAG="${GITHUB_REF_NAME}"
+          TAG="${RELEASE_TAG}"
 
           echo "Tag: $TAG"
 
@@ -140,7 +155,7 @@ jobs:
         shell: bash
         run: |
 
-          TAG="${GITHUB_REF_NAME}"
+          TAG="${RELEASE_TAG}"
 
           VERSION="${TAG#v}"
 
@@ -262,7 +277,7 @@ jobs:
           ## 🐋 Docker Image
 
           \`\`\`bash
-          docker pull ghcr.io/${{ github.repository_owner }}/path-header-scanner:$TAG
+          docker pull ghcr.io/${{ steps.vars.outputs.image_name }}:$TAG
           \`\`\`
 
           ## 📥 Python Package
@@ -297,7 +312,7 @@ jobs:
       #     ## 🐋 Docker Image
 
       #     \`\`\`bash
-      #     docker pull ghcr.io/${{ github.repository_owner }}/path-header-scanner:$TAG
+      #     docker pull ghcr.io/${{ steps.vars.outputs.image_name }}:$TAG
       #     \`\`\`
 
       #     ## 📥 Python Package

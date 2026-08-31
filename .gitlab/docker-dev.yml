@@ -18,10 +18,7 @@
 #
 # Development Tags
 # ----------------
-# latest
 # dev
-# main
-# develop
 # <short-sha>
 #
 # Notes
@@ -52,7 +49,9 @@ docker:dev:
   script:
     - |
       docker build \
-        -f docker/dev/Dockerfile \
+        --build-arg CUSTY_BUILD_VERSION="0.0.0.dev${CI_PIPELINE_IID}" \
+        -f Dockerfile \
+        --target development \
         -t "$CI_REGISTRY_IMAGE:dev" \
         -t "$CI_REGISTRY_IMAGE:${CI_COMMIT_SHORT_SHA}" \
         .
@@ -65,5 +64,3 @@ docker:dev:
     - if: '$CI_COMMIT_BRANCH == "develop"'
 
     - if: '$CI_COMMIT_BRANCH == "dev"'
-
-    - if: '$CI_COMMIT_BRANCH == "main"'

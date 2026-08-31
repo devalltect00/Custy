@@ -622,6 +622,7 @@ Common directories include:
 │   │   │   └── generator.py
 │   │   ├── cleanup
 │   │   │   ├── backups
+│   │   │   │   └── handle_cleanup_backups.py
 │   │   │   ├── branch
 │   │   │   │   ├── display.py
 │   │   │   │   ├── exceptions.py
@@ -1064,6 +1065,7 @@ Common directories include:
 │   │   │   └── test_template_loader.py
 │   │   ├── cleanup
 │   │   │   ├── backups
+│   │   │   │   └── test_handle_cleanup_backups.py
 │   │   │   └── branch
 │   │   │       ├── test_display.py
 │   │   │       ├── test_handler.py
@@ -1260,6 +1262,11 @@ Common directories include:
 │   ├── REVIEW.md
 │   └── test___main__.py
 ├── tools
+│   ├── generate_diagram
+│   │   ├── export_diagrams.sh
+│   │   ├── generate_diagram_mmd.py
+│   │   ├── generate_diagram_mmd_default.py
+│   │   └── hint.md
 │   ├── generate_ignore
 │   │   ├── __init__.py
 │   │   ├── __version__.py

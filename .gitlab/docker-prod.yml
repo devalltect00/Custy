@@ -8,7 +8,7 @@
 #
 # Purpose
 # -------
-# Build immutable production Docker images from version tags.
+# Build production Docker images from reviewed annotated version tags.
 #
 # Registry
 # --------
@@ -20,18 +20,20 @@
 # ---------------
 # latest
 # v1.0.0
+# v1.1.0-rc.1
 # v1.1.0
 # v2.0.0
 #
 # Trigger
 # -------
 #
-#   git tag v1.0.0
+#   git tag -a v1.0.0 -F .config/custy/templates/tag-message.txt
 #   git push origin v1.0.0
 #
 # Notes
 # -----
-# Production images should never be overwritten.
+# Versioned production images are immutable release artifacts. The `latest`
+# alias is updated only by stable releases.
 #
 # =========================================================
 
@@ -45,33 +47,91 @@ docker:prod:
 
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
+    GIT_DEPTH: "0"
 
   before_script:
-    - docker version
+    - apk add --no-cache git python3 py3-packaging
 
-    - echo "$CI_REGISTRY_PASSWORD" |
-      docker login "$CI_REGISTRY"
-      -u "$CI_REGISTRY_USER"
-      --password-stdin
+    - git --version
+
+    - python3 --version
+
+    - docker version
 
   script:
     - |
+      TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+([.-](alpha|beta|rc|dev|post)\.[0-9]+)?(\+[0-9A-Za-z.]+)?$'
+      STABLE_TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+(\+[0-9A-Za-z.]+)?$'
+      TAG="$CI_COMMIT_TAG"
+
+      if ! printf '%s' "$TAG" | grep -Eq "$TAG_REGEX"; then
+        echo "Invalid Custy release tag: $TAG" >&2
+        exit 1
+      fi
+
+      if ! git fetch --force origin "refs/tags/$TAG:refs/tags/$TAG"; then
+        echo "Unable to fetch release tag metadata: $TAG" >&2
+        exit 1
+      fi
+
+      if ! git show-ref --verify --quiet "refs/tags/$TAG"; then
+        echo "Release tag does not exist in the repository: $TAG" >&2
+        exit 1
+      fi
+
+      TAG_TYPE="$(git cat-file -t "refs/tags/$TAG")"
+      if [ "$TAG_TYPE" != "tag" ]; then
+        echo "Production images require an annotated Git tag: $TAG" >&2
+        exit 1
+      fi
+
+      TAG_MESSAGE="$(git tag -l --format='%(contents)' "$TAG")"
+      if ! printf '%s' "$TAG_MESSAGE" | grep -q '[^[:space:]]'; then
+        echo "Annotated release tag has an empty message: $TAG" >&2
+        exit 1
+      fi
+
+      BUILD_VERSION="$(python3 -m app.core.build.version)"
+      if [ -z "$BUILD_VERSION" ]; then
+        echo "Custy build version resolution returned an empty value." >&2
+        exit 1
+      fi
+
+      EXPECTED_VERSION="$(python3 -c 'from packaging.version import Version; import sys; print(Version(sys.argv[1].removeprefix("v")).public)' "$TAG")"
+      if [ "$BUILD_VERSION" != "$EXPECTED_VERSION" ]; then
+        echo "Resolved build version '$BUILD_VERSION' does not match release tag '$TAG' ('$EXPECTED_VERSION')." >&2
+        exit 1
+      fi
+
+      IMAGE_TAG="$(printf '%s' "$TAG" | tr '+' '-')"
+
+      echo "$CI_REGISTRY_PASSWORD" |
+        docker login "$CI_REGISTRY" \
+          -u "$CI_REGISTRY_USER" \
+          --password-stdin
+
       docker build \
-        -f docker/prod/Dockerfile \
+        --build-arg CUSTY_BUILD_VERSION="$BUILD_VERSION" \
+        -f Dockerfile \
+        --target production \
         --label org.opencontainers.image.title="$CI_PROJECT_NAME" \
-        --label org.opencontainers.image.description="Path Header Scanner" \
+        --label org.opencontainers.image.description="Custy project and Git release workflow automation" \
         --label org.opencontainers.image.url="$CI_PROJECT_URL" \
         --label org.opencontainers.image.source="$CI_PROJECT_URL" \
-        --label org.opencontainers.image.version="$CI_COMMIT_TAG" \
+        --label org.opencontainers.image.version="$TAG" \
         --label org.opencontainers.image.revision="$CI_COMMIT_SHA" \
         --label org.opencontainers.image.created="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-        -t "$CI_REGISTRY_IMAGE:${CI_COMMIT_TAG}" \
-        -t "$CI_REGISTRY_IMAGE:latest" \
+        -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" \
         .
 
-    - docker push "$CI_REGISTRY_IMAGE:${CI_COMMIT_TAG}"
+      docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
 
-    - docker push "$CI_REGISTRY_IMAGE:latest"
+      if printf '%s' "$TAG" | grep -Eq "$STABLE_TAG_REGEX"; then
+        docker tag "$CI_REGISTRY_IMAGE:$IMAGE_TAG" "$CI_REGISTRY_IMAGE:latest"
+        docker push "$CI_REGISTRY_IMAGE:latest"
+      else
+        echo "Prerelease tag detected; latest will not be updated."
+      fi
 
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+([.-](alpha|beta|rc|dev|post)\.\d+)?(\+[0-9A-Za-z.]+)?$/'

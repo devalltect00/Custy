@@ -1,115 +1,56 @@
-feat(credentials): add secure Docker push authentication fallback
+ci(release): harden validation and publish production images from release tags
 
-Add a native-first credential policy for GitHub and GitLab HTTPS pushes so a
-Custy container can reuse an explicitly supplied personal access token without
-placing secrets in the target repository, TOML configuration, command history,
-Docker image, or remote URL. Keep existing local Git credentials and SSH flows
-authoritative, retain the normal interactive Git prompt when permitted, and
-fail non-interactive jobs instead of waiting indefinitely.
+Complete the v2.1.0 CI/CD reliability pass across GitHub Actions and GitLab CI,
+keep generated Python bytecode out of repository state, and make GitHub and
+GitLab production-image publication release-driven. Ordinary commits continue
+through the validation workflow without creating a production container.
+Reviewed, annotated Semantic Versioning tags publish the exact release image,
+while only stable tags also update `latest`.
 
-### Credential policy and storage
+### CI/CD reliability
 
-- Add strict `native` and `auto` credential modes under
-  `[tool.custy.git.credentials]` with a backward-compatible `native` default.
-- Keep `container_only = true` as the recommended boundary so local Git
-  credential-manager sessions are not replaced by Custy's fallback.
-- Add ordered `file` and `environment` sources for GitHub and GitLab tokens.
-- Store only provider policy, usernames, external filenames, and environment
-  variable names in `config.toml`; never store token values there.
-- Resolve external files from platform-specific user data directories or
-  `/run/secrets/custy` in Docker, with `CUSTY_CREDENTIALS_DIR` as an override.
-- Reject token files inside the target project, symbolic links, non-regular
-  files, oversized values, control characters, multiple lines, and surrounding
-  whitespace.
-- Write token files atomically with restrictive permissions and require an
-  explicit replace or delete request for existing material.
+- Restore active build, cleanup-backup, test, and helper paths to the Git and
+  Docker build contexts without re-including generated Python caches.
+- Remove tracked `.pyc` artifacts from the repository index while preserving
+  ignored local cache files.
+- Keep Python 3.14 CI validation aligned with the active source and test trees.
+- Make CLI help assertions deterministic across ANSI-capable runners and
+  different terminal widths.
+- Preserve verbose pytest output in CI for actionable failure diagnostics.
+- Confirm the GitHub Actions and GitLab CI validation pipelines complete
+  successfully with the corrected source and test inventory.
 
-### Native-first Git integration
+### Release-tag-only production images
 
-- Preserve normal Git credential helpers and SSH authentication as the first
-  choices for every push.
-- Add `git-credential-custy` as a per-process helper only for an enabled,
-  supported HTTPS provider when external material is available.
-- Avoid system, global, and repository Git configuration changes by injecting
-  the helper through `git -c credential.helper=custy` for the active operation.
-- Leave SSH remotes and unsupported or lookalike hosts entirely on native Git
-  authentication.
-- Allow a missing external file to fall through to the configured environment
-  source while treating malformed present files as actionable errors.
-- Preserve interactive username/PAT prompts when policy allows them, give Git
-  direct ownership of terminal streams when no managed token resolves, and set
-  `GIT_TERMINAL_PROMPT=0` for non-interactive failure paths to prevent hangs.
-- Disable Rich rendering entirely for hidden direct-command pipelines so
-  standalone `custy push` preserves prompts exactly like `custy run push`.
-- Explain before a manual HTTPS prompt that Git's `Password` field expects a
-  personal access token rather than an account password.
-- Apply the same policy to branch pushes, tag pushes, and read-only remote
-  access tests while retaining structured Git diagnostics.
+- Stop the GitHub production Docker workflow from running for ordinary pushes
+  to `main`; normal commits remain covered by the CI workflow.
+- Build automatically only when a supported `v*` release tag is pushed.
+- Require manual production rebuilds to select an existing release tag instead
+  of building an arbitrary branch or commit.
+- Require an annotated, non-empty Git tag message before image publication.
+- Verify the normalized package build version matches the selected release tag.
+- Publish the exact stable or prerelease tag and update `latest` only for a
+  stable release.
+- Remove the redundant human-readable commit-SHA image tag while retaining
+  Buildx provenance and its referenced OCI manifests.
+- Bring GitLab production publishing under the same annotated-tag contract,
+  including full tag metadata, non-empty tag-message validation, and normalized
+  package-version verification before registry authentication and building.
+- Replace the placeholder GitLab Release description with the complete
+  annotated tag message plus project, pipeline, container, and package-artifact
+  details generated during the release job.
 
-### Configure credentials CLI
+### Validation
 
-- Add the guided `custy configure credentials` workflow.
-- Add focused `set`, `status`, `test`, and `remove` subcommands for GitHub and
-  GitLab provider preferences.
-- Prompt for file-backed tokens with hidden input and confirmation; deliberately
-  omit a visible `--token` option so secrets do not enter shell history.
-- Reject hidden token entry when no controllable TTY is attached and direct
-  Docker users to `docker run -it` instead of allowing echoed secret input.
-- Show source availability and external paths without printing token values.
-- Test access with read-only `git ls-remote` and provide an explicit file-delete
-  option when removing a provider.
-- Keep dry-run secret-free and network-free: it does not read token material,
-  contact a remote, write configuration, or create/delete external files.
+- Validate workflow structure, diff whitespace, Ruff, Black, pre-commit, and
+  the complete pytest suite before using this checkpoint.
+- Preserve Buildx provenance; untagged manifests referenced by a tagged OCI
+  image remain expected registry metadata rather than unused release images.
+- Leave existing registry packages untouched and apply the tag-only policy only
+  to future GitHub workflow executions.
 
-### Docker, Compose, and remote-image Make helpers
+This is development checkpoint 4 for the unpublished v2.1.0 release line. It
+does not create a release tag, publish an image, or perform a remote operation.
 
-- Add `d-credentials-*`, `c-credentials-*`, and
-  `r-custy-credentials-*` targets for guided provider setup, secret-free
-  status inspection, and read-only remote access testing.
-- Keep `CUSTY_CREDENTIALS_MOUNT=false` as the safe runtime default so existing
-  native Git, SSH, and interactive username/PAT behavior remains unchanged.
-- Allow an explicit `CUSTY_CREDENTIALS_MOUNT=true` on Docker, Compose, and
-  remote-image run targets to add the external directory as a read-only mount.
-- Use a writable mount only for credential `set`; keep status, test, and
-  runtime mounts read-only.
-- Add platform-aware host-directory defaults and explicit host, container, and
-  test-remote overrides without accepting token values as Make variables.
-
-### Configuration, diagnostics, and compatibility
-
-- Document the native/auto and container-only behavior matrix directly in the
-  shipped and generated TOML configuration.
-- Add GitHub defaults (`x-access-token`, `CUSTY_GITHUB_TOKEN`) and GitLab
-  defaults (`oauth2`, `CUSTY_GITLAB_TOKEN`) with providers disabled initially.
-- Update push authentication hints to direct users to SSH, an interactive Git
-  prompt, or the optional external fallback.
-- Preserve the original executor call shape in native mode and omit empty
-  environment arguments for backward compatibility.
-- Register the helper as a packaged console entry point without logging or
-  exposing credential protocol values outside Git's required response.
-
-### Tests and documentation
-
-- Add focused settings, storage, provider-matching, precedence, malformed-file,
-  helper-protocol, service, CLI, dry-run, and push-injection coverage.
-- Verify hidden direct pipelines do not claim the terminal and direct Git
-  commands continue selecting their registered profiles.
-- Verify the targeted credential and Git compatibility suites before the full
-  repository validation.
-- Validate the complete 1,340-test suite with 83% overall coverage, plus Ruff,
-  Black, end-of-file, trailing-whitespace, and the full pre-commit workflow.
-- Update the canonical English and Indonesian documentation for configuration,
-  Docker secrets, environment variables, SSH boundaries, command usage,
-  failure recovery, host-to-container bind mounts, persistent versus disposable
-  token storage, status-column interpretation, manual username/PAT entry,
-  opt-in Make helpers, and the behavior matrix.
-- Pass TypeScript validation and production builds for both documentation
-  locales. Keep the credential-enabled production-image rebuild as a final
-  release gate when sufficient Docker host memory is available.
-
-This is development checkpoint 3 for the unpublished v2.1.0 release line. It
-does not create a new release tag and does not perform any external push or
-publication operation.
-
-Refs: v2.1.0 development checkpoint 3
-Tags: #credentials #github #gitlab #docker #git #security #cli #dry-run #docs #test
+Refs: v2.1.0 development checkpoint 4
+Tags: #ci #cd #github-actions #gitlab-ci #docker #ghcr #release #semver #test

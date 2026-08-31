@@ -29,7 +29,7 @@ venv.bak/
 # BUILD / DISTRIBUTION / PACKAGING
 # =========================================================
 .Python
-build/
+/build/
 dist/
 develop-eggs/
 downloads/
@@ -220,6 +220,16 @@ docker-data/
 # =========================================================
 TODO.md
 backups/
+!app/core/cleanup/backups/
+!app/core/cleanup/backups/**
+!tests/core/cleanup/backups/
+!tests/core/cleanup/backups/**
+
+# The active backup-package exceptions above must not re-include generated
+# Python bytecode or cache directories.
+__pycache__/
+*.py[cod]
+
 scripts/docker/
 # .config/
 # .config/path_header_scanner/
@@ -234,7 +244,5 @@ templates/commit-msg.txt
 templates/tag-msg.txt
 templates/commit-message.txt
 templates/tag-message.txt
-tools/git-commit/backups/
+/tools/git-commit/backups/
 temp.txt
-
-tools

@@ -18,7 +18,7 @@
 # Trigger
 # -------
 #
-#   git tag v1.0.0
+#   git tag -a v1.0.0 -F .config/custy/templates/tag-message.txt
 #   git push origin v1.0.0
 #
 # Output
@@ -28,7 +28,8 @@
 #
 # Notes
 # -----
-# Releases are generated only from version tags.
+# Releases are generated only from reviewed annotated version tags. The full
+# tag message becomes the public release description.
 #
 # =========================================================
 
@@ -54,34 +55,98 @@ release:build:
     expire_in: 90 days
 
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+([.-](alpha|beta|rc|dev|post)\.\d+)?(\+[0-9A-Za-z.]+)?$/'
 
 release:create:
   stage: release
 
   image: registry.gitlab.com/gitlab-org/cli:latest
 
+  variables:
+    GIT_DEPTH: "0"
+
   needs:
     - release:build
 
   script:
-    - echo "Creating release $CI_COMMIT_TAG"
+    - |
+      TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+([.-](alpha|beta|rc|dev|post)\.[0-9]+)?(\+[0-9A-Za-z.]+)?$'
+      TAG="$CI_COMMIT_TAG"
+
+      if ! printf '%s' "$TAG" | grep -Eq "$TAG_REGEX"; then
+        echo "Invalid Custy release tag: $TAG" >&2
+        exit 1
+      fi
+
+      if ! git fetch --force origin "refs/tags/$TAG:refs/tags/$TAG"; then
+        echo "Unable to fetch release tag metadata: $TAG" >&2
+        exit 1
+      fi
+
+      if ! git show-ref --verify --quiet "refs/tags/$TAG"; then
+        echo "Release tag does not exist in the repository: $TAG" >&2
+        exit 1
+      fi
+
+      TAG_TYPE="$(git cat-file -t "refs/tags/$TAG")"
+      if [ "$TAG_TYPE" != "tag" ]; then
+        echo "GitLab Releases require an annotated Git tag: $TAG" >&2
+        exit 1
+      fi
+
+      TAG_MESSAGE="$(git tag -l --format='%(contents)' "$TAG")"
+      if ! printf '%s' "$TAG_MESSAGE" | grep -q '[^[:space:]]'; then
+        echo "Annotated release tag has an empty message: $TAG" >&2
+        exit 1
+      fi
+
+      VERSION="${TAG#v}"
+      RELEASE_TYPE="stable"
+
+      case "$VERSION" in
+        *alpha*) RELEASE_TYPE="alpha" ;;
+        *beta*) RELEASE_TYPE="beta" ;;
+        *rc*) RELEASE_TYPE="rc" ;;
+        *dev*) RELEASE_TYPE="dev" ;;
+        *post*) RELEASE_TYPE="post" ;;
+      esac
+
+      IMAGE_TAG="$(printf '%s' "$TAG" | tr '+' '-')"
+
+      printf '%s\n' "$TAG_MESSAGE" > RELEASE_NOTES.md
+
+      cat <<EOF >> RELEASE_NOTES.md
+
+      ---
+
+      ## 📅 Release Information
+
+      - Version: \`$VERSION\`
+      - Release Type: \`$RELEASE_TYPE\`
+      - Project: \`$CI_PROJECT_PATH\`
+      - Commit: [$CI_COMMIT_SHORT_SHA]($CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA)
+      - Pipeline: [$CI_PIPELINE_ID]($CI_PIPELINE_URL)
+
+      ## 🐋 Docker Image
+
+      \`\`\`bash
+      docker pull $CI_REGISTRY_IMAGE:$IMAGE_TAG
+      \`\`\`
+
+      ## 📥 Python Package
+
+      [Download the release build artifacts]($CI_PROJECT_URL/-/jobs/artifacts/$TAG/download?job=release%3Abuild).
+      Pipeline artifacts are retained for 90 days.
+      EOF
+
+      echo "Prepared release notes from annotated tag $TAG"
 
   release:
     tag_name: "$CI_COMMIT_TAG"
 
     name: "Release $CI_COMMIT_TAG"
 
-    description: |
-      ## Release
-
-      Automated GitLab Release.
-
-      Tag:
-      $CI_COMMIT_TAG
-
-      Commit:
-      $CI_COMMIT_SHA
+    description: "./RELEASE_NOTES.md"
 
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+$/'
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+([.-](alpha|beta|rc|dev|post)\.\d+)?(\+[0-9A-Za-z.]+)?$/'

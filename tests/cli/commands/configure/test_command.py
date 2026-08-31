@@ -6,6 +6,7 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
+from click.utils import strip_ansi
 from typer.testing import CliRunner
 
 from app.cli.commands.configure import command
@@ -68,11 +69,18 @@ def test_status_does_not_render_token_values(monkeypatch):
 
 
 def test_help_has_no_visible_token_option():
-    result = runner.invoke(command.credentials_app, ["set", "--help"])
+    result = runner.invoke(
+        command.credentials_app,
+        ["set", "--help"],
+        color=False,
+        terminal_width=160,
+    )
+    help_output = strip_ansi(result.output)
+
     assert result.exit_code == 0
-    assert "--token-file" in result.output
-    assert "--token-env" in result.output
-    assert "--token " not in result.output
+    assert "--token-file" in help_output
+    assert "--token-env" in help_output
+    assert "--token " not in help_output
 
 
 def test_hidden_token_prompt_rejects_noninteractive_input(monkeypatch):

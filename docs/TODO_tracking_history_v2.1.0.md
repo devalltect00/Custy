@@ -323,6 +323,12 @@ Since v1.10.0
 - [x] Disable Rich rendering for hidden direct-command pipelines so standalone push prompts remain stable.
 - [x] Reject hidden PAT setup without an interactive TTY instead of accepting potentially echoed input.
 - [x] Keep dry-run free from token reads, credential writes, and remote access tests.
+- [x] Keep ordinary `main` commits on the validation path without publishing a GitHub production image.
+- [x] Publish GitHub and GitLab production images only from supported annotated release tags with non-empty messages.
+- [x] Publish the exact stable or prerelease tag and update `latest` only for stable releases.
+- [x] Remove the redundant commit-SHA production tag while retaining Buildx provenance metadata.
+- [x] Align GitLab with GitHub's annotated-tag, non-empty-message, and normalized build-version production policy.
+- [x] Generate GitLab Release descriptions from reviewed annotated tag messages with project, pipeline, container, and artifact details.
 
 #### Tests and documentation
 
@@ -336,6 +342,9 @@ Since v1.10.0
 - [x] Add hidden-pipeline rendering and direct Git-command routing regression coverage.
 - [x] Validate 1,340 tests with 83% overall coverage and all configured quality hooks.
 - [x] Validate Ruff, Black, diff whitespace, and the complete pre-commit configuration.
+- [x] Validate corrected GitHub Actions and GitLab CI pipelines with active source, tests, and helper files included.
+- [x] Keep generated `.pyc` files ignored and untracked without excluding active cleanup-backup packages.
+- [x] Make CLI help assertions deterministic across ANSI output and different CI terminal widths.
 - [ ] Rebuild the credential-enabled production image and verify the packaged
       `git-credential-custy` entry point plus a container push dry-run before
       publication. The current local attempt reached Dockerfile execution but was
@@ -359,6 +368,7 @@ Since v1.10.0
 
 - [x] Prepare internal commit and public release messages for `v2.1.0`.
 - [x] Confirm implementation, tests, documentation, tooling, and container validation are recorded.
+- [x] Record development checkpoint 4 for CI/CD reliability and release-tag-only production images.
 - [ ] Review the final repository diff and generated artifacts.
 - [ ] Commit, tag, publish, and verify `v2.1.0` only with explicit release approval.
 - [ ] Verify packages, container images, and English/Indonesian documentation after publication.
