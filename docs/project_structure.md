@@ -56,6 +56,7 @@ Common directories include:
 │   ├── ci.yml
 │   ├── docker-dev.yml
 │   ├── docker-prod.yml
+│   ├── python-package.yml
 │   └── release.yml
 ├── .pre-commit-cache
 │   ├── repo049zwjsu
@@ -900,6 +901,7 @@ Common directories include:
 │   │   │   ├── ALL.md
 │   │   │   ├── diagrams.md
 │   │   │   └── workflow_engine.md
+│   │   ├── gitlab_package_registry.md
 │   │   └── make_workflows.md
 │   ├── temp/ ... (collapsed)
 │   ├── badges.md
@@ -976,8 +978,11 @@ Common directories include:
 │           └── variable.mk
 ├── scripts
 │   ├── ci
-│   └── docs
-│       └── venv/ ... (collapsed)
+│   │   ├── __init__.py
+│   │   └── package_version.py
+│   ├── docs
+│   │   └── venv/ ... (collapsed)
+│   └── __init__.py
 ├── tests
 │   ├── cli
 │   │   ├── commands
@@ -1233,6 +1238,7 @@ Common directories include:
 │   │   ├── test_make_reflow_workflows.py
 │   │   ├── test_pipeline_builder_regressions.py
 │   │   ├── test_pipeline_regressions.py
+│   │   ├── test_python_package_workflow.py
 │   │   ├── test_release_builder_regressions.py
 │   │   ├── test_step_registry_regressions.py
 │   │   ├── test_version_builder_regressions.py

@@ -8,7 +8,8 @@
 #
 # Purpose
 # -------
-# Build production Docker images from reviewed annotated version tags.
+# Build production images after the package gate validates a reviewed,
+# protected, annotated release tag.
 #
 # Registry
 # --------
@@ -47,59 +48,21 @@ docker:prod:
 
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
-    GIT_DEPTH: "0"
+
+  needs:
+    - job: package:build
+      artifacts: true
 
   before_script:
-    - apk add --no-cache git python3 py3-packaging
-
-    - git --version
-
-    - python3 --version
-
     - docker version
 
   script:
     - |
-      TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+([.-](alpha|beta|rc|dev|post)\.[0-9]+)?(\+[0-9A-Za-z.]+)?$'
-      STABLE_TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+(\+[0-9A-Za-z.]+)?$'
+      STABLE_TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+$'
       TAG="$CI_COMMIT_TAG"
 
-      if ! printf '%s' "$TAG" | grep -Eq "$TAG_REGEX"; then
-        echo "Invalid Custy release tag: $TAG" >&2
-        exit 1
-      fi
-
-      if ! git fetch --force origin "refs/tags/$TAG:refs/tags/$TAG"; then
-        echo "Unable to fetch release tag metadata: $TAG" >&2
-        exit 1
-      fi
-
-      if ! git show-ref --verify --quiet "refs/tags/$TAG"; then
-        echo "Release tag does not exist in the repository: $TAG" >&2
-        exit 1
-      fi
-
-      TAG_TYPE="$(git cat-file -t "refs/tags/$TAG")"
-      if [ "$TAG_TYPE" != "tag" ]; then
-        echo "Production images require an annotated Git tag: $TAG" >&2
-        exit 1
-      fi
-
-      TAG_MESSAGE="$(git tag -l --format='%(contents)' "$TAG")"
-      if ! printf '%s' "$TAG_MESSAGE" | grep -q '[^[:space:]]'; then
-        echo "Annotated release tag has an empty message: $TAG" >&2
-        exit 1
-      fi
-
-      BUILD_VERSION="$(python3 -m app.core.build.version)"
-      if [ -z "$BUILD_VERSION" ]; then
-        echo "Custy build version resolution returned an empty value." >&2
-        exit 1
-      fi
-
-      EXPECTED_VERSION="$(python3 -c 'from packaging.version import Version; import sys; print(Version(sys.argv[1].removeprefix("v")).public)' "$TAG")"
-      if [ "$BUILD_VERSION" != "$EXPECTED_VERSION" ]; then
-        echo "Resolved build version '$BUILD_VERSION' does not match release tag '$TAG' ('$EXPECTED_VERSION')." >&2
+      if [ -z "$PACKAGE_VERSION" ]; then
+        echo "The package gate did not provide a canonical PEP 440 version." >&2
         exit 1
       fi
 
@@ -111,7 +74,7 @@ docker:prod:
           --password-stdin
 
       docker build \
-        --build-arg CUSTY_BUILD_VERSION="$BUILD_VERSION" \
+        --build-arg CUSTY_BUILD_VERSION="$PACKAGE_VERSION" \
         -f Dockerfile \
         --target production \
         --label org.opencontainers.image.title="$CI_PROJECT_NAME" \
@@ -134,4 +97,4 @@ docker:prod:
       fi
 
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+([.-](alpha|beta|rc|dev|post)\.\d+)?(\+[0-9A-Za-z.]+)?$/'
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'

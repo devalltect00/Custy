@@ -139,6 +139,7 @@ dev = [
 
     # Packaging
     "build>=1.2.0",
+    "packaging>=24.0",
     "twine>=5.0.0",
 
     # Git hooks

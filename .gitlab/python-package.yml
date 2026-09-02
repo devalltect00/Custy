@@ -1,0 +1,113 @@
+# =========================================================
+# 📦 Private Python Package
+# =========================================================
+#
+# Validate any annotated release tag, normalize its Python version, and build
+# and smoke-test both distributions. Protected tags can continue to Docker,
+# package, and release publication; unprotected tags remain validation-only.
+# Existing package versions are never overwritten.
+#
+# =========================================================
+
+package:build:
+  stage: package
+
+  image: python:3.14
+
+  variables:
+    GIT_DEPTH: "0"
+    PACKAGE_DISTRIBUTION: "custy"
+    PACKAGE_CLI: "custy"
+
+  before_script:
+    - apt-get update
+    - apt-get install --yes --no-install-recommends git
+    - rm -rf /var/lib/apt/lists/*
+    - python --version
+    - python -m pip install --upgrade pip
+    - python -m pip install build packaging twine
+
+  script:
+    - |
+      TAG="$CI_COMMIT_TAG"
+
+      if [ "$CI_COMMIT_REF_PROTECTED" = "true" ]; then
+        echo "Protected tag detected; publication jobs are eligible: $TAG"
+      else
+        echo "Unprotected tag detected; validating package artifacts only: $TAG"
+        echo "Docker, package registry, and release publication will be skipped."
+      fi
+
+      if ! git fetch --force origin "refs/tags/$TAG:refs/tags/$TAG"; then
+        echo "Unable to fetch release tag metadata: $TAG" >&2
+        exit 1
+      fi
+
+      if ! git show-ref --verify --quiet "refs/tags/$TAG"; then
+        echo "Release tag does not exist in the repository: $TAG" >&2
+        exit 1
+      fi
+
+      if [ "$(git cat-file -t "refs/tags/$TAG")" != "tag" ]; then
+        echo "Python package publication requires an annotated Git tag: $TAG" >&2
+        exit 1
+      fi
+
+      TAG_MESSAGE="$(git tag -l --format='%(contents)' "$TAG")"
+      if ! printf '%s' "$TAG_MESSAGE" | grep -q '[^[:space:]]'; then
+        echo "Annotated release tag has an empty message: $TAG" >&2
+        exit 1
+      fi
+
+      PACKAGE_VERSION="$(python scripts/ci/package_version.py normalize "$TAG")"
+      export PACKAGE_VERSION
+      export SETUPTOOLS_SCM_PRETEND_VERSION="$PACKAGE_VERSION"
+
+      python -m build
+      python -m twine check dist/*
+      python scripts/ci/package_version.py verify-dist \
+        "$TAG" "$PACKAGE_DISTRIBUTION" dist
+
+      python -m venv .package-smoke
+      .package-smoke/bin/python -m pip install --upgrade pip
+      .package-smoke/bin/python -m pip install dist/*.whl
+      ".package-smoke/bin/$PACKAGE_CLI" --help
+
+      printf 'PACKAGE_VERSION=%s\n' "$PACKAGE_VERSION" > package.env
+
+  artifacts:
+    name: "$CI_PROJECT_NAME-$CI_COMMIT_TAG"
+    paths:
+      - dist/
+    reports:
+      dotenv: package.env
+    expire_in: 90 days
+
+  rules:
+    - if: '$CI_COMMIT_TAG'
+
+package:publish:
+  stage: publish
+
+  image: python:3.14
+
+  variables:
+    TWINE_USERNAME: "gitlab-ci-token"
+    TWINE_PASSWORD: "$CI_JOB_TOKEN"
+
+  needs:
+    - job: package:build
+      artifacts: true
+    - job: docker:prod
+      artifacts: false
+
+  before_script:
+    - python --version
+    - python -m pip install --upgrade pip
+    - python -m pip install twine
+
+  script:
+    - python -m twine upload --non-interactive --repository-url "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi" dist/*
+
+  rules:
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'

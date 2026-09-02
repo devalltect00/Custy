@@ -8,7 +8,7 @@
 #
 # Purpose
 # -------
-# Build release artifacts and create GitLab Releases.
+# Create GitLab Releases after private package and production image publication.
 #
 # Artifacts
 # ---------
@@ -33,30 +33,6 @@
 #
 # =========================================================
 
-release:build:
-  stage: release
-
-  image: python:3.14
-
-  before_script:
-    - python --version
-    - pip install --upgrade pip
-    - pip install build
-
-  script:
-    - python -m build
-
-  artifacts:
-    name: "$CI_COMMIT_TAG"
-
-    paths:
-      - dist/
-
-    expire_in: 90 days
-
-  rules:
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+([.-](alpha|beta|rc|dev|post)\.\d+)?(\+[0-9A-Za-z.]+)?$/'
-
 release:create:
   stage: release
 
@@ -66,17 +42,16 @@ release:create:
     GIT_DEPTH: "0"
 
   needs:
-    - release:build
+    - job: package:build
+      artifacts: true
+    - job: package:publish
+      artifacts: false
+    - job: docker:prod
+      artifacts: false
 
   script:
     - |
-      TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+([.-](alpha|beta|rc|dev|post)\.[0-9]+)?(\+[0-9A-Za-z.]+)?$'
       TAG="$CI_COMMIT_TAG"
-
-      if ! printf '%s' "$TAG" | grep -Eq "$TAG_REGEX"; then
-        echo "Invalid Custy release tag: $TAG" >&2
-        exit 1
-      fi
 
       if ! git fetch --force origin "refs/tags/$TAG:refs/tags/$TAG"; then
         echo "Unable to fetch release tag metadata: $TAG" >&2
@@ -103,12 +78,12 @@ release:create:
       VERSION="${TAG#v}"
       RELEASE_TYPE="stable"
 
-      case "$VERSION" in
-        *alpha*) RELEASE_TYPE="alpha" ;;
-        *beta*) RELEASE_TYPE="beta" ;;
-        *rc*) RELEASE_TYPE="rc" ;;
-        *dev*) RELEASE_TYPE="dev" ;;
-        *post*) RELEASE_TYPE="post" ;;
+      case "$PACKAGE_VERSION" in
+        *a[0-9]*) RELEASE_TYPE="alpha" ;;
+        *b[0-9]*) RELEASE_TYPE="beta" ;;
+        *rc[0-9]*) RELEASE_TYPE="rc" ;;
+        *.dev[0-9]*) RELEASE_TYPE="dev" ;;
+        *.post[0-9]*) RELEASE_TYPE="post" ;;
       esac
 
       IMAGE_TAG="$(printf '%s' "$TAG" | tr '+' '-')"
@@ -122,6 +97,7 @@ release:create:
       ## 📅 Release Information
 
       - Version: \`$VERSION\`
+      - Python Package Version: \`$PACKAGE_VERSION\`
       - Release Type: \`$RELEASE_TYPE\`
       - Project: \`$CI_PROJECT_PATH\`
       - Commit: [$CI_COMMIT_SHORT_SHA]($CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA)
@@ -135,7 +111,14 @@ release:create:
 
       ## 📥 Python Package
 
-      [Download the release build artifacts]($CI_PROJECT_URL/-/jobs/artifacts/$TAG/download?job=release%3Abuild).
+      Install this private package with a deploy token that has
+      \`read_package_registry\` permission:
+
+      \`\`\`bash
+      python -m pip install --index-url "https://<deploy-token-user>:<deploy-token>@${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/pypi/simple" "custy==$PACKAGE_VERSION"
+      \`\`\`
+
+      [View packages]($CI_PROJECT_URL/-/packages) or [download the release build artifacts]($CI_PROJECT_URL/-/jobs/artifacts/$TAG/download?job=package%3Abuild).
       Pipeline artifacts are retained for 90 days.
       EOF
 
@@ -149,4 +132,4 @@ release:create:
     description: "./RELEASE_NOTES.md"
 
   rules:
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+([.-](alpha|beta|rc|dev|post)\.\d+)?(\+[0-9A-Za-z.]+)?$/'
+    - if: '$CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"'

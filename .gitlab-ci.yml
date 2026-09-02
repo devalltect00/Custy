@@ -16,6 +16,7 @@
 #
 # .gitlab-ci.yml
 # ├── .gitlab/ci.yml
+# ├── .gitlab/python-package.yml
 # ├── .gitlab/docker-dev.yml
 # ├── .gitlab/docker-prod.yml
 # └── .gitlab/release.yml
@@ -32,6 +33,7 @@
 # Responsibilities
 # ----------------
 # - Validation / Testing
+# - Python package validation and private GitLab PyPI publication
 # - Development Docker Images
 # - Production Docker Images
 # - Release Creation
@@ -47,11 +49,14 @@
 
 stages:
     - test
+    - package
     - docker
+    - publish
     - release
 
 include:
     - local: ".gitlab/ci.yml"
+    - local: ".gitlab/python-package.yml"
     - local: ".gitlab/docker-dev.yml"
     - local: ".gitlab/docker-prod.yml"
     - local: ".gitlab/release.yml"

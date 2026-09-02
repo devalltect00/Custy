@@ -14,12 +14,47 @@ Unreleased
 
 **Summary**
 
-Complete the v2.1.0 CI/CD reliability pass across GitHub Actions and GitLab CI,
-keep generated Python bytecode out of repository state, and make GitHub and
-GitLab production-image publication release-driven. Ordinary commits continue
-through the validation workflow without creating a production container.
-Reviewed, annotated Semantic Versioning tags publish the exact release image,
-while only stable tags also update `latest`.
+Add the private GitLab PyPI distribution path for Custy and harden the release
+boundary before the v2.1.0 stable promotion.
+
+### ⚙️ CI/CD
+
+- Restore active build, cleanup-backup, test, and helper paths to the Git and
+- Remove tracked `.pyc` artifacts from the repository index while preserving
+- Keep Python 3.14 CI validation aligned with the active source and test trees.
+- Make CLI help assertions deterministic across ANSI-capable runners and
+- Preserve verbose pytest output in CI for actionable failure diagnostics.
+- Confirm the GitHub Actions and GitLab CI validation pipelines complete
+
+### 🚀 Releases
+
+- Stop the GitHub production Docker workflow from running for ordinary pushes
+- Build automatically only when a supported `v*` release tag is pushed.
+- Require manual production rebuilds to select an existing release tag instead
+- Require an annotated, non-empty Git tag message before image publication.
+- Verify the normalized package build version matches the selected release tag.
+- Publish the exact stable or prerelease tag and update `latest` only for a
+- Remove the redundant human-readable commit-SHA image tag while retaining
+- Bring GitLab production publishing under the same annotated-tag contract,
+- Replace the placeholder GitLab Release description with the complete
+
+#### Workflow
+
+- Preserve non-empty commit and tag message files as reviewed project-owned
+- Generate fallback messages only when the configured file is missing or
+- Keep generated fallback files newline-terminated for formatting-hook
+
+### Validation
+
+- Validate workflow structure, diff whitespace, Ruff, Black, pre-commit, and
+- Preserve Buildx provenance; untagged manifests referenced by a tagged OCI
+- Leave existing registry packages untouched and apply the tag-only policy only
+
+#### Distribution
+
+- Passed the full Custy suite: 1,341 tests.
+- Passed the focused Python-package workflow regression test.
+- Passed Ruff, Black, GitLab YAML parsing, and repository diff checks.
 
 ### Credential Policy And Storage
 
@@ -137,24 +172,6 @@ while only stable tags also update `latest`.
 - Use `git commit --no-verify` only after every bypassed pre-commit-managed
 - Report policy and direct-hook failures with actionable error codes before a
 - Preserve or add the final newline in generated Python version modules so
-
-### 🚀 Releases
-
-- Stop the GitHub production Docker workflow from running for ordinary pushes
-- Build automatically only when a supported `v*` release tag is pushed.
-- Require manual production rebuilds to select an existing release tag instead
-- Require an annotated, non-empty Git tag message before image publication.
-- Verify the normalized package build version matches the selected release tag.
-- Publish the exact stable or prerelease tag and update `latest` only for a
-- Remove the redundant human-readable commit-SHA image tag while retaining
-- Bring GitLab production publishing under the same annotated-tag contract,
-- Replace the placeholder GitLab Release description with the complete
-
-#### Workflow
-
-- Preserve non-empty commit and tag message files as reviewed project-owned
-- Generate fallback messages only when the configured file is missing or
-- Keep generated fallback files newline-terminated for formatting-hook
 
 ### Docker Push Workflow And Diagnostics
 
@@ -323,24 +340,38 @@ while only stable tags also update `latest`.
 - Existing editable installations should be reinstalled after updating source so the generated `custy` console script uses the protected entry point.
 - The experimental status of `custy workflow` is unchanged.
 
-### ⚙️ CI/CD
+### Private Package Delivery
 
-- Restore active build, cleanup-backup, test, and helper paths to the Git and
-- Remove tracked `.pyc` artifacts from the repository index while preserving
-- Keep Python 3.14 CI validation aligned with the active source and test trees.
-- Make CLI help assertions deterministic across ANSI-capable runners and
-- Preserve verbose pytest output in CI for actionable failure diagnostics.
-- Confirm the GitHub Actions and GitLab CI validation pipelines complete
+#### Distribution
 
-### Validation
+- Publish the `custy` wheel and source distribution to the project-level
+- Keep `custy` as both the Python distribution and installed console-command
+- Convert reviewed SemVer release tags to canonical PEP 440 package versions,
+- Use GitLab's short-lived `CI_JOB_TOKEN` for publication and document deploy
+- Keep published versions immutable: duplicate uploads fail instead of
 
-- Validate workflow structure, diff whitespace, Ruff, Black, pre-commit, and
-- Preserve Buildx provenance; untagged manifests referenced by a tagged OCI
-- Leave existing registry packages untouched and apply the tag-only policy only
+### Validation And Release Safeguards
+
+#### Distribution
+
+- Validate every pushed tag without granting every tag publication authority.
+- Let unprotected tags complete package validation successfully while skipping
+- Require a protected, non-empty annotated release tag before any external
+- Reject unsupported or ambiguous versions, lightweight tags, empty tag
+- Build exactly one wheel and one source distribution, run `twine check`,
+
+### Pipeline And Documentation Alignment
+
+#### Distribution
+
+- Order the GitLab release path as test → package validation → production
+- Keep retained package artifacts available for inspecting validation-only tag
+- Document the protected-tag contract, deploy-token installation, version
+- Add regression coverage for validation-only unprotected tags and protected
 
 **Tags**
 
-release • docs • tests • ci
+release • docs • tests • ci • distribution
 
 ## v2.0.0 (2026-08-24)
 

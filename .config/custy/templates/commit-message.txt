@@ -1,56 +1,64 @@
-ci(release): harden validation and publish production images from release tags
+feat(distribution): checkpoint private GitLab package delivery
 
-Complete the v2.1.0 CI/CD reliability pass across GitHub Actions and GitLab CI,
-keep generated Python bytecode out of repository state, and make GitHub and
-GitLab production-image publication release-driven. Ordinary commits continue
-through the validation workflow without creating a production container.
-Reviewed, annotated Semantic Versioning tags publish the exact release image,
-while only stable tags also update `latest`.
+Add the private GitLab PyPI distribution path for Custy and harden the release
+boundary before the v2.1.0 stable promotion.
 
-### CI/CD reliability
+### 📦 Private package delivery
 
-- Restore active build, cleanup-backup, test, and helper paths to the Git and
-  Docker build contexts without re-including generated Python caches.
-- Remove tracked `.pyc` artifacts from the repository index while preserving
-  ignored local cache files.
-- Keep Python 3.14 CI validation aligned with the active source and test trees.
-- Make CLI help assertions deterministic across ANSI-capable runners and
-  different terminal widths.
-- Preserve verbose pytest output in CI for actionable failure diagnostics.
-- Confirm the GitHub Actions and GitLab CI validation pipelines complete
-  successfully with the corrected source and test inventory.
+- Publish the `custy` wheel and source distribution to the project-level
+  GitLab PyPI registry after the protected-tag production image succeeds.
+- Keep `custy` as both the Python distribution and installed console-command
+  name.
+- Convert reviewed SemVer release tags to canonical PEP 440 package versions,
+  including prerelease, post-release, development, epoch, and local-version
+  forms supported by the release policy.
+- Use GitLab's short-lived `CI_JOB_TOKEN` for publication and document deploy
+  tokens with `read_package_registry` for authorized consumers.
+- Keep published versions immutable: duplicate uploads fail instead of
+  overwriting or silently skipping an existing package.
 
-### Release-tag-only production images
+### 🛡️ Validation and release safeguards
 
-- Stop the GitHub production Docker workflow from running for ordinary pushes
-  to `main`; normal commits remain covered by the CI workflow.
-- Build automatically only when a supported `v*` release tag is pushed.
-- Require manual production rebuilds to select an existing release tag instead
-  of building an arbitrary branch or commit.
-- Require an annotated, non-empty Git tag message before image publication.
-- Verify the normalized package build version matches the selected release tag.
-- Publish the exact stable or prerelease tag and update `latest` only for a
-  stable release.
-- Remove the redundant human-readable commit-SHA image tag while retaining
-  Buildx provenance and its referenced OCI manifests.
-- Bring GitLab production publishing under the same annotated-tag contract,
-  including full tag metadata, non-empty tag-message validation, and normalized
-  package-version verification before registry authentication and building.
-- Replace the placeholder GitLab Release description with the complete
-  annotated tag message plus project, pipeline, container, and package-artifact
-  details generated during the release job.
+- Validate every pushed tag without granting every tag publication authority.
+- Let unprotected tags complete package validation successfully while skipping
+  production images, package publication, and provider-release creation.
+- Require a protected, non-empty annotated release tag before any external
+  production delivery job can run.
+- Reject unsupported or ambiguous versions, lightweight tags, empty tag
+  messages, and package metadata that does not match the selected Git tag.
+- Build exactly one wheel and one source distribution, run `twine check`,
+  verify filenames and embedded metadata, install the wheel in a clean virtual
+  environment, and smoke-test `custy --help` before publication.
 
-### Validation
+### 🔄 Pipeline and documentation alignment
 
-- Validate workflow structure, diff whitespace, Ruff, Black, pre-commit, and
-  the complete pytest suite before using this checkpoint.
-- Preserve Buildx provenance; untagged manifests referenced by a tagged OCI
-  image remain expected registry metadata rather than unused release images.
-- Leave existing registry packages untouched and apply the tag-only policy only
-  to future GitHub workflow executions.
+- Order the GitLab release path as test → package validation → production
+  image → private package publication → provider release.
+- Keep retained package artifacts available for inspecting validation-only tag
+  pipelines.
+- Document the protected-tag contract, deploy-token installation, version
+  mapping, package-forwarding warning, and immutable retry behavior.
+- Add regression coverage for validation-only unprotected tags and protected
+  publication dependencies.
 
-This is development checkpoint 4 for the unpublished v2.1.0 release line. It
-does not create a release tag, publish an image, or perform a remote operation.
+### 🧪 Validation
 
-Refs: v2.1.0 development checkpoint 4
-Tags: #ci #cd #github-actions #gitlab-ci #docker #ghcr #release #semver #test
+- Passed the full Custy suite: 1,341 tests.
+- Passed the focused Python-package workflow regression test.
+- Passed Ruff, Black, GitLab YAML parsing, and repository diff checks.
+
+This is development checkpoint 5 for the unpublished v2.1.0 release line. It
+does not create a Git tag, provider release, container publication, or package
+publication. The later v2.1.0 commit and annotated tag remain the release
+point.
+
+Release target: v2.1.0
+Previous checkpoint: commit-message_2.1.0_development-checkpoint-4.txt
+Tag: none; this development checkpoint is intentionally untagged
+
+🔖 **Tags**:
+- Type: `#feature`, `#ci`, `#documentation`, `#testing`
+- Delivery: `#gitlab-ci`, `#private-pypi`, `#package-registry`, `#protected-tags`
+- Packaging: `#pep440`, `#semver`, `#wheel`, `#sdist`, `#twine`
+- Safety: `#validation-only`, `#immutable-packages`, `#deploy-token`
+- Stability: `#development-checkpoint`, `#untagged`
