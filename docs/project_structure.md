@@ -846,6 +846,18 @@ Common directories include:
 │   │       ├── versinoing_stages_guide.md
 │   │       └── versioning.md
 │   ├── docs_v2
+│   │   ├── diagrams
+│   │   │   ├── generated
+│   │   │   │   ├── dev-profile.png
+│   │   │   │   ├── full-profile.png
+│   │   │   │   └── release-profile.png
+│   │   │   ├── img
+│   │   │   │   ├── dev-profile.png
+│   │   │   │   ├── full-profile.png
+│   │   │   │   └── release-profile.png
+│   │   │   ├── dev-profile.mmd
+│   │   │   ├── full-profile.mmd
+│   │   │   └── release-profile.mmd
 │   │   └── ALL.md
 │   ├── guides
 │   │   ├── changelog
@@ -981,7 +993,14 @@ Common directories include:
 │   │   ├── __init__.py
 │   │   └── package_version.py
 │   ├── docs
-│   │   └── venv/ ... (collapsed)
+│   │   ├── docs
+│   │   │   └── render_mermaid_examples.md
+│   │   ├── venv/ ... (collapsed)
+│   │   ├── check_docs_links.py
+│   │   └── render_mermaid.py
+│   ├── repository
+│   │   └── src
+│   │       └── sync_metadata.py
 │   └── __init__.py
 ├── tests
 │   ├── cli

@@ -31,7 +31,9 @@ templates, backup and cleanup tools, and an experimental workflow-policy layer.
 - 📝 Configurable `CHANGELOG.md` generation using Jinja templates
 - 🧩 Structured commit and annotated tag workflows
 - 🌐 Primary, backup, and multi-remote push support
-- 🧱 Reusable `dev`, `release`, `full`, and custom pipeline compositions
+- 🧱 Focused `commit`, `tag`, `push`, `dev`, `release`, and `full` profiles
+- 🔎 Automatic project and version-file discovery with explicit overrides
+- 🔐 Native Git authentication first, with an optional container token fallback
 - 🧪 Global dry-run, debug, and configurable logging options
 - 🧰 Commit/tag-message backup and stale-resource cleanup commands
 - 🐳 Local Docker, Docker Compose, GHCR, and Makefile workflows
@@ -49,11 +51,13 @@ custy init
 custy validate
 ```
 
-Run the daily development profile:
+Preview the daily development profile:
 
 ```bash
-custy run dev
+custy --dry-run run dev
 ```
+
+Review the plan before removing `--dry-run` for a live operation.
 
 Preview a release pipeline without applying its side effects:
 
@@ -74,8 +78,9 @@ and options.
 ## 🧪 Installation and Distribution
 
 Choose the method that fits your environment. Custy is currently distributed
-from its source repositories, GitHub Release artifacts, and GitHub Container
-Registry rather than through a documented public PyPI release.
+from its source repositories, release artifacts, container registries, and a
+private GitLab PyPI registry for authorized users. The private Python registry
+is distinct from GHCR container images and does not require a public PyPI release.
 
 ### Requirements
 
@@ -212,6 +217,27 @@ operations still require suitable repository credentials inside the container.
 Do not mount or copy credentials into an image; provide them securely at
 runtime.
 
+### Method 5: Install from the private GitLab Python registry
+
+Choose a version already published in the target project's registry. In an
+activated virtual environment, replace the placeholders:
+
+```text
+python -m pip install --index-url "https://gitlab.com/api/v4/projects/<project-id>/packages/pypi/simple" "custy==<package-version>"
+custy --help
+```
+
+Use a deploy token with `read_package_registry`. Supply credentials through
+[pip authentication](https://pip.pypa.io/en/stable/topics/authentication/),
+not committed files or shared command history. The package version is PEP 440:
+for example, `v2.1.0` becomes `2.1.0`.
+Use `--index-url`, not `--extra-index-url`; review
+[GitLab package forwarding](https://docs.gitlab.com/user/packages/pypi_repository/#package-request-forwarding-security-notice)
+if dependencies must stay private.
+
+See [installation and registry guidance](docs/guides/gitlab_package_registry.md) for authentication,
+other installation methods, and registry setup.
+
 ### Verify the selected method
 
 For a Python installation:
@@ -300,7 +326,7 @@ custy run release
 custy run full
 ```
 
-Run `custy run --help` before choosing a profile or custom step composition.
+Run `custy run --help` before choosing a supported profile.
 
 ---
 
@@ -308,6 +334,7 @@ Run `custy run --help` before choosing a profile or custom step composition.
 
 | Command                           | Purpose                                         |
 | --------------------------------- | ----------------------------------------------- |
+| `custy configure credentials`    | Manage optional container credential fallback |
 | `custy backup commit`             | Back up the commit-message template             |
 | `custy backup tag`                | Back up the tag-message template                |
 | `custy backup all`                | Back up both message templates                  |
@@ -334,6 +361,44 @@ repository. Global options such as `--dry-run` must appear before the command.
 - 📘 [Local usage notes](docs/HOW_TO_USE.md)
 - 📖 [Local CLI command reference](docs/cli_commands_custy.md)
 - 🛠️ [Local Make workflow guide](docs/guides/make_workflows.md)
+
+---
+
+## Repository metadata helper (maintainers)
+
+The optional [metadata sync script](scripts/repository/src/sync_metadata.py)
+is source-checkout tooling, not an installed application command. Run it from
+this repository's root:
+
+```bash
+python scripts/repository/src/sync_metadata.py --dry-run
+```
+
+It reads `[project].description` and the separate
+`[tool.devalltect.github].topics` / `[tool.devalltect.gitlab].topics` tables
+in `pyproject.toml`. Package `keywords` are not repository topics.
+
+Review `GITHUB_REMOTES` and `GITLAB_REMOTES` in the script: the current
+defaults are `origin` and `backup`. Each list contains fallback candidates;
+the first valid fetch URL selects one repository per provider. Both providers
+must resolve. This helper currently targets GitHub.com and GitLab.com.
+
+Dry-run uses Python and read-only Git discovery; it does not call provider
+APIs. Live synchronization additionally needs authenticated `gh` and `glab`
+with access to update those repositories. Their authentication is separate from
+Custy's optional Git credential fallback.
+
+Before removing `--dry-run`, review the targets and metadata carefully:
+the live helper does not ask for confirmation, replaces the topic lists, and
+clears existing topics when a list is empty or missing. A failure can leave
+earlier updates applied; there is no cross-provider rollback.
+
+Known follow-up: the script's docstring still shows the old path, and its
+GitHub topic-limit constant is 50 despite
+[GitHub's maximum of 20 topics](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/classifying-your-repository-with-topics).
+Use the path above and keep the GitHub list within 20 until corrected.
+These issues and isolated test coverage are tracked in the
+[TODO history](docs/TODO_tracking_history.md).
 
 ---
 

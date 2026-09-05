@@ -7,3 +7,17 @@ docker run -it --rm -v "%cd%:/workspace" -w /workspace path-header-scanner-prod:
 docker run -it --rm -v "%cd%:/workspace" -w /workspace path-header-scanner-prod:latest scan tests --apply
 
 docker run -it --rm -v "%cd%:/workspace" -w /workspace doc-gen-prod:latest structure generate
+
+==========
+
+docker run --rm -it -v "%cd%:/workspace" -v "%LOCALAPPDATA%\Custy\credentials:/run/secrets/custy" -w /workspace custy-prod:latest --no-banner configure credentials status
+docker run -it --rm -v "%cd%:/workspace" -v "%LOCALAPPDATA%\Custy\credentials:/run/secrets/custy" -w /workspace custy-prod:latest --no-banner configure credentials set --provider github
+
+docker run --rm -it -v "%cd%:/workspace" -v "%LOCALAPPDATA%\Custy\credentials:/run/secrets/custy:ro" -w /workspace custy-prod:latest --no-banner run push
+
+==========
+
+make r-custy-credentials-set-github
+make r-custy-credentials-set-gitlab
+make r-custy-credentials-status
+make r-custy-credentials-test

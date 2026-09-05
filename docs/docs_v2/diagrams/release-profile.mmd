@@ -1,0 +1,76 @@
+%% Custy release pipeline
+%% Source of truth: app/core/pipeline/profiles.py
+%% Nested validation profiles are expanded and all steps follow STEP_ORDER.
+
+flowchart LR
+    START([custy run release])
+
+    subgraph VALIDATION["1. Release Validation Gates"]
+        direction TB
+        V01["01. Ensure Git repository"]
+        V02["02. Ensure staged changes"]
+        V03["03. Resolve commit validator"]
+        V04["04. Resolve commit hook policy"]
+        V05["05. Resolve commit message path"]
+        V06["06. Verify commit message file"]
+        V07["07. Resolve version target"]
+        V08["08. Resolve tag message path"]
+        V09["09. Verify tag message file"]
+        V10["10. Validate configured remotes"]
+    end
+
+    subgraph PREPARATION["2. Release Preparation"]
+        direction TB
+        P11["11. Prepare version"]
+        P12["12. Initialize workflow"]
+        P13["13. Prepare tag message"]
+    end
+
+    subgraph AUTHORING["3. Generate, Review, and Version"]
+        direction TB
+        A14["14. Generate message artifacts"]
+        A15["15. Edit message files"]
+        A16["16. Validate edited files"]
+        A17["17. Apply version update"]
+        A18["18. Generate changelog"]
+    end
+
+    subgraph SAFETY["4. Preserve Release Inputs"]
+        direction TB
+        S19["19. Back up commit message"]
+        S20["20. Back up tag message"]
+        S21["21. Clean old backups"]
+    end
+
+    subgraph DELIVERY["5. Publish Release State"]
+        direction TB
+        D22["22. Stage changes"]
+        D23["23. Create commit"]
+        D24["24. Create annotated tag"]
+        D25["25. Push configured remotes"]
+    end
+
+    DONE([Release pipeline complete])
+
+    START --> V01
+    V01 --> V02 --> V03 --> V04 --> V05 --> V06
+    V06 --> V07 --> V08 --> V09 --> V10
+    V10 --> P11 --> P12 --> P13
+    P13 --> A14 --> A15 --> A16 --> A17 --> A18
+    A18 --> S19 --> S20 --> S21
+    S21 --> D22 --> D23 --> D24 --> D25
+    D25 --> DONE
+
+    classDef terminal fill:#0f172a,stroke:#38bdf8,color:#f8fafc,stroke-width:2px;
+    classDef validation fill:#dbeafe,stroke:#2563eb,color:#172554,stroke-width:1.5px;
+    classDef preparation fill:#ede9fe,stroke:#7c3aed,color:#2e1065,stroke-width:1.5px;
+    classDef authoring fill:#fef3c7,stroke:#d97706,color:#451a03,stroke-width:1.5px;
+    classDef safety fill:#cffafe,stroke:#0891b2,color:#083344,stroke-width:1.5px;
+    classDef delivery fill:#dcfce7,stroke:#16a34a,color:#052e16,stroke-width:1.5px;
+
+    class START,DONE terminal;
+    class V01,V02,V03,V04,V05,V06,V07,V08,V09,V10 validation;
+    class P11,P12,P13 preparation;
+    class A14,A15,A16,A17,A18 authoring;
+    class S19,S20,S21 safety;
+    class D22,D23,D24,D25 delivery;

@@ -1,64 +1,52 @@
-feat(distribution): checkpoint private GitLab package delivery
+chore(repository): checkpoint metadata synchronization tooling
 
-Add the private GitLab PyPI distribution path for Custy and harden the release
-boundary before the v2.1.0 stable promotion.
+Record the optional repository-maintenance helper for Custy.
+This is an untagged development checkpoint after the private GitLab Python
+package delivery checkpoint, not a new release or application command.
 
-### 📦 Private package delivery
+### 🧰 Repository metadata maintenance
 
-- Publish the `custy` wheel and source distribution to the project-level
-  GitLab PyPI registry after the protected-tag production image succeeds.
-- Keep `custy` as both the Python distribution and installed console-command
-  name.
-- Convert reviewed SemVer release tags to canonical PEP 440 package versions,
-  including prerelease, post-release, development, epoch, and local-version
-  forms supported by the release policy.
-- Use GitLab's short-lived `CI_JOB_TOKEN` for publication and document deploy
-  tokens with `read_package_registry` for authorized consumers.
-- Keep published versions immutable: duplicate uploads fail instead of
-  overwriting or silently skipping an existing package.
+- Add `scripts/repository/src/sync_metadata.py` as a source-checkout helper,
+  separate from the installed CLI, release pipelines, and package publication.
+- Read the shared repository description from `[project].description` and
+  provider-specific topics from `[tool.devalltect.github].topics` and
+  `[tool.devalltect.gitlab].topics` in the root `pyproject.toml`.
+- Resolve one GitHub and one GitLab repository from ordered Git remote
+  candidates; use the first eligible fetch URL rather than broadcasting to
+  every remote or deriving repository targets from package metadata.
+- Use authenticated `gh` and `glab` only for an explicitly requested live run.
+  Keep `--dry-run` limited to local metadata inspection and read-only Git
+  discovery, without provider API requests.
+- Document that topic synchronization replaces existing lists, that empty or
+  missing lists clear topics, and that a live run has no confirmation prompt
+  or cross-provider rollback.
 
-### 🛡️ Validation and release safeguards
+### 📚 Documentation and tracking
 
-- Validate every pushed tag without granting every tag publication authority.
-- Let unprotected tags complete package validation successfully while skipping
-  production images, package publication, and provider-release creation.
-- Require a protected, non-empty annotated release tag before any external
-  production delivery job can run.
-- Reject unsupported or ambiguous versions, lightweight tags, empty tag
-  messages, and package metadata that does not match the selected Git tag.
-- Build exactly one wheel and one source distribution, run `twine check`,
-  verify filenames and embedded metadata, install the wheel in a clean virtual
-  environment, and smoke-test `custy --help` before publication.
+- Refresh README installation guidance for the private GitLab PyPI registry,
+  with explicit package versions and credentials kept out of examples.
+- Align README commands, configuration paths, and runtime requirements with
+  the active project; distinguish the maintainer helper from product features.
+- Add dated checkpoint notes to the active TODO histories while retaining
+  earlier tasks, ideas, alternatives, cancelled work, and historical results.
+- Carry a short maintainer-tooling note into the pending release commit
+  messages; leave user-facing tag messages unchanged for this helper-only work.
 
-### 🔄 Pipeline and documentation alignment
+### 🧪 Review boundary and follow-up
 
-- Order the GitLab release path as test → package validation → production
-  image → private package publication → provider release.
-- Keep retained package artifacts available for inspecting validation-only tag
-  pipelines.
-- Document the protected-tag contract, deploy-token installation, version
-  mapping, package-forwarding warning, and immutable retry behavior.
-- Add regression coverage for validation-only unprotected tags and protected
-  publication dependencies.
+- This checkpoint records source and documentation review, not a live metadata
+  synchronization or a fresh full-suite/application-release validation.
+- Track correction of the helper's stale usage path and GitHub topic-limit
+  mismatch, plus isolated mocked tests, as pending follow-up work.
+- Require a separate target review and explicit authorization before live
+  GitHub or GitLab metadata changes.
 
-### 🧪 Validation
-
-- Passed the full Custy suite: 1,341 tests.
-- Passed the focused Python-package workflow regression test.
-- Passed Ruff, Black, GitLab YAML parsing, and repository diff checks.
-
-This is development checkpoint 5 for the unpublished v2.1.0 release line. It
-does not create a Git tag, provider release, container publication, or package
-publication. The later v2.1.0 commit and annotated tag remain the release
-point.
-
-Release target: v2.1.0
-Previous checkpoint: commit-message_2.1.0_development-checkpoint-4.txt
-Tag: none; this development checkpoint is intentionally untagged
+Tag: none — intentionally untagged checkpoint
+Previous checkpoint: commit-message_2.1.0_development-checkpoint-5.txt
+Next release: v2.1.0
+No tag-message file is associated with this checkpoint.
 
 🔖 **Tags**:
-- Type: `#feature`, `#ci`, `#documentation`, `#testing`
-- Delivery: `#gitlab-ci`, `#private-pypi`, `#package-registry`, `#protected-tags`
-- Packaging: `#pep440`, `#semver`, `#wheel`, `#sdist`, `#twine`
-- Safety: `#validation-only`, `#immutable-packages`, `#deploy-token`
-- Stability: `#development-checkpoint`, `#untagged`
+- Type: `#maintenance`, `#documentation`
+- Scope: `#repository-metadata`, `#github`, `#gitlab`, `#dry-run`
+- Workflow: `#checkpoint`, `#untagged`, `#maintainer-tooling`

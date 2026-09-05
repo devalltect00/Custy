@@ -1,0 +1,61 @@
+%% Custy development pipeline
+%% Source of truth: app/core/pipeline/profiles.py
+%% Nested profiles are expanded and all steps follow STEP_ORDER.
+
+flowchart LR
+    START([custy run dev])
+
+    subgraph VALIDATION["1. Repository Validation"]
+        direction TB
+        V01["01. Ensure Git repository"]
+    end
+
+    subgraph PREPARATION["2. Workflow Preparation"]
+        direction TB
+        P02["02. Prepare version"]
+        P03["03. Initialize workflow"]
+    end
+
+    subgraph AUTHORING["3. Generate and Review"]
+        direction TB
+        A04["04. Generate message artifacts"]
+        A05["05. Edit message files"]
+        A06["06. Validate edited files"]
+        A07["07. Generate changelog"]
+    end
+
+    subgraph SAFETY["4. Backup and Cleanup"]
+        direction TB
+        S08["08. Back up commit message"]
+        S09["09. Clean old backups"]
+    end
+
+    subgraph DELIVERY["5. Commit and Synchronize"]
+        direction TB
+        D10["10. Stage changes"]
+        D11["11. Create commit"]
+        D12["12. Push configured remotes"]
+    end
+
+    DONE([Development pipeline complete])
+
+    START --> V01
+    V01 --> P02 --> P03
+    P03 --> A04 --> A05 --> A06 --> A07
+    A07 --> S08 --> S09
+    S09 --> D10 --> D11 --> D12
+    D12 --> DONE
+
+    classDef terminal fill:#0f172a,stroke:#38bdf8,color:#f8fafc,stroke-width:2px;
+    classDef validation fill:#dbeafe,stroke:#2563eb,color:#172554,stroke-width:1.5px;
+    classDef preparation fill:#ede9fe,stroke:#7c3aed,color:#2e1065,stroke-width:1.5px;
+    classDef authoring fill:#fef3c7,stroke:#d97706,color:#451a03,stroke-width:1.5px;
+    classDef safety fill:#cffafe,stroke:#0891b2,color:#083344,stroke-width:1.5px;
+    classDef delivery fill:#dcfce7,stroke:#16a34a,color:#052e16,stroke-width:1.5px;
+
+    class START,DONE terminal;
+    class V01 validation;
+    class P02,P03 preparation;
+    class A04,A05,A06,A07 authoring;
+    class S08,S09 safety;
+    class D10,D11,D12 delivery;

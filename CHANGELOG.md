@@ -14,8 +14,50 @@ Unreleased
 
 **Summary**
 
-Add the private GitLab PyPI distribution path for Custy and harden the release
-boundary before the v2.1.0 stable promotion.
+Record the optional repository-maintenance helper for Custy.
+This is an untagged development checkpoint after the private GitLab Python
+package delivery checkpoint, not a new release or application command.
+
+### Private Package Delivery
+
+#### Distribution
+
+- Publish the `custy` wheel and source distribution to the project-level
+- Keep `custy` as both the Python distribution and installed console-command
+- Convert reviewed SemVer release tags to canonical PEP 440 package versions,
+- Use GitLab's short-lived `CI_JOB_TOKEN` for publication and document deploy
+- Keep published versions immutable: duplicate uploads fail instead of
+
+### Validation And Release Safeguards
+
+#### Distribution
+
+- Validate every pushed tag without granting every tag publication authority.
+- Let unprotected tags complete package validation successfully while skipping
+- Require a protected, non-empty annotated release tag before any external
+- Reject unsupported or ambiguous versions, lightweight tags, empty tag
+- Build exactly one wheel and one source distribution, run `twine check`,
+
+### Pipeline And Documentation Alignment
+
+#### Distribution
+
+- Order the GitLab release path as test → package validation → production
+- Keep retained package artifacts available for inspecting validation-only tag
+- Document the protected-tag contract, deploy-token installation, version
+- Add regression coverage for validation-only unprotected tags and protected
+
+### Validation
+
+- Validate workflow structure, diff whitespace, Ruff, Black, pre-commit, and
+- Preserve Buildx provenance; untagged manifests referenced by a tagged OCI
+- Leave existing registry packages untouched and apply the tag-only policy only
+
+#### Distribution
+
+- Passed the full Custy suite: 1,341 tests.
+- Passed the focused Python-package workflow regression test.
+- Passed Ruff, Black, GitLab YAML parsing, and repository diff checks.
 
 ### ⚙️ CI/CD
 
@@ -43,18 +85,6 @@ boundary before the v2.1.0 stable promotion.
 - Preserve non-empty commit and tag message files as reviewed project-owned
 - Generate fallback messages only when the configured file is missing or
 - Keep generated fallback files newline-terminated for formatting-hook
-
-### Validation
-
-- Validate workflow structure, diff whitespace, Ruff, Black, pre-commit, and
-- Preserve Buildx provenance; untagged manifests referenced by a tagged OCI
-- Leave existing registry packages untouched and apply the tag-only policy only
-
-#### Distribution
-
-- Passed the full Custy suite: 1,341 tests.
-- Passed the focused Python-package workflow regression test.
-- Passed Ruff, Black, GitLab YAML parsing, and repository diff checks.
 
 ### Credential Policy And Storage
 
@@ -139,6 +169,13 @@ boundary before the v2.1.0 stable promotion.
 - Add recovery guidance for failures at `EditFilesStep`, including the boundary between generated artifacts and later Git mutations.
 - Explain expected progress suspension during terminal editing and how to identify an outdated executable or cached image when stale rows remain.
 - Keep the English and Indonesian Custy documentation behaviorally aligned.
+
+#### Repository
+
+- Refresh README installation guidance for the private GitLab PyPI registry,
+- Align README commands, configuration paths, and runtime requirements with
+- Add dated checkpoint notes to the active TODO histories while retaining
+- Carry a short maintainer-tooling note into the pending release commit
 
 #### Workflow
 
@@ -340,38 +377,17 @@ boundary before the v2.1.0 stable promotion.
 - Existing editable installations should be reinstalled after updating source so the generated `custy` console script uses the protected entry point.
 - The experimental status of `custy workflow` is unchanged.
 
-### Private Package Delivery
+### Review Boundary And Follow Up
 
-#### Distribution
+#### Repository
 
-- Publish the `custy` wheel and source distribution to the project-level
-- Keep `custy` as both the Python distribution and installed console-command
-- Convert reviewed SemVer release tags to canonical PEP 440 package versions,
-- Use GitLab's short-lived `CI_JOB_TOKEN` for publication and document deploy
-- Keep published versions immutable: duplicate uploads fail instead of
-
-### Validation And Release Safeguards
-
-#### Distribution
-
-- Validate every pushed tag without granting every tag publication authority.
-- Let unprotected tags complete package validation successfully while skipping
-- Require a protected, non-empty annotated release tag before any external
-- Reject unsupported or ambiguous versions, lightweight tags, empty tag
-- Build exactly one wheel and one source distribution, run `twine check`,
-
-### Pipeline And Documentation Alignment
-
-#### Distribution
-
-- Order the GitLab release path as test → package validation → production
-- Keep retained package artifacts available for inspecting validation-only tag
-- Document the protected-tag contract, deploy-token installation, version
-- Add regression coverage for validation-only unprotected tags and protected
+- This checkpoint records source and documentation review, not a live metadata
+- Track correction of the helper's stale usage path and GitHub topic-limit
+- Require a separate target review and explicit authorization before live
 
 **Tags**
 
-release • docs • tests • ci • distribution
+release • docs • tests • ci • repository • repository-metadata • github • gitlab • dry-run • checkpoint • untagged • maintainer-tooling
 
 ## v2.0.0 (2026-08-24)
 

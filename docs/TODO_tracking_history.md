@@ -2,6 +2,10 @@
 
 # Custy TODO Tracking History
 
+> Current status: see the [2026-09-02 checkpoint update](#checkpoint-6-2026-09-02).
+> Older checkboxes, test counts, plans, and decisions are preserved as recorded;
+> they are historical context, not proof that every current release gate passed.
+
 Personal notes, planning, and roadmap for **Custy**
 
 ---
@@ -227,3 +231,59 @@ modified and improve README.md
 new cli command to handle when the repo branch
 
 branch name can custom name get from configuration file
+
+---
+
+<a id="checkpoint-6-2026-09-02"></a>
+
+## 2026-09-02 status update — untagged checkpoint 6
+
+Version scope: **v2.1.0**.
+The [checkpoint commit message](../.config/custy/templates/commit-message_2.1.0_development-checkpoint-6.txt)
+has **no associated tag or tag message**. Earlier checkpoint files remain unchanged.
+
+### ✅ Current application and developer workflow
+
+- [x] Retain automatic project and version-target discovery, configured-remote selection, and the focused standalone push workflow.
+- [x] Keep public `run` profiles centered on commit, tag, push, dev, release, and full.
+- [x] Keep interactive editor/authentication handoff, actionable Git/hook diagnostics, and native-first credentials with an optional protected container fallback.
+- [x] Keep the standalone metadata script's `gh`/`glab` authentication separate from Custy's Git credential fallback.
+
+All earlier v1.x and v2.0.0 notes, alternatives, and cancelled ideas remain
+historical records. This supplement belongs to v2.1.0 preparation and does not
+change the v2.0.0 or v2.0.0-rc.1 snapshots.
+
+### ✅ Delivery work carried forward
+
+- [x] Align local, Docker/Compose, Make, pre-commit, and hosted CI validation with the active project rather than the old standalone layout.
+- [x] Validate annotated release-tag metadata and package versions; publish exact prerelease/stable image tags and update `latest` only for stable releases.
+- [x] Add private GitLab Python package build, artifact checks, clean-install verification, and protected-tag publication using `CI_JOB_TOKEN`.
+- [x] Normalize supported release tags to PEP 440 package versions; reject unsupported or ambiguous versions rather than guessing.
+- [x] Keep unprotected GitLab tag pipelines validation-only, skipping production-image, package-upload, and provider-release jobs.
+- [x] Document installation of an available package version from the selected project registry, independently of cloning source or pulling a container.
+- [x] Record the maintainer's report that hosted pipelines passed and the GitLab package registry was populated. This is historical reported validation, not a new pipeline run for this documentation checkpoint.
+
+### ✅ Optional repository metadata helper
+
+- [x] Add `scripts/repository/src/sync_metadata.py` outside the core application and installed CLI.
+- [x] Read `[project].description` and independent GitHub/GitLab topics from `pyproject.toml`; do not reinterpret package keywords as repository topics.
+- [x] Resolve one repository per provider from ordered remote candidates; the current defaults are GitHub `origin` and GitLab `backup`, using fetch URLs.
+- [x] Provide a `--dry-run` path with read-only Git discovery and no provider API calls.
+- [x] Document authenticated `gh`/`glab` for live updates, topic replacement and empty-list clearing, no confirmation prompt, and possible partial updates on failure.
+- [x] Refresh the README against active commands, configuration, runtime requirements, installation methods, and the helper's actual `src/` path.
+- [x] Keep helper details in checkpoint/release commit messages; leave user-facing tag-message templates unchanged for this maintainer-only addition.
+
+### ⏳ Follow-up and release gates
+
+- [ ] Correct the helper docstring examples that omit `src/` and reconcile its GitHub topic-limit constant (currently 50) with the provider maximum of 20.
+- [ ] Add isolated mocked coverage for metadata validation, remote selection, dry-run API suppression, topic clearing, and provider failures before treating the helper as fully validated.
+- [ ] Review actual targets, credentials, topic lists, and provider permissions before a separately authorized live metadata synchronization; no live synchronization was performed for this checkpoint.
+- [ ] Re-run the relevant checks against the exact candidate commit before creating the v2.1.0 tag. A passing temporary-tag pipeline is not a formal release.
+- [ ] Review and update pre-commit configuration in a future maintenance task. Existing pre-commit setup is complete; this pending item means a later refresh, not that hooks were never configured.
+
+### Notes and evidence
+
+- [README](../README.md) and [metadata helper](../scripts/repository/src/sync_metadata.py) describe the current setup.
+- [GitLab package pipeline](../.gitlab/python-package.yml) defines the validation/publication boundary.
+- Earlier test/coverage figures and release-checklist statuses remain attached to their original milestones.
+- No existing history, ideas, alternatives, cancelled work, backup snapshots, or earlier checkpoint messages were removed.

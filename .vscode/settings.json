@@ -136,5 +136,10 @@
   "docker-explorer.showAzureRegistries": false,
   "docker-explorer.showDockerHubTreeView": false,
   "docker-explorer.showSuggestedDockerImages": false,
-  "CodeGPT.apiKey": "OpenAI"
+  "CodeGPT.apiKey": "OpenAI",
+  "mermaidPreviewOffline.diagramTheme": "base",
+  "mermaidPreviewOffline.canvas.background": "white",
+  "mermaidPreviewOffline.canvas.customColor": "#ffffff",
+  "mermaidPreviewOffline.canvas.pattern": "none",
+  "mermaidPreviewOffline.diagramDensity": "compact"
 }
