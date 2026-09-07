@@ -16,6 +16,7 @@ def _read(relative_path: str) -> str:
 def test_pipeline_orders_package_publication_before_release_creation() -> None:
     """Validated artifacts and images should precede external publication."""
 
+    github_release = _read(".github/workflows/release.yml")
     pipeline = _read(".gitlab-ci.yml")
     package = _read(".gitlab/python-package.yml")
     production = _read(".gitlab/docker-prod.yml")
@@ -39,3 +40,15 @@ def test_pipeline_orders_package_publication_before_release_creation() -> None:
         assert 'CI_COMMIT_REF_PROTECTED == "true"' in protected_workflow
     assert "\\`$PACKAGE_VERSION\\`" in release
     assert "      ```bash" not in release
+
+    # Markdown backticks inside an unquoted heredoc are Bash command
+    # substitutions. GitHub release notes must keep Docker examples literal.
+    assert "          cat <<EOF >> RELEASE_NOTES.md" not in github_release
+    assert "printf '```bash\\n'" in github_release
+    assert "docker pull ghcr.io/%s:%s\\n" in github_release
+    assert "docker run --rm ghcr.io/%s:%s --help\\n" in github_release
+    assert '"$IMAGE_NAME" "$TAG"' in github_release
+    assert "- Version: `%s`\\n" in github_release
+    assert "- Release Type: `%s`\\n" in github_release
+    assert '"$GITHUB_REPOSITORY"' in github_release
+    assert '"$GITHUB_WORKFLOW"' in github_release

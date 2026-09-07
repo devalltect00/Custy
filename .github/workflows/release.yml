@@ -252,39 +252,40 @@ jobs:
       - name: 📝 Generate release notes
         id: notes
         shell: bash
+        env:
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+          RELEASE_TYPE: ${{ steps.version.outputs.type }}
+          IMAGE_NAME: ${{ steps.vars.outputs.image_name }}
         run: |
+          COMMIT_SHA="$(git rev-parse HEAD)"
 
-          TAG="${{ steps.version.outputs.tag }}"
-
-          VERSION="${{ steps.version.outputs.version }}"
-
-          TYPE="${{ steps.version.outputs.type }}"
-
-          # Extract annotated git tag message
-          git tag -l --format='%(contents)' "$TAG" > RELEASE_NOTES.md
-
-          cat <<EOF >> RELEASE_NOTES.md
-
-          ---
-
-          ## 📅 Release Information
-          - Version: \`$VERSION\`
-          - Release Type: \`$TYPE\`
-          - Repository: ${{ github.repository }}
-          - Commit: ${{ github.sha }}
-          - Workflow: ${{ github.workflow }}
-
-          ## 🐋 Docker Image
-
-          \`\`\`bash
-          docker pull ghcr.io/${{ steps.vars.outputs.image_name }}:$TAG
-          \`\`\`
-
-          ## 📥 Python Package
-
-          Artifacts are attached to this release.
-
-          EOF
+          {
+            git tag -l --format='%(contents)' "$TAG"
+            printf '\n---\n\n'
+            printf '## 📅 Release Information\n\n'
+            printf -- '- Version: `%s`\n' "$VERSION"
+            printf -- '- Release Type: `%s`\n' "$RELEASE_TYPE"
+            printf -- '- Repository: `%s`\n' "$GITHUB_REPOSITORY"
+            printf -- '- Commit: `%s`\n' "$COMMIT_SHA"
+            printf -- '- Workflow: `%s`\n\n' "$GITHUB_WORKFLOW"
+            printf '## 🐳 Docker Image\n\n'
+            printf 'Pull the exact release image:\n\n'
+            printf '```bash\n'
+            printf 'docker pull ghcr.io/%s:%s\n' "$IMAGE_NAME" "$TAG"
+            printf '```\n\n'
+            printf 'Verify the CLI:\n\n'
+            printf '```bash\n'
+            printf 'docker run --rm ghcr.io/%s:%s --help\n' "$IMAGE_NAME" "$TAG"
+            printf '```\n\n'
+            if [ "$RELEASE_TYPE" = "stable" ]; then
+              printf 'Stable releases also update the `latest` image tag.\n\n'
+            else
+              printf 'Prerelease images use their exact version tag and do not update `latest`.\n\n'
+            fi
+            printf '## 📥 Python Package\n\n'
+            printf 'Wheel and source-distribution artifacts are attached to this release.\n'
+          } > RELEASE_NOTES.md
 
           echo "notes_path=RELEASE_NOTES.md" >> $GITHUB_OUTPUT
 

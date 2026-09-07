@@ -14,9 +14,68 @@ Unreleased
 
 **Summary**
 
-Record the optional repository-maintenance helper for Custy.
-This is an untagged development checkpoint after the private GitLab Python
-package delivery checkpoint, not a new release or application command.
+Expand Custy's shared explicit-tag validation beyond stable `vX.Y.Z` values so
+approved alpha, beta, release-candidate, development, post-release, and
+metadata-bearing tags reach the workflow layer. Keep validation intentionally
+bounded to lifecycle formats already supported by Custy's version helpers and
+retain early, actionable errors for malformed or unknown suffixes.
+
+This is an untagged development checkpoint after the repository-metadata
+maintenance checkpoint. It remains part of the unpublished Custy v2.1.0
+release line and precedes the GitHub release-note rendering checkpoint.
+
+### 📚 Documentation
+
+- Document automatic project-source and version-target detection in the canonical Custy guide.
+- Explain initialization and versioning behavior for Python, Node.js, mixed, and generic repositories.
+- Add Docker guidance for repositories without an `app/` directory.
+- Add migration and troubleshooting guidance for older explicit path configuration.
+
+#### Credentials
+
+- Add focused settings, storage, provider-matching, precedence, malformed-file,
+- Verify hidden direct pipelines do not claim the terminal and direct Git
+- Verify the targeted credential and Git compatibility suites before the full
+- Validate the complete 1,340-test suite with 83% overall coverage, plus Ruff,
+- Update the canonical English and Indonesian documentation for configuration,
+- Pass TypeScript validation and production builds for both documentation
+
+#### Editor
+
+- Document candidate precedence, supported identifiers, aliases, fallback controls, and structured failures.
+- Explain `VISUAL` and `EDITOR` overrides, the Windows `code.cmd` behavior, and the boundary between host and container editors.
+- Document interactive Docker requirements, bundled editors, key bindings, and the recommended `-it` invocation.
+- Add direct Docker build guidance for supplying an explicit Custy package version.
+- Add recovery guidance for failures at `EditFilesStep`, including the boundary between generated artifacts and later Git mutations.
+- Explain expected progress suspension during terminal editing and how to identify an outdated executable or cached image when stale rows remain.
+- Keep the English and Indonesian Custy documentation behaviorally aligned.
+
+#### Repository
+
+- Refresh README installation guidance for the private GitLab PyPI registry,
+- Align README commands, configuration paths, and runtime requirements with
+- Add dated checkpoint notes to the active TODO histories while retaining
+- Carry a short maintainer-tooling note into the pending release commit
+
+#### Versioning
+
+- Replace the obsolete stable-only validator warning with the supported
+- Add explicit `v2.0.0-rc.1` examples to Run Release, Tag, and Version Update
+
+#### Workflow
+
+- Add `commitizen` and `hooks` installation extras and include both in the
+- Document the validation-provider and Git-hook behavior matrices in generated
+- Add matching English and Indonesian guidance for configuration, commit,
+- Add provider resolution, hook-policy, direct pre-commit, no-hook project,
+
+### Review Boundary And Follow Up
+
+#### Repository
+
+- This checkpoint records source and documentation review, not a live metadata
+- Track correction of the helper's stale usage path and GitHub topic-limit
+- Require a separate target review and explicit authorization before live
 
 ### Private Package Delivery
 
@@ -143,46 +202,6 @@ package delivery checkpoint, not a new release or application command.
 - Update push authentication hints to direct users to SSH, an interactive Git
 - Preserve the original executor call shape in native mode and omit empty
 - Register the helper as a packaged console entry point without logging or
-
-### 📚 Documentation
-
-- Document automatic project-source and version-target detection in the canonical Custy guide.
-- Explain initialization and versioning behavior for Python, Node.js, mixed, and generic repositories.
-- Add Docker guidance for repositories without an `app/` directory.
-- Add migration and troubleshooting guidance for older explicit path configuration.
-
-#### Credentials
-
-- Add focused settings, storage, provider-matching, precedence, malformed-file,
-- Verify hidden direct pipelines do not claim the terminal and direct Git
-- Verify the targeted credential and Git compatibility suites before the full
-- Validate the complete 1,340-test suite with 83% overall coverage, plus Ruff,
-- Update the canonical English and Indonesian documentation for configuration,
-- Pass TypeScript validation and production builds for both documentation
-
-#### Editor
-
-- Document candidate precedence, supported identifiers, aliases, fallback controls, and structured failures.
-- Explain `VISUAL` and `EDITOR` overrides, the Windows `code.cmd` behavior, and the boundary between host and container editors.
-- Document interactive Docker requirements, bundled editors, key bindings, and the recommended `-it` invocation.
-- Add direct Docker build guidance for supplying an explicit Custy package version.
-- Add recovery guidance for failures at `EditFilesStep`, including the boundary between generated artifacts and later Git mutations.
-- Explain expected progress suspension during terminal editing and how to identify an outdated executable or cached image when stale rows remain.
-- Keep the English and Indonesian Custy documentation behaviorally aligned.
-
-#### Repository
-
-- Refresh README installation guidance for the private GitLab PyPI registry,
-- Align README commands, configuration paths, and runtime requirements with
-- Add dated checkpoint notes to the active TODO histories while retaining
-- Carry a short maintainer-tooling note into the pending release commit
-
-#### Workflow
-
-- Add `commitizen` and `hooks` installation extras and include both in the
-- Document the validation-provider and Git-hook behavior matrices in generated
-- Add matching English and Indonesian guidance for configuration, commit,
-- Add provider resolution, hook-policy, direct pre-commit, no-hook project,
 
 ### Commit Validation Providers
 
@@ -377,17 +396,49 @@ package delivery checkpoint, not a new release or application command.
 - Existing editable installations should be reinstalled after updating source so the generated `custy` console script uses the protected entry point.
 - The experimental status of `custy workflow` is unchanged.
 
-### Review Boundary And Follow Up
+### Explicit Lifecycle Tag Validation
 
-#### Repository
+#### Versioning
 
-- This checkpoint records source and documentation review, not a live metadata
-- Track correction of the helper's stale usage path and GitHub topic-limit
-- Require a separate target review and explicit authorization before live
+- Accept stable three-component tags such as `v1.2.3` and `1.2.3`.
+- Accept Custy's SemVer-style lifecycle forms, including `-alpha.N`,
+- Accept common PEP 440 lifecycle forms, including `aN`, `bN`, `rcN`,
+- Accept supported build or local metadata such as `+linux.x86` and lifecycle
+- Continue normalizing an omitted `v` prefix before the explicit value enters
+- Reject incomplete versions, leading-zero SemVer components, unknown
+- Keep explicit-tag handling independent from automatic bump generation; the
+
+### Cli Guidance
+
+#### Versioning
+
+- Update the shared `--tag` option help for direct Git operations, Version
+- Replace the narrow `X.Y.Z` metavar with `VERSION`.
+- Show stable, SemVer release-candidate, and PEP 440 release-candidate examples
+- Align experimental workflow transition overrides with the same shared
+
+### Regression Coverage And Validation
+
+#### Versioning
+
+- Add focused acceptance coverage for stable, alpha, beta, RC, development,
+- Add rejection coverage for malformed, incomplete, unknown, and unsupported
+- Pass the focused validator suite: 32 tests.
+- Pass the complete Custy suite: 1,360 tests with 83% overall coverage.
+- Pass full-project Ruff and Black validation.
+- Render the updated `custy run --help` output successfully with `--tag
+
+### Scope And Compatibility
+
+#### Versioning
+
+- Do not accept arbitrary custom lifecycle identifiers that Custy's version
+- Do not change automatic version generation, Git tag creation, push behavior,
+- Do not create a checkpoint tag; include this work in the cumulative v2.1.0
 
 **Tags**
 
-release • docs • tests • ci • repository • repository-metadata • github • gitlab • dry-run • checkpoint • untagged • maintainer-tooling
+release • docs • tests • ci • versioning • semver • pep440 • prerelease • cli
 
 ## v2.0.0 (2026-08-24)
 

@@ -1,52 +1,80 @@
-chore(repository): checkpoint metadata synchronization tooling
+fix(versioning): accept explicit lifecycle tags across CLI workflows
 
-Record the optional repository-maintenance helper for Custy.
-This is an untagged development checkpoint after the private GitLab Python
-package delivery checkpoint, not a new release or application command.
+Expand Custy's shared explicit-tag validation beyond stable `vX.Y.Z` values so
+approved alpha, beta, release-candidate, development, post-release, and
+metadata-bearing tags reach the workflow layer. Keep validation intentionally
+bounded to lifecycle formats already supported by Custy's version helpers and
+retain early, actionable errors for malformed or unknown suffixes.
 
-### 🧰 Repository metadata maintenance
+This is an untagged development checkpoint after the repository-metadata
+maintenance checkpoint. It remains part of the unpublished Custy v2.1.0
+release line and precedes the GitHub release-note rendering checkpoint.
 
-- Add `scripts/repository/src/sync_metadata.py` as a source-checkout helper,
-  separate from the installed CLI, release pipelines, and package publication.
-- Read the shared repository description from `[project].description` and
-  provider-specific topics from `[tool.devalltect.github].topics` and
-  `[tool.devalltect.gitlab].topics` in the root `pyproject.toml`.
-- Resolve one GitHub and one GitLab repository from ordered Git remote
-  candidates; use the first eligible fetch URL rather than broadcasting to
-  every remote or deriving repository targets from package metadata.
-- Use authenticated `gh` and `glab` only for an explicitly requested live run.
-  Keep `--dry-run` limited to local metadata inspection and read-only Git
-  discovery, without provider API requests.
-- Document that topic synchronization replaces existing lists, that empty or
-  missing lists clear topics, and that a live run has no confirmation prompt
-  or cross-provider rollback.
+### 🏷️ Explicit lifecycle-tag validation
 
-### 📚 Documentation and tracking
+- Accept stable three-component tags such as `v1.2.3` and `1.2.3`.
+- Accept Custy's SemVer-style lifecycle forms, including `-alpha.N`,
+  `-beta.N`, `-rc.N`, `-dev.N`, and `-post.N`.
+- Accept common PEP 440 lifecycle forms, including `aN`, `bN`, `rcN`,
+  `.devN`, and `.postN`.
+- Accept supported build or local metadata such as `+linux.x86` and lifecycle
+  tags combined with metadata.
+- Continue normalizing an omitted `v` prefix before the explicit value enters
+  the workflow.
+- Reject incomplete versions, leading-zero SemVer components, unknown
+  lifecycle names, missing lifecycle numbers, malformed metadata, whitespace,
+  and trailing suffix content.
+- Keep explicit-tag handling independent from automatic bump generation; the
+  supplied value remains authoritative after validation.
 
-- Refresh README installation guidance for the private GitLab PyPI registry,
-  with explicit package versions and credentials kept out of examples.
-- Align README commands, configuration paths, and runtime requirements with
-  the active project; distinguish the maintainer helper from product features.
-- Add dated checkpoint notes to the active TODO histories while retaining
-  earlier tasks, ideas, alternatives, cancelled work, and historical results.
-- Carry a short maintainer-tooling note into the pending release commit
-  messages; leave user-facing tag messages unchanged for this helper-only work.
+### 🖥️ CLI guidance
 
-### 🧪 Review boundary and follow-up
+- Update the shared `--tag` option help for direct Git operations, Version
+  Update, and supported `custy run` profiles.
+- Replace the narrow `X.Y.Z` metavar with `VERSION`.
+- Show stable, SemVer release-candidate, and PEP 440 release-candidate examples
+  directly in CLI help.
+- Align experimental workflow transition overrides with the same shared
+  validator and lifecycle examples without changing their experimental status.
 
-- This checkpoint records source and documentation review, not a live metadata
-  synchronization or a fresh full-suite/application-release validation.
-- Track correction of the helper's stale usage path and GitHub topic-limit
-  mismatch, plus isolated mocked tests, as pending follow-up work.
-- Require a separate target review and explicit authorization before live
-  GitHub or GitLab metadata changes.
+### 🧪 Regression coverage and validation
 
-Tag: none — intentionally untagged checkpoint
-Previous checkpoint: commit-message_2.1.0_development-checkpoint-5.txt
-Next release: v2.1.0
-No tag-message file is associated with this checkpoint.
+- Add focused acceptance coverage for stable, alpha, beta, RC, development,
+  post-release, metadata, and prefix-normalization cases.
+- Add rejection coverage for malformed, incomplete, unknown, and unsupported
+  lifecycle values.
+- Pass the focused validator suite: 32 tests.
+- Pass the complete Custy suite: 1,360 tests with 83% overall coverage.
+- Pass full-project Ruff and Black validation.
+- Render the updated `custy run --help` output successfully with `--tag
+  VERSION` and lifecycle examples.
+
+### 📚 Documentation
+
+- Replace the obsolete stable-only validator warning with the supported
+  lifecycle contract.
+- Add explicit `v2.0.0-rc.1` examples to Run Release, Tag, and Version Update
+  guidance.
+- Keep the English and Indonesian documentation behaviorally aligned.
+- Pass TypeScript validation and production builds for both documentation
+  locales.
+
+### 📌 Scope and compatibility
+
+- Do not accept arbitrary custom lifecycle identifiers that Custy's version
+  helpers cannot interpret consistently.
+- Do not change automatic version generation, Git tag creation, push behavior,
+  release workflow ordering, or the dry-run contract.
+- Do not create a checkpoint tag; include this work in the cumulative v2.1.0
+  release commit and annotated tag messages.
+
+Refs: v2.1.0 development checkpoint 7
+Previous checkpoint: commit-message_2.1.0_development-checkpoint-6.txt
+Next checkpoint: commit-message_2.1.0_development-checkpoint-8.txt
+Tag: none
 
 🔖 **Tags**:
-- Type: `#maintenance`, `#documentation`
-- Scope: `#repository-metadata`, `#github`, `#gitlab`, `#dry-run`
-- Workflow: `#checkpoint`, `#untagged`, `#maintainer-tooling`
+
+- Type: `#fix`, `#documentation`, `#test`
+- Scope: `#versioning`, `#semver`, `#pep440`, `#prerelease`, `#cli`
+- Delivery: `#development`, `#checkpoint`, `#untagged`
