@@ -2,7 +2,7 @@
 
 # Custy TODO Tracking History — v2.1.0
 
-> Current status: see the [2026-09-02 checkpoint update](#checkpoint-6-2026-09-02).
+> Current status: see the [2026-09-06 checkpoint update](#checkpoint-8-2026-09-06).
 > Older checkboxes, test counts, plans, and decisions are preserved as recorded;
 > they are historical context, not proof that every current release gate passed.
 
@@ -586,3 +586,75 @@ change the v2.0.0 or v2.0.0-rc.1 snapshots.
 - [GitLab package pipeline](../.gitlab/python-package.yml) defines the validation/publication boundary.
 - Earlier test/coverage figures and release-checklist statuses remain attached to their original milestones.
 - No existing history, ideas, alternatives, cancelled work, backup snapshots, or earlier checkpoint messages were removed.
+
+---
+
+<a id="checkpoint-7-2026-09-05"></a>
+
+## 2026-09-05 status update — untagged checkpoint 7
+
+Version scope: **v2.1.0**.
+The [checkpoint commit message](../.config/custy/templates/commit-message_2.1.0_development-checkpoint-7.txt)
+has **no associated tag or tag message**. It becomes part of the cumulative
+v2.1.0 stable release history.
+
+### ✅ Explicit lifecycle-tag validation
+
+- [x] Replace the stable-only explicit-tag validator with support for approved stable, alpha, beta, release-candidate, development, post-release, and metadata-bearing values.
+- [x] Accept Custy's SemVer-style forms such as `v2.1.0-rc.1` and common PEP 440 forms such as `2.1.0rc1`.
+- [x] Preserve automatic `v` prefix normalization while rejecting malformed, incomplete, unknown, and unsupported lifecycle forms.
+- [x] Apply the same validator and `VERSION` help contract to direct Git operations, Version Update, Run profiles, and experimental workflow transition overrides.
+- [x] Keep explicit tags independent from automatic generation and preserve downstream Git, push, and dry-run behavior.
+
+### ✅ Tests and documentation
+
+- [x] Focused validator suite: 32 tests passed.
+- [x] Complete Custy suite: 1,360 tests passed with 83% overall coverage.
+- [x] Full-project Ruff and Black validation passed.
+- [x] Updated CLI help rendered with stable, SemVer RC, and PEP 440 RC examples.
+- [x] English and Indonesian documentation now explain the supported lifecycle formats and include explicit release-candidate examples.
+- [x] Documentation TypeScript validation and both-locale production builds passed.
+
+### Notes and evidence
+
+- [Shared CLI validator](../app/cli/utils/validators.py) owns the accepted explicit-tag contract.
+- [Validator tests](../tests/cli/utils/test_validators.py) record supported and rejected forms.
+- [Checkpoint 7 commit message](../.config/custy/templates/commit-message_2.1.0_development-checkpoint-7.txt) records the internal implementation details.
+- The cumulative v2.1.0 commit and tag messages include checkpoint 7; this checkpoint itself remains untagged.
+- The next untagged checkpoint records GitHub release-note rendering as checkpoint 8.
+- The v2.0.0-rc.1 and v2.0.0 histories remain unchanged because this work belongs to v2.1.0.
+
+---
+
+<a id="checkpoint-8-2026-09-06"></a>
+
+## 2026-09-06 status update — untagged checkpoint 8
+
+Version scope: **v2.1.0**.
+The [checkpoint commit message](../.config/custy/templates/commit-message_2.1.0_development-checkpoint-8.txt)
+has **no associated tag or tag message**. It becomes part of the cumulative
+v2.1.0 stable release history.
+
+### ✅ GitHub release-note rendering
+
+- [x] Replace the fragile escaped Markdown heredoc with explicit `printf` generation so release content no longer depends on manually escaping every backtick.
+- [x] Preserve the complete reviewed annotated tag message as the main GitHub Release description.
+- [x] Append populated version, release type, repository, commit, and workflow metadata.
+- [x] Present concise literal Docker pull and Custy CLI verification commands without executing them or capturing runner output.
+- [x] Preserve exact prerelease image tags and stable-only `latest` behavior.
+- [x] Add regression coverage while keeping GitLab release and package publication behavior unchanged.
+
+### ✅ Validation recorded
+
+- [x] Complete Custy test suite: 1,360 passed with 83% overall coverage.
+- [x] Targeted release-workflow regression checks passed.
+- [x] Pre-commit validation passed for the checkpoint and cumulative v2.1.0 release-message templates.
+- [x] Diff whitespace and mirrored-template consistency checks passed.
+
+### Notes and evidence
+
+- [GitHub release workflow](../.github/workflows/release.yml) contains the hardened release-note generation.
+- [Checkpoint 8 commit message](../.config/custy/templates/commit-message_2.1.0_development-checkpoint-8.txt) records the internal implementation details.
+- The cumulative v2.1.0 commit and tag messages include checkpoint 8; this checkpoint itself remains untagged.
+- The v2.0.0-rc.1 and v2.0.0 histories remain unchanged because this work belongs to v2.1.0.
+- No existing history, plans, ideas, cancelled work, or earlier checkpoint evidence was removed.

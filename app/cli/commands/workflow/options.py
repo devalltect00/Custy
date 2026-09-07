@@ -106,12 +106,13 @@ FromTagOption = Annotated[
         Examples:
 
         v1.2.0
+        v1.2.0-rc.1
         1.2.0rc1
 
         [dim]Optional.[/dim]
         """,
         rich_help_panel="Tag and Branch Override Options",
-        metavar="X.Y.Z",
+        metavar="VERSION",
         callback=validate_tag,
         autocompletion=completion_tag,
     ),
@@ -129,12 +130,13 @@ ToTagOption = Annotated[
         Examples:
 
         v1.3.0
+        v1.3.0-rc.1
         1.3.0rc1
 
         [dim]Optional.[/dim]
         """,
         rich_help_panel="Tag and Branch Override Options",
-        metavar="X.Y.Z",
+        metavar="VERSION",
         callback=validate_tag,
         autocompletion=completion_tag,
     ),

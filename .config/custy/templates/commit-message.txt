@@ -1,80 +1,55 @@
-fix(versioning): accept explicit lifecycle tags across CLI workflows
+fix(release): checkpoint hardened GitHub release-note rendering
 
-Expand Custy's shared explicit-tag validation beyond stable `vX.Y.Z` values so
-approved alpha, beta, release-candidate, development, post-release, and
-metadata-bearing tags reach the workflow layer. Keep validation intentionally
-bounded to lifecycle formats already supported by Custy's version helpers and
-retain early, actionable errors for malformed or unknown suffixes.
+Harden Custy's GitHub release-note generation by replacing fragile escaped
+heredoc Markdown with explicit literal output. The earlier workflow avoided the
+observed command-substitution failure, but depended on every Markdown backtick
+remaining escaped correctly.
 
-This is an untagged development checkpoint after the repository-metadata
-maintenance checkpoint. It remains part of the unpublished Custy v2.1.0
-release line and precedes the GitHub release-note rendering checkpoint.
+This is an untagged development checkpoint after the explicit lifecycle-tag
+validation checkpoint. It makes the release-page contract easier to maintain
+without changing Custy commands, GitLab publication, package versions, or tag
+semantics.
 
-### 🏷️ Explicit lifecycle-tag validation
+### 📝 Release-note generation
 
-- Accept stable three-component tags such as `v1.2.3` and `1.2.3`.
-- Accept Custy's SemVer-style lifecycle forms, including `-alpha.N`,
-  `-beta.N`, `-rc.N`, `-dev.N`, and `-post.N`.
-- Accept common PEP 440 lifecycle forms, including `aN`, `bN`, `rcN`,
-  `.devN`, and `.postN`.
-- Accept supported build or local metadata such as `+linux.x86` and lifecycle
-  tags combined with metadata.
-- Continue normalizing an omitted `v` prefix before the explicit value enters
-  the workflow.
-- Reject incomplete versions, leading-zero SemVer components, unknown
-  lifecycle names, missing lifecycle numbers, malformed metadata, whitespace,
-  and trailing suffix content.
-- Keep explicit-tag handling independent from automatic bump generation; the
-  supplied value remains authoritative after validation.
+- Generate Markdown with explicit `printf` calls so inline and fenced backticks
+  cannot become shell command substitutions.
+- Preserve the complete annotated tag message as the primary GitHub Release
+  description.
+- Populate version, release type, repository, commit, and workflow metadata
+  consistently with the other Devalltect release workflows.
 
-### 🖥️ CLI guidance
+### 🐳 Docker guidance
 
-- Update the shared `--tag` option help for direct Git operations, Version
-  Update, and supported `custy run` profiles.
-- Replace the narrow `X.Y.Z` metavar with `VERSION`.
-- Show stable, SemVer release-candidate, and PEP 440 release-candidate examples
-  directly in CLI help.
-- Align experimental workflow transition overrides with the same shared
-  validator and lifecycle examples without changing their experimental status.
+- Render concise commands for pulling the exact Custy release image and
+  verifying the CLI with `--help`.
+- Explain that prereleases retain their exact image tag while stable releases
+  also update `latest`.
+- Keep Docker execution and transient runner output outside the generated
+  release description.
 
-### 🧪 Regression coverage and validation
+### 🧪 Regression protection and validation
 
-- Add focused acceptance coverage for stable, alpha, beta, RC, development,
-  post-release, metadata, and prefix-normalization cases.
-- Add rejection coverage for malformed, incomplete, unknown, and unsupported
-  lifecycle values.
-- Pass the focused validator suite: 32 tests.
-- Pass the complete Custy suite: 1,360 tests with 83% overall coverage.
-- Pass full-project Ruff and Black validation.
-- Render the updated `custy run --help` output successfully with `--tag
-  VERSION` and lifecycle examples.
+- Extend the package-workflow regression test with GitHub release-note safety,
+  metadata, and literal Docker-command assertions.
+- Pass the focused regression test and the complete suite: 1,360 tests with
+  83% overall coverage.
+- Pass targeted Ruff, Black, whitespace, end-of-file, and diff checks.
 
-### 📚 Documentation
+### 📌 Scope
 
-- Replace the obsolete stable-only validator warning with the supported
-  lifecycle contract.
-- Add explicit `v2.0.0-rc.1` examples to Run Release, Tag, and Version Update
-  guidance.
-- Keep the English and Indonesian documentation behaviorally aligned.
-- Pass TypeScript validation and production builds for both documentation
-  locales.
+- Keep GitLab's already escaped release-note generation unchanged.
+- Keep this checkpoint untagged and include it in the cumulative stable
+  `v2.1.0` release messages.
+- Preserve unrelated Custy working-tree changes and perform no external release
+  or repository operations.
 
-### 📌 Scope and compatibility
-
-- Do not accept arbitrary custom lifecycle identifiers that Custy's version
-  helpers cannot interpret consistently.
-- Do not change automatic version generation, Git tag creation, push behavior,
-  release workflow ordering, or the dry-run contract.
-- Do not create a checkpoint tag; include this work in the cumulative v2.1.0
-  release commit and annotated tag messages.
-
-Refs: v2.1.0 development checkpoint 7
-Previous checkpoint: commit-message_2.1.0_development-checkpoint-6.txt
-Next checkpoint: commit-message_2.1.0_development-checkpoint-8.txt
+Refs: v2.1.0 preparation
+Previous checkpoint: commit-message_2.1.0_development-checkpoint-7.txt
 Tag: none
 
 🔖 **Tags**:
 
-- Type: `#fix`, `#documentation`, `#test`
-- Scope: `#versioning`, `#semver`, `#pep440`, `#prerelease`, `#cli`
-- Delivery: `#development`, `#checkpoint`, `#untagged`
+- Type: `#fix`, `#release`, `#ci`
+- Scope: `#github-actions`, `#release-notes`, `#docker`, `#markdown`
+- Safety: `#annotated-tags`, `#regression-test`, `#stable-latest`

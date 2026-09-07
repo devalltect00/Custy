@@ -109,9 +109,12 @@ TagOption = Annotated[
     Optional[str],
     typer.Option(
         "--tag",
-        help="Manually specify tag [magenta]([dim]e.g.[/dim] v1.2.3 or 1.2.3)[/magenta]",
+        help=(
+            "Manually specify a stable or lifecycle tag "
+            "[magenta]([dim]e.g.[/dim] v1.2.3, v1.2.3-rc.1, or 1.2.3rc1)[/magenta]"
+        ),
         rich_help_panel="Tag • Versioning",
-        metavar="X.Y.Z",
+        metavar="VERSION",
         callback=validate_tag,
         autocompletion=completion_tag,
     ),
