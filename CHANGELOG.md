@@ -22,89 +22,38 @@ This is an untagged development checkpoint after the GitHub release-note
 hardening checkpoint. It remains part of the cumulative Custy v2.1.0 release
 and does not create a separate release tag.
 
-### 🚀 Releases
+### Stable Container Aliases
 
-- Generate Markdown with explicit `printf` calls so inline and fenced backticks
-- Preserve the complete annotated tag message as the primary GitHub Release
-- Populate version, release type, repository, commit, and workflow metadata
-- Stop the GitHub production Docker workflow from running for ordinary pushes
-- Build automatically only when a supported `v*` release tag is pushed.
-- Require manual production rebuilds to select an existing release tag instead
-- Require an annotated, non-empty Git tag message before image publication.
-- Verify the normalized package build version matches the selected release tag.
-- Publish the exact stable or prerelease tag and update `latest` only for a
-- Remove the redundant human-readable commit-SHA image tag while retaining
-- Bring GitLab production publishing under the same annotated-tag contract,
-- Replace the placeholder GitLab Release description with the complete
+- Publish the exact `v<major>.<minor>.<patch>` tag for every stable release.
+- Update the matching `v<major>.<minor>` and `v<major>` aliases together with
+- Retain Custy's established `v` prefix across Git tags, release pages,
+- Keep exact release tags immutable while treating minor, major, and `latest`
 
-#### Workflow
+### Prerelease Isolation
 
-- Preserve non-empty commit and tag message files as reviewed project-owned
-- Generate fallback messages only when the configured file is missing or
-- Keep generated fallback files newline-terminated for formatting-hook
+- Publish an alpha, beta, release-candidate, development, or post lifecycle
+- Prevent prereleases such as `v2.2.0-rc.1` from moving `v2.2`, `v2`, or
+- Preserve the annotated-tag, non-empty-message, and package-version gates
+- Keep ordinary branch commits outside the production image workflow.
 
-### Docker Guidance
+### Registry Parity
 
-- Render concise commands for pulling the exact Custy release image and
-- Explain that prereleases retain their exact image tag while stable releases
-- Keep Docker execution and transient runner output outside the generated
-
-### Regression Protection And Validation
-
-- Extend the package-workflow regression test with GitHub release-note safety,
-- Pass the focused regression test and the complete suite: 1,360 tests with
-- Pass targeted Ruff, Black, whitespace, end-of-file, and diff checks.
-
-### Scope
-
-- Keep GitLab's already escaped release-note generation unchanged.
-- Keep this checkpoint untagged and include it in the cumulative stable
-- Preserve unrelated Custy working-tree changes and perform no external release
-- Do not change Custy's Python application behavior, version, changelog, or
-
-### Explicit Lifecycle Tag Validation
-
-#### Versioning
-
-- Accept stable three-component tags such as `v1.2.3` and `1.2.3`.
-- Accept Custy's SemVer-style lifecycle forms, including `-alpha.N`,
-- Accept common PEP 440 lifecycle forms, including `aN`, `bN`, `rcN`,
-- Accept supported build or local metadata such as `+linux.x86` and lifecycle
-- Continue normalizing an omitted `v` prefix before the explicit value enters
-- Reject incomplete versions, leading-zero SemVer components, unknown
-- Keep explicit-tag handling independent from automatic bump generation; the
-
-### Cli Guidance
-
-#### Versioning
-
-- Update the shared `--tag` option help for direct Git operations, Version
-- Replace the narrow `X.Y.Z` metavar with `VERSION`.
-- Show stable, SemVer release-candidate, and PEP 440 release-candidate examples
-- Align experimental workflow transition overrides with the same shared
-
-### Regression Coverage And Validation
-
-#### Versioning
-
-- Add focused acceptance coverage for stable, alpha, beta, RC, development,
-- Add rejection coverage for malformed, incomplete, unknown, and unsupported
-- Pass the focused validator suite: 32 tests.
-- Pass the complete Custy suite: 1,360 tests with 83% overall coverage.
-- Pass full-project Ruff and Black validation.
-- Render the updated `custy run --help` output successfully with `--tag
+- Apply the same alias policy to GitHub Container Registry and GitLab Container
+- Expose parsed major and minor values from GitHub's validated version step.
+- Derive the same aliases inside the protected GitLab stable-release branch.
+- Preserve exact prerelease publishing and stable-only alias movement on both
 
 ### 📚 Documentation
 
-- Document automatic project-source and version-target detection in the canonical Custy guide.
-- Explain initialization and versioning behavior for Python, Node.js, mixed, and generic repositories.
-- Add Docker guidance for repositories without an `app/` directory.
-- Add migration and troubleshooting guidance for older explicit path configuration.
 - Add structural regression coverage for the GitHub and GitLab alias rules.
 - Document exact, minor, major, and `latest` pull choices in the canonical
 - Recommend exact version tags for CI and reproducible use while explaining
 - Pass the focused workflow regression test and complete suite: 1,361 tests
 - Pass Ruff, Black, configured pre-commit hooks, YAML parsing, documentation
+- Document automatic project-source and version-target detection in the canonical Custy guide.
+- Explain initialization and versioning behavior for Python, Node.js, mixed, and generic repositories.
+- Add Docker guidance for repositories without an `app/` directory.
+- Add migration and troubleshooting guidance for older explicit path configuration.
 
 #### Credentials
 
@@ -143,6 +92,78 @@ and does not create a separate release tag.
 - Document the validation-provider and Git-hook behavior matrices in generated
 - Add matching English and Indonesian guidance for configuration, commit,
 - Add provider resolution, hook-policy, direct pre-commit, no-hook project,
+
+### Scope
+
+- Keep this checkpoint untagged and include it in the cumulative stable
+- Do not change Custy's Python application behavior, version, changelog, or
+- Preserve unrelated working-tree content and perform no external registry or
+- Keep GitLab's already escaped release-note generation unchanged.
+
+### 🚀 Releases
+
+- Generate Markdown with explicit `printf` calls so inline and fenced backticks
+- Preserve the complete annotated tag message as the primary GitHub Release
+- Populate version, release type, repository, commit, and workflow metadata
+- Stop the GitHub production Docker workflow from running for ordinary pushes
+- Build automatically only when a supported `v*` release tag is pushed.
+- Require manual production rebuilds to select an existing release tag instead
+- Require an annotated, non-empty Git tag message before image publication.
+- Verify the normalized package build version matches the selected release tag.
+- Publish the exact stable or prerelease tag and update `latest` only for a
+- Remove the redundant human-readable commit-SHA image tag while retaining
+- Bring GitLab production publishing under the same annotated-tag contract,
+- Replace the placeholder GitLab Release description with the complete
+
+#### Workflow
+
+- Preserve non-empty commit and tag message files as reviewed project-owned
+- Generate fallback messages only when the configured file is missing or
+- Keep generated fallback files newline-terminated for formatting-hook
+
+### Docker Guidance
+
+- Render concise commands for pulling the exact Custy release image and
+- Explain that prereleases retain their exact image tag while stable releases
+- Keep Docker execution and transient runner output outside the generated
+
+### Regression Protection And Validation
+
+- Extend the package-workflow regression test with GitHub release-note safety,
+- Pass the focused regression test and the complete suite: 1,360 tests with
+- Pass targeted Ruff, Black, whitespace, end-of-file, and diff checks.
+
+### Explicit Lifecycle Tag Validation
+
+#### Versioning
+
+- Accept stable three-component tags such as `v1.2.3` and `1.2.3`.
+- Accept Custy's SemVer-style lifecycle forms, including `-alpha.N`,
+- Accept common PEP 440 lifecycle forms, including `aN`, `bN`, `rcN`,
+- Accept supported build or local metadata such as `+linux.x86` and lifecycle
+- Continue normalizing an omitted `v` prefix before the explicit value enters
+- Reject incomplete versions, leading-zero SemVer components, unknown
+- Keep explicit-tag handling independent from automatic bump generation; the
+
+### Cli Guidance
+
+#### Versioning
+
+- Update the shared `--tag` option help for direct Git operations, Version
+- Replace the narrow `X.Y.Z` metavar with `VERSION`.
+- Show stable, SemVer release-candidate, and PEP 440 release-candidate examples
+- Align experimental workflow transition overrides with the same shared
+
+### Regression Coverage And Validation
+
+#### Versioning
+
+- Add focused acceptance coverage for stable, alpha, beta, RC, development,
+- Add rejection coverage for malformed, incomplete, unknown, and unsupported
+- Pass the focused validator suite: 32 tests.
+- Pass the complete Custy suite: 1,360 tests with 83% overall coverage.
+- Pass full-project Ruff and Black validation.
+- Render the updated `custy run --help` output successfully with `--tag
 
 ### Scope And Compatibility
 
@@ -460,27 +481,6 @@ and does not create a separate release tag.
 - Projects that want automatic discovery must change those values to `"auto"` or run initialization in a reviewed replacement workflow.
 - Existing editable installations should be reinstalled after updating source so the generated `custy` console script uses the protected entry point.
 - The experimental status of `custy workflow` is unchanged.
-
-### Stable Container Aliases
-
-- Publish the exact `v<major>.<minor>.<patch>` tag for every stable release.
-- Update the matching `v<major>.<minor>` and `v<major>` aliases together with
-- Retain Custy's established `v` prefix across Git tags, release pages,
-- Keep exact release tags immutable while treating minor, major, and `latest`
-
-### Prerelease Isolation
-
-- Publish an alpha, beta, release-candidate, development, or post lifecycle
-- Prevent prereleases such as `v2.2.0-rc.1` from moving `v2.2`, `v2`, or
-- Preserve the annotated-tag, non-empty-message, and package-version gates
-- Keep ordinary branch commits outside the production image workflow.
-
-### Registry Parity
-
-- Apply the same alias policy to GitHub Container Registry and GitLab Container
-- Expose parsed major and minor values from GitHub's validated version step.
-- Derive the same aliases inside the protected GitLab stable-release branch.
-- Preserve exact prerelease publishing and stable-only alias movement on both
 
 **Tags**
 
