@@ -1298,7 +1298,6 @@ Common directories include:
 │   │   └── generate_ignore_files.py
 │   └── __init__.py
 ├── venv/ ... (collapsed)
-├── .coverage
 ├── .cz.toml
 ├── .cz_changelog.j2
 ├── .dockerignore

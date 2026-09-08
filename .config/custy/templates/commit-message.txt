@@ -1,55 +1,69 @@
-fix(release): checkpoint hardened GitHub release-note rendering
+ci(release): publish stable Docker version aliases
 
-Harden Custy's GitHub release-note generation by replacing fragile escaped
-heredoc Markdown with explicit literal output. The earlier workflow avoided the
-observed command-substitution failure, but depended on every Markdown backtick
-remaining escaped correctly.
+Extend Custy's production container publication contract so users can pin an
+exact release or deliberately follow a compatible stable release line. Keep
+prerelease publication isolated from every moving stable alias.
 
-This is an untagged development checkpoint after the explicit lifecycle-tag
-validation checkpoint. It makes the release-page contract easier to maintain
-without changing Custy commands, GitLab publication, package versions, or tag
-semantics.
+This is an untagged development checkpoint after the GitHub release-note
+hardening checkpoint. It remains part of the cumulative Custy v2.1.0 release
+and does not create a separate release tag.
 
-### 📝 Release-note generation
+### 🐳 Stable container aliases
 
-- Generate Markdown with explicit `printf` calls so inline and fenced backticks
-  cannot become shell command substitutions.
-- Preserve the complete annotated tag message as the primary GitHub Release
-  description.
-- Populate version, release type, repository, commit, and workflow metadata
-  consistently with the other Devalltect release workflows.
+- Publish the exact `v<major>.<minor>.<patch>` tag for every stable release.
+- Update the matching `v<major>.<minor>` and `v<major>` aliases together with
+  `latest` when a stable annotated release tag is processed.
+- Retain Custy's established `v` prefix across Git tags, release pages,
+  changelog references, and production image tags.
+- Keep exact release tags immutable while treating minor, major, and `latest`
+  as intentionally moving compatibility aliases.
 
-### 🐳 Docker guidance
+### 🧪 Prerelease isolation
 
-- Render concise commands for pulling the exact Custy release image and
-  verifying the CLI with `--help`.
-- Explain that prereleases retain their exact image tag while stable releases
-  also update `latest`.
-- Keep Docker execution and transient runner output outside the generated
-  release description.
+- Publish an alpha, beta, release-candidate, development, or post lifecycle
+  image only under its exact validated tag.
+- Prevent prereleases such as `v2.2.0-rc.1` from moving `v2.2`, `v2`, or
+  `latest`.
+- Preserve the annotated-tag, non-empty-message, and package-version gates
+  before any registry authentication or production build.
+- Keep ordinary branch commits outside the production image workflow.
 
-### 🧪 Regression protection and validation
+### 🔄 Registry parity
 
-- Extend the package-workflow regression test with GitHub release-note safety,
-  metadata, and literal Docker-command assertions.
-- Pass the focused regression test and the complete suite: 1,360 tests with
-  83% overall coverage.
-- Pass targeted Ruff, Black, whitespace, end-of-file, and diff checks.
+- Apply the same alias policy to GitHub Container Registry and GitLab Container
+  Registry.
+- Expose parsed major and minor values from GitHub's validated version step.
+- Derive the same aliases inside the protected GitLab stable-release branch.
+- Preserve exact prerelease publishing and stable-only alias movement on both
+  providers.
+
+### 📚 Documentation and regression coverage
+
+- Add structural regression coverage for the GitHub and GitLab alias rules.
+- Document exact, minor, major, and `latest` pull choices in the canonical
+  English and Indonesian Docker guides.
+- Recommend exact version tags for CI and reproducible use while explaining
+  the upgrade behavior of moving aliases.
+- Pass the focused workflow regression test and complete suite: 1,361 tests
+  with 83% overall coverage.
+- Pass Ruff, Black, configured pre-commit hooks, YAML parsing, documentation
+  type checking, and the English/Indonesian production build.
 
 ### 📌 Scope
 
-- Keep GitLab's already escaped release-note generation unchanged.
 - Keep this checkpoint untagged and include it in the cumulative stable
   `v2.1.0` release messages.
-- Preserve unrelated Custy working-tree changes and perform no external release
-  or repository operations.
+- Do not change Custy's Python application behavior, version, changelog, or
+  Docker build contents.
+- Preserve unrelated working-tree content and perform no external registry or
+  release operations.
 
 Refs: v2.1.0 preparation
-Previous checkpoint: commit-message_2.1.0_development-checkpoint-7.txt
+Previous checkpoint: commit-message_2.1.0_development-checkpoint-8.txt
 Tag: none
 
 🔖 **Tags**:
 
-- Type: `#fix`, `#release`, `#ci`
-- Scope: `#github-actions`, `#release-notes`, `#docker`, `#markdown`
-- Safety: `#annotated-tags`, `#regression-test`, `#stable-latest`
+- Type: `#ci`, `#release`, `#docs`
+- Scope: `#docker`, `#ghcr`, `#gitlab-registry`, `#version-aliases`
+- Safety: `#annotated-tags`, `#prerelease-isolation`, `#stable-latest`

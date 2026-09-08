@@ -16,11 +16,17 @@ run-name: 🐋 Production Docker Build • ${{ inputs.tag || github.ref_name }}
 # - Build and publish stable production Docker images
 #
 # Published Tags:
+# - `:v<major>.<minor>.<patch>`
+#     Exact stable release image
+#
+# - `:v<major>.<minor>` and `:v<major>`
+#     Moving aliases updated only by stable releases
+#
 # - `:latest`
 #     Latest stable production image
 #
-# - `:v<version>`
-#     Versioned production release image
+# - `:v<major>.<minor>.<patch>-<lifecycle>.<number>`
+#     Exact prerelease image; never updates stable aliases
 #
 # Docker Target:
 # - Uses the `production` stage from the multi-stage
@@ -42,6 +48,8 @@ run-name: 🐋 Production Docker Build • ${{ inputs.tag || github.ref_name }}
 # Example Images:
 # - ghcr.io/<owner>/<repository>:latest
 # - ghcr.io/<owner>/<repository>:v1.2.3
+# - ghcr.io/<owner>/<repository>:v1.2
+# - ghcr.io/<owner>/<repository>:v1
 # - ghcr.io/<owner>/<repository>:v2.0.0-rc.1
 # =========================================================
 
@@ -99,6 +107,7 @@ jobs:
           TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+([.-](alpha|beta|rc|dev|post)\.[0-9]+)?(\+[0-9A-Za-z.]+)?$'
           STABLE_TAG_REGEX='^v[0-9]+\.[0-9]+\.[0-9]+(\+[0-9A-Za-z.]+)?$'
           TAG="$RELEASE_TAG"
+          PUBLISH_ALIASES=false
           PUBLISH_LATEST=false
 
           if [[ ! "$TAG" =~ $TAG_REGEX ]]; then
@@ -136,11 +145,19 @@ jobs:
           fi
 
           if [[ "$TAG" =~ $STABLE_TAG_REGEX ]]; then
+            PUBLISH_ALIASES=true
             PUBLISH_LATEST=true
           fi
 
+          VERSION_CORE="${TAG#v}"
+          VERSION_CORE="${VERSION_CORE%%+*}"
+          IFS='.' read -r MAJOR MINOR _ <<< "$VERSION_CORE"
+
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "major=$MAJOR" >> "$GITHUB_OUTPUT"
+          echo "minor=$MINOR" >> "$GITHUB_OUTPUT"
+          echo "publish_aliases=$PUBLISH_ALIASES" >> "$GITHUB_OUTPUT"
           echo "publish_latest=$PUBLISH_LATEST" >> "$GITHUB_OUTPUT"
 
       # =====================================================
@@ -181,6 +198,10 @@ jobs:
           tags: |
             # exact stable or prerelease version
             type=raw,value=${{ steps.version.outputs.tag }}
+
+            # moving stable release aliases
+            type=raw,value=v${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }},enable=${{ steps.version.outputs.publish_aliases }}
+            type=raw,value=v${{ steps.version.outputs.major }},enable=${{ steps.version.outputs.publish_aliases }}
 
             # latest stable production version
             type=raw,value=latest,enable=${{ steps.version.outputs.publish_latest }}

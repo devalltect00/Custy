@@ -359,3 +359,46 @@ v2.1.0 stable release history.
 - The cumulative v2.1.0 commit and tag messages include checkpoint 8; this checkpoint itself remains untagged.
 - The v2.0.0-rc.1 and v2.0.0 histories remain unchanged because this work belongs to v2.1.0.
 - No existing history, plans, ideas, cancelled work, or earlier checkpoint evidence was removed.
+
+---
+
+<a id="checkpoint-9-2026-09-08"></a>
+
+## 2026-09-08 status update — untagged checkpoint 9
+
+Version scope: **v2.1.0**.
+The [checkpoint commit message](../.config/custy/templates/commit-message_2.1.0_development-checkpoint-9.txt)
+has **no associated tag or tag message**. It becomes part of the cumulative
+v2.1.0 stable release history.
+
+### ✅ Stable Docker version aliases
+
+- [x] Keep the exact stable or prerelease tag as the primary immutable image selection.
+- [x] Publish moving `v<major>.<minor>`, `v<major>`, and `latest` aliases only for stable releases.
+- [x] Prevent lifecycle prereleases from changing any stable compatibility alias.
+- [x] Keep the `v` prefix consistent across GitHub and GitLab production image tags.
+- [x] Apply equivalent alias behavior to GHCR and GitLab Container Registry.
+
+### ✅ Documentation and regression scope
+
+- [x] Add structural regression coverage for stable alias publication and prerelease isolation.
+- [x] Explain exact, minor, major, and `latest` selection in the canonical English Docker guide.
+- [x] Keep the Indonesian Docker guide behaviorally aligned without translating commands, tags, or registry identifiers.
+
+### ✅ Validation recorded
+
+- [x] Focused production-workflow regression: 2 tests passed.
+- [x] Complete Custy suite: 1,361 tests passed with 83% overall coverage.
+- [x] Ruff and Black checks passed for the modified Python test.
+- [x] Both production workflow YAML files parsed successfully.
+- [x] All configured pre-commit hooks passed for the affected Custy files.
+- [x] Docusaurus type checking and English/Indonesian production builds passed.
+- [x] Whitespace and end-of-file checks passed through pre-commit.
+
+### Notes and evidence
+
+- [GitHub production workflow](../.github/workflows/docker-prod.yml) publishes exact, minor, major, and `latest` tags for stable releases.
+- [GitLab production workflow](../.gitlab/docker-prod.yml) mirrors the same stable alias behavior.
+- [Checkpoint 9 commit message](../.config/custy/templates/commit-message_2.1.0_development-checkpoint-9.txt) records the internal implementation details.
+- The cumulative v2.1.0 commit and tag messages include checkpoint 9; this checkpoint itself remains untagged.
+- The v2.0.0-rc.1 and v2.0.0 histories remain unchanged because this work belongs to v2.1.0.
