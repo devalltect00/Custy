@@ -915,17 +915,14 @@ Common directories include:
 │   │   │   └── workflow_engine.md
 │   │   ├── gitlab_package_registry.md
 │   │   └── make_workflows.md
-│   ├── temp/ ... (collapsed)
 │   ├── badges.md
 │   ├── cli_commands_custy.md
+│   ├── example-command.txt
 │   ├── HOW_TO_USE.md
 │   ├── project_structure.md
 │   ├── references.md
 │   ├── TODO.md
-│   ├── TODO_tracking_history.md
-│   ├── TODO_tracking_history_v2.0.0-rc.1.md
-│   ├── TODO_tracking_history_v2.0.0.md
-│   └── TODO_tracking_history_v2.1.0.md
+│   └── TODO_tracking_history.md
 ├── logs/ ... (collapsed)
 ├── make
 │   ├── backups
@@ -1298,6 +1295,7 @@ Common directories include:
 │   │   └── generate_ignore_files.py
 │   └── __init__.py
 ├── venv/ ... (collapsed)
+├── .coverage
 ├── .cz.toml
 ├── .cz_changelog.j2
 ├── .dockerignore
@@ -1310,24 +1308,18 @@ Common directories include:
 ├── .projectignore
 ├── AGENTS.md
 ├── CHANGELOG.md
-├── CHANGES FOR THIS ANOTHER.txt
-├── CHANGES FOR THIS.txt
 ├── CONTRIBUTING.md
 ├── docker-compose.dev.yml
 ├── docker-compose.prod.yml
 ├── docker-compose.yml
 ├── Dockerfile
-├── example-command.txt
 ├── LICENSE
 ├── Makefile
-├── NOTES_WHILE_DEVELOPMENT.md
 ├── pyproject.toml
 ├── README.md
 ├── requirements.txt
 ├── SECURITY.md
-├── temp_todo.md
-├── TODO.md
-└── WHAT_TO_DO.md
+└── TODO.md
 ```
 
 ---

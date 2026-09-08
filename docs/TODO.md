@@ -10,12 +10,6 @@ Tracks short-term development tasks, improvements, tasks and ideas .
 
 ### ✅ Completed
 
-- _(Nothing yet)_
-
----
-
-### 🧩 In Progress
-
 #### General
 
 - [x] add .github workflow file
@@ -132,6 +126,12 @@ With this new feature it is not just improve user experience, but also improveme
 refactor Makefile help message
 gitlab pipeline
 fix why app error when run the command
+
+---
+
+### 🧩 In Progress
+
+- _(Nothing yet)_
 
 ---
 

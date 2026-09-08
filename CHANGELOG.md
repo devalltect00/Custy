@@ -14,13 +14,18 @@ Unreleased
 
 **Summary**
 
-Extend Custy's production container publication contract so users can pin an
-exact release or deliberately follow a compatible stable release line. Keep
-prerelease publication isolated from every moving stable alias.
-
-This is an untagged development checkpoint after the GitHub release-note
-hardening checkpoint. It remains part of the cumulative Custy v2.1.0 release
-and does not create a separate release tag.
+Finalize Custy v2.1.0 with automatic changelog repository-link resolution,
+predictable configured-remote selection, configurable cross-platform message
+editors, pre-commit-compatible Python version updates, complete pipeline option
+propagation, adaptive Commitizen validation, actionable Git-hook diagnostics,
+focused standalone push execution, visible Docker authentication prompts,
+preserved Git push diagnostics, optional secure container credential fallback,
+explicit stable and lifecycle tag validation, release-tag-only production image
+publication, reliable cross-platform CI/CD, and aligned English and Indonesian
+guidance.
+This release commit incorporates the earlier development checkpoints without
+repeating every project-detection, version-metadata, initialization, CLI,
+Docker packaging, and editor implementation detail.
 
 ### Stable Container Aliases
 
@@ -54,6 +59,16 @@ and does not create a separate release tag.
 - Explain initialization and versioning behavior for Python, Node.js, mixed, and generic repositories.
 - Add Docker guidance for repositories without an `app/` directory.
 - Add migration and troubleshooting guidance for older explicit path configuration.
+- Explain the roles of the changelog repository URL, default remote, main remotes, and backup remotes.
+- Document automatic repository-link resolution and the recommended post-initialization review.
+- Clarify CLI override and configuration precedence for remote selection and synchronization.
+- Document editor precedence, supported identifiers, Docker behavior, bundled key bindings, terminal-progress handoff, and recovery steps.
+- Document the commit-validation and hook-execution behavior matrices, optional
+- Document the three-step standalone push profile, visible credential prompts,
+- Explain the direct-versus-Run progress lifecycle and stale-image symptom when
+- Document the native/auto credential behavior matrix, external file locations,
+- Document supported explicit stable and lifecycle tag formats, normalization,
+- Keep command names, flags, paths, configuration keys, and code identifiers untranslated.
 
 #### Credentials
 
@@ -114,11 +129,13 @@ and does not create a separate release tag.
 - Remove the redundant human-readable commit-SHA image tag while retaining
 - Bring GitLab production publishing under the same annotated-tag contract,
 - Replace the placeholder GitLab Release description with the complete
+- Preserve non-empty commit and tag message files as reviewed user-owned input.
+- Generate fallback release messages only when configured files are missing or
+- Use detected target-project metadata rather than hard-coded Custy naming in
+- Generate valid release headers and final newlines for hook-compatible output.
 
 #### Workflow
 
-- Preserve non-empty commit and tag message files as reviewed project-owned
-- Generate fallback messages only when the configured file is missing or
 - Keep generated fallback files newline-terminated for formatting-hook
 
 ### Docker Guidance
@@ -230,6 +247,16 @@ and does not create a separate release tag.
 - Make CLI help assertions deterministic across ANSI-capable runners and
 - Preserve verbose pytest output in CI for actionable failure diagnostics.
 - Confirm the GitHub Actions and GitLab CI validation pipelines complete
+- Keep generated Python bytecode ignored and untracked even where active backup
+- Publish GitHub and GitLab production images automatically only from supported
+- Allow a manual production rebuild only for an existing annotated release tag.
+- Verify the normalized package version matches the selected release tag before
+- Publish the exact stable or prerelease tag and stop publishing a separate
+- For stable releases, also update the matching `v<major>.<minor>` and
+- Keep Buildx provenance enabled and preserve its referenced OCI metadata.
+- Fetch complete Git tag metadata in GitLab CI and enforce the same annotated,
+- Use the reviewed annotated tag message as the GitLab Release description and
+- Generate GitHub Release metadata and Docker pull/verification examples as
 
 ### Credential Policy And Storage
 
@@ -482,9 +509,143 @@ and does not create a separate release tag.
 - Existing editable installations should be reinstalled after updating source so the generated `custy` console script uses the protected entry point.
 - The experimental status of `custy workflow` is unchanged.
 
+### Development Checkpoint Lineage
+
+- The foundation checkpoint added project-layout detection, cross-ecosystem
+- Checkpoint 1 added configurable local and container editors, terminal-progress
+- Checkpoint 2 hardened commit validation, Git-hook execution, release-message
+- Checkpoint 3 added the optional native-first GitHub and GitLab credential
+- Checkpoint 4 corrected GitHub and GitLab CI/CD and restricted production
+- Checkpoint 5 added protected private GitLab Python package publication and
+- Checkpoint 6 recorded the optional repository-metadata maintenance helper
+- Checkpoint 7 expanded explicit CLI tags to supported SemVer and PEP 440
+- Checkpoint 8 hardened GitHub release-note rendering with literal Markdown,
+- Checkpoint 9 added stable `v<major>.<minor>`, `v<major>`, and `latest`
+
+### Changelog Repository Resolution
+
+- Use an empty changelog repository setting as the safe generated default instead of shipping a placeholder repository URL.
+- Resolve changelog repository links from the configured repository value when one is supplied.
+- Fall back to eligible Git remote metadata when the repository value is left empty.
+- Normalize supported remote URLs for generated commit, tag, and comparison links.
+- Keep missing or unresolved repository metadata non-fatal when link generation can be omitted safely.
+- Improve initialization guidance so users know when an explicit repository URL is useful.
+
+### Remote Selection And Synchronization
+
+- Give an explicitly selected CLI remote the highest priority for focused operations.
+- Honor configured `push_to` behavior for main, backup, or all configured remotes.
+- Make all-remote execution combine configured main and backup remotes predictably.
+- Allow backup synchronization to extend a main-remote push without replacing the primary destination.
+- Validate selected remotes and surface actionable configuration failures before mutation.
+- Preserve branch-safety checks while resolving main and backup synchronization targets.
+- Keep standalone `custy push` and `custy run push` focused on repository
+- Preserve Git push stdout, stderr, operation, exit code, remote, and tag
+
+### Native First Container Credentials
+
+- Preserve normal Git credential helpers and SSH as the first authentication
+- Add an optional GitHub and GitLab HTTPS token fallback for containers that do
+- Read tokens from an external protected file or named environment variable;
+- Add `custy configure credentials` plus focused `set`, `status`, `test`, and
+- Keep the fallback scoped to each Git process through
+- Preserve interactive Git prompts when allowed, give manual authentication
+- Reject non-interactive hidden PAT setup with an actionable `docker run -it`
+- Make dry-run credential- and network-free while still reporting the intended
+- Add opt-in Docker, Compose, and remote-image Make helpers for provider setup,
+- Keep runtime secret mounting disabled by default, writable only during
+
+### Pipeline And Dry Run Integration
+
+- Propagate remote, all-remote, backup-synchronization, tag, and skip-tag choices through the supported pipeline flow.
+- Keep direct commands and `custy run` profiles aligned with the same resolved configuration.
+- Retain read-only repository and remote discovery during dry-run.
+- Simulate local and remote mutations when dry-run is enabled while still reporting the intended destinations and operations.
+- Preserve normal mutating behavior when dry-run is not enabled and validation succeeds.
+- Suspend live pipeline progress while Git or workflow confirmation owns the
+- Disable Rich rendering for hidden direct-command pipelines so `custy push`
+- Explain the container credential boundary before a normal Docker push while
+
+### Python Version Metadata Reliability
+
+- Preserve the line ending when replacing an existing Python `__version__` assignment.
+- Add a final newline when a version module does not already contain one.
+- Keep surrounding module content unchanged outside the version assignment.
+- Prevent `end-of-file-fixer` from repeatedly rewriting Custy-generated version metadata and rejecting release commits.
+- Add direct updater and release-workflow regression coverage for the final-newline contract.
+
+### Explicit Lifecycle Tags
+
+- Accept approved stable tags and supported alpha, beta, release-candidate,
+- Support Custy's SemVer-style forms such as `v2.1.0-rc.1` and common PEP 440
+- Normalize an omitted `v` prefix while rejecting incomplete versions,
+- Apply the same validator and `VERSION` help contract to direct Git
+- Keep explicit tags independent from automatic version generation and leave
+
+### Interactive Editor And Docker Workflows
+
+- Add typed editor configuration with independent Windows, Linux, macOS, and container priority lists.
+- Honor `VISUAL` and `EDITOR` before configured candidates when environment precedence is enabled.
+- Support Visual Studio Code, Notepad, Micro, Nano, Vim, Vi, and Neovim through validated identifiers and aliases.
+- Fix Windows `code.cmd` launching by executing the resolved executable path directly.
+- Skip unavailable candidates safely and report structured errors when no editor is usable or a launched editor fails.
+- Install Micro, Nano, Vim, and Vi in the production image and prefer Micro for interactive container editing.
+- Ship conflict-aware undo and redo bindings while retaining each editor's native controls.
+- Suspend the live pipeline progress display while a blocking editor owns the terminal, then restore the current step after the editor exits or fails.
+- Keep dry-run non-mutating by resolving and reporting the planned editor without launching it.
+
+### Commit Validation And Git Hooks
+
+- Add configurable `auto`, `custy`, `commitizen`, and `git` commit-message validation providers.
+- Make `auto` use Commitizen only when the project is configured for it and the `cz` executable is available.
+- Fall back safely to Custy's built-in validation when optional Commitizen integration cannot be used.
+- Support strict external-tool enforcement with `require_tool = true`.
+- Preserve `--check-cz` as a backward-compatible strict Commitizen override.
+- Keep commit validation independent from the selected version strategy.
+- Preserve Git stdout, stderr, operation, and exit status when commit execution fails.
+- Distinguish pre-commit and other Git-hook failures from ordinary Git commit failures.
+- Add `auto`, `native`, and `pre_commit` hook execution policies.
+- Leave projects without installed hooks on normal native Git behavior without
+- Adapt recognized Windows-generated pre-commit wrappers mounted into Linux by
+- Skip a generated wrapper only after all equivalent direct stages succeed,
+- Include the Commitizen and hook extras in the production image while keeping
+
+### Private Gitlab Python Distribution
+
+- Publish one immutable `custy==2.1.0` wheel and source distribution to the
+- Convert the reviewed SemVer tag to canonical PEP 440 package metadata and
+- Use GitLab's short-lived `CI_JOB_TOKEN` for publication and document deploy
+- Let unprotected tags complete package validation successfully while skipping
+- Keep package versions immutable so duplicate uploads fail rather than
+
+### Recorded Checkpoint Validation
+
+- Retain regression coverage for repository URL discovery, missing repository metadata, remote selection, synchronization, option propagation, dry-run safety, and exclusive terminal ownership during editor handoff.
+- Retain regression coverage for disabled hidden-pipeline rendering and direct
+- Record checkpoint 5's full-suite result of 1,341 tests with 83% overall
+- Record checkpoints 7 through 9, culminating in a 1,361-test full-suite
+- Retain the recorded Ruff and Black results for the active source and test trees.
+- Retain the recorded pre-commit, GitHub Actions, and GitLab CI results without
+- Retain the recorded TypeScript validation and production-build results for
+
+### Final Publication Gates
+
+- Re-run the complete test, Ruff, Black, pre-commit, packaging, workflow, and
+- Keep the credential-enabled production image rebuild, packaged helper check,
+- Confirm the final changelog, commit message, annotated tag message, package
+- Preserve the experimental status and warning for `custy workflow`.
+
+### Repository Maintenance Tooling
+
+- Carry forward the optional source-checkout metadata helper introduced in
+- Keep repository description and provider topics independently maintainable
+- Keep this helper outside the installed application command surface and
+- Retain the README and cumulative TODO updates without presenting a
+- Review the helper follow-ups recorded in the TODO history before release;
+
 **Tags**
 
-release • docs • tests • ci • docker • ghcr • gitlab-registry • version-aliases
+release • docs • tests • ci • changelog • repository-links • git-remotes • credentials • github • gitlab • github-actions • gitlab-ci • push • pipeline • versioning • commitizen • git-hooks • pre-commit • release-messages • editor • terminal-ui • docker • ghcr • dry-run • documentation
 
 ## v2.0.0 (2026-08-24)
 

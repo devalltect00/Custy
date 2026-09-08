@@ -1,10 +1,15 @@
-<!-- docs/TODO_tracking_history.md -->
+<!-- docs/TODO_tracking_history_v2.1.0.md -->
 
-# Custy TODO Tracking History
+# Custy TODO Tracking History — v2.1.0
 
-> Current status: see the [2026-09-06 checkpoint update](#checkpoint-8-2026-09-06).
+> Current status: v2.1.0 implementation and checkpoints 1–9 are complete.
+> See [stable release preparation](#v210-stable-release-preparation);
+> external publication and post-publication verification remain pending.
 > Older checkboxes, test counts, plans, and decisions are preserved as recorded;
 > they are historical context, not proof that every current release gate passed.
+
+> Cumulative snapshot for **v2.1.0**. Earlier history, unfinished work,
+> considerations, ideas, cancelled items, and notes are intentionally retained.
 
 Personal notes, planning, and roadmap for **Custy**
 
@@ -96,25 +101,321 @@ Since v1.10.0
 - [x] fix bug. Bugs: handling errors when the repository detected is new and no commits yet
 - [x] fix little bugs and typo.
 
-Since v2.1.0 development checkpoint 3
+## Since v2.0.0-rc.1
 
-- [x] Add a backward-compatible native-first Git credential policy for container pushes.
-- [x] Add optional GitHub and GitLab HTTPS token fallback from protected external files or environment variables.
-- [x] Keep tokens out of project configuration, command arguments, message templates, remote URLs, and image layers.
-- [x] Add guided `custy configure credentials` setup plus provider set, status, read-only test, and removal commands.
+### Version context
+
+| Field                 | Value                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Version               | `v2.0.0-rc.1`                                                                                                    |
+| Previous release line | `1.10.x`                                                                                                         |
+| Release type          | Major release candidate                                                                                          |
+| Version strategy      | Semantic Versioning                                                                                              |
+| Runtime policy        | Python 3.14+                                                                                                     |
+| Purpose               | Validate the redesigned CLI, configuration, pipelines, changelog, and release foundation before stable promotion |
+
+### Completed release-candidate scope
+
+#### CLI and workflows
+
+- [x] Replace the monolithic `argparse` entry point with a Typer and Rich CLI.
+- [x] Add focused `init`, `validate`, `version`, `changelog`, `backup`, `cleanup`, `commit`, `tag`, and `push` commands.
+- [x] Add `custy run dev`, `custy run release`, and `custy run full` profiles plus ordered custom steps.
+- [x] Add global dry-run, debug, logging, progress, summaries, and actionable error output.
+- [x] Keep the workflow-policy command explicitly experimental.
+
+#### Configuration and templates
+
+- [x] Replace `.custor.toml` with `.config/custy/config.toml`.
+- [x] Add CLI → configuration → default resolution across project, Git, workflow, cleanup, logging, and changelog settings.
+- [x] Separate packaged defaults under `app/templates` from project-owned files under `.config/custy`.
+- [x] Support selective initialization and nested template/example copying.
+
+#### Changelog, versioning, and Git
+
+- [x] Rebuild changelog generation around parsing, cleaning, grouping, deduplication, sorting, integration, links, statistics, and Jinja rendering.
+- [x] Add determinate progress for `Unreleased` and every discovered Git tag.
+- [x] Preserve SemVer, PEP 440, Commitizen, date, and Git-count strategies behind focused interfaces.
+- [x] Separate Git execution and service responsibilities with structured results and clearer failures.
+- [x] Add multi-remote behavior, staging modes, annotated tags, message backups, retention cleanup, and protected branch cleanup.
+
+#### Safety and maintainability
+
+- [x] Apply the dry-run contract to initialization, versioning, changelog, backup, cleanup, commit, tag, push, pipelines, and experimental workflows.
+- [x] Allow read-only discovery during dry-run while simulating file, editor, Git, and remote mutations.
+- [x] Separate CLI, core, pipeline, Git, configuration, UI, template, and shared-error responsibilities.
+- [x] Add centralized console and rotating-file logging without exposing secrets.
+
+#### Delivery and documentation
+
+- [x] Add modular Make, Docker, Docker Compose, GitHub Actions, GitLab CI, packaging, and pre-commit workflows.
+- [x] Expand CLI, core, integration, regression, dry-run, changelog, cleanup, logging, and UI tests.
+- [x] Refresh the README and project metadata for the 2.0 command and packaging model.
+- [x] Publish comprehensive English and Indonesian guidance in the Devalltect documentation portal.
+- [x] Prepare distinct internal commit and public tag/release messages for RC.1 and stable 2.0.0.
+
+### Breaking-change checklist
+
+- [x] Document the Python 3.14+ requirement.
+- [x] Document migration from `.custor.toml` to `.config/custy/config.toml`.
+- [x] Document the new command hierarchy and `custy run` profiles.
+- [x] Document replacement cleanup and changelog commands.
+- [x] Document the new template layout, entry point, pipeline model, and internal extension boundaries.
+
+### RC validation and release checklist
+
+- [ ] Validate initialization and configuration migration in a disposable 1.x-style repository.
+- [ ] Run `custy validate` against representative supported projects.
+- [ ] Verify `custy --dry-run run dev` and `custy --dry-run run release` do not mutate project, Git, or remote state.
+- [ ] Validate message templates, changelog output, backup retention, cleanup rules, and configured remotes.
+- [ ] Complete approved tests, coverage, lint, format, package, Make, Docker, Compose, and documentation checks.
+- [ ] Commit, tag, publish, and verify `v2.0.0-rc.1` only with explicit release approval.
+
+### Deferred beyond RC.1
+
+- [ ] Complete stable-release repository cleanup after RC validation.
+- [ ] Incorporate only release-blocking fixes, documentation corrections, and migration clarifications before `v2.0.0`.
+- [ ] Review configured registry image names and destinations before publication.
+- [ ] Keep custom tag-format conversion as future work unless separately approved.
+
+### Notes
+
+- This snapshot records the intended RC scope; it does not prove that Git tags,
+  releases, packages, or container images were published.
+- The rolling `docs/TODO_tracking_history.md` remains the source for broader
+  historical notes and long-term ideas.
+
+---
+
+## Since v2.0.0
+
+### Version context
+
+| Field            | Value                                        |
+| ---------------- | -------------------------------------------- |
+| Version          | `v2.0.0`                                     |
+| Previous version | `v2.0.0-rc.1`                                |
+| Release type     | Stable major release                         |
+| Version strategy | Semantic Versioning                          |
+| Feature baseline | The behavior validated in `v2.0.0-rc.1`      |
+| Promotion rule   | No new supported-command behavior after RC.1 |
+
+### Stable feature baseline
+
+- [x] Carry forward the Typer and Rich command hierarchy introduced in RC.1.
+- [x] Carry forward namespaced `.config/custy/config.toml` configuration and project-owned templates.
+- [x] Carry forward composable `dev`, `release`, and `full` pipelines with visible step ordering.
+- [x] Carry forward rebuilt changelog parsing, integration, sorting, links, statistics, and rendering.
+- [x] Carry forward SemVer, PEP 440, Commitizen, date, and Git-count version strategies.
+- [x] Carry forward separated Git services, multi-remote behavior, message backups, and guarded cleanup.
+- [x] Carry forward consistent dry-run simulation across project, Git, editor, and remote mutation boundaries.
+- [x] Carry forward Rich UI, progress, logging, actionable errors, expanded tests, modular tooling, containers, and CI/CD.
+- [x] Keep `custy workflow` experimental and visibly documented as such.
+
+### Changes since v2.0.0-rc.1
+
+- [x] Define stable promotion as cleanup and release finalization rather than feature expansion.
+- [x] Archive the 2.0 development scope, decisions, completed work, and remaining ideas in project history.
+- [x] Document historical tag normalization from PEP 440-style prerelease notation to SemVer notation.
+- [x] Document recovery of missing historical GitHub Releases from their source tags.
+- [x] Document rebuilding and publishing missing historical GHCR images with Reflow.
+- [x] Record that reconstructed publication timestamps may differ from original software release dates.
+
+### Repository cleanup checklist
+
+- [ ] Remove temporary root development notes and scratch change lists after final review.
+- [ ] Remove completed root and version-specific TODO files that are intentionally excluded from the stable repository.
+- [ ] Confirm personal, backup, generated, and temporary artifacts are not included unintentionally.
+- [ ] Preserve required source templates, documentation, tests, and release metadata.
+- [ ] Review the final repository diff before release operations.
+
+### Stable validation and publication checklist
+
+- [ ] Run the approved full test and coverage suite.
+- [ ] Run lint, formatting, pre-commit, package, and distribution validation.
+- [ ] Validate CLI help, initialization, configuration, changelog, and dry-run workflows.
+- [ ] Validate Make, Docker, Compose, GitHub Actions, and GitLab CI configuration.
+- [ ] Verify English and Indonesian documentation links and migration guidance.
+- [ ] Commit and create the `v2.0.0` tag only with explicit release approval.
+- [ ] Verify GitHub and GitLab tags/releases, distributions, and container packages after publication.
+
+### Deferred after v2.0.0
+
+- [ ] Add project-aware source and version metadata detection across non-`app/` repository layouts.
+- [ ] Improve initialization for Python, Node.js, PHP, documentation-only, mixed, and generic repositories.
+- [ ] Strengthen changelog template fallback, backup routing, and CLI error boundaries.
+- [ ] Refresh the Python 3.14 pre-commit toolchain and related Make workflows.
+- [ ] Validate configured registry image names and destinations before publication.
+
+### Notes
+
+- Stable 2.0 is intended to preserve the RC.1 product contract.
+- This file records preparation and verification status; unchecked publication
+  tasks must not be interpreted as completed external release operations.
+
+---
+
+## v2.1.0 Release Scope
+
+### Version context
+
+| Field            | Value                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------- |
+| Version          | `v2.1.0`                                                                                    |
+| Previous version | `v2.0.0`                                                                                    |
+| Release type     | Stable minor release                                                                        |
+| Version strategy | Semantic Versioning                                                                         |
+| Primary goal     | Run safely across Python, Node.js, mixed, PHP, documentation-only, and generic repositories |
+| Compatibility    | Existing explicit paths remain strict; new projects default to automatic discovery          |
+
+### Completed implementation scope
+
+#### Project discovery
+
+- [x] Detect Python, Node.js, PHP, mixed, and generic repository layouts from root metadata.
+- [x] Resolve source directories at command runtime rather than requiring a global `app/` directory.
+- [x] Prefer conventional `app/` or `src/` layouts by ecosystem and safely fall back to the project root.
+- [x] Preserve strict validation for explicit `project_source` overrides.
+- [x] Treat missing Custy configuration as an expected uninitialized-project state.
+
+#### Version metadata
+
+- [x] Discover Python `__version__.py`, static `pyproject.toml` versions, and `package.json` versions automatically.
+- [x] Synchronize supported Python and Node.js metadata in mixed repositories.
+- [x] Update supported root Node.js lockfile metadata.
+- [x] Remove a leading `v` before storing versions in project metadata.
+- [x] Preserve or add the final newline when updating Python `__version__` modules so generated metadata passes end-of-file pre-commit checks.
+- [x] Support Git-tag-only versioning when no compatible version file exists.
+
+#### Initialization and templates
+
+- [x] Generate `project_source = "auto"` and `version_file = "auto"` for newly initialized projects.
+- [x] Preserve existing Python and Node.js version metadata.
+- [x] Create a Python version module only for a detected Python project that needs one.
+- [x] Avoid artificial Python files in Node.js, Docusaurus, PHP, documentation-only, and generic projects.
+- [x] Preserve recursive copying of nested commit and tag message examples.
+- [x] Fall back to the packaged changelog template before project initialization.
+- [x] Preserve project templates as overrides and reject missing explicitly configured templates clearly.
+- [x] Route tag-message backups to the configured backup directory.
+
+#### CLI, developer workflow, and containers
+
+- [x] Route console and module execution through a protected CLI entry point.
+- [x] Present expected configuration and validation failures without duplicate tracebacks.
+- [x] Keep full unexpected-error tracebacks available through `--debug`.
+- [x] Make a no-subcommand invocation display help and exit successfully.
+- [x] Add `[tool.custy.editor]` configuration with `VISUAL` and `EDITOR` precedence, platform-specific candidate lists, and controlled fallback behavior.
+- [x] Resolve Windows `code.cmd` correctly and skip unavailable editor candidates without hiding launched-process failures.
+- [x] Bundle Micro, Nano, Vim, and Vi in the production image with conflict-aware undo and redo key bindings.
+- [x] Suspend live Rich pipeline progress while a blocking editor owns the terminal, then restore the current step after successful or failed editing.
+- [x] Expand Make targets for installing, validating, running, cleaning, updating, and refreshing pre-commit.
+- [x] Run pre-commit through `python -m pre_commit` in the active virtual environment.
+- [x] Refresh Ruff, pre-commit-hooks, and Black for the Python 3.14 toolchain.
+- [x] Protect historical, copied, deprecated, development, and temporary files from automated formatting.
+- [x] Validate production-container startup and dry-run initialization from a Docusaurus repository without `app/`.
+- [x] Add adaptive `auto`, `custy`, `commitizen`, and `git` commit-message validation providers.
+- [x] Detect project-owned Commitizen configuration without requiring Commitizen in every target repository.
+- [x] Preserve `--check-cz` as a backward-compatible strict Commitizen override.
+- [x] Preserve Git stdout, stderr, operation, and exit status when commits fail.
+- [x] Classify hook failures separately from ordinary Git commit failures and surface actionable diagnostics.
+- [x] Include the optional Commitizen extra in the production image.
+- [x] Add native-first GitHub and GitLab HTTPS token fallback for containers without inherited host credential-manager sessions.
+- [x] Add secure external file and environment sources without storing token values in project configuration.
+- [x] Add `custy configure credentials` with guided setup plus `set`, `status`, `test`, and `remove` operations.
 - [x] Add opt-in Docker, Compose, and remote-image Make helpers that use writable mounts only for credential setup and read-only mounts for status, testing, and runtime pushes.
-- [x] Preserve local Git credential managers and SSH behavior with `container_only = true` as the recommended boundary.
-- [x] Inject `git-credential-custy` per push without modifying persistent Git credential-helper configuration.
-- [x] Prevent non-interactive prompt hangs and keep dry-run free from token reads and remote contact.
-- [x] Give manual Git authentication direct terminal ownership so username/PAT and SSH prompts remain visible.
-- [x] Disable Rich rendering for hidden direct-command pipelines so `custy push` preserves interactive prompts like `custy run push`.
-- [x] Reject hidden PAT setup without an interactive TTY instead of allowing echoed token input.
-- [x] Add focused credential storage, resolution, CLI, helper, push, and compatibility tests.
-- [x] Align the shipped configuration and canonical English/Indonesian documentation with the credential behavior matrix, Docker bind mounts, source-status interpretation, and manual fallback.
-- [x] Validate the complete 1,340-test suite at 83% coverage, Ruff, Black,
-      pre-commit, and English/Indonesian documentation builds.
-- [ ] Rebuild and validate the credential-enabled production image when the
-      Docker host has sufficient pagefile memory.
+- [x] Keep SSH, normal Git credential helpers, and local authentication authoritative; inject Custy's helper only for an enabled supported HTTPS push.
+- [x] Prevent non-interactive credential hangs while preserving approved interactive Git prompts.
+- [x] Give manual Git authentication direct terminal ownership and explain PAT input before an HTTPS prompt.
+- [x] Disable Rich rendering for hidden direct-command pipelines so standalone push prompts remain stable.
+- [x] Reject hidden PAT setup without an interactive TTY instead of accepting potentially echoed input.
+- [x] Keep dry-run free from token reads, credential writes, and remote access tests.
+- [x] Keep ordinary `main` commits on the validation path without publishing a GitHub production image.
+- [x] Publish GitHub and GitLab production images only from supported annotated release tags with non-empty messages.
+- [x] Publish the exact stable or prerelease tag and update `latest` only for stable releases.
+- [x] Remove the redundant commit-SHA production tag while retaining Buildx provenance metadata.
+- [x] Align GitLab with GitHub's annotated-tag, non-empty-message, and normalized build-version production policy.
+- [x] Generate GitLab Release descriptions from reviewed annotated tag messages with project, pipeline, container, and artifact details.
+
+#### Tests and documentation
+
+- [x] Add detector coverage for Python, Node.js, mixed, PHP, and generic projects.
+- [x] Add version-update coverage for Python modules, `pyproject.toml`, `package.json`, lockfiles, mixed projects, and tag-only projects.
+- [x] Add regression coverage for final-newline preservation through direct Python metadata updates and the release workflow.
+- [x] Add protected-entry-point, structured-error, no-command, template-fallback, backup-routing, and cross-project regression tests.
+- [x] Add editor settings, editor service, Docker asset, workflow delegation, and exclusive-terminal progress lifecycle coverage.
+- [x] Add commit-validation settings, Commitizen inspection, provider resolution, structured Git error, and hook-classification coverage.
+- [x] Add credential settings, secure storage, source precedence, exact-host matching, helper protocol, CLI secrecy, dry-run, and per-push injection coverage.
+- [x] Add hidden-pipeline rendering and direct Git-command routing regression coverage.
+- [x] Validate the latest complete suite: 1,361 tests with 83% overall coverage and all configured quality hooks. Earlier checkpoint-specific counts remain preserved below as historical evidence.
+- [x] Validate Ruff, Black, diff whitespace, and the complete pre-commit configuration.
+- [x] Validate corrected GitHub Actions and GitLab CI pipelines with active source, tests, and helper files included.
+- [x] Keep generated `.pyc` files ignored and untracked without excluding active cleanup-backup packages.
+- [x] Make CLI help assertions deterministic across ANSI output and different CI terminal widths.
+- [x] Rebuild the credential-enabled production image and verify the packaged
+      `git-credential-custy` entry point through successful authenticated
+      container pushes to temporary GitHub and GitLab remotes. This development
+      validation does not replace the final release-commit publication checks.
+- [x] Validate the earlier editor-enabled production image baseline, resolved
+      source version, editor-progress marker, and Rich suspend/restart lifecycle.
+- [x] Update canonical English and Indonesian documentation for discovery, initialization, versioning, errors, Docker, editors, terminal-progress handoff, commit validation, Git hooks, pre-commit, testing, and contributing.
+
+### Upgrade checklist from v2.0.0
+
+- [x] Document that existing explicit paths are not rewritten automatically.
+- [x] Document switching `project_source` and `version_file` to `"auto"` when discovery is preferred.
+- [x] Document reviewing initialization through dry-run before replacing customized configuration.
+- [x] Document reinstalling editable checkouts so the console script uses the protected entry point.
+- [x] Document the commit-validation behavior matrix and the difference between version strategy and message validation.
+- [x] Preserve the experimental status of `custy workflow`.
+- [x] Document native/auto credentials, container-only behavior, external paths, environment variables, SSH boundaries, and Docker secret usage.
+- [x] Document Docker bind-mount mapping, persistent versus disposable token files, status-column interpretation, and manual username/PAT fallback.
+
+### Release checklist
+
+- [x] Prepare internal commit and public release messages for `v2.1.0`.
+- [x] Confirm implementation, tests, documentation, tooling, and container validation are recorded.
+- [x] Record development checkpoints 4–9 for CI/CD reliability, package and release publication, lifecycle-tag validation, release-note rendering, and stable Docker aliases.
+- [ ] Review the final repository diff and generated artifacts.
+- [ ] Commit, tag, publish, and verify `v2.1.0` only with explicit release approval.
+- [ ] Verify packages, container images, and English/Indonesian documentation after publication.
+
+### Future work
+
+- [ ] Extend automatic project detection only when a new ecosystem has clear metadata and tests.
+- [ ] Add custom version/tag formats without weakening current normalization and validation guarantees.
+- [ ] Continue validating configured GitHub and GitLab container destinations before publication.
+- [ ] Keep hook upgrades intentional and review formatter changes before applying them repository-wide.
+
+### Notes
+
+- This snapshot distinguishes completed implementation and validation from
+  external release operations that still require explicit authorization.
+- No claim is made here that the `v2.1.0` tag or release has already been
+  published.
+
+---
+
+## Additional status carried from repository TODO files
+
+### Changelog configuration hardening
+
+The root `TODO.md` records follow-up work that is not fully represented in the
+rolling history:
+
+- [x] Inspect resolver consumers and related tests for compatibility.
+- [x] Harden `app/core/changelog/config/resolver.py` with safe enum parsing, section type guards, numeric normalization, and release-behavior conflict normalization.
+- [ ] Add or update tests for malformed configuration and fallback behavior.
+- [ ] Run the focused changelog configuration resolver tests.
+- [ ] Record the final fixes and validation results.
+
+### Historical implementation notes from `docs/TODO.md`
+
+- [x] Separate CLI presentation under `app/cli` from core behavior under `app/core`.
+- [x] Replace the former giant Git/workflow responsibilities with focused workflow, pipeline, strategy, factory, service, and UI components.
+- [x] Move personal project configuration and templates into `.config/custy`.
+- [x] Add external logging, Rich UI improvements, modular Make workflows, containers, CI/CD, pre-commit, metadata, and expanded tests.
+- [x] Keep deprecated or personal backup files preserved rather than treating them as active source.
+- [x] Move canonical user documentation to the Devalltect documentation portal while retaining repository-local history and reference material.
 
 Until v2.0.0
 
@@ -402,3 +703,32 @@ v2.1.0 stable release history.
 - [Checkpoint 9 commit message](../.config/custy/templates/commit-message_2.1.0_development-checkpoint-9.txt) records the internal implementation details.
 - The cumulative v2.1.0 commit and tag messages include checkpoint 9; this checkpoint itself remains untagged.
 - The v2.0.0-rc.1 and v2.0.0 histories remain unchanged because this work belongs to v2.1.0.
+
+---
+
+<a id="v210-stable-release-preparation"></a>
+
+## v2.1.0 Stable Release Preparation
+
+### ✅ Development state
+
+- [x] Complete the v2.1.0 implementation scope through the foundation checkpoint and numbered checkpoints 1–9.
+- [x] Move the current milestone's implementation tasks from In Progress to Completed in `docs/TODO.md`.
+- [x] Preserve future ideas as explicitly deferred work rather than treating them as v2.1.0 blockers.
+- [x] Prepare the cumulative v2.1.0 release commit message and public annotated tag message.
+- [x] Record the latest complete validation result of 1,361 tests with 83% overall coverage.
+
+### ⏳ Final release actions
+
+- [ ] Review the exact final repository diff and generated artifacts.
+- [ ] Re-run the approved release checks against the exact commit that will receive the `v2.1.0` tag.
+- [ ] Review the generated changelog, package metadata, registry destinations, and annotated tag message.
+- [ ] Commit, create the annotated `v2.1.0` tag, and publish only with explicit release approval.
+- [ ] Verify GitHub and GitLab releases, Python packages, container tags, and English/Indonesian documentation after publication.
+
+### Release boundary
+
+This history records development readiness, not a completed external release.
+Checkpoint 9 is the final untagged development checkpoint for v2.1.0; no
+checkpoint 10 is planned. The stable release commit and annotated `v2.1.0` tag
+are the next release artifacts after the remaining final checks succeed.
