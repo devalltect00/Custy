@@ -57,6 +57,26 @@ class TestPushCommit:
 
         workflow_engine.gitService.push_tag.assert_not_called()
 
+    def test_push_commit_only_when_tag_is_excluded(
+        self,
+        workflow_engine: WorkflowEngine,
+    ) -> None:
+        """An explicitly commit-only push must ignore a resolved tag."""
+
+        workflow_engine.tag = "v2.1.1"
+
+        workflow_engine._push_to_remotes(
+            ["origin"],
+            label="main",
+            include_tag=False,
+        )
+
+        workflow_engine.gitService.push.assert_called_once_with(
+            remote="origin",
+            ref="HEAD",
+        )
+        workflow_engine.gitService.push_tag.assert_not_called()
+
 
 class TestPushCommitAndTag:
     """

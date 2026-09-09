@@ -67,7 +67,31 @@ class TestPushChanges:
         push.assert_called_once_with(
             ["origin"],
             label="main",
+            include_tag=True,
         )
+
+    def test_commit_only_push_propagates_tag_exclusion(
+        self,
+        workflow_engine: WorkflowEngine,
+        monkeypatch,
+    ) -> None:
+        """Commit-only orchestration must exclude tags for every remote group."""
+
+        workflow_engine.gitService.get_current_branch.return_value = "main"
+        monkeypatch.setattr(
+            workflow_engine,
+            "_resolve_push_remote_groups",
+            MagicMock(return_value=(["origin"], ["backup"])),
+        )
+        push = MagicMock()
+        monkeypatch.setattr(workflow_engine, "_push_to_remotes", push)
+
+        workflow_engine.push_changes(include_tag=False)
+
+        assert push.call_args_list == [
+            ((["origin"],), {"label": "main", "include_tag": False}),
+            ((["backup"],), {"label": "backup", "include_tag": False}),
+        ]
 
     def test_pushes_main_and_backup(
         self,

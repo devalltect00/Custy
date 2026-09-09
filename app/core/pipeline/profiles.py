@@ -105,17 +105,18 @@ PIPELINE_PROFILES = {
     # ⚡ Dev flow (commit + push)
     "dev": [
         {"name": "validate-sub-repo"},
-        {"name": "prepare_version_step"},
-        {"name": "workflow_init_step"},
-        {"name": "generate_artifacts_step"},
-        {"name": "edit_files_step"},
+        {"name": "ensure_commit_validation_provider_step"},
+        {"name": "ensure_commit_hook_policy_step"},
+        {"name": "ensure_commit_message_file_step"},
+        {"name": "ensure_commit_message_file_exists_step"},
+        {"name": "validate-sub-pre-push"},
+        {"name": "edit_files_step", "args": {"include_tag": False}},
         {"name": "validate_edited_step"},
-        {"name": "changelog"},
         {"name": "backup_commit_message_files_step"},
         {"name": "cleanup_backup_step"},
         {"name": "stage_step"},
         {"name": "commit_step"},
-        {"name": "push_step"},
+        {"name": "push_step", "args": {"include_tag": False}},
     ],
     # 🚀 Full release (complete pipeline)
     "release": [

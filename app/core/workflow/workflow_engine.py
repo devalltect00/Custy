@@ -832,9 +832,13 @@ class WorkflowEngine:
         path.write_text(content.rstrip() + "\n", encoding="utf-8")
         logger.info("📝 Generated %s: [dim]%s[/dim]", label, path)
 
-    def edit_release_files(self) -> None:
+    def edit_release_files(self, *, include_tag: bool = True) -> None:
         """
-        Open commit and tag message files for user editing.
+        Open the message files required by the active workflow.
+
+        Args:
+            include_tag: Open the tag-message file after the commit-message file.
+                Set this to ``False`` for commit-only development workflows.
 
         Order:
             1. commit message file
@@ -849,7 +853,7 @@ class WorkflowEngine:
         if self.commit_message_file:
             self.open_editor(self.commit_message_file, label="commit message")
 
-        if self.tag_message_file:
+        if include_tag and self.tag_message_file:
             self.open_editor(self.tag_message_file, label="tag message")
 
     def open_editor(self, path: Path, label: str = "file") -> None:
@@ -1813,9 +1817,13 @@ class WorkflowEngine:
 
         cleaner.cleanup()
 
-    def push_changes(self) -> None:
+    def push_changes(self, *, include_tag: bool = True) -> None:
         """
         Push commits and tags to the resolved remote groups.
+
+        Args:
+            include_tag: Push an eligible resolved tag after each branch push.
+                Commit-only development workflows set this to ``False``.
 
         Selection priority:
             1. An explicit remote supplied by the CLI.
@@ -1847,10 +1855,18 @@ class WorkflowEngine:
             )
 
         if main_remotes:
-            self._push_to_remotes(main_remotes, label="main")
+            self._push_to_remotes(
+                main_remotes,
+                label="main",
+                include_tag=include_tag,
+            )
 
         if backup_remotes:
-            self._push_to_remotes(backup_remotes, label="backup")
+            self._push_to_remotes(
+                backup_remotes,
+                label="backup",
+                include_tag=include_tag,
+            )
 
     def _resolve_main_remotes(self) -> list[str]:
         """
@@ -2008,13 +2024,20 @@ class WorkflowEngine:
 
         return main_remotes, backup_remotes
 
-    def _push_to_remotes(self, remotes: list[str], label: str) -> None:
+    def _push_to_remotes(
+        self,
+        remotes: list[str],
+        label: str,
+        *,
+        include_tag: bool = True,
+    ) -> None:
         """
         Push commit and tag to given remotes.
 
         Args:
             remotes: list of remote names
             label: "main" or "backup"
+            include_tag: Push an eligible resolved tag after the branch push.
 
         Raises:
             ValidationError on failure
@@ -2028,7 +2051,7 @@ class WorkflowEngine:
             # =========================================================
             if self.dry_run:
                 logger.info(f"(dry-run) Would push HEAD to {remote}")
-                if not getattr(self, "skip_tag", False) and self.tag:
+                if include_tag and not getattr(self, "skip_tag", False) and self.tag:
                     logger.info(f"(dry-run) Would push tag {self.tag} to {remote}")
                 continue
 
@@ -2051,7 +2074,7 @@ class WorkflowEngine:
             # =========================
             # Push tag (if allowed)
             # =========================
-            if getattr(self, "skip_tag", False) or not self.tag:
+            if not include_tag or getattr(self, "skip_tag", False) or not self.tag:
                 logger.info(f"[dim]⏭️ Tag skipped for {remote}[/dim]")
                 continue
 

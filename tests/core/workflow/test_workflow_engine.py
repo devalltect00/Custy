@@ -133,6 +133,26 @@ class TestWorkflowEditorIntegration:
             call(tag_file, label="tag message", dry_run=False),
         ]
 
+    def test_edit_release_files_can_limit_editing_to_commit_message(self) -> None:
+        """Development workflows should not open an unused tag-message file."""
+
+        commit_file = Path("commit-message.txt")
+        engine = WorkflowEngine(
+            WorkflowConfig(
+                commit_message_file=commit_file,
+                tag_message_file=Path("tag-message.txt"),
+            )
+        )
+        engine.editorService = MagicMock()
+
+        engine.edit_release_files(include_tag=False)
+
+        engine.editorService.open_file.assert_called_once_with(
+            commit_file,
+            label="commit message",
+            dry_run=False,
+        )
+
 
 class TestSilentMode:
     def test_set_silent_mode(self):

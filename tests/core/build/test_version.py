@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import subprocess
+import tomllib
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -10,6 +11,16 @@ from app.core.build.version import (
     resolve_repository_version,
     version_from_git_description,
 )
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+
+
+def test_setuptools_scm_does_not_render_stable_tags_as_post_zero() -> None:
+    """Exact stable tags must retain their public version without ``.post0``."""
+
+    project = tomllib.loads((PROJECT_ROOT / "pyproject.toml").read_text("utf-8"))
+
+    assert project["tool"]["setuptools_scm"]["version_scheme"] == "guess-next-dev"
 
 
 class TestVersionFromGitDescription:

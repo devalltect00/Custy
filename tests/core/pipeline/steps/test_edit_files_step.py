@@ -29,7 +29,18 @@ class TestEditFilesStep:
 
         step.execute(ctx)
 
-        ctx.engine.edit_release_files.assert_called_once_with()
+        ctx.engine.edit_release_files.assert_called_once_with(include_tag=True)
+
+    def test_execute_can_skip_tag_message_editing(self):
+        """Commit-only workflows must not request the tag-message editor."""
+
+        ctx = MagicMock()
+
+        step = EditFilesStep(include_tag=False)
+
+        step.execute(ctx)
+
+        ctx.engine.edit_release_files.assert_called_once_with(include_tag=False)
 
     def test_requires_exclusive_terminal(self):
         """Declares that blocking editors need sole terminal ownership."""

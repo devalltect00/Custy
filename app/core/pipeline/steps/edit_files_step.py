@@ -18,6 +18,16 @@ class EditFilesStep(BaseStep):
 
     requires_exclusive_terminal: bool = True
 
+    def __init__(self, *, include_tag: bool = True) -> None:
+        """Configure whether the tag-message editor participates in this step.
+
+        Args:
+            include_tag: Open the tag-message file after the commit-message file.
+                Development-only commit workflows disable this behavior.
+        """
+
+        self.include_tag = include_tag
+
     @log_step(label="edit-files")
     def execute(self, ctx):
-        ctx.engine.edit_release_files()
+        ctx.engine.edit_release_files(include_tag=self.include_tag)

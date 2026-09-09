@@ -24,6 +24,16 @@ class PushStep(BaseStep):
 
     requires_exclusive_terminal: bool = True
 
+    def __init__(self, *, include_tag: bool = True) -> None:
+        """Configure whether this step may push a resolved release tag.
+
+        Args:
+            include_tag: Push an eligible tag after the branch. Development-only
+                commit workflows disable this behavior.
+        """
+
+        self.include_tag = include_tag
+
     @log_step(label="push")
     def execute(self, ctx):
-        ctx.engine.push_changes()
+        ctx.engine.push_changes(include_tag=self.include_tag)

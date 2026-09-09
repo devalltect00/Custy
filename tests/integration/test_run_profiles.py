@@ -57,6 +57,13 @@ class TestRunProfiles:
         pipeline.run(ctx)
 
         ctx.engine.execute_commit_phase.assert_called_once()
+        ctx.engine.edit_release_files.assert_called_once_with(include_tag=False)
+        ctx.engine.push_changes.assert_called_once_with(include_tag=False)
+        ctx.engine.prepare_version_tag.assert_not_called()
+        ctx.engine.initialize_workflow.assert_not_called()
+        ctx.engine.generate_release_artifacts.assert_not_called()
+        ctx.engine.generate_changelog_if_needed.assert_not_called()
+        ctx.engine.create_tag.assert_not_called()
 
     def test_multiple_profiles(self):
         ctx = MagicMock()

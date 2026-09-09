@@ -62,6 +62,28 @@ class TestPipelineProfiles:
         ]
         assert "workflow_init_step" not in names
 
+    def test_dev_profile_is_commit_and_branch_push_only(self):
+        """Daily development must not prepare release artifacts or tags."""
+
+        dev = PIPELINE_PROFILES["dev"]
+        names = [step["name"] for step in dev]
+
+        for release_step in (
+            "prepare_version_step",
+            "workflow_init_step",
+            "prepare_tag_message_step",
+            "generate_artifacts_step",
+            "apply_version_step",
+            "generate_changelog_step",
+            "tag_step",
+        ):
+            assert release_step not in names
+
+        edit_step = next(step for step in dev if step["name"] == "edit_files_step")
+        push_step = next(step for step in dev if step["name"] == "push_step")
+        assert edit_step["args"] == {"include_tag": False}
+        assert push_step["args"] == {"include_tag": False}
+
     def test_full_finishes_with_finalize(self):
         full = PIPELINE_PROFILES["full"]
 

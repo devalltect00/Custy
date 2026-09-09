@@ -134,23 +134,28 @@ class TestWorkflowFlow:
         #
         engine.ensure_git_repo.assert_called_once()
 
-        engine.prepare_version_tag.assert_called_once()
-        engine.initialize_workflow.assert_called_once()
-
-        engine.generate_release_artifacts.assert_called_once()
-        engine.edit_release_files.assert_called_once()
+        engine.ensure_commit_validation_provider.assert_called_once()
+        engine.ensure_commit_hook_policy.assert_called_once()
+        engine.ensure_commit_message_file.assert_called_once()
+        engine.ensure_commit_message_file_exists.assert_called_once()
+        engine.ensure_remote_exists.assert_called_once()
+        engine.edit_release_files.assert_called_once_with(include_tag=False)
         engine.validate_edited_files.assert_called_once()
-        engine.generate_changelog_if_needed.assert_called_once()
 
         engine.backup_commit_message_file.assert_called_once()
         engine.cleanup_backups.assert_called_once()
 
         engine.stage_changes.assert_called_once()
         engine.execute_commit_phase.assert_called_once()
-        engine.push_changes.assert_called_once()
+        engine.push_changes.assert_called_once_with(include_tag=False)
 
         #
-        # Dev profile should not create tags.
+        # Dev profile should not prepare release state or create tags.
         #
+        engine.prepare_version_tag.assert_not_called()
+        engine.initialize_workflow.assert_not_called()
+        engine.generate_release_artifacts.assert_not_called()
+        engine.apply_version_updates.assert_not_called()
+        engine.generate_changelog_if_needed.assert_not_called()
         engine.create_tag.assert_not_called()
         engine.backup_tag_message_file.assert_not_called()

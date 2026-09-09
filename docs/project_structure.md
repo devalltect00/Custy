@@ -474,7 +474,6 @@ Common directories include:
 │   ├── db.db
 │   └── README
 ├── .ruff_cache/ ... (collapsed)
-├── .venv/ ... (collapsed)
 ├── app
 │   ├── builders
 │   │   └── git_tool_builder.deprecated.py

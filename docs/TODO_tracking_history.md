@@ -732,3 +732,42 @@ This history records development readiness, not a completed external release.
 Checkpoint 9 is the final untagged development checkpoint for v2.1.0; no
 checkpoint 10 is planned. The stable release commit and annotated `v2.1.0` tag
 are the next release artifacts after the remaining final checks succeed.
+
+---
+
+<a id="v211-patch-release"></a>
+
+## Since v2.1.1
+
+Version scope: **v2.1.1 patch release**, following published v2.1.0.
+
+### ✅ Version consistency
+
+- [x] Replace the post-release SCM scheme so exact stable builds do not report an artificial `.post0` suffix.
+- [x] Synchronize the source fallback version with v2.1.1.
+
+### ✅ Daily development workflow
+
+- [x] Restrict `custy run dev` to commit-message review, staging, commit creation, and branch push.
+- [x] Remove release-version preparation, workflow transition initialization, release-artifact generation, changelog generation, version application, and tag creation from the Dev profile.
+- [x] Prevent Dev from opening the tag-message file or pushing a resolved tag that was never created.
+- [x] Preserve release and full-profile tag behavior through explicit step configuration.
+- [x] Add focused regression coverage for profile composition, editor selection, and commit-only remote pushes.
+- [x] Verify the v2.1.1 production image reports the exact version and that a containerized Dev dry-run simulates branch pushes without tag pushes.
+
+### ✅ Release documentation
+
+- [x] Prepare separate internal commit and public annotated-tag messages for v2.1.1.
+- [x] Update the canonical English and Indonesian documentation baseline and Dev workflow descriptions.
+
+### ⏳ Final release actions
+
+- [ ] Re-run the complete test, formatting, lint, pre-commit, documentation, packaging, and container checks against the exact release commit.
+- [ ] Review the v2.1.1 commit message, annotated tag message, generated changelog, and registry destinations.
+- [ ] Commit, create the `v2.1.1` tag, publish, and verify provider releases only with explicit release approval.
+
+### Notes
+
+- v2.1.1 is a patch release; it does not add a new public command or alter the release-profile contract.
+- Existing editable installations must be reinstalled or upgraded before their installed metadata reports the new version.
+- No Git commit, tag, push, package publication, image publication, or provider release was performed while preparing this entry.

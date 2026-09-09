@@ -62,7 +62,7 @@ class TestReleaseFlow:
         ctx.engine.prepare_tag_message.assert_called_once_with()
 
         ctx.engine.generate_release_artifacts.assert_called_once_with()
-        ctx.engine.edit_release_files.assert_called_once_with()
+        ctx.engine.edit_release_files.assert_called_once_with(include_tag=True)
         ctx.engine.validate_edited_files.assert_called_once_with()
 
         ctx.engine.apply_version_updates.assert_called_once_with()
@@ -73,6 +73,6 @@ class TestReleaseFlow:
         ctx.engine.stage_changes.assert_called_once_with()
         ctx.engine.execute_commit_phase.assert_called_once_with()
         ctx.engine.create_tag.assert_called_once_with()
-        ctx.engine.push_changes.assert_called_once_with()
+        ctx.engine.push_changes.assert_called_once_with(include_tag=True)
 
         ctx.engine.execute_post_workflow.assert_called_once_with()
