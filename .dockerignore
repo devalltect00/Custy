@@ -20,6 +20,14 @@ __pycache__/
 .venv/
 venv/
 venv_*/
+dev_venv/
+prod_venv/
+venv_dev/
+venv_prod/
+publish_venv/
+venv_publish/
+other_venv/
+venv_other/
 env/
 env_*/
 ENV/

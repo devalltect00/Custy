@@ -1,24 +1,26 @@
-docs(readme): align project metadata and presentation
+chore(dev): checkpoint isolate named virtual environments
 
-Polish the Custy README so its release information and maintainer details are
-easier to scan and consistent with the wider Devalltect project family.
+Keep the supported repository-local development and production Python
+environment naming conventions out of Custy's version control, container
+contexts, and repository-wide quality-tool inputs.
 
-### 📚 README improvements
+### 🧰 Development environment isolation
 
-- Add concise metadata for Custy v2.1.1, Python compatibility, supported
-  version strategies, distribution channels, documentation, and licensing.
-- Align the repository metadata helper heading with the established section
-  icon and naming pattern.
-- Add the project contact alongside the existing Devalltect maintainer footer.
-- Preserve the existing installation, CLI, dry-run, Docker, Make, security,
-  and contributor guidance.
+- Ignore root-level `dev_venv/`, `prod_venv/`, `venv_dev/`, `venv_prod/`,
+  `publish_venv/`, `venv_publish/`, `other_venv/`, and `venv_other/`
+  directories in Git.
+- Exclude all eight names from Docker build contexts and Prettier discovery.
+- Exclude all eight names from Black and Ruff repository-wide checks.
+- Add regression coverage for the shared ignore and quality-tool contracts.
 
-### ✅ Validation
+### ✅ Validation intent
 
-- Pass the repository pre-commit hooks for the updated README.
-- Pass Git whitespace and patch-integrity validation.
+- Confirm both directory names are ignored without broad wildcard exclusions.
+- Run the focused regression test and repository quality checks.
+
+Checkpoint: untagged development maintenance
 
 🔖 **Tags**:
-- Type: `#docs`, `#maintenance`
-- Scope: `#readme`, `#metadata`, `#presentation`
-- Product: `#custy`, `#developer-tool`
+- Type: `#chore`, `#maintenance`
+- Scope: `#virtual-environment`, `#gitignore`, `#dockerignore`, `#quality`
+- Product: `#custy`, `#developer-experience`
