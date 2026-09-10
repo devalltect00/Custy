@@ -1,31 +1,24 @@
-fix(workflow): release Custy v2.1.1
+docs(readme): align project metadata and presentation
 
-Correct version reporting and make the daily development profile honor its
-documented commit-and-push boundary.
+Polish the Custy README so its release information and maintainer details are
+easier to scan and consistent with the wider Devalltect project family.
 
-### Fixed
+### 📚 README improvements
 
-- Replace setuptools-scm's post-release scheme with development-version
-  inference so an exact stable tag reports `2.1.1` instead of an artificial
-  `.post0` suffix.
-- Keep the source fallback version synchronized at `2.1.1`.
-- Remove version preparation, workflow initialization, release-artifact
-  generation, changelog generation, version application, and tagging from
-  `custy run dev`.
-- Open only the commit-message file during the Dev profile.
-- Push branch `HEAD` without attempting to push a resolved-but-uncreated tag.
-- Preserve the existing release and full-profile tag behavior through explicit
-  per-step intent.
+- Add concise metadata for Custy v2.1.1, Python compatibility, supported
+  version strategies, distribution channels, documentation, and licensing.
+- Align the repository metadata helper heading with the established section
+  icon and naming pattern.
+- Add the project contact alongside the existing Devalltect maintainer footer.
+- Preserve the existing installation, CLI, dry-run, Docker, Make, security,
+  and contributor guidance.
 
-### Tests and documentation
+### ✅ Validation
 
-- Add profile, step, editor, push-orchestration, and remote-push regression
-  coverage for commit-only development execution.
-- Update the English and Indonesian documentation baseline and Dev workflow
-  guidance for v2.1.1.
+- Pass the repository pre-commit hooks for the updated README.
+- Pass Git whitespace and patch-integrity validation.
 
-Tag: v2.1.1
-Previous version: v2.1.0
-Changelog: generated separately
-
-Tags: #fix #workflow #versioning #cli #docker #documentation
+🔖 **Tags**:
+- Type: `#docs`, `#maintenance`
+- Scope: `#readme`, `#metadata`, `#presentation`
+- Product: `#custy`, `#developer-tool`

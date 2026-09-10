@@ -22,6 +22,24 @@ templates, backup and cleanup tools, and an experimental workflow-policy layer.
 
 ---
 
+## ℹ️ Project Metadata
+
+| Property                     | Value                                                        |
+| ---------------------------- | ------------------------------------------------------------ |
+| Project                      | Custy                                                        |
+| Current version              | `v2.1.1`                                                     |
+| Python package               | `custy`                                                      |
+| Package compatibility        | Python 3.14+                                                 |
+| Standard development runtime | Python 3.14                                                  |
+| CLI framework                | Typer and Rich                                               |
+| Version strategies           | SemVer, PEP 440, date-based, and Git-count                   |
+| Distribution                 | Source, release artifacts, private GitLab PyPI, Docker, GHCR |
+| Documentation                | English and Bahasa Indonesia through Devalltect Docs         |
+| License                      | MIT                                                          |
+| Maintainer                   | Devalltect / Rizky Fernandes                                 |
+
+---
+
 ## ✨ Features
 
 - ⚙️ Configuration-driven behavior through `.config/custy/config.toml`
@@ -334,7 +352,7 @@ Run `custy run --help` before choosing a supported profile.
 
 | Command                           | Purpose                                         |
 | --------------------------------- | ----------------------------------------------- |
-| `custy configure credentials`    | Manage optional container credential fallback |
+| `custy configure credentials`     | Manage optional container credential fallback   |
 | `custy backup commit`             | Back up the commit-message template             |
 | `custy backup tag`                | Back up the tag-message template                |
 | `custy backup all`                | Back up both message templates                  |
@@ -364,7 +382,7 @@ repository. Global options such as `--dry-run` must appear before the command.
 
 ---
 
-## Repository metadata helper (maintainers)
+## ⚙️ Repository Metadata Helper (Maintainers)
 
 The optional [metadata sync script](scripts/repository/src/sync_metadata.py)
 is source-checkout tooling, not an installed application command. Run it from
@@ -431,6 +449,8 @@ See [`CHANGELOG.md`](CHANGELOG.md) for release history.
 ## 📜 License
 
 Custy is open-source software licensed under the [MIT License](LICENSE).
+
+📧 Contact: `rizkypffdev37@gmail.com`
 
 ---
 
