@@ -1,14 +1,12 @@
-<!-- docs/TODO_tracking_history_v2.1.0.md -->
+<!-- docs/TODO_tracking_history.md -->
 
-# Custy TODO Tracking History — v2.1.0
+# Custy TODO Tracking History — v2.1.2
 
-> Current status: v2.1.0 implementation and checkpoints 1–9 are complete.
-> See [stable release preparation](#v210-stable-release-preparation);
-> external publication and post-publication verification remain pending.
+> Current status: see the [v2.1.2 patch-release preparation](#v212-patch-release).
 > Older checkboxes, test counts, plans, and decisions are preserved as recorded;
 > they are historical context, not proof that every current release gate passed.
 
-> Cumulative snapshot for **v2.1.0**. Earlier history, unfinished work,
+> Cumulative snapshot for **v2.1.2**. Earlier history, unfinished work,
 > considerations, ideas, cancelled items, and notes are intentionally retained.
 
 Personal notes, planning, and roadmap for **Custy**
@@ -770,4 +768,38 @@ Version scope: **v2.1.1 patch release**, following published v2.1.0.
 
 - v2.1.1 is a patch release; it does not add a new public command or alter the release-profile contract.
 - Existing editable installations must be reinstalled or upgraded before their installed metadata reports the new version.
+- No Git commit, tag, push, package publication, image publication, or provider release was performed while preparing this entry.
+
+---
+
+<a id="v212-patch-release"></a>
+
+## Since v2.1.2
+
+Version scope: **v2.1.2 patch release**, following published v2.1.1.
+
+### ✅ Repository maintenance
+
+- [x] Exclude supported development, production, publishing, and auxiliary virtual-environment directory names from version control, container contexts, and repository-wide quality tools.
+- [x] Preserve existing workflow, versioning, and release behavior.
+- [x] Add regression coverage for the shared ignore contract.
+
+### ✅ Documentation, metadata, and versioning
+
+- [x] Refine README release metadata and project presentation.
+- [x] Add a repository-local CLI preview that renders on GitHub and GitLab.
+- [x] Standardize the public project contact in README and package metadata without recording private contact details in release messages.
+- [x] Synchronize the source fallback, package fallback metadata, README version, and release messages with v2.1.2.
+- [x] Regenerate the project-structure reference for the maintained repository layout.
+
+### ⏳ Final release actions
+
+- [ ] Re-run the complete test, formatting, lint, pre-commit, English and Indonesian documentation, package, and container checks against the exact release commit.
+- [ ] Review the v2.1.2 commit message, annotated tag message, generated changelog, and registry destinations.
+- [ ] Commit, create the `v2.1.2` tag, publish, and verify provider releases only with explicit release approval.
+
+### Notes
+
+- v2.1.2 preserves commands, profiles, version strategies, and dry-run behavior.
+- Historical release sections and versioned TODO snapshots remain unchanged.
 - No Git commit, tag, push, package publication, image publication, or provider release was performed while preparing this entry.

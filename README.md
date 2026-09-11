@@ -31,7 +31,7 @@ templates, backup and cleanup tools, and an experimental workflow-policy layer.
 | Property                     | Value                                                        |
 | ---------------------------- | ------------------------------------------------------------ |
 | Project                      | Custy                                                        |
-| Current version              | `v2.1.1`                                                     |
+| Current version              | `v2.1.2`                                                     |
 | Python package               | `custy`                                                      |
 | Package compatibility        | Python 3.14+                                                 |
 | Standard development runtime | Python 3.14                                                  |

@@ -1,0 +1,26 @@
+🛠️ Custy v2.1.2 — Cleaner Development Workspaces
+
+Custy v2.1.2 is a maintenance release that improves repository isolation and
+project presentation without changing workflow behavior.
+
+### Highlights
+
+- Ignore supported development, production, publishing, and auxiliary virtual
+  environment directories in repository tooling.
+- Align Git, Docker, formatter, and linter exclusions.
+- Add regression coverage for the shared ignore rules.
+- Refresh README metadata and add a portable CLI preview.
+- Standardize public project contact metadata.
+
+Commands, profiles, version strategies, and dry-run behavior are unchanged.
+
+### Release information
+
+- Version: `v2.1.2`
+- Previous version: `v2.1.1`
+- Release type: patch
+- Runtime: Python 3.14+
+- Stability: stable
+
+_Release: v2.1.2_
+_Author: Devalltect / Rizky Fernandes_
