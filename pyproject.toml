@@ -27,11 +27,11 @@ requires-python = ">=3.14"
 license = { text = "MIT" }
 
 authors = [
-    { name = "Rizky Fernandes (devalltect00)", email = "rizkypffdev37@gmail.com"},
+    { name = "Rizky Fernandes (devalltect00)", email = "devalltect00@gmail.com"},
 ]
 
 maintainers = [
-    { name = "Rizky Fernandes (devalltect00)", email = "rizkypffdev37@gmail.com"},
+    { name = "Rizky Fernandes (devalltect00)", email = "devalltect00@gmail.com"},
 ]
 
 keywords = [

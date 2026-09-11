@@ -1,5 +1,9 @@
 # 🧠 Custy — Git Workflow and Release Automation CLI
 
+<p align="center">
+  <img src="docs/assets/custy.png" alt="Custy command-line interface" width="690">
+</p>
+
 [![GitHub CI](https://github.com/devalltect00/Custy/actions/workflows/ci.yml/badge.svg)](https://github.com/devalltect00/Custy/actions/workflows/ci.yml)
 [![Docker production image](https://github.com/devalltect00/Custy/actions/workflows/docker-prod.yml/badge.svg)](https://github.com/devalltect00/Custy/actions/workflows/docker-prod.yml)
 [![GitLab pipeline](https://gitlab.com/devalltects-group/custy/badges/main/pipeline.svg)](https://gitlab.com/devalltects-group/custy/-/pipelines)
@@ -450,8 +454,8 @@ See [`CHANGELOG.md`](CHANGELOG.md) for release history.
 
 Custy is open-source software licensed under the [MIT License](LICENSE).
 
-📧 Contact: `rizkypffdev37@gmail.com`
+📧 Contact: `devalltect00@gmail.com`
 
 ---
 
-_Handcrafted with ❤️ by Devalltect / Rizky Fernandes_
+_Crafted with ❤️ by Devalltect / Rizky Fernandes_

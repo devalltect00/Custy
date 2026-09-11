@@ -1,26 +1,32 @@
-chore(dev): checkpoint isolate named virtual environments
+docs(project): add CLI preview and official contact
 
-Keep the supported repository-local development and production Python
-environment naming conventions out of Custy's version control, container
-contexts, and repository-wide quality-tool inputs.
+Improve Custy's repository presentation while moving public package and
+support metadata to the dedicated Devalltect contact address.
 
-### 🧰 Development environment isolation
+### 🖼️ README presentation
 
-- Ignore root-level `dev_venv/`, `prod_venv/`, `venv_dev/`, `venv_prod/`,
-  `publish_venv/`, `venv_publish/`, `other_venv/`, and `venv_other/`
-  directories in Git.
-- Exclude all eight names from Docker build contexts and Prettier discovery.
-- Exclude all eight names from Black and Ruff repository-wide checks.
-- Add regression coverage for the shared ignore and quality-tool contracts.
+- Add the Custy CLI preview near the top of the README.
+- Store the preview locally so it renders independently on GitHub and GitLab.
+- Preserve the existing badges, project overview, workflow guidance, and usage
+  documentation.
 
-### ✅ Validation intent
+### 📧 Official project contact
 
-- Confirm both directory names are ignored without broad wildcard exclusions.
-- Run the focused regression test and repository quality checks.
+- Replace the previous contact address with the official Devalltect address in
+  the README.
+- Update both author and maintainer email metadata for future Python package
+  builds.
+- Leave existing releases, package artifacts, tags, and Git history unchanged.
 
-Checkpoint: untagged development maintenance
+### ✅ Validation
+
+- Confirm the previous email has no current working-tree references.
+- Validate the project metadata, README asset path, formatting, and Git diff.
+
+Tag: none
+Checkpoint: untagged documentation and metadata maintenance
 
 🔖 **Tags**:
-- Type: `#chore`, `#maintenance`
-- Scope: `#virtual-environment`, `#gitignore`, `#dockerignore`, `#quality`
-- Product: `#custy`, `#developer-experience`
+- Type: `#docs`, `#maintenance`
+- Scope: `#readme`, `#project-preview`, `#contact`, `#package-metadata`
+- Product: `#custy`, `#developer-tool`
